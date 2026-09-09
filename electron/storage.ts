@@ -2,6 +2,7 @@ import { app, safeStorage } from 'electron'
 import { readFileSync, writeFileSync, existsSync, unlinkSync, mkdirSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
 import { DEFAULT_SETTINGS, type Settings } from '../src/shared/types.js'
+import { PRESET_WIDTHS } from '../src/shared/windowGeometry.js'
 import { captureHeaders, type AuthHeaders } from '../src/shared/quota.js'
 
 function path(name: string) { mkdirSync(app.getPath('userData'), { recursive: true }); return join(app.getPath('userData'), name) }
@@ -29,12 +30,13 @@ export function validateSettings(input: unknown): Partial<Settings> {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
   if (typeof data.size === 'string' && ['standard', 'compact', 'mini'].includes(data.size)) out.size = data.size
+  if (typeof data.windowWidth === 'number' && Number.isFinite(data.windowWidth)) out.windowWidth = Math.round(Math.min(800, Math.max(180, data.windowWidth)))
   if (typeof data.theme === 'string' && ['auto', 'day', 'night'].includes(data.theme)) out.theme = data.theme
   if (typeof data.outfit === 'string' && ['classic', 'sailor', 'royal', 'ribbon'].includes(data.outfit)) out.outfit = data.outfit
   return out as Partial<Settings>
 }
 export function readSettings(): Settings {
-  try { return { ...DEFAULT_SETTINGS, ...validateSettings(JSON.parse(readFileSync(path('preferences.json'), 'utf8'))) } }
+  try { const saved = validateSettings(JSON.parse(readFileSync(path('preferences.json'), 'utf8'))); return { ...DEFAULT_SETTINGS, windowWidth: PRESET_WIDTHS[saved.size ?? 'standard'], ...saved } }
   catch { return { ...DEFAULT_SETTINGS } }
 }
 export function saveSettings(settings: Settings) { write('preferences.json', JSON.stringify(settings)) }

@@ -5,6 +5,7 @@ import { writeFile } from 'node:fs/promises'
 import type { AppState, Settings } from '../src/shared/types.js'
 import { DEFAULT_SETTINGS } from '../src/shared/types.js'
 import { captureHeaders, QUOTA_URL, PORTAL_URL, normalizeQuota, quotaFreshness, QuotaError, millisecondsToMidnight, type AuthHeaders } from '../src/shared/quota.js'
+import { fitBowl, gestureBounds, PRESET_WIDTHS, type Bounds, type WindowGesture } from '../src/shared/windowGeometry.js'
 import { readCredentials, saveCredentials, clearCredentials, readSettings, saveSettings, validateSettings, readPosition, savePosition } from './storage.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -129,7 +130,22 @@ async function logout() {
   clearCredentials(); await session.fromPartition('em-use-auth').clearStorageData()
   state = { ...state, status: 'signed-out', quota: null, message: '已退出登录', syncing: false, persistentLogin: false, loginOpen: false }; publish()
 }
-const sizes = { standard: [440, 470], compact: [300, 330], mini: [190, 220] } as const
+let gesture: { id: number; mode: WindowGesture; bounds: Bounds; cursor: { x: number; y: number } } | null = null
+let gestureCounter = 0, gestureTimeout: NodeJS.Timeout | undefined
+function finishGesture(id: number) {
+  if (!gesture || gesture.id !== id) return
+  gesture = null; clearTimeout(gestureTimeout)
+  if (widget && !widget.isDestroyed()) {
+    const b = widget.getBounds(); state.settings.windowWidth = b.width
+    savePosition(b.x, b.y); saveSettings(state.settings); publish()
+  }
+}
+function moveGesture(id: number) {
+  if (!gesture || gesture.id !== id || !widget) return
+  const cursor = screen.getCursorScreenPoint()
+  const area = gesture.mode === 'move' ? screen.getDisplayNearestPoint(cursor).workArea : screen.getDisplayMatching(gesture.bounds).workArea
+  widget.setBounds(gestureBounds(gesture.bounds, cursor.x - gesture.cursor.x, cursor.y - gesture.cursor.y, gesture.mode, area))
+}
 function windowOptions() { return { preload: join(here, 'preload.cjs'), nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true } }
 async function loadRenderer(win: BrowserWindow, page: string) {
   if (devURL) await win.loadURL(`${devURL}/?view=${page}`)
@@ -138,17 +154,19 @@ async function loadRenderer(win: BrowserWindow, page: string) {
 function keepOnScreen() {
   if (!widget) return
   const b = widget.getBounds(), area = screen.getDisplayMatching(b).workArea
-  widget.setPosition(Math.round(Math.min(Math.max(b.x, area.x), area.x + area.width - b.width)), Math.round(Math.min(Math.max(b.y, area.y), area.y + area.height - b.height)))
+  widget.setBounds(fitBowl(b, area))
 }
 function createWidget() {
-  const [width, height] = sizes[state.settings.size], area = screen.getPrimaryDisplay().workArea, saved = readPosition()
+  const width = state.settings.windowWidth, height = width, area = screen.getPrimaryDisplay().workArea, saved = readPosition()
   widget = new BrowserWindow({ width, height, x: saved?.x ?? area.x + area.width - width - 32, y: saved?.y ?? area.y + 60, frame: false, transparent: true, resizable: false, hasShadow: false, alwaysOnTop: state.settings.alwaysOnTop, skipTaskbar: true, show: false, title: 'EM Use · 额度小鱼缸', webPreferences: windowOptions() })
-  keepOnScreen(); widget.setIgnoreMouseEvents(state.settings.clickThrough, { forward: true })
+  keepOnScreen(); state.settings.windowWidth = widget.getBounds().width; widget.setIgnoreMouseEvents(state.settings.clickThrough, { forward: true })
   widget.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   widget.webContents.on('will-navigate', e => e.preventDefault())
   widget.on('ready-to-show', () => widget?.showInactive())
   widget.on('close', e => { if (!quitting) { e.preventDefault(); widget?.hide() } })
-  widget.on('moved', () => { if (widget) { const [x, y] = widget.getPosition(); savePosition(x, y) } })
+  widget.on('blur', () => { if (gesture) finishGesture(gesture.id) })
+  widget.on('hide', () => { if (gesture) finishGesture(gesture.id) })
+  widget.on('moved', () => { if (widget && !gesture) { const [x, y] = widget.getPosition(); savePosition(x, y) } })
   void loadRenderer(widget, 'widget')
 }
 function openSettings() {
@@ -164,7 +182,11 @@ function applySettings(patch: unknown) {
   state.settings = { ...state.settings, ...valid }
   widget?.setAlwaysOnTop(state.settings.alwaysOnTop)
   widget?.setIgnoreMouseEvents(state.settings.clickThrough, { forward: true })
-  const [w, h] = sizes[state.settings.size]; widget?.setSize(w, h); keepOnScreen()
+  if ('size' in valid || 'windowWidth' in valid) {
+    if (gesture) finishGesture(gesture.id)
+    const w = valid.windowWidth ?? PRESET_WIDTHS[state.settings.size]
+    widget?.setSize(w, w); keepOnScreen(); state.settings.windowWidth = widget?.getBounds().width ?? w
+  }
   if ('launchAtLogin' in valid) {
     if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: state.settings.launchAtLogin })
     else state.settings.launchAtLogin = false
@@ -183,14 +205,24 @@ function updateTray() {
   ]))
 }
 function setupIPC() {
-  const handle = (channel: string, fn: (...args: any[]) => unknown) => ipcMain.handle(channel, (event, ...args) => {
+  const handle = (channel: string, fn: (...args: any[]) => unknown, widgetOnly = false) => ipcMain.handle(channel, (event, ...args) => {
     if (![widget?.webContents.id, settingsWindow?.webContents.id].includes(event.sender.id) || event.senderFrame !== event.sender.mainFrame) throw new Error('Untrusted sender')
+    if (widgetOnly && event.sender.id !== widget?.webContents.id) throw new Error('Widget only')
     const url = event.senderFrame?.url ?? ''
     if (devURL ? !url.startsWith(`${devURL}/`) : !url.startsWith(pathToFileURL(rendererFile).href)) throw new Error('Untrusted origin')
     return fn(...args)
   })
   handle('state:get', () => structuredClone(state)); handle('auth:login', openLogin); handle('auth:logout', logout)
   handle('quota:refresh', () => refresh(true)); handle('settings:set', applySettings)
+  handle('window:gesture-start', (mode: unknown) => {
+    if (!widget || (typeof mode !== 'string' || !['move', 'nw', 'ne', 'sw', 'se'].includes(mode))) throw new Error('Invalid gesture')
+    if (gesture) finishGesture(gesture.id)
+    gesture = { id: ++gestureCounter, mode: mode as WindowGesture, bounds: widget.getBounds(), cursor: screen.getCursorScreenPoint() }
+    gestureTimeout = setTimeout(() => { if (gesture) finishGesture(gesture.id) }, 30_000)
+    return gesture.id
+  }, true)
+  handle('window:gesture-move', moveGesture, true)
+  handle('window:gesture-end', finishGesture, true)
   handle('window:settings', openSettings); handle('window:hide', () => widget?.hide()); handle('app:quit', () => app.quit())
   handle('portal:open', () => shell.openExternal(PORTAL_URL))
   handle('releases:open', () => shell.openExternal('https://github.com/wantwant123/em-use/releases'))

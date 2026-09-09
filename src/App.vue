@@ -5,7 +5,12 @@ import Aquarium from './components/Aquarium.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
 import OutfitPicker from './components/OutfitPicker.vue'
 import { api, appState as state, isDesktop, previewQuota } from './bridge'
+import { useWindowGestures } from './windowGestures'
+import type { Corner } from './shared/windowGeometry'
 import { money, moodFor } from './shared/quota'
+const { moving, down, move, end, click, wheel } = useWindowGestures()
+const corners: Corner[] = ['nw', 'ne', 'sw', 'se']
+const effectiveSize = computed(() => state.settings.windowWidth < 250 ? 'mini' : state.settings.windowWidth < 360 ? 'compact' : 'standard')
 const view = new URLSearchParams(location.search).get('view')
 const showSettings = ref(view === 'settings'), details = ref(false), toast = ref('')
 const playPanel = ref<'outfit' | 'play' | null>(null)
@@ -47,13 +52,14 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b><i></i><small>额度小鱼缸</small></a><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
-      <div :class="['experience', { 'is-native': isDesktop }, isDesktop ? state.settings.size : 'standard']">
-        <section @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details }" aria-label="额度小鱼缸">
-          <header class="widget-header"><div class="widget-title drag-region"><PhFish weight="duotone"/><span>额度小鱼缸</span><small v-if="!isDesktop">让监控变得有温度</small></div><div class="window-actions"><button class="icon-button mini-play-button" aria-label="玩耍" title="玩耍" @click="togglePanel('play')"><PhGameController/></button><button class="icon-button" title="设置" aria-label="设置" @click="openSettings"><PhGearSix/></button><button class="icon-button" title="收起到托盘" aria-label="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
+      <div :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">
+        <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving }" aria-label="额度小鱼缸">
+          <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="resize-handle" :class="corner" :aria-label="`缩放鱼缸 ${corner}`" title="拖动调整大小 · Ctrl/⌘ + 滚轮也可以" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><span></span></button>
+          <header class="widget-header"><div class="widget-title"><PhFish weight="duotone"/><span>额度小鱼缸</span><small v-if="!isDesktop">让监控变得有温度</small></div><div class="window-actions"><button class="icon-button mini-play-button" aria-label="玩耍" title="玩耍" @click="togglePanel('play')"><PhGameController/></button><button class="icon-button" title="设置" aria-label="设置" @click="openSettings"><PhGearSix/></button><button class="icon-button" title="收起到托盘" aria-label="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
           <div class="widget-body">
             <div class="floating-note"><PhSparkle weight="fill"/><span>{{ state.status === 'resetting' ? '新的一天，正在补充能量' : '每天 00:00，能量重新出发' }}</span></div>
             <div class="aquarium-wrap">
-              <Aquarium ref="aquarium" :percent="percent" :outfit="state.settings.outfit" :night="night" :reduced-motion="state.settings.reducedMotion" :compact="isDesktop && state.settings.size !== 'standard'" :muted="['stale', 'expired', 'resetting'].includes(state.status)" @interact="interact">
+              <Aquarium ref="aquarium" :percent="percent" :outfit="state.settings.outfit" :night="night" :reduced-motion="state.settings.reducedMotion" :compact="isDesktop && effectiveSize !== 'standard'" :muted="['stale', 'expired', 'resetting'].includes(state.status)" @interact="interact">
                 <div v-if="usable && state.quota" class="inside-amount">¥{{ money(state.quota.remaining) }} <span>/ ¥{{ money(state.quota.limit) }}</span></div>
               </Aquarium>
             </div>

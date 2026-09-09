@@ -9,6 +9,7 @@ export const OUTFITS: { id: Outfit; label: string }[] = [{ id: 'classic', label:
 export interface Settings {
   alwaysOnTop: boolean; clickThrough: boolean; launchAtLogin: boolean;
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
+  windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
 }
 export interface AppState {
@@ -18,11 +19,13 @@ export interface AppState {
 export interface DesktopAPI {
   getState(): Promise<AppState>; login(): Promise<void>; logout(): Promise<void>;
   refresh(): Promise<void>; settings(patch: Partial<Settings>): Promise<void>;
+  beginGesture(mode: import('./windowGeometry.js').WindowGesture): Promise<number>;
+  moveGesture(id: number): Promise<void>; endGesture(id: number): Promise<void>;
   openSettings(): Promise<void>; hide(): Promise<void>; quit(): Promise<void>;
   openPortal(): Promise<void>; openReleases(): Promise<void>; screenshot(): Promise<string | null>;
   onState(callback: (state: AppState) => void): () => void;
 }
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
-  theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
+  windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
 }

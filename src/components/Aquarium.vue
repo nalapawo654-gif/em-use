@@ -13,7 +13,7 @@ const hint = computed(() => ({ idle: '', feed: '开饭啦，小鱼正在追着�
 const hiding = computed(() => ['hide', 'seek', 'reveal'].includes(play.value.mode))
 let animation = 0, observer: ResizeObserver, disposed = false, time = 0, lastFrame = 0, heartUntil = 0, outfitSince = -1000
 let fish = { x: .28, y: .77 }, target = { x: .28, y: .77 }, currentPercent = 68
-let bowl: HTMLImageElement, empty: HTMLImageElement, sprites: Sprites | undefined
+let dayBowl: HTMLImageElement, dayEmpty: HTMLImageElement, nightBowl: HTMLImageElement, nightEmpty: HTMLImageElement, sprites: Sprites | undefined
 let fog: HTMLCanvasElement | null = null, pointer: { x: number; y: number } | null = null, dragging = false, autoWipe = false, autoIndex = 0
 const sceneNow = () => performance.now()
 function begin(mode: PlayMode) {
@@ -87,6 +87,7 @@ function draw(now: number) {
   if (before === 'seek' && play.value.mode === 'reveal') emit('interact', 'peek')
   if (happy.value && now > heartUntil) happy.value = false
   const el = canvas.value, ctx = el?.getContext('2d')
+  const bowl = props.night ? nightBowl : dayBowl, empty = props.night ? nightEmpty : dayEmpty
   if (!el || !ctx || !bowl || !empty) return
   const w = el.width, mode = play.value.mode, elapsed = now - play.value.since
   currentPercent += ((props.percent ?? 68) - currentPercent) * (props.reducedMotion ? 1 : .06)
@@ -153,9 +154,9 @@ function draw(now: number) {
 }
 function keyboard(event: KeyboardEvent) { if (event.key === 'Escape') { cancel(); return }; if (event.target === host.value && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); play.value.mode === 'clean' ? automaticClean() : love() } }
 onMounted(async () => {
-  observer = new ResizeObserver(entries => { if (canvas.value) { const size = Math.round(entries[0].contentRect.width * Math.min(devicePixelRatio, 2)); if (size !== canvas.value.width) { canvas.value.width = size; canvas.value.height = size } } })
+  observer = new ResizeObserver(entries => { if (canvas.value) { const size = Math.round(entries[0].contentRect.width * Math.min(devicePixelRatio, 2)); if (size !== canvas.value.width || size !== canvas.value.height) { canvas.value.width = size; canvas.value.height = size } } })
   if (host.value) observer.observe(host.value)
-  try { [bowl, empty, sprites] = await Promise.all([loadImage('./assets/aquarium.png'), loadImage('./assets/aquarium-empty.png'), loadSprites()]); if (!disposed) animation = requestAnimationFrame(draw) }
+  try { [dayBowl, dayEmpty, nightBowl, nightEmpty, sprites] = await Promise.all([loadImage('./assets/aquarium.png'), loadImage('./assets/aquarium-empty.png'), loadImage('./assets/aquarium-night.png'), loadImage('./assets/aquarium-empty-night.png'), loadSprites()]); if (!disposed) animation = requestAnimationFrame(draw) }
   catch { failed.value = true }
 })
 onUnmounted(() => { disposed = true; cancelAnimationFrame(animation); observer?.disconnect() })
