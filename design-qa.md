@@ -5,14 +5,14 @@
 ## 依据与证据
 
 - 原图：[鱼缸设计板](<Codex 图像 2026年9月9日 16_43_24.png>)，1536 × 1024，主要比较左上悬浮窗。
-- 实现：[白天](docs/screenshots/preview-day.png)、[低额度](docs/screenshots/preview-danger.png)、[夜间](docs/screenshots/preview-night.png)、[设置](docs/screenshots/settings.png)。截图均为明确标注的演示数据。
+- 实现：[白天](docs/screenshots/preview-day.png)、[告警](docs/screenshots/preview-warning.png)、[低额度](docs/screenshots/preview-danger.png)、[夜间](docs/screenshots/preview-night.png)、[设置](docs/screenshots/settings.png)。截图均为明确标注的演示数据。
 - 原图与实现图在同一次视觉检查中并列查看。浏览器截图为 950 × 964 画布，悬浮窗约 560 × 540；原生提供 440 × 470、300 × 330、190 × 220 三档。按容器比例比较，未宣称像素级重合。
 
 ## 保留的视觉与交互
 
 圆形厚玻璃缸、蓝色水体、橙色小丑鱼、水草与城堡、背景虚化、左侧四个工具按钮、大号剩余百分比、浅色玻璃面板、昼夜外观。费用单位换成接口真实人民币额度。水位与状态由剩余额度驱动。
 
-实际操作检查：喂食反馈、点击小鱼爱心、鼠标跟随、清洁反馈、切换昼夜、打开设置、降低动画、切换额度状态。浏览器控制台无 warning/error。原生 macOS 窗口已显示真实接口额度；已验证关闭进程后重开自动恢复加密登录，并再次同步。
+实际操作检查：喂食反馈、点击小鱼爱心、鼠标跟随、清洁反馈、切换昼夜、打开设置、降低动画、切换额度状态。浏览器控制台无 warning/error。原生 macOS 窗口已显示真实接口额度；已验证关闭进程后重开自动恢复加密登录，并再次同步。Apple Silicon 打包应用也已从 app.asar 独立启动，确认不依赖开发服务器。
 
 ## 迭代修正
 

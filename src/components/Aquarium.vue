@@ -46,7 +46,7 @@ function draw(now: number) {
     const clip = new Path2D(); clip.moveTo(0, (top + .018) * w)
     for (let x = 0; x <= w; x += w / 60) clip.lineTo(x, (top + Math.sin(x / w * 11 + time * 1.1) * .005) * w)
     clip.lineTo(w, w); clip.lineTo(0, w); clip.closePath(); ctx.clip(clip)
-    ctx.filter = mood.value === 'warning' ? 'hue-rotate(180deg) saturate(.78)' : mood.value === 'danger' ? 'hue-rotate(150deg) saturate(.72)' : (props.percent ?? 68) > 80 ? 'hue-rotate(-40deg)' : 'none'
+    ctx.filter = mood.value === 'warning' ? 'hue-rotate(210deg) saturate(.9)' : mood.value === 'danger' ? 'hue-rotate(150deg) saturate(.72)' : (props.percent ?? 68) > 80 ? 'hue-rotate(-40deg)' : 'none'
     // Keep the glass and garden at their natural proportions as water recedes.
     // Only extend the source column for levels above its photographed surface.
     if (top < .27) {
