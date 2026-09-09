@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import { DEFAULT_SETTINGS, type AppState, type DesktopAPI, type Settings } from './shared/types'
 import { normalizeQuota, quotaFreshness } from './shared/quota'
 export const isDesktop = !!window.emUse
-const local = reactive<AppState>({ status: 'signed-out', quota: null, message: '登录后，让小鱼陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS }, version: '0.1.0', persistentLogin: false, loginOpen: false })
+const local = reactive<AppState>({ status: 'signed-out', quota: null, message: '登录后，让小鱼陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS }, version: '0.2.0', persistentLogin: false, loginOpen: false })
 const listeners = new Set<(s: AppState) => void>()
 function emit() { listeners.forEach(fn => fn(JSON.parse(JSON.stringify(local)))) }
 export function previewQuota(percent: number) {

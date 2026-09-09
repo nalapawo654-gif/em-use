@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { PhX, PhArrowSquareOut, PhSignOut, PhDesktop, PhSun, PhMoon, PhCircleHalf, PhFish, PhCheck, PhShieldCheck, PhDownloadSimple } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop } from '../bridge'
 import type { Settings } from '../shared/types'
+import OutfitPicker from './OutfitPicker.vue'
 import { money } from '../shared/quota'
 const emit = defineEmits<{ close: [] }>()
 const tab = ref('appearance'), notice = ref('')
@@ -24,6 +25,7 @@ async function disconnect() { await api.logout(); notice.value = '已清除本�
         <template v-if="tab === 'appearance'">
           <h2>刚刚好的大小</h2><p class="section-description">从一整片小世界，到桌角的一点陪伴。</p>
           <div class="size-options"><button v-for="item in [{ id: 'standard', title: '标准', sub: '看见每个小细节' }, { id: 'compact', title: '紧凑', sub: '小巧，也很可爱' }, { id: 'mini', title: '迷你', sub: '轻轻待在桌角' }]" :key="item.id" :class="{ selected: state.settings.size === item.id }" @click="set('size', item.id as Settings['size'])"><img :src="'./assets/aquarium.png'" alt="" :class="item.id"/><b>{{ item.title }}</b><small>{{ item.sub }}</small><PhCheck v-if="state.settings.size === item.id" class="selection-check"/></button></div>
+          <h2>小鱼衣橱</h2><p class="section-description">戴上喜欢的小装饰，一起出发。</p><OutfitPicker/>
           <h2>光线与氛围</h2><div class="theme-options"><button v-for="item in [{ id: 'auto', title: '跟随昼夜', icon: PhCircleHalf }, { id: 'day', title: '晴朗白天', icon: PhSun }, { id: 'night', title: '安静夜晚', icon: PhMoon }]" :key="item.id" :class="{ selected: state.settings.theme === item.id }" @click="set('theme', item.id as Settings['theme'])"><component :is="item.icon"/>{{ item.title }}</button></div>
           <label class="setting-row"><span><b>轻柔模式</b><small>减少动画，让小鱼安静陪伴，也更省电。</small></span><input type="checkbox" role="switch" :checked="state.settings.reducedMotion" @change="set('reducedMotion', ($event.target as HTMLInputElement).checked)"/></label>
         </template>

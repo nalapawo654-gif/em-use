@@ -1,14 +1,17 @@
 {
   "name": "em-use",
   "productName": "EM Use",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "桌面额度小鱼缸 · AI 云平台每日额度伴侣",
   "author": "wantwant123",
   "license": "UNLICENSED",
   "type": "module",
   "main": "dist-electron/electron/main.js",
-  "repository": { "type": "git", "url": "https://github.com/wantwant123/em-use.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wantwant123/em-use.git"
+  },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "desktop": "node scripts/dev.mjs",
@@ -37,13 +40,47 @@
     "appId": "com.wantwant123.emuse",
     "productName": "EM Use",
     "asar": true,
-    "directories": { "output": "release" },
-    "files": ["dist/**/*", "dist-electron/**/*", "package.json"],
-    "extraResources": [{ "from": "public/assets/clownfish.png", "to": "tray.png" }],
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "public/assets/clownfish.png",
+        "to": "tray.png"
+      }
+    ],
     "artifactName": "EM-Use-${version}-${os}-${arch}.${ext}",
-    "mac": { "category": "public.app-category.utilities", "target": ["dmg", "zip"], "icon": "public/assets/clownfish.png", "hardenedRuntime": true },
-    "win": { "target": ["nsis"], "icon": "public/assets/clownfish.png" },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "shortcutName": "EM Use" },
-    "publish": { "provider": "github", "owner": "wantwant123", "repo": "em-use", "releaseType": "draft" }
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "public/assets/clownfish.png",
+      "hardenedRuntime": true
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/assets/clownfish.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "EM Use"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "wantwant123",
+      "repo": "em-use",
+      "releaseType": "draft"
+    }
   }
 }

@@ -4,10 +4,12 @@ export interface Quota {
   limit: number; used: number; remaining: number; percent: number; exceeded: boolean;
   estimatedAt: string; serverAt: string; receivedAt: number; day: string;
 }
+export type Outfit = 'classic' | 'sailor' | 'royal' | 'ribbon'
+export const OUTFITS: { id: Outfit; label: string }[] = [{ id: 'classic', label: '原生小鱼' }, { id: 'sailor', label: '海洋领航员' }, { id: 'royal', label: '小小王冠' }, { id: 'ribbon', label: '今日小可爱' }]
 export interface Settings {
   alwaysOnTop: boolean; clickThrough: boolean; launchAtLogin: boolean;
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
-  reducedMotion: boolean; notifications: boolean;
+  reducedMotion: boolean; notifications: boolean; outfit: Outfit;
 }
 export interface AppState {
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
@@ -22,5 +24,5 @@ export interface DesktopAPI {
 }
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
-  theme: 'auto', reducedMotion: false, notifications: true,
+  theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
 }

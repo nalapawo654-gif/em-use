@@ -28,8 +28,9 @@ export function validateSettings(input: unknown): Partial<Settings> {
   for (const key of ['alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications']) {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
-  if (['standard', 'compact', 'mini'].includes(String(data.size))) out.size = data.size
-  if (['auto', 'day', 'night'].includes(String(data.theme))) out.theme = data.theme
+  if (typeof data.size === 'string' && ['standard', 'compact', 'mini'].includes(data.size)) out.size = data.size
+  if (typeof data.theme === 'string' && ['auto', 'day', 'night'].includes(data.theme)) out.theme = data.theme
+  if (typeof data.outfit === 'string' && ['classic', 'sailor', 'royal', 'ribbon'].includes(data.outfit)) out.outfit = data.outfit
   return out as Partial<Settings>
 }
 export function readSettings(): Settings {
