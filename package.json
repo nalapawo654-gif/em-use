@@ -1,0 +1,49 @@
+{
+  "name": "em-use",
+  "productName": "EM Use",
+  "version": "0.1.0",
+  "private": true,
+  "description": "桌面额度小鱼缸 · AI 云平台每日额度伴侣",
+  "author": "wantwant123",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "dist-electron/electron/main.js",
+  "repository": { "type": "git", "url": "https://github.com/wantwant123/em-use.git" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "desktop": "node scripts/dev.mjs",
+    "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.electron.json --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "build": "npm run typecheck && vite build && tsc -p tsconfig.electron.json",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder --publish never",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@phosphor-icons/vue": "^2.2.1",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "electron": "44.3.0",
+    "electron-builder": "^26.0.12",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0",
+    "vue-tsc": "^3.1.0"
+  },
+  "build": {
+    "appId": "com.wantwant123.emuse",
+    "productName": "EM Use",
+    "asar": true,
+    "directories": { "output": "release" },
+    "files": ["dist/**/*", "dist-electron/**/*", "package.json"],
+    "extraResources": [{ "from": "public/assets/clownfish.png", "to": "tray.png" }],
+    "artifactName": "EM-Use-${version}-${os}-${arch}.${ext}",
+    "mac": { "category": "public.app-category.utilities", "target": ["dmg", "zip"], "icon": "public/assets/clownfish.png", "hardenedRuntime": true },
+    "win": { "target": ["nsis"], "icon": "public/assets/clownfish.png" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "shortcutName": "EM Use" },
+    "publish": { "provider": "github", "owner": "wantwant123", "repo": "em-use", "releaseType": "draft" }
+  }
+}

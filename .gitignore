@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-electron/
+release/
+.DS_Store
+.env*
+!.env.example
+*.log
+test-results/
+.local-data/
+.npm-cache/
