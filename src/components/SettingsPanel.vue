@@ -7,6 +7,8 @@ import OutfitPicker from './OutfitPicker.vue'
 import ScenePicker from './ScenePicker.vue'
 import BuddySkinPicker from './BuddySkinPicker.vue'
 import BuddySprite from './BuddySprite.vue'
+import BeaverSprite from './BeaverSprite.vue'
+import BeaverSkinPicker from './BeaverSkinPicker.vue'
 import { money } from '../shared/quota'
 const emit = defineEmits<{ close: [] }>()
 const tab = ref('appearance'), notice = ref('')
@@ -26,11 +28,12 @@ async function disconnect() { await api.logout(); notice.value = '已清除本�
       </nav>
       <div class="settings-content">
         <template v-if="tab === 'appearance'">
-          <h2>陪伴场景</h2><p class="section-description">水里的小鱼，还是草地上的充气牛马？</p><ScenePicker/>
+          <h2>陪伴场景</h2><p class="section-description">水里的小鱼、草地上的牛马，或林间的海狸鼠。</p><ScenePicker/>
           <h2>刚刚好的大小</h2><p class="section-description">从一整片小世界，到桌角的一点陪伴。</p>
-          <div class="size-options"><button v-for="item in [{ id: 'standard', title: '标准', sub: '看见每个小细节' }, { id: 'compact', title: '紧凑', sub: '小巧，也很可爱' }, { id: 'mini', title: '迷你', sub: '轻轻待在桌角' }]" :key="item.id" :class="{ selected: state.settings.size === item.id }" @click="set('size', item.id as Settings['size'])"><BuddySprite v-if="state.settings.scene === 'buddy'" :skin="state.settings.buddySkin" class="size-buddy-preview" :class="item.id"/><img v-else :src="'./assets/aquarium.png'" alt="" :class="item.id"/><b>{{ item.title }}</b><small>{{ item.sub }}</small><PhCheck v-if="state.settings.size === item.id" class="selection-check"/></button></div>
+          <div class="size-options"><button v-for="item in [{ id: 'standard', title: '标准', sub: '看见每个小细节' }, { id: 'compact', title: '紧凑', sub: '小巧，也很可爱' }, { id: 'mini', title: '迷你', sub: '轻轻待在桌角' }]" :key="item.id" :class="{ selected: state.settings.size === item.id }" @click="set('size', item.id as Settings['size'])"><BuddySprite v-if="state.settings.scene === 'buddy'" :skin="state.settings.buddySkin" class="size-buddy-preview" :class="item.id"/><BeaverSprite v-else-if="state.settings.scene === 'beaver'" class="size-beaver-preview" :class="item.id"/><img v-else :src="'./assets/aquarium.png'" alt="" :class="item.id"/><b>{{ item.title }}</b><small>{{ item.sub }}</small><PhCheck v-if="state.settings.size === item.id" class="selection-check"/></button></div>
           <label class="size-slider"><span>自由缩放 <b>{{ state.settings.windowWidth }} px</b></span><input aria-label="宠物窗口大小" type="range" min="180" max="800" step="10" :value="state.settings.windowWidth" @input="set('windowWidth', Number(($event.target as HTMLInputElement).value))"/><small>拖窗口四角，或按住 Ctrl / ⌘ 滚动鼠标。</small></label>
           <template v-if="state.settings.scene === 'buddy'"><h2>牛马衣橱</h2><p class="section-description">换个装扮，换份好心情。</p><BuddySkinPicker/></template>
+          <template v-else-if="state.settings.scene === 'beaver'"><h2>海狸鼠天气装扮</h2><p class="section-description">晴雨雪风，选择今天的出门装扮。</p><BeaverSkinPicker/></template>
           <template v-else><h2>小鱼衣橱</h2><p class="section-description">戴上喜欢的小装饰，一起出发。</p><OutfitPicker/></template>
           <h2>光线与氛围</h2><div class="theme-options"><button v-for="item in [{ id: 'auto', title: '跟随昼夜', icon: PhCircleHalf }, { id: 'day', title: '晴朗白天', icon: PhSun }, { id: 'night', title: '安静夜晚', icon: PhMoon }]" :key="item.id" :class="{ selected: state.settings.theme === item.id }" @click="set('theme', item.id as Settings['theme'])"><component :is="item.icon"/>{{ item.title }}</button></div>
           <label class="setting-row"><span><b>轻柔模式</b><small>减少动画，让小伙伴安静陪伴，也更省电。</small></span><input type="checkbox" role="switch" :checked="state.settings.reducedMotion" @change="set('reducedMotion', ($event.target as HTMLInputElement).checked)"/></label>
@@ -38,7 +41,7 @@ async function disconnect() { await api.logout(); notice.value = '已清除本�
         <template v-else-if="tab === 'desktop'">
           <h2>自在待在桌面上</h2><p class="section-description">按自己的习惯，安排小伙伴的位置。</p>
           <label v-for="item in [{ key: 'alwaysOnTop', name: '置顶显示', help: '切换其他应用时，也能看到小伙伴。' }, { key: 'clickThrough', name: '鼠标穿透', help: '点击会落到后方窗口；从系统托盘可随时关闭。' }, { key: 'launchAtLogin', name: '开机启动', help: '登录电脑后自动出现，安装版生效。' }, { key: 'notifications', name: '低额度提醒', help: '剩余低于 30% 和 10% 时，每日各提醒一次。' }]" :key="item.key" class="setting-row"><span><b>{{ item.name }}</b><small>{{ item.help }}</small></span><input type="checkbox" role="switch" :checked="state.settings[item.key as keyof Settings] === true" @change="set(item.key as keyof Settings, ($event.target as HTMLInputElement).checked)"/></label>
-          <div class="soft-note">按住场景空白或宠物拖动，轻点仍可互动；擦拭时优先清洁。拖动四角调整大小，移开鼠标后操作自动隐去。关闭悬浮窗后，从系统托盘恢复。</div>
+          <div class="soft-note">按住场景空白或宠物拖动，轻点仍可互动；玩法使用拖动时优先处理互动。拖动四角调整大小，移开鼠标后操作自动隐去。关闭悬浮窗后，从系统托盘恢复。</div>
         </template>
         <template v-else>
           <h2>AI 云平台</h2><p class="section-description">每日额度，随时心里有数。</p>

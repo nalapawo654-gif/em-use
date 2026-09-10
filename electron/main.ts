@@ -1,3 +1,4 @@
+import { SCENE_LABELS } from '../src/shared/types.js'
 import { app, BrowserWindow, ipcMain, session, net, Tray, Menu, nativeImage, screen, powerMonitor, Notification, shell, dialog } from 'electron'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -18,7 +19,7 @@ let lastRefresh = 0, failures = 0, nextAttempt = 0, pendingCandidate = ''
 const notified = new Set<string>()
 let timer: NodeJS.Timeout | undefined, midnightTimer: NodeJS.Timeout | undefined
 let state: AppState = { status: 'signed-out', quota: null, message: '登录后，让小伙伴陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS }, version: app.getVersion(), persistentLogin: false, loginOpen: false }
-const sceneTitle = () => state.settings.scene === 'buddy' ? '充气牛马' : '额度小鱼缸'
+const sceneTitle = () => SCENE_LABELS[state.settings.scene]
 
 if (process.env.EM_USE_DATA_DIR && !app.isPackaged) app.setPath('userData', process.env.EM_USE_DATA_DIR)
 const single = app.requestSingleInstanceLock()
@@ -200,6 +201,7 @@ function updateTray() {
     { label: '陪伴场景', submenu: [
       { label: '额度小鱼缸', type: 'radio', checked: state.settings.scene === 'aquarium', click: () => applySettings({ scene: 'aquarium' }) },
       { label: '充气牛马', type: 'radio', checked: state.settings.scene === 'buddy', click: () => applySettings({ scene: 'buddy' }) },
+      { label: '林间海狸鼠', type: 'radio', checked: state.settings.scene === 'beaver', click: () => applySettings({ scene: 'beaver' }) },
     ] },
     { label: '刷新额度', enabled: !!headers && !state.syncing, click: () => { void refresh(true) } },
     { label: '设置', click: openSettings }, { type: 'separator' },

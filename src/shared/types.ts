@@ -5,7 +5,14 @@ export interface Quota {
   estimatedAt: string; serverAt: string; receivedAt: number; day: string;
 }
 export type Outfit = 'classic' | 'sailor' | 'royal' | 'ribbon'
-export type Scene = 'aquarium' | 'buddy'
+export type Scene = 'aquarium' | 'buddy' | 'beaver'
+export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠' }
+export type BeaverSkin = 'sunny' | 'rain' | 'snow' | 'wind' | 'night'
+export const BEAVER_SKINS: { id: BeaverSkin; label: string; hint: string }[] = [
+  { id: 'sunny', label: '晴天', hint: '戴上草帽' }, { id: 'rain', label: '雨天', hint: '穿上雨衣' },
+  { id: 'snow', label: '下雪', hint: '围上围巾' }, { id: 'wind', label: '刮风', hint: '戴好护目镜' },
+  { id: 'night', label: '夜晚', hint: '点亮头灯' },
+]
 export type BuddySkin = 'classic' | 'worker' | 'holiday' | 'midnight' | 'blossom'
 export const BUDDY_SKINS: { id: BuddySkin; label: string }[] = [
   { id: 'classic', label: '经典款' }, { id: 'worker', label: '打工人' }, { id: 'holiday', label: '摸鱼款' },
@@ -17,7 +24,7 @@ export interface Settings {
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
-  scene: Scene; buddySkin: BuddySkin;
+  scene: Scene; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
@@ -35,5 +42,5 @@ export interface DesktopAPI {
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
-  scene: 'aquarium', buddySkin: 'classic',
+  scene: 'aquarium', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
 }

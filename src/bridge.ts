@@ -29,5 +29,6 @@ const previewAPI: DesktopAPI = {
 }
 export const api = window.emUse ?? previewAPI
 export const appState = reactive<AppState>({ ...local })
-api.onState(s => Object.assign(appState, s))
+// Electron bridges callback return values too; never return Vue's reactive Proxy.
+api.onState(s => { Object.assign(appState, s) })
 if (isDesktop) void api.getState().then(s => Object.assign(appState, s))
