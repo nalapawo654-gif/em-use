@@ -1,0 +1,29 @@
+{
+  "results": [
+    "isolated native profile",
+    "test profile contains no login",
+    "native idle hides controls",
+    "native hover shows controls",
+    "real native square resize 190",
+    "real native square resize 300",
+    "real native square resize 440",
+    "real native square resize 800",
+    "mini menu has grooming",
+    "mini starts grooming",
+    "native Escape cancels gameplay",
+    "native scene switching preserves independent settings",
+    "click-through preference saved",
+    "native screenshot pipeline saves PNG with fixed test dialog result",
+    "closing widget hides it without quitting",
+    "app activation restores widget",
+    "native preferences survive process restart"
+  ],
+  "dataDir": "/private/tmp/em-use-beaver-native-9lIipm",
+  "boundaries": [
+    "isolated signed-out profile",
+    "no Windows runtime",
+    "no real account test",
+    "OS pointer drag not exercised",
+    "save dialog uses fixed test result"
+  ]
+}

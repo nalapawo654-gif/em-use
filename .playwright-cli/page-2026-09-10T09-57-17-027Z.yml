@@ -1,0 +1,28 @@
+- generic [active] [ref=f5e1]:
+  - heading "仓鼠后脚逐帧检查" [level=1] [ref=f5e2]
+  - paragraph [ref=f5e3]: 实际组件：正常 / 疲惫 / 加速 / 暂停。下方列出七套装扮全部 84 张运行帧。
+  - banner [ref=f5e6]:
+    - generic [ref=f5e7]:
+      - text: 装扮
+      - combobox "装扮" [ref=f5e8]:
+        - option "经典"
+        - option "日班" [selected]
+        - option "夜班"
+        - option "雨天"
+        - option "夏日"
+        - option "冬日"
+        - option "节日"
+    - generic [ref=f5e9]:
+      - text: 状态
+      - combobox "状态" [ref=f5e10]:
+        - option "正常"
+        - option "疲惫" [selected]
+    - generic [ref=f5e11]:
+      - text: 动作
+      - combobox "动作" [ref=f5e12]:
+        - option "日常" [selected]
+        - option "加速跑轮"
+        - option "喂食"
+    - generic [ref=f5e13]:
+      - checkbox "轻柔模式" [ref=f5e14]
+      - text: 轻柔模式

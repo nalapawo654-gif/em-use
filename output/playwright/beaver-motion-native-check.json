@@ -1,0 +1,34 @@
+{
+  "results": [
+    "native loads new articulated renderer",
+    "idle canvas changes without interaction",
+    "idle controls remain hidden",
+    "feed enters action",
+    "feed animates the actor canvas",
+    "feed automatically returns to gnawing",
+    "drink enters action",
+    "drink animates the actor canvas",
+    "drink automatically returns to gnawing",
+    "wood enters action",
+    "wood animates the actor canvas",
+    "wood automatically returns to gnawing",
+    "ball enters action",
+    "ball animates the actor canvas",
+    "ball cancels with Escape",
+    "bird enters action",
+    "bird animates the actor canvas",
+    "bird cancels with Escape",
+    "groom enters action",
+    "groom animates the actor canvas",
+    "groom cancels with Escape",
+    "leaves enters action",
+    "leaves animates the actor canvas",
+    "leaves cancels with Escape",
+    "mini native layout remains 190px",
+    "no native renderer errors"
+  ],
+  "boundaries": [
+    "isolated signed-out macOS profile",
+    "no Windows or real-account validation"
+  ]
+}

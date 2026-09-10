@@ -1,0 +1,11 @@
+- main [ref=f4e3]:
+  - region "林间海狸鼠场景" [ref=f4e6]:
+    - generic [ref=f4e7]:
+      - generic:
+        - generic:
+          - generic: 今日剩余额度
+          - strong: 68%
+          - generic: ¥204.00 / ¥300.00
+      - button "摸摸海狸鼠" [ref=f4e8]
+      - paragraph: 还够啃一会儿！
+      - generic: 少一点请求，多一点创意

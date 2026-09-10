@@ -1,0 +1,127 @@
+- generic [active] [ref=f6e1]:
+  - heading "仓鼠后脚逐帧检查" [level=1] [ref=f6e2]
+  - paragraph [ref=f6e3]: 实际组件：正常 / 疲惫 / 加速 / 暂停。下方列出七套装扮全部 84 张运行帧。
+  - banner [ref=f6e6]:
+    - generic [ref=f6e7]:
+      - text: 装扮
+      - combobox "装扮" [ref=f6e8]:
+        - option "经典"
+        - option "日班" [selected]
+        - option "夜班"
+        - option "雨天"
+        - option "夏日"
+        - option "冬日"
+        - option "节日"
+    - generic [ref=f6e9]:
+      - text: 状态
+      - combobox "状态" [ref=f6e10]:
+        - option "正常"
+        - option "疲惫" [selected]
+    - generic [ref=f6e11]:
+      - text: 动作
+      - combobox "动作" [ref=f6e12]:
+        - option "日常" [selected]
+        - option "加速跑轮"
+        - option "喂食"
+    - generic [ref=f6e13]:
+      - checkbox "轻柔模式" [ref=f6e14]
+      - text: 轻柔模式
+  - generic [ref=f6e22]:
+    - heading "经典" [level=2] [ref=f6e23]
+    - generic [ref=f6e24]:
+      - figure "开心 1" [ref=f6e25]
+      - figure "开心 2 · 已修正" [ref=f6e28]
+      - figure "开心 3" [ref=f6e31]
+      - figure "开心 4 · 已修正" [ref=f6e34]
+      - figure "开心 5" [ref=f6e37]
+      - figure "开心 6" [ref=f6e40]
+      - figure "疲惫 1" [ref=f6e43]
+      - figure "疲惫 2 · 已修正" [ref=f6e46]
+      - figure "疲惫 3" [ref=f6e49]
+      - figure "疲惫 4 · 已修正" [ref=f6e52]
+      - figure "疲惫 5" [ref=f6e55]
+      - figure "疲惫 6" [ref=f6e58]
+    - heading "日班" [level=2] [ref=f6e61]
+    - generic [ref=f6e62]:
+      - figure "开心 1" [ref=f6e63]
+      - figure "开心 2 · 已修正" [ref=f6e66]
+      - figure "开心 3" [ref=f6e69]
+      - figure "开心 4 · 已修正" [ref=f6e72]
+      - figure "开心 5" [ref=f6e75]
+      - figure "开心 6" [ref=f6e78]
+      - figure "疲惫 1" [ref=f6e81]
+      - figure "疲惫 2 · 已修正" [ref=f6e84]
+      - figure "疲惫 3" [ref=f6e87]
+      - figure "疲惫 4 · 已修正" [ref=f6e90]
+      - figure "疲惫 5" [ref=f6e93]
+      - figure "疲惫 6" [ref=f6e96]
+    - heading "夜班" [level=2] [ref=f6e99]
+    - generic [ref=f6e100]:
+      - figure "开心 1" [ref=f6e101]
+      - figure "开心 2 · 已修正" [ref=f6e104]
+      - figure "开心 3" [ref=f6e107]
+      - figure "开心 4 · 已修正" [ref=f6e110]
+      - figure "开心 5" [ref=f6e113]
+      - figure "开心 6" [ref=f6e116]
+      - figure "疲惫 1" [ref=f6e119]
+      - figure "疲惫 2 · 已修正" [ref=f6e122]
+      - figure "疲惫 3" [ref=f6e125]
+      - figure "疲惫 4 · 已修正" [ref=f6e128]
+      - figure "疲惫 5" [ref=f6e131]
+      - figure "疲惫 6" [ref=f6e134]
+    - heading "雨天" [level=2] [ref=f6e137]
+    - generic [ref=f6e138]:
+      - figure "开心 1" [ref=f6e139]
+      - figure "开心 2 · 已修正" [ref=f6e142]
+      - figure "开心 3" [ref=f6e145]
+      - figure "开心 4 · 已修正" [ref=f6e148]
+      - figure "开心 5" [ref=f6e151]
+      - figure "开心 6" [ref=f6e154]
+      - figure "疲惫 1" [ref=f6e157]
+      - figure "疲惫 2 · 已修正" [ref=f6e160]
+      - figure "疲惫 3" [ref=f6e163]
+      - figure "疲惫 4 · 已修正" [ref=f6e166]
+      - figure "疲惫 5" [ref=f6e169]
+      - figure "疲惫 6" [ref=f6e172]
+    - heading "夏日" [level=2] [ref=f6e175]
+    - generic [ref=f6e176]:
+      - figure "开心 1" [ref=f6e177]
+      - figure "开心 2 · 已修正" [ref=f6e180]
+      - figure "开心 3" [ref=f6e183]
+      - figure "开心 4 · 已修正" [ref=f6e186]
+      - figure "开心 5" [ref=f6e189]
+      - figure "开心 6" [ref=f6e192]
+      - figure "疲惫 1" [ref=f6e195]
+      - figure "疲惫 2 · 已修正" [ref=f6e198]
+      - figure "疲惫 3" [ref=f6e201]
+      - figure "疲惫 4 · 已修正" [ref=f6e204]
+      - figure "疲惫 5" [ref=f6e207]
+      - figure "疲惫 6" [ref=f6e210]
+    - heading "冬日" [level=2] [ref=f6e213]
+    - generic [ref=f6e214]:
+      - figure "开心 1" [ref=f6e215]
+      - figure "开心 2 · 已修正" [ref=f6e218]
+      - figure "开心 3" [ref=f6e221]
+      - figure "开心 4 · 已修正" [ref=f6e224]
+      - figure "开心 5" [ref=f6e227]
+      - figure "开心 6" [ref=f6e230]
+      - figure "疲惫 1" [ref=f6e233]
+      - figure "疲惫 2 · 已修正" [ref=f6e236]
+      - figure "疲惫 3" [ref=f6e239]
+      - figure "疲惫 4 · 已修正" [ref=f6e242]
+      - figure "疲惫 5" [ref=f6e245]
+      - figure "疲惫 6" [ref=f6e248]
+    - heading "节日" [level=2] [ref=f6e251]
+    - generic [ref=f6e252]:
+      - figure "开心 1" [ref=f6e253]
+      - figure "开心 2 · 已修正" [ref=f6e256]
+      - figure "开心 3" [ref=f6e259]
+      - figure "开心 4 · 已修正" [ref=f6e262]
+      - figure "开心 5" [ref=f6e265]
+      - figure "开心 6" [ref=f6e268]
+      - figure "疲惫 1" [ref=f6e271]
+      - figure "疲惫 2 · 已修正" [ref=f6e274]
+      - figure "疲惫 3" [ref=f6e277]
+      - figure "疲惫 4 · 已修正" [ref=f6e280]
+      - figure "疲惫 5" [ref=f6e283]
+      - figure "疲惫 6" [ref=f6e286]

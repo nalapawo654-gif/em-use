@@ -1,0 +1,50 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - link "EM Use" [ref=e5] [cursor=pointer]:
+      - /url: "#"
+    - generic "选择宠物场景" [ref=e11]:
+      - button "额度小鱼缸" [pressed] [ref=e12] [cursor=pointer]
+      - button "充气牛马" [ref=e17] [cursor=pointer]
+    - generic [ref=e22]:
+      - generic [ref=e23]: 桌面应用 · 外观预览
+      - button "偏好设置" [ref=e24] [cursor=pointer]
+  - generic [ref=e28]:
+    - region "额度小鱼缸" [ref=e29]:
+      - generic "小鱼缸互动区域" [ref=e32]:
+        - button "逗逗小鱼" [ref=e34] [cursor=pointer]
+        - button "逗逗小小鱼" [ref=e35] [cursor=pointer]
+        - button "打开宝箱" [ref=e36] [cursor=pointer]
+        - generic:
+          - generic: 68%
+          - generic: 今日剩余额度
+          - generic: ¥204.00 / ¥300.00
+    - complementary [ref=e37]:
+      - generic [ref=e38]: A LITTLE COMPANY, EVERY DAY
+      - heading "让每一份额度， 都有一点可爱。" [level=1] [ref=e40]: 让每一份额度，都有一点可爱。
+      - paragraph [ref=e41]: 看一眼水位，就知道还剩多少灵感。一方小小鱼缸，陪你度过专注的一天。
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - generic [ref=e44]: 今日剩余
+          - generic [ref=e45]: 充足
+        - generic [ref=e46]: ¥204.00/ 300.00
+        - generic [ref=e49]:
+          - generic [ref=e50]: 每日 00:00 重置
+          - generic [ref=e51]: 北京时间
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - generic [ref=e54]: 看看小鱼的不同状态
+          - generic [ref=e55]: 仅用于外观预览 · 演示数据
+        - generic [ref=e56]:
+          - button "充足" [ref=e57] [cursor=pointer]
+          - button "正常" [ref=e59] [cursor=pointer]
+          - button "告警" [ref=e61] [cursor=pointer]
+          - button "危险" [ref=e63] [cursor=pointer]
+      - generic [ref=e65]:
+        - button "看看夜晚" [ref=e66] [cursor=pointer]
+        - generic [ref=e70]: 换装、躲猫猫，擦擦玻璃
+  - generic [ref=e74]:
+    - generic [ref=e75]: 登录凭据保存在本机 · 额度由官方平台同步
+    - generic [ref=e79]:
+      - text: EM Use v0.3.0
+      - generic [ref=e80]: /
+      - text: Windows & macOS

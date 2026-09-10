@@ -5,8 +5,15 @@ export interface Quota {
   estimatedAt: string; serverAt: string; receivedAt: number; day: string;
 }
 export type Outfit = 'classic' | 'sailor' | 'royal' | 'ribbon'
-export type Scene = 'aquarium' | 'buddy' | 'beaver'
-export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠' }
+export type Scene = 'aquarium' | 'buddy' | 'beaver' | 'hamster'
+export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房' }
+export type HamsterSkin = 'classic' | 'worker' | 'nightshift' | 'rain' | 'summer' | 'winter' | 'holiday'
+export const HAMSTER_SKINS: { id: HamsterSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '经典', hint: '红发带，元气开工' }, { id: 'worker', label: '日班', hint: '安全帽与背带裤' },
+  { id: 'nightshift', label: '夜班', hint: '头灯与工作马甲' }, { id: 'rain', label: '雨天', hint: '雨帽与小雨衣' },
+  { id: 'summer', label: '夏日', hint: '墨镜与清凉衬衣' }, { id: 'winter', label: '冬日', hint: '围巾与暖暖毛衣' },
+  { id: 'holiday', label: '节日', hint: '圣诞帽与红马甲' },
+]
 export type BeaverSkin = 'sunny' | 'rain' | 'snow' | 'wind' | 'night'
 export const BEAVER_SKINS: { id: BeaverSkin; label: string; hint: string }[] = [
   { id: 'sunny', label: '晴天', hint: '戴上草帽' }, { id: 'rain', label: '雨天', hint: '穿上雨衣' },
@@ -24,7 +31,7 @@ export interface Settings {
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
-  scene: Scene; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
+  scene: Scene; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
@@ -42,5 +49,5 @@ export interface DesktopAPI {
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
-  scene: 'aquarium', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
+  scene: 'aquarium', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
 }

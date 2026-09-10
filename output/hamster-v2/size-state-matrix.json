@@ -1,0 +1,182 @@
+[
+  {
+    "size": "mini",
+    "theme": "day",
+    "status": "ready",
+    "hudHeight": 32.296875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "mini",
+    "theme": "day",
+    "status": "stale",
+    "hudHeight": 32.296875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "mini",
+    "theme": "day",
+    "status": "signed-out",
+    "hudHeight": 32.296875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "—",
+    "reason": "等待连接"
+  },
+  {
+    "size": "mini",
+    "theme": "night",
+    "status": "ready",
+    "hudHeight": 32.296875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "mini",
+    "theme": "night",
+    "status": "stale",
+    "hudHeight": 32.296875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "mini",
+    "theme": "night",
+    "status": "signed-out",
+    "hudHeight": 32.296875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "—",
+    "reason": "等待连接"
+  },
+  {
+    "size": "compact",
+    "theme": "day",
+    "status": "ready",
+    "hudHeight": 51,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "compact",
+    "theme": "day",
+    "status": "stale",
+    "hudHeight": 51,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "compact",
+    "theme": "day",
+    "status": "signed-out",
+    "hudHeight": 51,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "—",
+    "reason": "等待连接"
+  },
+  {
+    "size": "compact",
+    "theme": "night",
+    "status": "ready",
+    "hudHeight": 51,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "compact",
+    "theme": "night",
+    "status": "stale",
+    "hudHeight": 51,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "compact",
+    "theme": "night",
+    "status": "signed-out",
+    "hudHeight": 51,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "—",
+    "reason": "等待连接"
+  },
+  {
+    "size": "standard",
+    "theme": "day",
+    "status": "ready",
+    "hudHeight": 74.796875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "standard",
+    "theme": "day",
+    "status": "stale",
+    "hudHeight": 74.796875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "standard",
+    "theme": "day",
+    "status": "signed-out",
+    "hudHeight": 74.796875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "—",
+    "reason": "等待连接"
+  },
+  {
+    "size": "standard",
+    "theme": "night",
+    "status": "ready",
+    "hudHeight": 74.796875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "standard",
+    "theme": "night",
+    "status": "stale",
+    "hudHeight": 74.796875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "68%",
+    "reason": "¥204.00 / ¥300.00"
+  },
+  {
+    "size": "standard",
+    "theme": "night",
+    "status": "signed-out",
+    "hudHeight": 74.796875,
+    "inside": true,
+    "noOverlap": true,
+    "quota": "—",
+    "reason": "等待连接"
+  }
+]

@@ -1,0 +1,116 @@
+- main [ref=f12e3]:
+  - generic [ref=f12e4]:
+    - link "EM Use" [ref=f12e5] [cursor=pointer]:
+      - /url: "#"
+    - generic "选择宠物场景" [ref=f12e11]:
+      - button "额度小鱼缸" [ref=f12e12] [cursor=pointer]
+      - button "充气牛马" [ref=f12e17] [cursor=pointer]
+      - button "林间海狸鼠" [pressed] [ref=f12e22] [cursor=pointer]
+    - generic [ref=f12e26]:
+      - generic [ref=f12e27]: 桌面应用 · 外观预览
+      - button "偏好设置" [ref=f12e28] [cursor=pointer]
+  - generic [ref=f12e32]:
+    - generic [ref=f12e33]:
+      - region "林间海狸鼠场景" [ref=f12e34]:
+        - generic [ref=f12e35]:
+          - generic:
+            - generic:
+              - generic: 今日剩余额度
+              - strong: 68%
+              - generic: ¥204.00 / ¥300.00
+          - button "摸摸海狸鼠" [ref=f12e36]
+          - paragraph: 还够啃一会儿！
+          - generic: 认真工作，也要认真休息
+      - complementary [ref=f12e37]:
+        - generic [ref=f12e38]: A LITTLE FOREST, A LITTLE COMPANY
+        - heading "一口一口， 啃出好点子。" [level=1] [ref=f12e42]: 一口一口，啃出好点子。
+        - paragraph [ref=f12e43]: 让这位林间小伙伴，陪你度过专注的日子。看看它的精神头，就知道今天还剩多少余量。
+        - generic [ref=f12e44]: 少一点请求，多一点创意。一起守护这棵树。
+        - generic [ref=f12e46]:
+          - button "摸摸它" [ref=f12e47] [cursor=pointer]
+          - button "看看夜晚" [ref=f12e51] [cursor=pointer]
+        - text: 桌面外观预览 · 演示额度 · 互动不改变真实额度
+    - generic [ref=f12e55]:
+      - generic [ref=f12e56]:
+        - heading "不同额度状态" [level=2] [ref=f12e57]
+        - generic [ref=f12e58]: 从元气满满，到安心收工
+        - generic [ref=f12e59]: 演示数据
+      - generic [ref=f12e60]:
+        - button "预览海狸鼠额度 100%" [ref=f12e61] [cursor=pointer]:
+          - strong [ref=f12e63]: 100%
+          - generic [ref=f12e64]: 元气满满
+          - generic [ref=f12e65]: 今天也要好好创造
+        - button "预览海狸鼠额度 75%" [pressed] [ref=f12e66] [cursor=pointer]:
+          - strong [ref=f12e68]: 75%
+          - generic [ref=f12e69]: 状态良好
+          - generic [ref=f12e70]: 还够啃一会儿！
+        - button "预览海狸鼠额度 50%" [ref=f12e71] [cursor=pointer]:
+          - strong [ref=f12e73]: 50%
+          - generic [ref=f12e74]: 继续加油
+          - generic [ref=f12e75]: 一口一口，慢慢来
+        - button "预览海狸鼠额度 25%" [ref=f12e76] [cursor=pointer]:
+          - strong [ref=f12e78]: 25%
+          - generic [ref=f12e79]: 有点累了
+          - generic [ref=f12e80]: 留一点力气给自己
+        - button "预览海狸鼠额度 10%" [ref=f12e81] [cursor=pointer]:
+          - strong [ref=f12e83]: 10%
+          - generic [ref=f12e84]: 快撑不住
+          - generic [ref=f12e85]: 靠着树，歇一会儿吧
+        - button "预览海狸鼠额度 0%" [ref=f12e86] [cursor=pointer]:
+          - strong [ref=f12e88]: 0%
+          - generic [ref=f12e89]: 休息时间
+          - generic [ref=f12e90]: 树倒了，今天收工啦
+    - generic [ref=f12e91]:
+      - generic [ref=f12e92]:
+        - heading "天气与换装" [level=2] [ref=f12e94]
+        - generic [ref=f12e95]:
+          - button "海狸鼠晴天装扮" [pressed] [ref=f12e96] [cursor=pointer]:
+            - generic [ref=f12e97]: 晴天
+            - generic [ref=f12e98]: 戴上草帽
+          - button "海狸鼠雨天装扮" [ref=f12e102] [cursor=pointer]:
+            - generic [ref=f12e103]: 雨天
+            - generic [ref=f12e104]: 穿上雨衣
+          - button "海狸鼠下雪装扮" [ref=f12e105] [cursor=pointer]:
+            - generic [ref=f12e106]: 下雪
+            - generic [ref=f12e107]: 围上围巾
+          - button "海狸鼠刮风装扮" [ref=f12e108] [cursor=pointer]:
+            - generic [ref=f12e109]: 刮风
+            - generic [ref=f12e110]: 戴好护目镜
+          - button "海狸鼠夜晚装扮" [ref=f12e111] [cursor=pointer]:
+            - generic [ref=f12e112]: 夜晚
+            - generic [ref=f12e113]: 点亮头灯
+        - paragraph [ref=f12e114]: 晴雨雪风，换一种出门的心情。
+      - generic [ref=f12e115]:
+        - heading "互动玩法" [level=2] [ref=f12e117]
+        - generic [ref=f12e118]:
+          - button "梳毛 顺一顺毛，也顺一顺心情" [ref=f12e119] [cursor=pointer]:
+            - generic [ref=f12e120]: 梳毛
+            - generic [ref=f12e121]: 顺一顺毛，也顺一顺心情
+          - button "喂面 陪它吸溜一口热乎的" [ref=f12e122] [cursor=pointer]:
+            - generic [ref=f12e123]: 喂面
+            - generic [ref=f12e124]: 陪它吸溜一口热乎的
+          - button "喝水 咕嘟一口，慢慢歇口气" [ref=f12e125] [cursor=pointer]:
+            - generic [ref=f12e126]: 喝水
+            - generic [ref=f12e127]: 咕嘟一口，慢慢歇口气
+          - button "送木头 抱住新的小小收获" [ref=f12e128] [cursor=pointer]:
+            - generic [ref=f12e129]: 送木头
+            - generic [ref=f12e130]: 抱住新的小小收获
+          - button "拍照 留住这一刻" [ref=f12e131] [cursor=pointer]:
+            - generic [ref=f12e135]: 拍照
+            - generic [ref=f12e136]: 留住这一刻
+      - generic [ref=f12e137]:
+        - heading "林间小日常" [level=2] [ref=f12e139]
+        - generic [ref=f12e140]:
+          - button "和它说话" [ref=f12e141] [cursor=pointer]
+          - button "收集树叶" [ref=f12e145] [cursor=pointer]
+          - button "丢球玩耍" [ref=f12e146] [cursor=pointer]
+          - button "小鸟来访" [ref=f12e147] [cursor=pointer]
+          - button "布置营地" [ref=f12e148] [cursor=pointer]
+          - button "更换标语" [ref=f12e152] [cursor=pointer]
+          - button "生成分享图" [ref=f12e156] [cursor=pointer]
+  - generic [ref=f12e160]:
+    - generic [ref=f12e161]: 登录凭据保存在本机 · 额度由官方平台同步
+    - generic [ref=f12e165]:
+      - text: EM Use v0.3.0
+      - generic [ref=f12e166]: /
+      - text: Windows & macOS

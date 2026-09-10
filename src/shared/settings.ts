@@ -8,7 +8,8 @@ export function validateSettings(input: unknown): Partial<Settings> {
   }
   const enums = {
     size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
-    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver'],
+    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver', 'hamster'],
+    hamsterSkin: ['classic', 'worker', 'nightshift', 'rain', 'summer', 'winter', 'holiday'],
     buddySkin: ['classic', 'worker', 'holiday', 'midnight', 'blossom'],
     beaverSkin: ['sunny', 'rain', 'snow', 'wind', 'night'], beaverMotto: ['gentle', 'create', 'rest'],
   }

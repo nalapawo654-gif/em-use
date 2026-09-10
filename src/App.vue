@@ -6,6 +6,7 @@ import SettingsPanel from './components/SettingsPanel.vue'
 import OutfitPicker from './components/OutfitPicker.vue'
 import BuddyExperience from './components/BuddyExperience.vue'
 import BeaverExperience from './components/BeaverExperience.vue'
+import HamsterExperience from './components/HamsterExperience.vue'
 import { SCENE_LABELS } from './shared/types'
 import ScenePicker from './components/ScenePicker.vue'
 import { api, appState as state, isDesktop, previewQuota } from './bridge'
@@ -53,12 +54,13 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'hamster-app': state.settings.scene === 'hamster', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
       <BuddyExperience v-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BeaverExperience v-else-if="state.settings.scene === 'beaver'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <HamsterExperience v-else-if="state.settings.scene === 'hamster'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <div v-else :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">
         <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving }" aria-label="额度小鱼缸">
           <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="resize-handle" :class="corner" :aria-label="`缩放鱼缸 ${corner}`" title="拖动调整大小 · Ctrl/⌘ + 滚轮也可以" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><span></span></button>

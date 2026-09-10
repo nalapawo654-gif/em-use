@@ -1,0 +1,24 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - combobox [ref=f6e3]:
+      - option "持续啃树" [selected]
+      - option "按住毛发，来回梳一梳"
+      - option "吸溜——这一口好香"
+      - option "咕嘟咕嘟，歇口气"
+      - option "新木头收到，抱稳再啃！"
+      - option "摸摸头，收到你的喜欢啦"
+      - option "接住啦！再推回去"
+      - option "点点飘落的三片叶子"
+      - option "啾啾——林间朋友来串门"
+      - option "舒服啦，谢谢你的照顾！"
+      - option "靠一会儿，灵感也需要休息"
+    - slider [ref=f6e4]: "1800"
+    - combobox [ref=f6e5]:
+      - option "75%" [selected]
+      - option "100%"
+      - option "50%"
+      - option "25%"
+      - option "10%"
+      - option "0%"
+    - status
+  - main

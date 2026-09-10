@@ -1,0 +1,20 @@
+{
+  "results": [
+    "native 100% paired visual state",
+    "native 75% paired visual state",
+    "native 50% paired visual state",
+    "native 25% paired visual state",
+    "native 10% paired visual state",
+    "native 0% paired visual state",
+    "all six expression and tree pairs are distinct",
+    "drinking retains low-quota expression",
+    "low-quota drink recovers to gnawing",
+    "interaction does not repair tree damage",
+    "190px native layout",
+    "no native renderer errors"
+  ],
+  "boundaries": [
+    "isolated Electron profile with injected renderer quota fixtures",
+    "no real account or Windows validation"
+  ]
+}

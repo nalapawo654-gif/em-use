@@ -1,0 +1,21 @@
+### Result
+["idle draws different articulated frames","feed draws different articulated frames","drink draws different articulated frames","wood draws different articulated frames","pet draws different articulated frames","groom draws different articulated frames","ball draws different articulated frames","bird draws different articulated frames","leaves draws different articulated frames","celebrate draws different articulated frames"]
+### Ran Playwright code
+```js
+await (async (page) => {
+ const result=[];
+ for(const action of ['idle','feed','drink','wood','pet','groom','ball','bird','leaves','celebrate']) {
+  await page.locator('#action').selectOption(action);
+  const frames=[];
+  for(const time of [1500,1740]) {await page.locator('#time').fill(String(time));await page.locator('#time').dispatchEvent('input');frames.push(await page.locator('canvas').first().evaluate(c=>c.toDataURL()));}
+  if(frames[0]===frames[1])throw Error(action+' has no rendered movement');
+  result.push(action+' draws different articulated frames');
+  if(['wood','pet','bird'].includes(action))await page.screenshot({path:'output/playwright/beaver-motion-skins-'+action+'.png',fullPage:true});
+ }
+ await page.locator('#action').selectOption('idle');await page.locator('#level').selectOption('5');
+ await page.screenshot({path:'output/playwright/beaver-motion-skins-zero.png',fullPage:true});
+ return result;
+}
+)(page);
+```
+npm warn Unknown user config "home". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
