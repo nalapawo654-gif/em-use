@@ -4,6 +4,8 @@ import { join } from 'node:path'
 import { DEFAULT_SETTINGS, type Settings } from '../src/shared/types.js'
 import { PRESET_WIDTHS } from '../src/shared/windowGeometry.js'
 import { captureHeaders, type AuthHeaders } from '../src/shared/quota.js'
+import { validateSettings } from '../src/shared/settings.js'
+export { validateSettings } from '../src/shared/settings.js'
 
 function path(name: string) { mkdirSync(app.getPath('userData'), { recursive: true }); return join(app.getPath('userData'), name) }
 function write(name: string, data: string | Buffer) {
@@ -22,18 +24,6 @@ export function saveCredentials(headers: AuthHeaders): boolean {
 }
 export function clearCredentials() {
   if (existsSync(path('session.enc'))) unlinkSync(path('session.enc'))
-}
-export function validateSettings(input: unknown): Partial<Settings> {
-  if (!input || typeof input !== 'object') return {}
-  const data = input as Record<string, unknown>, out: Record<string, unknown> = {}
-  for (const key of ['alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications']) {
-    if (typeof data[key] === 'boolean') out[key] = data[key]
-  }
-  if (typeof data.size === 'string' && ['standard', 'compact', 'mini'].includes(data.size)) out.size = data.size
-  if (typeof data.windowWidth === 'number' && Number.isFinite(data.windowWidth)) out.windowWidth = Math.round(Math.min(800, Math.max(180, data.windowWidth)))
-  if (typeof data.theme === 'string' && ['auto', 'day', 'night'].includes(data.theme)) out.theme = data.theme
-  if (typeof data.outfit === 'string' && ['classic', 'sailor', 'royal', 'ribbon'].includes(data.outfit)) out.outfit = data.outfit
-  return out as Partial<Settings>
 }
 export function readSettings(): Settings {
   try { const saved = validateSettings(JSON.parse(readFileSync(path('preferences.json'), 'utf8'))); return { ...DEFAULT_SETTINGS, windowWidth: PRESET_WIDTHS[saved.size ?? 'standard'], ...saved } }

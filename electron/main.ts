@@ -17,7 +17,8 @@ let headers: AuthHeaders | null = null, generation = 0, requestAbort: AbortContr
 let lastRefresh = 0, failures = 0, nextAttempt = 0, pendingCandidate = ''
 const notified = new Set<string>()
 let timer: NodeJS.Timeout | undefined, midnightTimer: NodeJS.Timeout | undefined
-let state: AppState = { status: 'signed-out', quota: null, message: '登录后，让小鱼陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS }, version: app.getVersion(), persistentLogin: false, loginOpen: false }
+let state: AppState = { status: 'signed-out', quota: null, message: '登录后，让小伙伴陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS }, version: app.getVersion(), persistentLogin: false, loginOpen: false }
+const sceneTitle = () => state.settings.scene === 'buddy' ? '充气牛马' : '额度小鱼缸'
 
 if (process.env.EM_USE_DATA_DIR && !app.isPackaged) app.setPath('userData', process.env.EM_USE_DATA_DIR)
 const single = app.requestSingleInstanceLock()
@@ -28,7 +29,7 @@ else {
 }
 function publish() {
   for (const win of [widget, settingsWindow]) if (win && !win.isDestroyed()) win.webContents.send('state:changed', structuredClone(state))
-  if (tray) { tray.setToolTip(state.quota ? `EM Use · 剩余 ¥${state.quota.remaining.toFixed(2)} · ${state.message}` : 'EM Use · 额度小鱼缸'); updateTray() }
+  if (tray) { tray.setToolTip(state.quota ? `EM Use · 剩余 ¥${state.quota.remaining.toFixed(2)} · ${state.message}` : `EM Use · ${sceneTitle()}`); updateTray() }
 }
 function showMessage(status: AppState['status'], message: string) { state.status = status; state.message = message; publish() }
 function reconcile() {
@@ -36,7 +37,7 @@ function reconcile() {
   const fresh = quotaFreshness(state.quota)
   if (failures > 0 && fresh !== 'resetting') { state.status = 'stale'; return }
   state.status = fresh
-  state.message = fresh === 'ready' ? '额度已同步，小鱼状态不错' : fresh === 'resetting' ? '正在同步今日额度，请稍候' : '费用数据更新较慢，当前为上次结果'
+  state.message = fresh === 'ready' ? '额度已同步，小伙伴状态不错' : fresh === 'resetting' ? '正在同步今日额度，请稍候' : '费用数据更新较慢，当前为上次结果'
 }
 async function fetchQuota(auth: AuthHeaders, signal: AbortSignal) {
   const response = await net.fetch(QUOTA_URL, { method: 'GET', headers: auth, credentials: 'omit', redirect: 'error', signal, cache: 'no-store' })
@@ -77,7 +78,7 @@ function maybeNotify() {
   notified.add(key)
   if (q.percent <= 10) notified.add(`${q.day}:warning`)
   for (const prior of notified) if (!prior.startsWith(q.day)) notified.delete(prior)
-  if (Notification.isSupported()) new Notification({ title: q.percent <= 10 ? '今日额度不多了' : '小鱼提醒你留意额度', body: `剩余 ¥${q.remaining.toFixed(2)}，每日 00:00 重置。`, silent: true }).show()
+  if (Notification.isSupported()) new Notification({ title: q.percent <= 10 ? '今日额度不多了' : `${sceneTitle()}提醒你留意额度`, body: `剩余 ¥${q.remaining.toFixed(2)}，每日 00:00 重置。`, silent: true }).show()
 }
 async function openLogin() {
   if (loginWindow) { loginWindow.show(); loginWindow.focus(); return }
@@ -158,7 +159,7 @@ function keepOnScreen() {
 }
 function createWidget() {
   const width = state.settings.windowWidth, height = width, area = screen.getPrimaryDisplay().workArea, saved = readPosition()
-  widget = new BrowserWindow({ width, height, x: saved?.x ?? area.x + area.width - width - 32, y: saved?.y ?? area.y + 60, frame: false, transparent: true, resizable: false, hasShadow: false, alwaysOnTop: state.settings.alwaysOnTop, skipTaskbar: true, show: false, title: 'EM Use · 额度小鱼缸', webPreferences: windowOptions() })
+  widget = new BrowserWindow({ width, height, x: saved?.x ?? area.x + area.width - width - 32, y: saved?.y ?? area.y + 60, frame: false, transparent: true, resizable: false, hasShadow: false, alwaysOnTop: state.settings.alwaysOnTop, skipTaskbar: true, show: false, title: `EM Use · ${sceneTitle()}`, webPreferences: windowOptions() })
   keepOnScreen(); state.settings.windowWidth = widget.getBounds().width; widget.setIgnoreMouseEvents(state.settings.clickThrough, { forward: true })
   widget.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   widget.webContents.on('will-navigate', e => e.preventDefault())
@@ -171,7 +172,7 @@ function createWidget() {
 }
 function openSettings() {
   if (settingsWindow) { settingsWindow.show(); settingsWindow.focus(); return }
-  settingsWindow = new BrowserWindow({ width: 880, height: 680, minWidth: 780, minHeight: 620, title: '小鱼缸设置 · EM Use', backgroundColor: '#f2f8fc', autoHideMenuBar: true, webPreferences: windowOptions() })
+  settingsWindow = new BrowserWindow({ width: 880, height: 680, minWidth: 780, minHeight: 620, title: '桌面小伙伴设置 · EM Use', backgroundColor: '#f2f8fc', autoHideMenuBar: true, webPreferences: windowOptions() })
   settingsWindow.on('closed', () => { settingsWindow = null })
   settingsWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   settingsWindow.webContents.on('will-navigate', e => e.preventDefault())
@@ -195,7 +196,11 @@ function applySettings(patch: unknown) {
 }
 function updateTray() {
   tray?.setContextMenu(Menu.buildFromTemplate([
-    { label: '显示小鱼缸', click: () => { widget?.show(); widget?.focus() } },
+    { label: `显示${sceneTitle()}`, click: () => { widget?.show(); widget?.focus() } },
+    { label: '陪伴场景', submenu: [
+      { label: '额度小鱼缸', type: 'radio', checked: state.settings.scene === 'aquarium', click: () => applySettings({ scene: 'aquarium' }) },
+      { label: '充气牛马', type: 'radio', checked: state.settings.scene === 'buddy', click: () => applySettings({ scene: 'buddy' }) },
+    ] },
     { label: '刷新额度', enabled: !!headers && !state.syncing, click: () => { void refresh(true) } },
     { label: '设置', click: openSettings }, { type: 'separator' },
     { label: '置顶显示', type: 'checkbox', checked: state.settings.alwaysOnTop, click: item => applySettings({ alwaysOnTop: item.checked }) },

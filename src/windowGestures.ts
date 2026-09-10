@@ -10,7 +10,7 @@ export function useWindowGestures() {
     if (event.button === 0 && !active) suppressUntil = 0
     if (!isDesktop || event.button !== 0 || active) return
     const target = event.target as HTMLElement
-    if (mode === 'move' && (target.closest('.is-wiping') || target.closest('button:not(.fish-hit):not(.scene-hit), input, a, .play-popover, .detail-popover, .play-hud'))) return
+    if (mode === 'move' && (target.closest('.is-wiping') || target.closest('button:not(.fish-hit):not(.scene-hit), input, a, .play-popover, .detail-popover, .play-hud, .buddy-panel, .buddy-hud'))) return
     active = { pointer: event.pointerId, x: event.screenX, y: event.screenY, host: event.currentTarget as HTMLElement, id: api.beginGesture(mode), mode }
     if (mode !== 'move') { event.preventDefault(); moving.value = true; active.host.setPointerCapture(event.pointerId) }
     active.id.catch(() => { moving.value = false; active = null })

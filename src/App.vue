@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhGearSix, PhMinus, PhArrowsClockwise, PhFish, PhDrop, PhCamera, PhSun, PhMoon, PhArrowRight, PhCheckCircle, PhCloudSlash, PhArrowSquareOut, PhPlant, PhSparkle, PhInfo, PhHeart, PhShieldCheck, PhGameController, PhTreasureChest, PhEye, PhX } from '@phosphor-icons/vue'
 import Aquarium from './components/Aquarium.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
 import OutfitPicker from './components/OutfitPicker.vue'
+import BuddyExperience from './components/BuddyExperience.vue'
+import ScenePicker from './components/ScenePicker.vue'
 import { api, appState as state, isDesktop, previewQuota } from './bridge'
 import { useWindowGestures } from './windowGestures'
 import type { Corner } from './shared/windowGeometry'
@@ -23,6 +25,7 @@ const usable = computed(() => connected.value && !['unavailable', 'forbidden', '
 const percent = computed(() => usable.value ? state.quota!.percent : null)
 const mood = computed(() => moodFor(percent.value ?? 68))
 const night = computed(() => state.settings.theme === 'night' || (state.settings.theme === 'auto' && (new Date(now.value).getHours() >= 19 || new Date(now.value).getHours() < 7)))
+watch(() => state.settings.scene, scene => { document.title = `EM Use · ${scene === 'buddy' ? '充气牛马' : '额度小鱼缸'}` }, { immediate: true })
 const stateLabel = computed(() => ({ 'signed-out': '等待连接', connecting: '等待登录', ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '同步今日额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限' }[state.status]))
 const moodLabel = computed(() => ({ abundant: '充足', normal: '正常', warning: '留意额度', danger: '额度偏低' }[mood.value]))
 const updated = computed(() => state.quota?.estimatedAt.slice(11, 16) ?? '—')
@@ -48,11 +51,12 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <template v-else>
-      <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b><i></i><small>额度小鱼缸</small></a><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
-      <div :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">
+      <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
+      <BuddyExperience v-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <div v-else :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">
         <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving }" aria-label="额度小鱼缸">
           <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="resize-handle" :class="corner" :aria-label="`缩放鱼缸 ${corner}`" title="拖动调整大小 · Ctrl/⌘ + 滚轮也可以" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><span></span></button>
           <header class="widget-header"><div class="widget-title"><PhFish weight="duotone"/><span>额度小鱼缸</span><small v-if="!isDesktop">让监控变得有温度</small></div><div class="window-actions"><button class="icon-button mini-play-button" aria-label="玩耍" title="玩耍" @click="togglePanel('play')"><PhGameController/></button><button class="icon-button" title="设置" aria-label="设置" @click="openSettings"><PhGearSix/></button><button class="icon-button" title="收起到托盘" aria-label="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>

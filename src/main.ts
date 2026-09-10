@@ -5,3 +5,4 @@ createApp(App).mount('#app')
 
 import './play.css'
 import './window.css'
+import './buddy.css'
