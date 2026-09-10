@@ -1,3 +1,4 @@
+import { sampleBuddyMotion } from '../src/buddy/motion.ts'
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { advanceBuddy, beginBuddy, buddyCleanCells, buddyIdle, buddyLevel, scrubBuddy, durations } from '../src/buddy/play.ts'
@@ -26,7 +27,7 @@ test('cleaning requires covering the animal, then celebrates and returns to idle
   assert.equal(scrubBuddy(state, NaN, 0, 100), state)
   for (const p of buddyCleanCells) state = scrubBuddy(state, p.x, p.y, 200)
   assert.equal(state.mode, 'celebrate')
-  assert.equal(advanceBuddy(state, 2300).mode, 'idle')
+  assert.equal(advanceBuddy(state, state.since + durations.celebrate).mode, 'idle')
   assert.deepEqual(scrubBuddy(buddyIdle(), .4, .4, 0), buddyIdle())
 })
 test('old settings keep the aquarium and new scene and skin choices survive validation', () => {
@@ -35,4 +36,41 @@ test('old settings keep the aquarium and new scene and skin choices survive vali
   assert.deepEqual(validateSettings({ scene: 'buddy', buddySkin: 'holiday', outfit: 'sailor' }), { scene: 'buddy', buddySkin: 'holiday', outfit: 'sailor' })
   assert.deepEqual(validateSettings({ scene: 'unknown', buddySkin: 'unknown', reducedMotion: 'true', windowWidth: NaN, auth: 'not-a-setting' }), {})
   assert.deepEqual(validateSettings({ windowWidth: 999, clickThrough: true }), { windowWidth: 800, clickThrough: true })
+})
+
+// Motion is sampled deterministically: verify the mouth, target and recovery,
+// rather than checking that a CSS class happens to exist.
+test('feeding and drinking articulate the head and mouth then recover', () => {
+  for (const action of ['feed', 'drink'] as const) {
+    const start = sampleBuddyMotion(action, 0, 1000, 0)
+    const active = sampleBuddyMotion(action, 1800, 2800, 0)
+    const later = sampleBuddyMotion(action, 1970, 2970, 0)
+    const end = sampleBuddyMotion(action, durations[action], 7000, 0)
+    assert.equal(start.phase, 'prepare')
+    assert.equal(active.phase, 'perform')
+    assert.ok(active.headAngle < -.3)
+    assert.ok(active.headY > 20)
+    assert.ok(Math.abs(active.mouth - later.mouth) > .02)
+    assert.equal(end.phase, 'recover')
+    assert.ok(Math.abs(end.headAngle) < .02)
+  }
+})
+test('swatting turns attention to the mosquito, lashes the tail then lets it escape', () => {
+  const look = sampleBuddyMotion('swat', 1500, 1500, 0)
+  const strike = sampleBuddyMotion('swat', 2300, 2300, 0)
+  const escaped = sampleBuddyMotion('swat', 4600, 4600, 0)
+  assert.equal(look.expression, 'annoyed')
+  assert.ok(look.lookX > 2)
+  assert.ok(strike.tailAngle < -.7)
+  assert.equal(escaped.bugAlpha, 0)
+  assert.equal(escaped.expression, 'happy')
+})
+test('reduced motion holds body parts still and sleeping closes the eyes', () => {
+  for (const action of ['feed','drink','pet','play','swat','sleep','shake'] as const) {
+    const frame = sampleBuddyMotion(action, 1800, 1800, 0, true)
+    assert.equal(frame.headAngle, 0)
+    assert.equal(frame.tailAngle, 0)
+    assert.equal(frame.foot, 0)
+  }
+  assert.equal(sampleBuddyMotion('sleep', 2000, 2000, 0).eyeOpen, 0)
 })

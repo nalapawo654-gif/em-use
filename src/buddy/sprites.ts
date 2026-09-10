@@ -1,7 +1,7 @@
 import { loadImage } from '../aquarium/sprites'
 import type { BuddySkin } from '../shared/types'
 
-export type BuddyProp = 'grass' | 'water' | 'brush' | 'ball' | 'hand' | 'mosquito' | 'pump' | 'sign'
+export type BuddyProp = 'grass' | 'water' | 'brush' | 'ball' | 'hand' | 'mosquito' | 'pump' | 'sign' | 'ground'
 const props: BuddyProp[] = ['grass', 'water', 'brush', 'ball', 'hand', 'mosquito', 'pump', 'sign']
 const skins: BuddySkin[] = ['worker', 'holiday', 'midnight', 'blossom']
 const cache = new Map<string, Promise<HTMLCanvasElement[]>>()
@@ -9,7 +9,7 @@ type Rect = [number, number, number, number]
 const classicRects: Rect[] = [[48,8,578,672],[628,76,613,597],[14,771,612,422],[628,835,618,338]]
 const skinRects: Rect[] = [[26,24,280,296],[335,48,272,272],[630,119,301,205],[931,178,309,152],[26,322,285,305],[334,351,273,281],[629,429,302,205],[930,487,312,154],[26,634,282,294],[335,660,273,271],[632,729,299,205],[930,791,310,156],[27,937,281,293],[336,962,273,270],[629,1034,301,201],[930,1091,309,154]]
 
-function atlas(path: string, columns: number, rows: number, rects?: Rect[], scale = 1) {
+function atlas(path: string, columns: number, rows: number, rects?: Rect[], scale = 1, normalize = true) {
   if (!cache.has(path)) cache.set(path, loadImage(path).then(img => Array.from({ length: columns * rows }, (_, index) => {
     const cellW = img.naturalWidth / columns, cellH = img.naturalHeight / rows
     const [sx, sy, sw, sh] = rects?.[index] ?? [index % columns * cellW, Math.floor(index / columns) * cellH, cellW, cellH]
@@ -51,6 +51,7 @@ function atlas(path: string, columns: number, rows: number, rects?: Rect[], scal
     }
     ctx.putImageData(frame, 0, 0)
     if (!rects) return c
+    if (!normalize) return trimSprite(c)
     const result = document.createElement('canvas'); result.width = result.height = 512
     // One scale per atlas, with a shared ground line; lying poses stay shorter.
     const padding = hasAlpha ? 18 : 2
@@ -65,4 +66,35 @@ export async function buddySprite(skin: BuddySkin, level: number) {
     ? (await atlas('./assets/buddy/classic-states.png', 2, 2, classicRects, .72))[index]
     : (await atlas('./assets/buddy/skin-states.png', 4, 4, skinRects, 4 / 3))[skins.indexOf(skin) * 4 + index]
 }
-export async function buddyProp(name: BuddyProp) { return (await atlas('./assets/buddy/props.png', 4, 2))[props.indexOf(name)] }
+export async function buddyProp(name: BuddyProp) {
+  if (name === 'ground') return (await rigParts('classic'))[3]
+  return (await atlas('./assets/buddy/props.png', 4, 2))[props.indexOf(name)]
+}
+
+export function trimSprite(source: HTMLCanvasElement) {
+  const w = source.width, h = source.height, px = source.getContext('2d')!.getImageData(0, 0, w, h).data
+  let left = w, top = h, right = 0, bottom = 0
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (px[(y * w + x) * 4 + 3] > 32) { left = Math.min(left, x); right = Math.max(right, x); top = Math.min(top, y); bottom = Math.max(bottom, y) }
+  if (left > right) return source
+  const c = document.createElement('canvas'); c.width = right - left + 1; c.height = bottom - top + 1
+  c.getContext('2d')!.drawImage(source, left, top, c.width, c.height, 0, 0, c.width, c.height)
+  return c
+}
+const classicRigRects: Rect[] = [[8,215,670,550],[680,115,574,595],[130,810,405,400],[628,935,620,280]]
+const skinRigRects: Rect[] = [
+  [25,65,360,305],[417,35,335,345],[842,115,220,220],
+  [25,402,360,320],[417,377,335,327],[842,466,220,225],
+  [25,746,360,309],[417,716,335,345],[842,813,220,225],
+  [25,1086,360,309],[417,1069,335,345],[842,1145,220,225],
+]
+async function rigParts(skin: BuddySkin) {
+  if (skin === 'classic') return atlas('./assets/buddy/rig-classic.png', 2, 2, classicRigRects, 1, false)
+  const all = await atlas('./assets/buddy/rig-skins.png', 3, 4, skinRigRects, 1, false)
+  return all.slice(skins.indexOf(skin) * 3, skins.indexOf(skin) * 3 + 3)
+}
+export interface BuddyRig { body: HTMLCanvasElement; head: HTMLCanvasElement; tail: HTMLCanvasElement; props: Partial<Record<BuddyProp, HTMLCanvasElement>> }
+const rigs = new Map<BuddySkin, Promise<BuddyRig>>()
+export function buddyRig(skin: BuddySkin): Promise<BuddyRig> {
+  if (!rigs.has(skin)) rigs.set(skin, Promise.all([rigParts(skin), Promise.all(props.map(async name => [name, trimSprite(await buddyProp(name))] as const))]).then(([parts, items]) => ({ body: parts[0], head: parts[1], tail: parts[2], props: Object.fromEntries(items) })).catch(error => { rigs.delete(skin); throw error }))
+  return rigs.get(skin)!
+}

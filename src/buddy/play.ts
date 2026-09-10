@@ -12,7 +12,7 @@ export function buddyLevel(percent: number | null) {
 }
 export const buddyIdle = (): BuddyPlay => ({ mode: 'idle', since: 0, cleaned: [] })
 export const beginBuddy = (mode: BuddyAction, now: number): BuddyPlay => ({ mode, since: now, cleaned: [] })
-export const durations: Record<Exclude<BuddyAction, 'idle' | 'clean'>, number> = { feed: 3200, drink: 3200, pet: 2200, play: 4400, swat: 3000, wag: 2400, sleep: 6000, shake: 2200, rest: 4400, inflate: 3400, celebrate: 2000 }
+export const durations: Record<Exclude<BuddyAction, 'idle' | 'clean'>, number> = { feed: 5800, drink: 6200, pet: 4200, play: 5600, swat: 5100, wag: 4000, sleep: 7600, shake: 3200, rest: 5400, inflate: 4800, celebrate: 3200 }
 export function advanceBuddy(state: BuddyPlay, now: number, reducedMotion = false): BuddyPlay {
   if (state.mode === 'idle' || state.mode === 'clean') return state
   return now - state.since >= (reducedMotion ? Math.min(1800, durations[state.mode]) : durations[state.mode]) ? buddyIdle() : state
