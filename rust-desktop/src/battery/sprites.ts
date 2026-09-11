@@ -36,8 +36,8 @@ function split(image: HTMLImageElement, columns: number, rows: number) {
 export function loadBatteryAtlas(): Promise<BatteryAtlas> {
   if (!pending) pending = (async () => {
     const [base, extra, props] = await Promise.all([
-      loadImage('fitness-atlas.png'), loadImage('energy-shells.png'),
-      loadImage('fitness-props-v2.png'),
+      loadImage('fitness-atlas.webp'), loadImage('energy-shells.webp'),
+      loadImage('fitness-props-v2.webp'),
     ])
     return [...split(base, 4, 4), ...split(extra, 2, 1), ...split(props, 2, 2)]
   })().catch(error => { pending = undefined; throw error })

@@ -51,23 +51,23 @@ function frames(path: string, cols: number, rows: number, trim = true, regions?:
   })).catch(e => { cache.delete(key); throw e }))
   return cache.get(key)!
 }
-export const beaverBody = async (level: number) => (await frames('./assets/beaver/states.png', 3, 2, false))[Math.max(0, Math.min(5, level))]
-const dressedHeads = (skin: BeaverSkin) => frames(`./assets/beaver/dressed-heads-${skin}.png`, 3, 2, false, undefined, true)
+export const beaverBody = async (level: number) => (await frames('./assets/beaver/states.webp', 3, 2, false))[Math.max(0, Math.min(5, level))]
+const dressedHeads = (skin: BeaverSkin) => frames(`./assets/beaver/dressed-heads-${skin}.webp`, 3, 2, false, undefined, true)
 export const beaverPortrait = async (skin: BeaverSkin) => (await dressedHeads(skin))[0]
-export const beaverTree = async (level: number) => (await frames('./assets/beaver/quota-trees-v2.png', 3, 2, true, [[0,0,512,512],[512,0,512,512],[1024,0,512,512],[0,512,512,512],[512,512,478,512],[990,512,546,512]]))[Math.max(0, Math.min(5, level))]
+export const beaverTree = async (level: number) => (await frames('./assets/beaver/quota-trees-v2.webp', 3, 2, true, [[0,0,512,512],[512,0,512,512],[1024,0,512,512],[0,512,512,512],[512,512,478,512],[990,512,546,512]]))[Math.max(0, Math.min(5, level))]
 export async function beaverProp(prop: BeaverProp) {
-  if (prop === 'sign') return (await frames('./assets/beaver/environment.png', 3, 2))[5]
-  if (prop === 'ground') return (await frames('./assets/beaver/wardrobe.png', 3, 2))[5]
-  return (await frames('./assets/beaver/props.png', 4, 3))[propNames.indexOf(prop)]
+  if (prop === 'sign') return (await frames('./assets/beaver/environment.webp', 3, 2))[5]
+  if (prop === 'ground') return (await frames('./assets/beaver/wardrobe.webp', 3, 2))[5]
+  return (await frames('./assets/beaver/props.webp', 4, 3))[propNames.indexOf(prop)]
 }
 
 export async function beaverRig(skin: BeaverSkin) {
   const [parts, objects, sleepers, heads, bodies] = await Promise.all([
-    frames('./assets/beaver/rig.png', 3, 2, true, [[0,0,550,560],[550,0,520,540],[1070,0,466,550],[0,560,550,464],[550,560,520,464],[1070,560,466,464]]),
+    frames('./assets/beaver/rig.webp', 3, 2, true, [[0,0,550,560],[550,0,520,540],[1070,0,466,550],[0,560,550,464],[550,560,520,464],[1070,560,466,464]]),
     Promise.all(['noodles', 'water', 'logs', 'ball', 'bird', 'leaf'].map(name => beaverProp(name as BeaverProp))),
-    frames('./assets/beaver/dressed-rest.png', 3, 2, false),
+    frames('./assets/beaver/dressed-rest.webp', 3, 2, false),
     dressedHeads(skin),
-    frames('./assets/beaver/dressed-bodies.png', 3, 2),
+    frames('./assets/beaver/dressed-bodies.webp', 3, 2),
   ])
   const [, , tail, arm, , chip] = parts
   const body = bodies[skinNames.indexOf(skin)]

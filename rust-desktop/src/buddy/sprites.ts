@@ -64,11 +64,11 @@ export async function buddySprite(skin: BuddySkin, level: number) {
   const index = Math.max(0, Math.min(3, Math.round(level)))
   return skin === 'classic'
     ? (await atlas('./assets/buddy/classic-states.png', 2, 2, classicRects, .72))[index]
-    : (await atlas('./assets/buddy/skin-states.png', 4, 4, skinRects, 4 / 3))[skins.indexOf(skin) * 4 + index]
+    : (await atlas('./assets/buddy/skin-states.webp', 4, 4, skinRects, 4 / 3))[skins.indexOf(skin) * 4 + index]
 }
 export async function buddyProp(name: BuddyProp) {
   if (name === 'ground') return (await rigParts('classic'))[3]
-  return (await atlas('./assets/buddy/props.png', 4, 2))[props.indexOf(name)]
+  return (await atlas('./assets/buddy/props.webp', 4, 2))[props.indexOf(name)]
 }
 
 export function trimSprite(source: HTMLCanvasElement) {
@@ -88,8 +88,8 @@ const skinRigRects: Rect[] = [
   [25,1086,360,309],[417,1069,335,345],[842,1145,220,225],
 ]
 async function rigParts(skin: BuddySkin) {
-  if (skin === 'classic') return atlas('./assets/buddy/rig-classic.png', 2, 2, classicRigRects, 1, false)
-  const all = await atlas('./assets/buddy/rig-skins.png', 3, 4, skinRigRects, 1, false)
+  if (skin === 'classic') return atlas('./assets/buddy/rig-classic.webp', 2, 2, classicRigRects, 1, false)
+  const all = await atlas('./assets/buddy/rig-skins.webp', 3, 4, skinRigRects, 1, false)
   return all.slice(skins.indexOf(skin) * 3, skins.indexOf(skin) * 3 + 3)
 }
 export interface BuddyRig { body: HTMLCanvasElement; head: HTMLCanvasElement; tail: HTMLCanvasElement; props: Partial<Record<BuddyProp, HTMLCanvasElement>> }

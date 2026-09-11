@@ -1,8 +1,8 @@
 # EM Use · Rust 桌面版
 
-版本 **0.4.0**。独立项目目录，原项目保留作 Electron 对照基线。
+版本 **0.4.1**。独立项目目录，原项目保留作 Electron 对照基线。
 
-使用 **Rust + Tauri 2 原生层，Vue + Canvas 渲染层**。窗口、托盘、凭据库、网络查询、持久化和更新均在 Rust 中实现；六只桌宠的角色原图、精灵图、抠色、动作状态机、帧节奏、CSS 和共享窗口手势原样保留。不是用 Rust 重新绘制宠物，也没有压缩或降低素材分辨率。
+使用 **Rust + Tauri 2 原生层，Vue + Canvas 渲染层**。窗口、托盘、凭据库、网络查询、持久化和更新均在 Rust 中实现；六只桌宠的抠色、动作状态机、帧节奏、CSS 和共享窗口手势保留。48 张不透明图使用无损 WebP，8 张透明图使用优化 PNG，保持每个 RGBA 像素、分辨率和帧数；透明图保留 PNG 以避免浏览器预乘透明度取整差异。原始素材保留在仓库根目录作为对照。
 
 ## 开发和验证
 
@@ -12,7 +12,9 @@ npm ci
 npm run desktop                 # 本地开发运行，不生成安装包
 npm test                        # 85 个原有测试 + 发布目录测试
 npm run build                   # 仅编译前端资源
-npm run verify:parity            # 对照旧版绘制/手势/素材文件的 SHA-256
+npm run verify:parity            # 对照绘制/手势逻辑及已验证素材哈希
+python3 -m pip install Pillow==11.3.0
+npm run verify:assets            # 逐张解码并比较 RGBA 像素
 cargo test --locked --manifest-path src-tauri/Cargo.toml
 ```
 
@@ -46,23 +48,25 @@ npm run version:set -- 0.4.1
 
 1. 下载 GitHub Actions 中 `EM-Use-v版本-static-server` Artifact，解开外层 Artifact ZIP，再解开里面的 `EM-Use-v版本-static-site.zip`。
 2. 将 `em-use/releases/版本/` 完整上传到 `http://172.27.12.77:5500/` 对应网站根目录下，保留历史版本。
-3. 上传 `em-use/index.html` 下载页。
+3. 上传 `em-use/site-assets/版本/` 页面图片、`em-use/index.html` 和根目录 `index.html` 下载页。根目录与 `/em-use/` 均可访问介绍页，链接始终指向 `/em-use/releases/版本/`。
 4. **最后上传 `em-use/stable/latest.json`**，最好用临时文件重命名替换。先传大文件，再切换清单，避免更新中断。
 
 ```text
 网站根目录/
+├── index.html
 └── em-use/
     ├── index.html
+    ├── site-assets/0.4.1/
     ├── stable/latest.json
-    └── releases/0.4.0/
-        ├── EM-Use-0.4.0-windows-x86_64.exe
-        ├── EM-Use-0.4.0-windows-x86_64.exe.sig
-        ├── EM-Use-0.4.0-darwin-aarch64.dmg
-        ├── EM-Use-0.4.0-darwin-aarch64.app.tar.gz
-        ├── EM-Use-0.4.0-darwin-aarch64.app.tar.gz.sig
-        ├── EM-Use-0.4.0-darwin-x86_64.dmg
-        ├── EM-Use-0.4.0-darwin-x86_64.app.tar.gz
-        ├── EM-Use-0.4.0-darwin-x86_64.app.tar.gz.sig
+    └── releases/0.4.1/
+        ├── EM-Use-0.4.1-windows-x86_64.exe
+        ├── EM-Use-0.4.1-windows-x86_64.exe.sig
+        ├── EM-Use-0.4.1-darwin-aarch64.dmg
+        ├── EM-Use-0.4.1-darwin-aarch64.app.tar.gz
+        ├── EM-Use-0.4.1-darwin-aarch64.app.tar.gz.sig
+        ├── EM-Use-0.4.1-darwin-x86_64.dmg
+        ├── EM-Use-0.4.1-darwin-x86_64.app.tar.gz
+        ├── EM-Use-0.4.1-darwin-x86_64.app.tar.gz.sig
         ├── SHA256SUMS.txt
         └── version.json
 ```
@@ -78,6 +82,6 @@ npm run version:set -- 0.4.1
 - 设置和额度通过单个共享 Rust 状态广播到桌宠/设置窗口。默认启动关闭穿透；托盘可恢复和切换穿透。
 - 15 秒轮询检测唤醒与跨日，网络请求 15 秒超时、失败退避；旧响应有 generation 校验，退出不会被晚到的响应重新登录。
 - 截图使用当前 DOM/Canvas 生成透明 PNG，Rust 系统保存对话框选择目的路径；不调用系统全屏截图。
-- 源码、测试、浏览器、原生窗口、真实账户及实际升级验收分别记录在 [验证报告](docs/verification.md)。
+- 源码、测试、浏览器、原生窗口、真实账户及实际升级验收分别记录在 [迁移验证报告](docs/verification.md) 和 [0.4.1 压缩及下载页验证](docs/release-0.4.1.md)。
 
 参考：[Tauri 更新签名与静态清单](https://v2.tauri.app/plugin/updater/)、[WebviewWindow API](https://docs.rs/tauri/latest/tauri/webview/struct.WebviewWindow.html)、[项目桌宠基础交互规范](../docs/desktop-pet-interaction-standard.md)。

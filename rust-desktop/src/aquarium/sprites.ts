@@ -31,7 +31,7 @@ function matte(img: HTMLImageElement, cell?: number): HTMLCanvasElement {
   return result
 }
 export function loadSprites(): Promise<Sprites> {
-  return pending ??= Promise.all([loadImage('./assets/clownfish.png'), loadImage('./assets/play-atlas.png'), loadImage('./assets/outfit-atlas.png')]).then(([fish, play, outfits]) => ({
+  return pending ??= Promise.all([loadImage('./assets/clownfish.webp'), loadImage('./assets/play-atlas.webp'), loadImage('./assets/outfit-atlas.webp')]).then(([fish, play, outfits]) => ({
     fish: matte(fish), chest: matte(play, 0), chestOpen: matte(play, 1), cave: matte(play, 2), sponge: matte(play, 3),
     sailor: matte(outfits, 0), royal: matte(outfits, 1), ribbon: matte(outfits, 2), pearl: matte(outfits, 3),
   })).catch(error => { pending = undefined; throw error })

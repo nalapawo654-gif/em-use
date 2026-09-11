@@ -28,6 +28,11 @@ jobs:
         env:
           RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
       - run: npm run verify:parity
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install Pillow==11.3.0
+      - run: npm run verify:assets
       - run: npm test
       - run: npm run build
       - run: git diff --exit-code -- src-tauri/src/settings-contract.json src-tauri/src/behavior-contract.json
@@ -100,7 +105,7 @@ jobs:
         run: |
           node scripts/release-site.mjs artifacts release-site "${RELEASE_TAG#v}"
           cd release-site
-          zip -r "../EM-Use-${RELEASE_TAG}-static-site.zip" em-use UPLOAD-README.txt
+          zip -r "../EM-Use-${RELEASE_TAG}-static-site.zip" index.html em-use UPLOAD-README.txt
         env:
           RELEASE_TAG: ${{ github.ref_name }}
       - uses: actions/upload-artifact@v4

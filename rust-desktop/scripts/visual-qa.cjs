@@ -8,14 +8,20 @@ async (page) => {
       const errors=[]; p.on('pageerror',error=>errors.push(error.message));
       await p.setViewportSize({width:640,height:560});
       await p.addInitScript(() => {
-        let seed=12345, time=0, id=0; const frames=new Map();
+        let seed=12345, time=0, id=0; const frames=new Map(),intervals=new Map();
         Math.random=()=>((seed=Math.imul(1664525,seed)+1013904223>>>0)/4294967296);
         Object.defineProperty(performance,'now',{value:()=>time});
         Date.now=()=>1789099200000+time;
         window.__qaImages=[]; const NativeImage=window.Image; window.Image=function(...args){const img=new NativeImage(...args);window.__qaImages.push(img);return img;};
         window.requestAnimationFrame=fn=>{frames.set(++id,fn);return id;};
         window.cancelAnimationFrame=id=>frames.delete(id);
-        window.__step=ms=>{for(let end=time+ms;time<end;time+=16){const callbacks=[...frames.values()];frames.clear();callbacks.forEach(fn=>fn(time));} document.getAnimations().forEach(a=>{a.pause();a.currentTime=time;});};
+        window.setInterval=(fn,period=0,...args)=>{const handle=++id;intervals.set(handle,{fn:()=>fn(...args),period:Math.max(1,period),due:time+Math.max(1,period)});return handle;};
+        window.clearInterval=handle=>intervals.delete(handle);
+        window.__step=async ms=>{for(let end=time+ms;time<end;time+=16){
+          for(const interval of intervals.values())while(interval.due<=time){interval.fn();interval.due+=interval.period;}
+          const callbacks=[...frames.values()];frames.clear();callbacks.forEach(fn=>fn(time));
+          await Promise.resolve();await Promise.resolve();
+        } const animations=document.getAnimations();animations.forEach(a=>a.pause());await Promise.all(animations.map(a=>a.ready));animations.forEach(a=>{a.currentTime=time;});};
       });
       await p.goto(`http://127.0.0.1:${port}/tests/fixtures/desktop.html?scene=${scene}&motion=off&random=off`);
       await p.waitForLoadState('networkidle');

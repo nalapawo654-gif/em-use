@@ -205,7 +205,7 @@ function keyboard(event: KeyboardEvent) { if (event.key === 'Escape') { cancel()
 onMounted(async () => {
   observer = new ResizeObserver(entries => { if (canvas.value) { const size = Math.round(entries[0].contentRect.width * Math.min(devicePixelRatio, 2)); if (size !== canvas.value.width || size !== canvas.value.height) { canvas.value.width = size; canvas.value.height = size } } })
   if (host.value) observer.observe(host.value)
-  try { [dayBowl, dayEmpty, nightBowl, nightEmpty, sprites] = await Promise.all([loadImage('./assets/aquarium.png'), loadImage('./assets/aquarium-empty.png'), loadImage('./assets/aquarium-night.png'), loadImage('./assets/aquarium-empty-night.png'), loadSprites()]); dayGlass = prepareDayGlass(dayEmpty); if (!disposed) animation = requestAnimationFrame(draw) }
+  try { [dayBowl, dayEmpty, nightBowl, nightEmpty, sprites] = await Promise.all([loadImage('./assets/aquarium.webp'), loadImage('./assets/aquarium-empty.webp'), loadImage('./assets/aquarium-night.webp'), loadImage('./assets/aquarium-empty-night.webp'), loadSprites()]); dayGlass = prepareDayGlass(dayEmpty); if (!disposed) animation = requestAnimationFrame(draw) }
   catch { failed.value = true }
 })
 onUnmounted(() => { disposed = true; cancelAnimationFrame(animation); observer?.disconnect() })

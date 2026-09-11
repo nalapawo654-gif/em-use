@@ -1,0 +1,246 @@
+{
+  "chromium": [
+    {
+      "scene": "aquarium",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "aquarium",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "aquarium",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "buddy",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "buddy",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "buddy",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "beaver",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "beaver",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "beaver",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "hamster",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "hamster",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "hamster",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "cultivation",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "cultivation",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "cultivation",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "battery",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "battery",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "battery",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    }
+  ],
+  "webkit": [
+    {
+      "scene": "aquarium",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "aquarium",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "aquarium",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "buddy",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "buddy",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "buddy",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "beaver",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "beaver",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "beaver",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "hamster",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "hamster",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "hamster",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "cultivation",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "cultivation",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "cultivation",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    },
+    {
+      "scene": "battery",
+      "port": 5173,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "battery",
+      "port": 5174,
+      "broken": [],
+      "errors": [],
+      "animationChanged": true
+    },
+    {
+      "scene": "battery",
+      "staticByteEqual": true,
+      "motionAByteEqual": true,
+      "motionBByteEqual": true
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "errors": [],
+  "widths": [
+    {
+      "width": 390,
+      "scrollWidth": 375,
+      "broken": []
+    },
+    {
+      "width": 320,
+      "scrollWidth": 305,
+      "broken": []
+    }
+  ],
+  "pets": [
+    {
+      "name": "额度小鱼缸",
+      "title": "额度小鱼缸",
+      "pressed": "true"
+    },
+    {
+      "name": "充气牛马",
+      "title": "充气牛马",
+      "pressed": "true"
+    },
+    {
+      "name": "林间海狸鼠",
+      "title": "林间海狸鼠",
+      "pressed": "true"
+    },
+    {
+      "name": "仓鼠跑轮",
+      "title": "仓鼠跑轮",
+      "pressed": "true"
+    },
+    {
+      "name": "修仙小伙伴",
+      "title": "修仙小伙伴",
+      "pressed": "true"
+    },
+    {
+      "name": "健身小电池",
+      "title": "健身小电池",
+      "pressed": "true"
+    }
+  ],
+  "downloads": [
+    {
+      "text": "下载安装程序↓",
+      "href": "/em-use/releases/0.4.1/EM-Use-0.4.1-windows-x86_64.exe"
+    },
+    {
+      "text": "下载 Apple 芯片版↓",
+      "href": "/em-use/releases/0.4.1/EM-Use-0.4.1-darwin-aarch64.dmg"
+    },
+    {
+      "text": "下载 Intel 芯片版↓",
+      "href": "/em-use/releases/0.4.1/EM-Use-0.4.1-darwin-x86_64.dmg"
+    }
+  ],
+  "faqOpen": 1
+}

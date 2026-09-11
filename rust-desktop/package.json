@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/wantwant123/em-use.git"
   },
-  "version": "0.4.0",
+  "version": "0.4.1",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "desktop": "tauri dev",
@@ -21,7 +21,8 @@
     "tauri": "tauri",
     "verify:parity": "node scripts/verify-parity.mjs",
     "version:set": "node scripts/version.mjs",
-    "release:site": "node scripts/release-site.mjs"
+    "release:site": "node scripts/release-site.mjs",
+    "verify:assets": "python3 scripts/optimize-assets.py --check"
   },
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",

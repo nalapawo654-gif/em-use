@@ -20,7 +20,7 @@ export function texture(image: HTMLImageElement, region: number[], width: number
   return canvas
 }
 export function hamsterFrames() {
-  if (!cached) cached = Promise.all([loadImage('./assets/hamster/atlas-chroma.png'), loadImage('./assets/hamster/wheel-parts.png')]).then(([image, wheel]) => [
+  if (!cached) cached = Promise.all([loadImage('./assets/hamster/atlas-chroma.webp'), loadImage('./assets/hamster/wheel-parts.webp')]).then(([image, wheel]) => [
     ...Array.from({ length: 6 }, (_, index) => texture(image, [index % 3 * 512, Math.floor(index / 3) * 512, 512, 512], 512, 512)),
     texture(wheel, [255,60,745,735], 512, 512),
     texture(wheel, [270,912,716,244], 512, 174),
@@ -55,7 +55,7 @@ function clearAtlasSpecks(canvas:HTMLCanvasElement){
   ctx.putImageData(img,0,0)
 }
 let feeding:Promise<HTMLCanvasElement[]>|undefined
-function feedFrames(){return feeding ||= loadImage('./assets/hamster/dressed/feeding.png').then(image=>Array.from({length:14},(_,i)=>{
+function feedFrames(){return feeding ||= loadImage('./assets/hamster/dressed/feeding.webp').then(image=>Array.from({length:14},(_,i)=>{
   const w=image.naturalWidth/7,h=image.naturalHeight/2
   const frame=texture(image,[i%7*w,Math.floor(i/7)*h,w,h],256,512);clearAtlasSpecks(frame);const data=frame.getContext('2d')!.getImageData(0,0,256,512).data
   let bottom=0;for(let y=0;y<512;y++)for(let x=0;x<256;x++)if(data[(y*256+x)*4+3]>64)bottom=Math.max(bottom,y)
@@ -64,8 +64,8 @@ function feedFrames(){return feeding ||= loadImage('./assets/hamster/dressed/fee
 // Every frame contains the entire dressed animal. No independent hat or trouser layer.
 export async function loadHamsterSkin(skin:HamsterSkin){
   if(!skins.has(skin)) skins.set(skin,Promise.all([
-    loadImage(`./assets/hamster/dressed/${skin}.png`),
-    loadImage(`./assets/hamster/dressed/corrected/${skin}.png`),
+    loadImage(`./assets/hamster/dressed/${skin}.webp`),
+    loadImage(`./assets/hamster/dressed/corrected/${skin}.webp`),
   ]).then(([image,corrected])=>{
     return Array.from({length:12},(_,i)=>{
       // Columns 2 and 4 in both original rows contain a third hind paw.
@@ -85,7 +85,7 @@ export async function loadHamsterSkin(skin:HamsterSkin){
   const [r,frames,food]=await Promise.all([hamsterRig(),skins.get(skin)!,feedFrames()]);const column=['classic','worker','nightshift','rain','summer','winter','holiday'].indexOf(skin);r.skins[skin]=[...frames,food[column],food[column+7]];return r
 }
 let cat:Promise<HTMLCanvasElement[]>|undefined
-export function catFrames(){return cat ||= loadImage('./assets/hamster/cat-actions.png').then(image=>Array.from({length:12},(_,i)=>{
+export function catFrames(){return cat ||= loadImage('./assets/hamster/cat-actions.webp').then(image=>Array.from({length:12},(_,i)=>{
   const w=image.naturalWidth/4,row=Math.floor(i/4),bands=[0,355,682,1024].map(y=>Math.round(y*image.naturalHeight/1024)),h=bands[row+1]-bands[row]
   const raw=texture(image,[i%4*w,bands[row],w,h],384,h)
   const data=raw.getContext('2d')!.getImageData(0,0,384,h).data
@@ -93,7 +93,7 @@ export function catFrames(){return cat ||= loadImage('./assets/hamster/cat-actio
   const aligned=document.createElement('canvas');aligned.width=384;aligned.height=341;aligned.getContext('2d')!.drawImage(raw,0,338-bottom);return aligned
 })).catch(error=>{cat=undefined;throw error})}
 export function hamsterProps(){
-  return props ||= loadImage('./assets/hamster/props.png').then(image=>Array.from({length:12},(_,i)=>{
+  return props ||= loadImage('./assets/hamster/props.webp').then(image=>Array.from({length:12},(_,i)=>{
     const bands=[0,370,680,1024], row=Math.floor(i/4)
     return trim(texture(image,[i%4*384,bands[row],384,bands[row+1]-bands[row]],384,bands[row+1]-bands[row]))
   })).catch(error=>{props=undefined;throw error})
