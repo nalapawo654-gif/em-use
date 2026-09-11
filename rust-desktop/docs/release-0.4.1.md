@@ -27,7 +27,19 @@
 
 ## 验证边界与上传
 
-85 个原有玩法与共享逻辑测试、5 个发布测试、类型检查及 Vite 生产构建通过。实际 Windows/macOS 安装包由 GitHub Actions 构建；云端结果和实际体积在发布完成后补充。没有将素材体积直接宣称为安装包体积。
+85 个原有玩法与共享逻辑测试、5 个发布测试、类型检查及 Vite 生产构建通过。正式标签 `v0.4.1` 指向源码提交 `fa95836`；[GitHub Actions 34570218470](https://github.com/wantwant123/em-use/actions/runs/34570218470) 的 verify、三个 package 和 static-release 作业全部成功。安装包均由 GitHub Actions 构建，更新签名随发布产物生成。
+
+以下为 static-release 作业读取真实文件后输出的大小，MB 按 1,000,000 字节计算：
+
+| 平台 | 安装包字节数 | 大小 |
+| --- | ---: | ---: |
+| Windows x64 EXE | 78,264,545 | 78.3 MB |
+| Mac Apple 芯片 DMG | 81,321,370 | 81.3 MB |
+| Mac Intel DMG | 80,957,000 | 81.0 MB |
+
+同架构 Mac Apple 芯片 DMG：v0.4.0 为 113,182,581 字节，v0.4.1 为 81,321,370 字节，减少 31,861,211 字节（28.2%）。该比较使用实际安装包体积，不以素材体积代替。
+
+[静态发布产物 EM-Use-v0.4.1-static-server](https://github.com/wantwant123/em-use/actions/runs/34570218470/artifacts/10187754398) 为 401,193,395 字节，包含三平台安装包、Mac 更新归档、更新签名与清单、SHA-256 校验文件和完整网站。此汇总 ZIP 的大小不是单个平台安装包大小。GitHub artifact digest：`sha256:2440ba65ef88738697764055882af4f2b57ea892bd811c7f303d35b421f00f43`。
 
 此轮未执行原生桌面交互、真实账户登录或 0.4.0 → 0.4.1 的安装升级闭环。更新包签名沿用既有密钥；Apple 公证和 Windows Authenticode 仍未配置。
 
