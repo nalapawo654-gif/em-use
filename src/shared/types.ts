@@ -5,8 +5,31 @@ export interface Quota {
   estimatedAt: string; serverAt: string; receivedAt: number; day: string;
 }
 export type Outfit = 'classic' | 'sailor' | 'royal' | 'ribbon'
-export type Scene = 'aquarium' | 'buddy' | 'beaver' | 'hamster'
-export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房' }
+export type Scene = 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation'
+export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所' }
+export type CultivationSkin = 'classic' | 'azure' | 'astral' | 'crimson'
+export type CultivationAccessory = 'none' | 'lotus' | 'moon' | 'blossom'
+export type CultivationTreasure = 'none' | 'gourd' | 'jade' | 'pouch'
+export const CULTIVATION_SKINS: { id: CultivationSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '云岚道袍', hint: '月白流云，清心自在' },
+  { id: 'azure', label: '青霄剑修', hint: '青衣银纹，一剑凌云' },
+  { id: 'astral', label: '紫微星官', hint: '星河入袖，观天问道' },
+  { id: 'crimson', label: '朱雀锦衣', hint: '赤金翎羽，瑞气盈身' },
+]
+export const CULTIVATION_ACCESSORIES: { id: CultivationAccessory; label: string; prop: number | null }[] = [
+  { id: 'none', label: '素簪', prop: null }, { id: 'lotus', label: '白玉莲冠', prop: 4 },
+  { id: 'moon', label: '星月宝冠', prop: 5 }, { id: 'blossom', label: '桃花发簪', prop: 6 },
+]
+export const CULTIVATION_TREASURES: { id: CultivationTreasure; label: string; prop: number | null }[] = [
+  { id: 'none', label: '轻装', prop: null }, { id: 'gourd', label: '灵葫', prop: 7 },
+  { id: 'jade', label: '双鱼玉佩', prop: 8 }, { id: 'pouch', label: '纳福锦囊', prop: 9 },
+]
+export type CultivationRealm = 'sunny' | 'rain' | 'night' | 'thunder' | 'tribulation' | 'enlightened'
+export const CULTIVATION_REALMS: { id: CultivationRealm; label: string; hint: string }[] = [
+  { id: 'sunny', label: '晴天', hint: '云海仙山' }, { id: 'rain', label: '雨天', hint: '荷叶听雨' },
+  { id: 'night', label: '夜晚', hint: '观星悟道' }, { id: 'thunder', label: '雷天', hint: '雷霆护体' },
+  { id: 'tribulation', label: '雷劫', hint: '特效渡劫' }, { id: 'enlightened', label: '顿悟', hint: '重回巅峰' },
+]
 export type HamsterSkin = 'classic' | 'worker' | 'nightshift' | 'rain' | 'summer' | 'winter' | 'holiday'
 export const HAMSTER_SKINS: { id: HamsterSkin; label: string; hint: string }[] = [
   { id: 'classic', label: '经典', hint: '红发带，元气开工' }, { id: 'worker', label: '日班', hint: '安全帽与背带裤' },
@@ -31,7 +54,7 @@ export interface Settings {
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
-  scene: Scene; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
+  scene: Scene; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
@@ -49,5 +72,5 @@ export interface DesktopAPI {
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
-  scene: 'aquarium', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
+  scene: 'aquarium', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
 }

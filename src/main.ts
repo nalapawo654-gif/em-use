@@ -10,3 +10,5 @@ import './buddy.css'
 import "./beaver.css"
 
 import "./hamster.css"
+
+import './cultivation.css'

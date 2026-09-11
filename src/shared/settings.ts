@@ -3,12 +3,16 @@ import type { Settings } from './types.js'
 export function validateSettings(input: unknown): Partial<Settings> {
   if (!input || typeof input !== 'object') return {}
   const data = input as Record<string, unknown>, out: Record<string, unknown> = {}
-  for (const key of ['alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'beaverCamp']) {
+  for (const key of ['alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'beaverCamp', 'cultivationRandom']) {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
   const enums = {
     size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
-    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver', 'hamster'],
+    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver', 'hamster', 'cultivation'],
+    cultivationSkin: ['classic', 'azure', 'astral', 'crimson'],
+    cultivationAccessory: ['none', 'lotus', 'moon', 'blossom'],
+    cultivationTreasure: ['none', 'gourd', 'jade', 'pouch'],
+    cultivationRealm: ['sunny', 'rain', 'night', 'thunder', 'tribulation', 'enlightened'],
     hamsterSkin: ['classic', 'worker', 'nightshift', 'rain', 'summer', 'winter', 'holiday'],
     buddySkin: ['classic', 'worker', 'holiday', 'midnight', 'blossom'],
     beaverSkin: ['sunny', 'rain', 'snow', 'wind', 'night'], beaverMotto: ['gentle', 'create', 'rest'],

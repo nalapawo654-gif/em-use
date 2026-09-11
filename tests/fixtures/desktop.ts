@@ -4,7 +4,13 @@ import { DEFAULT_SETTINGS, HAMSTER_SKINS, type AppState, type Settings } from '.
 const query = new URLSearchParams(location.search)
 const size = (query.get('size') ?? 'standard') as Settings['size']
 document.body.style.width = `${({ standard: 440, compact: 300, mini: 190 })[size]}px`
-const state: AppState = { status: 'ready', quota: { limit: 300, used: 96, remaining: 204, percent: 68, exceeded: false, estimatedAt: '2026-09-09T18:00:00', serverAt: '2026-09-09T18:00:00', receivedAt: Date.now(), day: '2026-09-09' }, message: '仅用于组件测试 · 演示额度', syncing: false, persistentLogin: false, loginOpen: false, settings: { ...DEFAULT_SETTINGS, size, windowWidth: ({ standard: 440, compact: 300, mini: 190 })[size], theme: query.get('theme') === 'night' ? 'night' : 'day', outfit: 'sailor', scene: query.get('scene') === 'hamster' ? 'hamster' : query.get('scene') === 'beaver' ? 'beaver' : query.get('scene') === 'buddy' ? 'buddy' : 'aquarium', reducedMotion: query.get('motion') === 'off' }, version: '0.3.0-visual-test' }
+const state: AppState = { status: 'ready', quota: { limit: 300, used: 96, remaining: 204, percent: 68, exceeded: false, estimatedAt: '2026-09-09T18:00:00', serverAt: '2026-09-09T18:00:00', receivedAt: Date.now(), day: '2026-09-09' }, message: '仅用于组件测试 · 演示额度', syncing: false, persistentLogin: false, loginOpen: false, settings: { ...DEFAULT_SETTINGS, size, windowWidth: ({ standard: 440, compact: 300, mini: 190 })[size], theme: query.get('theme') === 'night' ? 'night' : 'day', outfit: 'sailor', scene: query.get('scene') === 'cultivation' ? 'cultivation' : query.get('scene') === 'hamster' ? 'hamster' : query.get('scene') === 'beaver' ? 'beaver' : query.get('scene') === 'buddy' ? 'buddy' : 'aquarium', reducedMotion: query.get('motion') === 'off' }, version: '0.3.0-visual-test' }
+state.settings.cultivationRandom=query.get('random')==='on'
+if(query.has('cultivationSkin')) state.settings.cultivationSkin=query.get('cultivationSkin') as Settings['cultivationSkin']
+if(query.has('accessory')) state.settings.cultivationAccessory=query.get('accessory') as Settings['cultivationAccessory']
+if(query.has('treasure')) state.settings.cultivationTreasure=query.get('treasure') as Settings['cultivationTreasure']
+const realm = query.get('realm')
+if (realm && ['sunny','rain','night','thunder','tribulation','enlightened'].includes(realm)) state.settings.cultivationRealm = realm as Settings['cultivationRealm']
 const skin = HAMSTER_SKINS.find(s => s.id === query.get('skin'))
 if (skin) state.settings.hamsterSkin = skin.id
 const listeners = new Set<(s: AppState) => void>()
