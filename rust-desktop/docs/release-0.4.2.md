@@ -17,7 +17,19 @@
 
 本次只修正发布版本和相关说明，没有重写既有登录实现或宠物绘制。GitHub Actions 从 `v0.4.2` 构建 Windows x64、Mac Apple 芯片、Mac Intel，并使用新仓库已配置的既有更新密钥签名。
 
-本地检查通过：17 项 Rust 离线测试（1 项真实账户测试按默认设置忽略）、85 项前端测试、5 项发布测试、类型检查与 Vite 生产构建、80 个渲染/动效/手势文件和 56 张素材的哈希一致性检查、`v0.4.2` 标签与五处版本文件一致性检查。正式云端产物链接在构建完成后补充。
+本地检查通过：17 项 Rust 离线测试（1 项真实账户测试按默认设置忽略）、85 项前端测试、5 项发布测试、类型检查与 Vite 生产构建、80 个渲染/动效/手势文件和 56 张素材的哈希一致性检查、`v0.4.2` 标签与五处版本文件一致性检查。
+
+[正式 GitHub Actions 34584646339](https://github.com/nalapawo654-gif/em-use/actions/runs/34584646339) 全部成功：verify、三个原生平台 package 和 static-release。实际构建提交为 `5e487cfc4e2cd02810e8d70466c8495f82153b7e`；已确认 `1919258` 和 `66ae333` 均为该标签的祖先提交，咚咚登录实现包含在此次发布源码中。
+
+静态汇总作业读取的实际安装包大小：
+
+| 平台 | 字节数 | 大小（十进制 MB） |
+| --- | ---: | ---: |
+| Windows x64 | 78,312,767 | 78.3 MB |
+| Mac Apple 芯片 | 81,367,086 | 81.4 MB |
+| Mac Intel | 81,036,957 | 81.0 MB |
+
+[下载 EM-Use-v0.4.2-static-server](https://github.com/nalapawo654-gif/em-use/actions/runs/34584646339/artifacts/10193407721)。GitHub Artifact 为 401,444,039 字节，digest：`sha256:8237a05576235aeec961487e599a42cf79dc36df75eee78fde66b742e676edd3`。这是三平台安装包、更新包、签名与网站的汇总 ZIP，不是单个平台的安装包大小。
 
 此前的真实 macOS 账户链路记录见[咚咚接入报告](../../docs/research/dongdong-session-sso-2026-09-11.md)；不将该历史记录算作本轮原生安装、Windows 咚咚兼容或真实账户复测通过。
 
