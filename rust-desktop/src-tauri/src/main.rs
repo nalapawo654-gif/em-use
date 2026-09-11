@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod account;
+mod dongdong;
 mod model;
 mod storage;
 mod updates;
@@ -15,6 +16,9 @@ const RELEASES: &str = "http://172.27.12.77:5500/em-use/";
 struct Runtime {
     state: Value,
     auth: Option<Value>,
+    login_mode: account::LoginMode,
+    login_id: String,
+    dong_fingerprint: Option<String>,
     generation: u64,
     last_refresh: i64,
     next_attempt: i64,
@@ -66,7 +70,7 @@ async fn desktop(
     let p = payload.unwrap_or(Value::Null);
     match action.as_str() {
         "getState" => return Ok(snapshot(&app)),
-        "login" => account::open_login(&app)?,
+        "login" => account::login(&app, p.as_str()).await?,
         "refresh" => account::refresh(app.clone(), true).await,
         "logout" => account::logout(&app)?,
         "settings" => windows::apply_settings(&app, p).await?,
@@ -129,6 +133,9 @@ fn main() {
             inner: Mutex::new(Runtime {
                 state,
                 auth: None,
+                login_mode: account::LoginMode::SignedOut,
+                login_id: String::new(),
+                dong_fingerprint: None,
                 generation: 0,
                 last_refresh: 0,
                 next_attempt: 0,
@@ -167,9 +174,8 @@ fn main() {
                     model::merge(&mut r.state["settings"], &valid);
                 }
                 r.state["settings"]["clickThrough"] = json!(false);
-                r.auth = storage::credentials().filter(account::valid_auth);
-                r.state["persistentLogin"] = json!(r.auth.is_some());
             }
+            account::restore(&handle);
             windows::setup(app)?;
             tauri::async_runtime::spawn(async move {
                 account::refresh(handle.clone(), true).await;

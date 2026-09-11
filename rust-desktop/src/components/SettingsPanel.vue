@@ -23,8 +23,19 @@ const updateBusy = computed(() => ['checking', 'downloading', 'installing'].incl
 async function checkUpdate() { try { await api.checkUpdate?.() } catch { /* Native update state includes a readable error. */ } }
 async function installUpdate() { try { await api.installUpdate?.() } catch { /* Native update state includes a readable error. */ } }
 const connected = computed(() => !!state.quota && !['expired', 'signed-out'].includes(state.status))
+const accountTitle = computed(() => connected.value ? (state.account?.name || (state.account?.id ? `账户 ${state.account.id}` : '已连接 AI 云平台')) : state.syncing ? '正在连接账户' : '还没有连接账户')
+const loginDescription = computed(() => state.loginMode === 'dongdong' ? '跟随本机咚咚账户 · 登录过期时自动尝试连接' : state.loginMode === 'manual' ? '手动登录 · 不跟随咚咚切换账户' : '自动连接已暂停，选择一种方式重新登录')
+let accountAction = 0
+async function connect(mode: 'dongdong' | 'manual') {
+  const ticket = ++accountAction; notice.value = ''
+  try { await api.login(mode) } catch { if (ticket === accountAction) notice.value = '登录暂未完成，请重试或选择另一种登录方式' }
+}
 async function set<K extends keyof Settings>(key: K, value: Settings[K]) { try { await api.settings({ [key]: value }) } catch { notice.value = '设置暂未保存，请重试' } }
-async function disconnect() { await api.logout(); notice.value = '已清除本机登录凭据' }
+async function disconnect() {
+  const ticket = ++accountAction; notice.value = ''
+  try { await api.logout(); if (ticket === accountAction) notice.value = '已退出，重新启动也不会自动连接' }
+  catch { if (ticket === accountAction) notice.value = '退出状态暂未保存，请重试' }
+}
 </script>
 <template>
   <section class="settings-panel">
@@ -65,10 +76,15 @@ async function disconnect() { await api.logout(); notice.value = '已清除本�
         </template>
         <template v-else>
           <h2>AI 云平台</h2><p class="section-description">每日额度，随时心里有数。</p>
-          <div class="account-card"><PhShieldCheck weight="duotone"/><div><b>{{ connected ? '已连接 AI 云平台' : '还没有连接账户' }}</b><p>{{ connected ? (isDesktop ? '已通过官方登录验证' : '当前为浏览器演示数据') : '通过官方扫码登录，自动同步你的额度。' }}</p></div></div>
+          <div class="account-card"><PhShieldCheck weight="duotone"/><div><b>{{ accountTitle }}</b><p>{{ isDesktop ? loginDescription : '浏览器预览 · 未连接真实账户' }}</p><p v-if="state.account?.name && state.account?.id" class="account-id">账户 {{ state.account.id }}</p></div></div>
+          <p class="account-status" role="status">{{ state.message }}</p>
+          <div class="login-methods" aria-label="登录方式">
+            <button :aria-pressed="state.loginMode === 'dongdong'" @click="connect('dongdong')"><b>使用咚咚账户</b><span>{{ state.syncing && state.loginMode === 'dongdong' ? '正在连接，可切换为手动登录' : '跟随本机咚咚，自动连接和同步' }}</span><PhCheck v-if="state.loginMode === 'dongdong'"/></button>
+            <button :aria-pressed="state.loginMode === 'manual'" @click="connect('manual')"><b>{{ state.loginMode === 'manual' && connected ? '切换手动账户' : '手动登录其他账户' }}</b><span>通过官方窗口登录，保留你的选择</span><PhCheck v-if="state.loginMode === 'manual'"/></button>
+          </div>
           <div v-if="state.quota" class="account-quota"><span>今日已用<b>¥{{ money(state.quota.used) }}</b></span><span>每日额度<b>¥{{ money(state.quota.limit) }}</b></span><span>每日重置<b>00:00 <small>北京时间</small></b></span></div>
           <p class="privacy-note">登录凭据仅保存在此设备；费用可能延迟数分钟，以平台返回的数据为准。{{ connected && !state.persistentLogin && isDesktop ? '当前仅在本次运行中保留登录。' : '' }}</p>
-          <div class="account-actions"><button class="primary-button" @click="api.login()">{{ connected ? '重新登录' : '登录 AI 云平台' }}</button><button class="text-button" @click="api.openPortal()">前往平台<PhArrowSquareOut/></button><button v-if="connected" class="text-button danger-text" @click="disconnect"><PhSignOut/>退出账户</button></div>
+          <div class="account-actions"><button class="text-button" @click="api.openPortal()">前往平台<PhArrowSquareOut/></button><button v-if="state.loginMode !== 'signed-out' || connected" class="text-button danger-text" @click="disconnect"><PhSignOut/>{{ connected ? '退出账户' : '停止连接并退出' }}</button></div>
           <div class="version-note"><span>EM Use v{{ state.version }}</span><button class="text-button" @click="api.openReleases()">下载新版本<PhDownloadSimple/></button></div>
         </template>
         <p v-if="notice" class="inline-notice" role="status">{{ notice }}</p>
@@ -76,3 +92,15 @@ async function disconnect() { await api.logout(); notice.value = '已清除本�
     </div>
   </section>
 </template>
+<style scoped>
+.account-status{font-size:12px;line-height:1.7;color:#587d93;margin-top:14px;overflow-wrap:anywhere}
+.account-id{overflow-wrap:anywhere}
+.login-methods{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.login-methods button{position:relative;text-align:left;border:1px solid #d5e3ec;border-radius:12px;background:#fff;padding:16px 28px 16px 14px;color:#385970;min-width:0}
+.login-methods button[aria-pressed=true]{border-color:#69a4c4;background:#edf7fc}
+.login-methods button:focus-visible{outline:2px solid #387fa6;outline-offset:3px}
+.login-methods b{display:block;font-size:12px;font-weight:600}
+.login-methods span{display:block;margin-top:7px;font-size:11px;color:#738fa2;line-height:1.7}
+.login-methods svg{position:absolute;right:10px;top:16px;width:14px;height:14px;color:#387fa6}
+@media(max-width:600px){.login-methods{grid-template-columns:1fr}}
+</style>

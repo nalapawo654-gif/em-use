@@ -269,7 +269,9 @@ fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
         )
         .map_err(|e| e.to_string())?;
     }
-    add("login", "登录 AI 云平台")?;
+    add("dongdong-login", "使用咚咚账户")?;
+    add("login", "手动登录 / 切换账户")?;
+    add("logout", "退出账户（暂停自动连接）")?;
     menu.append(&PredefinedMenuItem::separator(app).map_err(|e| e.to_string())?)
         .map_err(|e| e.to_string())?;
     add("quit", "退出 EM Use")?;
@@ -336,6 +338,14 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                 }
                 "settings" => open_settings(app),
                 "login" => account::open_login(app),
+                "logout" => account::logout(app),
+                "dongdong-login" => {
+                    let app = app.clone();
+                    tauri::async_runtime::spawn(async move {
+                        let _ = account::login(&app, Some("dongdong")).await;
+                    });
+                    Ok(())
+                }
                 "quit" => {
                     app.exit(0);
                     Ok(())

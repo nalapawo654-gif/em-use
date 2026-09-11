@@ -8,7 +8,7 @@ export async function installNativeBridge() {
   // Subscribe before mounting App, so an initial snapshot cannot leave a missed event.
   await listen<AppState>('state:changed', event => callbacks.forEach(fn => fn(event.payload)))
   const api: DesktopAPI = {
-    getState: () => call<AppState>('getState'), login: () => call('login'), logout: () => call('logout'),
+    getState: () => call<AppState>('getState'), login: mode => call('login', mode), logout: () => call('logout'),
     refresh: () => call('refresh'), settings: patch => call('settings', patch),
     beginGesture: mode => call<number>('beginGesture', mode), moveGesture: id => call('moveGesture', id), endGesture: id => call('endGesture', id),
     openSettings: () => call('openSettings'), hide: () => call('hide'), quit: () => call('quit'),

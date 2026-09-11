@@ -73,13 +73,15 @@ export interface Settings {
   scene: Scene; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  loginMode?: 'dongdong' | 'manual' | 'signed-out';
+  account?: { id: string; name?: string } | null;
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
   update?: { status: 'idle' | 'checking' | 'available' | 'current' | 'downloading' | 'installing' | 'error'; message: string; version?: string; notes?: string; downloaded?: number; total?: number };
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }
 export interface DesktopAPI {
   checkUpdate?(): Promise<void>; installUpdate?(): Promise<void>;
-  getState(): Promise<AppState>; login(): Promise<void>; logout(): Promise<void>;
+  getState(): Promise<AppState>; login(mode?: 'dongdong' | 'manual'): Promise<void>; logout(): Promise<void>;
   refresh(): Promise<void>; settings(patch: Partial<Settings>): Promise<void>;
   beginGesture(mode: import('./windowGeometry.js').WindowGesture): Promise<number>;
   moveGesture(id: number): Promise<void>; endGesture(id: number): Promise<void>;

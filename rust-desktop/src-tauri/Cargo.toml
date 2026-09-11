@@ -22,6 +22,16 @@ tokio = { version = "1", features = ["time", "sync"] }
 chrono = "0.4"
 keyring = { version = "3", features = ["apple-native", "windows-native"] }
 base64 = "0.22"
+aes = "0.8"
+cbc = { version = "0.1", features = ["alloc", "block-padding"] }
+pbkdf2 = "0.12"
+sha2 = "0.10"
+regex = "1"
+uuid = { version = "1", features = ["v4"] }
+zeroize = "1"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.55"
 
 [profile.release]
 codegen-units = 1

@@ -19,8 +19,8 @@ export function previewQuota(percent: number) {
 }
 const previewAPI: DesktopAPI = {
   async getState() { return JSON.parse(JSON.stringify(local)) },
-  async login() { local.message = '请启动桌面应用，在官方窗口完成登录'; emit() },
-  async logout() { local.quota = null; local.status = 'signed-out'; local.message = '演示已结束'; emit() },
+  async login(mode = 'dongdong') { local.loginMode = mode; local.quota = null; local.account = null; local.status = 'signed-out'; local.message = mode === 'dongdong' ? '请启动桌面应用，连接本机咚咚账户' : '请启动桌面应用，在官方窗口手动登录'; emit() },
+  async logout() { local.loginMode = 'signed-out'; local.account = null; local.quota = null; local.status = 'signed-out'; local.message = '已退出登录，自动连接已暂停'; emit() },
   async refresh() { local.syncing = true; emit(); await new Promise(r => setTimeout(r, 600)); local.syncing = false; if (local.quota) previewQuota(local.quota.percent); else emit() },
   async settings(patch: Partial<Settings>) { Object.assign(local.settings, validateSettings(patch)); try { localStorage.setItem('em-use-preview-settings', JSON.stringify(local.settings)) } catch { /* Private browsing can disable storage; the current session still works. */ } emit() },
   async beginGesture() { return 0 }, async moveGesture() {}, async endGesture() {},
