@@ -9,7 +9,7 @@ function previewSettings() {
   try { saved = validateSettings(JSON.parse(localStorage.getItem('em-use-preview-settings') ?? '{}')) } catch { /* Preview links still work when storage is unavailable. */ }
   return { ...saved, ...validateSettings({ scene: new URLSearchParams(location.search).get('scene') }) }
 }
-const local = reactive<AppState>({ status: 'signed-out', quota: null, message: '登录后，让小鱼陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS, ...(!isDesktop ? previewSettings() : {}) }, version, persistentLogin: false, loginOpen: false })
+const local = reactive<AppState>({ loginMode: 'dongdong', account: null, status: 'signed-out', quota: null, message: '登录后，让小鱼陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS, ...(!isDesktop ? previewSettings() : {}) }, version, persistentLogin: false, loginOpen: false })
 const listeners = new Set<(s: AppState) => void>()
 function emit() { listeners.forEach(fn => fn(JSON.parse(JSON.stringify(local)))) }
 export function previewQuota(percent: number) {
