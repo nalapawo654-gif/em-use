@@ -1,0 +1,7 @@
+{
+  "identifier": "official-login",
+  "local": false,
+  "windows": ["login"],
+  "remote": { "urls": ["https://aihub.eastmoney.com/*"] },
+  "permissions": ["allow-auth-candidate"]
+}

@@ -1,3 +1,5 @@
+> **Rust 迁移版：** 新项目位于 [`rust-desktop/`](rust-desktop/README.md)，Windows / macOS 分发统一由 GitHub Actions 构建。以下 Electron 文档保留用于旧版对照。
+
 # EM Use · 额度小鱼缸
 
 Windows / macOS 桌面悬浮额度应用，支持「额度小鱼缸」「充气牛马」「林间海狸鼠」和「仓鼠动力机房」。鱼缸通过蓝色水体的水位、牛马通过饱满程度、海狸鼠通过精神状态与树木形态展示 AI 云平台的每日剩余额度。仓鼠通过跑步、疲惫与休息姿态展示额度。所有桌宠均采用透明桌面呈现，常规操作默认隐藏、悬停显示，支持角色互动与换装。
@@ -21,8 +23,6 @@ npm run desktop
 npm test
 npm run typecheck
 npm run build
-npm run pack
-npm run dist
 ```
 
 ## 使用
@@ -54,15 +54,7 @@ npm run dist
 
 ## GitHub 构建
 
-推送 `main`、PR 或手动运行 **Build desktop apps**：
-
-- Ubuntu 检查类型、测试、构建。
-- Windows x64 生成 NSIS EXE。
-- macOS arm64 / x64 生成 DMG 与 ZIP。
-- 产物在 Actions Artifacts 保存 14 天。
-- 推送与 package.json 版本相同的 `v*` 标签，全部平台成功后创建 GitHub Release 草稿及 SHA256 校验文件。
-
-当前工作流为 **未签名内部预览包**。正式分发前配置 Apple Developer ID 签名、公证和 Windows 代码签名。没有在客户端嵌入 GitHub Token，也没有自动下载安装更新。
+当前统一运行 **Build Rust desktop apps**，从 `rust-desktop/` 构建 Windows x64、macOS ARM64 和 Intel 安装包；不再生成 Electron 分发包。版本标签发布会额外生成供手动上传静态服务器的完整目录 ZIP。密钥配置、版本命令和上传步骤见 [Rust 发布说明](rust-desktop/README.md)。
 
 ## 验收边界
 

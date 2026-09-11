@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-auth-candidate"
+description = "Enables the auth_candidate command without any pre-configured scope."
+commands.allow = ["auth_candidate"]
+
+[[permission]]
+identifier = "deny-auth-candidate"
+description = "Denies the auth_candidate command without any pre-configured scope."
+commands.deny = ["auth_candidate"]

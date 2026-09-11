@@ -1,4 +1,4 @@
-name: Build desktop apps
+name: Build Rust desktop apps
 on:
   push:
     branches: [main]
@@ -8,8 +8,11 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: desktop-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: rust-desktop-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+defaults:
+  run:
+    working-directory: rust-desktop
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -19,17 +22,15 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: rust-desktop/package-lock.json
       - run: npm ci
+      - run: node scripts/version.mjs --check
         env:
-          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
-      - run: npm run typecheck
+          RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
+      - run: npm run verify:parity
       - run: npm test
       - run: npm run build
-      - name: Check tag matches package version
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: node -e "if ('v'+require('./package.json').version !== process.env.TAG) process.exit(1)"
-        env:
-          TAG: ${{ github.ref_name }}
+      - run: git diff --exit-code -- src-tauri/src/settings-contract.json src-tauri/src/behavior-contract.json
   package:
     needs: verify
     strategy:
@@ -37,57 +38,74 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            platform: win
-            arch: x64
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
           - os: macos-latest
-            platform: mac
-            arch: arm64
+            target: aarch64-apple-darwin
+            bundles: app,dmg
           - os: macos-15-intel
-            platform: mac
-            arch: x64
+            target: x86_64-apple-darwin
+            bundles: app,dmg
     runs-on: ${{ matrix.os }}
+    env:
+      RELEASE_BUILD: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: rust-desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust-desktop/src-tauri -> target
       - run: npm ci
-      - run: npm run build
-      - name: Build installer
-        run: npx electron-builder --${{ matrix.platform }} --${{ matrix.arch }} --publish never
+      - run: npm run contract
+      - run: cargo test --locked --manifest-path src-tauri/Cargo.toml
+      - name: Configure signed release (tag builds require persistent keys)
+        run: node scripts/ci-config.mjs
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_UPDATER_PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
+      - name: Package native installer
+        run: npm run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/ci.conf.json
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      - run: node scripts/collect-artifacts.mjs ${{ matrix.target }} src-tauri/target/${{ matrix.target }}/release/bundle installers
       - uses: actions/upload-artifact@v4
         with:
-          name: EM-Use-${{ matrix.platform }}-${{ matrix.arch }}
-          path: |
-            release/*.exe
-            release/*.dmg
-            release/*.zip
-            release/*.blockmap
+          name: EM-Use-${{ matrix.target }}
+          path: rust-desktop/installers/
           if-no-files-found: error
-          retention-days: 14
-  release:
+          retention-days: 30
+  static-release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: package
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
       - uses: actions/download-artifact@v4
         with:
           pattern: EM-Use-*
           merge-multiple: true
-          path: installers
-      - name: Generate checksums
-        working-directory: installers
-        run: sha256sum *.exe *.dmg *.zip > SHA256SUMS.txt
-      - name: Create draft release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          TAG: ${{ github.ref_name }}
+          path: rust-desktop/artifacts
+      - name: Assemble static server directory
         run: |
-          printf '%s\n' 'EM Use internal preview build.' '' 'Windows x64 / macOS Apple Silicon / macOS Intel.' '' 'These preview installers are unsigned. Signing and notarization must be configured before general distribution.' > notes.md
-          gh release create "$TAG" installers/* --draft --title "EM Use $TAG" --notes-file notes.md
+          node scripts/release-site.mjs artifacts release-site "${RELEASE_TAG#v}"
+          cd release-site
+          zip -r "../EM-Use-${RELEASE_TAG}-static-site.zip" em-use UPLOAD-README.txt
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EM-Use-${{ github.ref_name }}-static-server
+          path: rust-desktop/EM-Use-*-static-site.zip
+          if-no-files-found: error
+          retention-days: 90

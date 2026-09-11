@@ -1,0 +1,131 @@
+{
+  "results": [
+    {
+      "scene": "aquarium",
+      "size": "standard",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 440
+    },
+    {
+      "scene": "aquarium",
+      "size": "compact",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 300
+    },
+    {
+      "scene": "aquarium",
+      "size": "mini",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 190
+    },
+    {
+      "scene": "buddy",
+      "size": "standard",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 440
+    },
+    {
+      "scene": "buddy",
+      "size": "compact",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 300
+    },
+    {
+      "scene": "buddy",
+      "size": "mini",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 190
+    },
+    {
+      "scene": "beaver",
+      "size": "standard",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 440
+    },
+    {
+      "scene": "beaver",
+      "size": "compact",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 300
+    },
+    {
+      "scene": "beaver",
+      "size": "mini",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 190
+    },
+    {
+      "scene": "hamster",
+      "size": "standard",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 440
+    },
+    {
+      "scene": "hamster",
+      "size": "compact",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 300
+    },
+    {
+      "scene": "hamster",
+      "size": "mini",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 190
+    },
+    {
+      "scene": "cultivation",
+      "size": "standard",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 440
+    },
+    {
+      "scene": "cultivation",
+      "size": "compact",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 300
+    },
+    {
+      "scene": "cultivation",
+      "size": "mini",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 190
+    },
+    {
+      "scene": "battery",
+      "size": "standard",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 440
+    },
+    {
+      "scene": "battery",
+      "size": "compact",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 300
+    },
+    {
+      "scene": "battery",
+      "size": "mini",
+      "hiddenBeforeHover": true,
+      "settingsVisible": true,
+      "width": 190
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,29 @@
+# 海狸鼠素材生成记录
+
+日期：2026-09-10。来源：用户提供的 `海狸鼠.png` 设计参考；使用内置 imagegen 生成及编辑，未使用 CLI / API fallback。
+
+生成的图集复制至本目录，角色、树木、头饰和道具分别渲染。首轮未得到可用 alpha，随后用内置 imagegen 将背景修正为纯白；运行时沿用项目图集的连通背景处理方式转换为透明画布，保留对象内部白色细节。原始 PNG 文件本身不承诺有透明通道。
+
+## states.png
+
+Use case: stylized-concept. Create a production game sprite atlas based on the attached reference image, for the brown fluffy buck-toothed beaver-like character the user calls 海狸鼠. Reference is visual identity only, NOT a screenshot to copy. One image, 1536x1024 landscape, a precise 3 column x 2 row grid of 6 equal 512x512 cells. TRUE transparent alpha background. NO grid lines, NO labels, NO text, NO scenery, NO tree, NO props, NO clothing or hats on any character. Each cell contains the SAME complete brown character with big flat textured beaver tail pointing left, soft warm fur, huge rounded nose, cream buck teeth, little dark paws, facing three-quarter RIGHT as in reference, delightful polished 3D storybook illustration with soft warm light. Same character scale, paws ground baseline at 90% of each cell, generous transparent margins. Top row left: lively cheerful sitting upright smiling, paws raised; top middle: content sitting upright, mouth open ready to gnaw; top right: slightly tired sitting, eyes half-open, paws near mouth. Bottom left: tired slouch, worried brow; bottom middle: very tired crouch, head lower, droopy eyelids; bottom right: asleep lying flat on belly with head to right, closed eyes, tail to left. Each whole body entirely inside its own cell. Detailed fuzzy silhouette, beautiful amber fur, no white background, no checkerboard painted into image. These will be separately rendered as character state sprites.
+
+修正提示：仅将背景替换为均匀纯白 #FFFFFF，保持对象、姿态、网格、材质和布局，去除棋盘格、彩色背景与外部阴影。
+
+## environment.png
+
+Use case: stylized-concept. Game environment sprite atlas matching attached reference's richly textured warm 3D storybook beaver forest art. Reference style only. One 1536x1024 landscape PNG, true transparent alpha. Exact equal 3 columns x 2 rows (512x512 cells), no grid lines or text. NO animals, people, sky, landscape backgrounds. Isolated six objects each fully inside its cell with wide margins. Top left: a compact old oak tree with thick warm brown trunk and a SMALL leafy canopy at top, little grass roots at base; intact trunk. Top middle: SAME tree with a small beaver bite notch near lower left trunk, wood shavings at roots. Top right: SAME tree with deep chewed notch lower left trunk. Bottom left: same tree leaning slightly right with very deep notch and shavings. Bottom middle: short stump with tree trunk fallen to the right, small leafy branch. Bottom right: an empty horizontal wooden signboard containing a large blank cream parchment face, two wooden posts at sides, little grass and daisies at base; NO writing or symbols. All are cutout objects with true transparent backgrounds. Tree sprites all same scale and same baseline with no clipped foliage. Warm bark detail, fresh green leaves, creamy highlights, amber shavings.
+
+修正提示：仅将背景替换为均匀纯白 #FFFFFF，保持对象、姿态、网格、材质和布局，去除棋盘格、彩色背景与外部阴影。
+
+## props.png
+
+Use case: stylized-concept. A production props sprite atlas in exact 4 column x 3 row equally sized cells, 1536x1152. Match the warm, detailed 3D storybook illustration of the attached beaver reference. True transparent alpha background, no grid lines, no labels, NO text, no animals except specified bird, no background. 12 separate isolated objects, each entirely inside its own cell, centered with 12% transparent margin. Row 1: (1) little wooden grooming brush with soft dark bristles, (2) open red cup of instant noodles with curved fork lifting a few noodle strands, no branding/text, (3) clear blue drinking water bottle tilted with open cap, (4) small stack of three cut wooden logs with growth rings. Row 2: (5) colorful red blue yellow toy ball, (6) single fresh green oak leaf, (7) tiny adorable bright blue songbird with orange breast facing LEFT, (8) little green canvas camping tent with open flap. Row 3: (9) straw sun hat with green ribbon, three quarter view suitable for character facing RIGHT, (10) yellow rain hood and short poncho collar as ONE accessory cutout, face opening empty and transparent, (11) red knitted scarf with white snow-flecked cap as ONE accessory cutout, face space transparent, (12) brown aviator cap with goggles and little headlamp as ONE accessory cutout, face space transparent. No hands holding items. Soft natural lighting and detailed believable materials, clear silhouettes at small size.
+
+修正提示：仅将背景替换为均匀纯白 #FFFFFF，保持对象、姿态、网格、材质和布局，去除棋盘格、彩色背景与外部阴影。
+
+## wardrobe.png
+
+Use case: stylized-concept. Production accessory sprite atlas matching the attached reference beaver's 3D storybook rendering, warm light, detailed fabric and wicker. 1536x1024 landscape, exact 3 column by 2 row equal 512x512 cells, no grid lines, no text. TRUE transparent alpha. Five pieces of headwear intended to sit on top of the furry beaver head facing three-quarter RIGHT, NOT whole characters. Each centered isolated fully inside its cell. Top left: straw sun hat with green ribbon, tilted a little, side brim as in reference. Top middle: bright yellow rain hat with drooping brim, rounded top, empty underside. Top right: white and brown fleece winter cap with a small red pompom, ear flaps, empty underside. Bottom left: brown leather aviator cap with bronze round goggles resting on top, NO lamp. Bottom middle: a navy camping cap with a single warm glowing round headlamp front-right. Bottom right: a small oval ground island with soft fresh grass, daisies, wood chips and two smooth rocks, viewed at same low three-quarter angle as the reference, NO animals or trees. No faces, eyes, heads, hair, hands, logos, backdrop, painted checkerboard or shadows outside objects. Preserve generous transparent margins.
+
+修正提示：仅将背景替换为均匀纯白 #FFFFFF，保持对象、姿态、网格、材质和布局，去除棋盘格、彩色背景与外部阴影。

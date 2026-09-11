@@ -1,0 +1,12 @@
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/gen/
+release-site/
+output/
+*.key
+*.key.pub
+src-tauri/ci.conf.json
+installers/
+artifacts/
+EM-Use-*-static-site.zip

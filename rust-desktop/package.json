@@ -1,0 +1,41 @@
+{
+  "name": "em-use-rust",
+  "productName": "EM Use",
+  "private": true,
+  "description": "桌面额度小鱼缸 · AI 云平台每日额度伴侣",
+  "author": "wantwant123",
+  "license": "UNLICENSED",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wantwant123/em-use.git"
+  },
+  "version": "0.4.0",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "desktop": "tauri dev",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts && node --test scripts/*.test.mjs",
+    "contract": "tsx scripts/contract.ts && tsx scripts/behavior-contract.ts",
+    "build": "npm run contract && npm run typecheck && vite build",
+    "tauri": "tauri",
+    "verify:parity": "node scripts/verify-parity.mjs",
+    "version:set": "node scripts/version.mjs",
+    "release:site": "node scripts/release-site.mjs"
+  },
+  "dependencies": {
+    "@phosphor-icons/vue": "^2.2.1",
+    "vue": "^3.5.0",
+    "@tauri-apps/api": "^2",
+    "html-to-image": "^1.11.13"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0",
+    "vue-tsc": "^3.1.0"
+  }
+}

@@ -1,0 +1,76 @@
+/* Raster scene interactions and their controls. Colors never tint quota water. */
+.aquarium.low-water .quota-overlay { color: #34627e; text-shadow: 0 1px 6px #ffffffb0; }
+.aquarium.low-water.night .quota-overlay { color: #35566c; }
+.aquarium:focus-visible { outline: 2px solid #428ab2; outline-offset: -20px; border-radius: 50%; }
+.aquarium.is-wiping { touch-action: none; cursor: grab; }
+.aquarium.is-wiping:active { cursor: grabbing; }
+.aquarium .fish-hit { left: 18%; top: 66%; width: 25%; height: 18%; }
+.scene-hit { position: absolute; z-index: 3; border-radius: 16px; }
+.treasure-hit { left: 50%; top: 75%; width: 18%; height: 14%; }
+.cave-hit { left: 14%; top: 65%; width: 29%; height: 24%; }
+.scene-hit:hover { background: #ffffff16; }
+.play-hud { position: absolute; z-index: 6; left: 14%; right: 8%; top: 21%; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 10px; border: 1px solid #ffffffbb; border-radius: 14px; background: #f3fbffec; color: #466b81; font-size: 11px; box-shadow: 0 5px 18px #38647e13; }
+.play-hud>span { flex: 1; }
+.play-hud>button { white-space: nowrap; font-size: 10px; padding: 4px; color: #267ea5; }
+.play-hud .finish-play { display: flex; padding: 2px; }
+.play-hud .finish-play svg { width: 13px; height: 13px; }
+.play-sprite { width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; }
+.play-popover { position: absolute; left: 22px; right: 22px; top: 73px; z-index: 12; background: #f4fbfff5; backdrop-filter: blur(18px); border: 1px solid #fff; border-radius: 19px; box-shadow: 0 16px 40px #28526e25; padding: 16px; }
+.play-popover>header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; }
+.play-popover>header b { font-size: 13px; font-weight: 600; }
+.play-popover>header small { display: block; margin-top: 5px; color: #8199aa; font-size: 10px; }
+.outfit-options { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
+.outfit-options>button { min-width: 0; position: relative; border: 1px solid #bed7e66e; border-radius: 13px; background: #e8f4fb8c; padding: 8px 4px 10px; font-size: 11px; }
+.outfit-options>button:hover { background: #fff; transform: translateY(-2px); }
+.outfit-options>button.selected { background: #fff; border-color: #73abc8; box-shadow: 0 0 0 2px #76b3d218; }
+.outfit-preview { display: block; width: 100%; height: 65px; position: relative; }
+.outfit-preview>.play-sprite:first-child { position: absolute; width: 68%; height: 74%; bottom: 0; left: 15%; }
+.outfit-preview>.accessory { position: absolute; width: 39%; height: 38%; left: 35%; top: 4%; }
+.outfit-preview>.accessory.ribbon { width: 23%; height: 28%; left: 40%; top: 59%; }
+.outfit-check { position: absolute; width: 12px; height: 12px; top: 7px; right: 7px; color: #3a94b4; }
+.play-options { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.play-options>button { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 12px 6px; background: #e8f4fb9c; border: 1px solid #c9dfec; border-radius: 12px; font-size: 12px; }
+.play-options>button:hover { background: #fff; border-color: #8bb7cf; }
+.play-options>button>svg { color: #4c91ab; width: 22px; height: 22px; }
+.play-options>button:first-child>svg { color: #c79a4b; }
+.play-panel-enter-active,.play-panel-leave-active { transition: opacity .18s, transform .18s; }
+.play-panel-enter-from,.play-panel-leave-to { opacity: 0; transform: translateY(-8px) scale(.98); }
+.mini-play-button { display: none; }
+.night .play-popover { background: #1f3b50f7; border-color: #56768d; }
+.night .outfit-options>button,.night .play-options>button { background: #38566a99; border-color: #56768d; }
+.night .outfit-options>button.selected,.night .play-options>button:hover { background: #4a6e85; border-color: #8fbcd3; }
+.night .play-hud { background: #243f54f0; color: #d4e8f4; border-color: #607f9477; }
+.night .play-hud>button { color: #abd9ec; }
+.settings-content>.outfit-options { margin: 12px 0 24px; }
+.is-native .play-popover { left: 12px; right: 12px; top: 52px; padding: 12px; }
+.is-native .outfit-preview { height: 55px; }
+.is-native .outfit-options>button { font-size: 9px; }
+.is-native.compact .play-popover { top: 43px; left: 8px; right: 8px; padding: 10px; }
+.is-native.compact .play-popover>header b { font-size: 11px; }
+.is-native.compact .play-popover>header small { font-size: 9px; }
+.is-native.compact .outfit-options { gap: 4px; }
+.is-native.compact .outfit-options>button { padding: 6px 2px; font-size: 9px; }
+.is-native.compact .outfit-preview { height: 44px; }
+.is-native.compact .play-options>button { flex-direction: column; padding: 8px 3px; font-size: 10px; gap: 5px; }
+.is-native.compact .play-hud { left: 8%; right: 5%; padding: 5px; gap: 2px; font-size: 9px; }
+.is-native.compact .play-hud>button { font-size: 9px; padding: 2px; }
+.is-native.compact .widget:focus-within .interaction-tools { opacity: 1; }
+.is-native.mini .mini-play-button { display: inline-flex; }
+.is-native.mini .play-popover { inset: 31px 5px auto; padding: 8px; border-radius: 12px; }
+.is-native.mini .play-popover>header { margin-bottom: 6px; }
+.is-native.mini .play-popover>header b { font-size: 10px; }
+.is-native.mini .play-popover>header small { display: none; }
+.is-native.mini .play-options { gap: 4px; }
+.is-native.mini .play-options>button { flex-direction: column; padding: 6px 2px; gap: 3px; font-size: 9px; border-radius: 8px; }
+.is-native.mini .play-options>button>svg { width: 17px; height: 17px; }
+.is-native.mini .outfit-options { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 3px; }
+.is-native.mini .outfit-options>button { padding: 3px; font-size: 8px; }
+.is-native.mini .outfit-preview { height: 28px; }
+.is-native.mini .play-hud { left: 2%; right: 2%; top: 13%; padding: 4px; border-radius: 8px; font-size: 8px; gap: 2px; }
+.is-native.mini .play-hud>button { font-size: 8px; padding: 2px; }
+@media(max-width:600px) { .play-popover { left: 10px; right: 10px; top: 59px; padding: 12px; } .play-popover>header b { font-size: 12px; } .outfit-options>button { font-size: 9px; } .outfit-preview { height: 52px; } .play-hud { font-size: 10px; padding: 6px; gap: 4px; } }
+
+.aquarium.is-wiping .quota-overlay { color: #34627e; text-shadow: 0 1px 6px #ffffffb0; }
+
+.aquarium .food-animation svg { top: 34%; animation: feed-grains 2.7s both; }
+@keyframes feed-grains { 0% { opacity: 0; top: 34%; transform: rotate(0deg); } 12% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; top: 77%; transform: rotate(100deg); } }

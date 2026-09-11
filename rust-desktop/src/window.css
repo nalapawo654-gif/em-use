@@ -1,0 +1,93 @@
+/* The glass is the window. Chrome floats over it only while being used. */
+body.native-window, .app.native, .app.native.night { background: transparent !important; }
+.experience .widget, .night .experience .widget { width: 560px; height: 560px; border: 0; border-radius: 0; background: transparent; background-image: none; max-width: none; box-shadow: none; backdrop-filter: none; container-type: inline-size; touch-action: none; }
+.experience .widget::before, .experience .widget::after { display: none; }
+.experience.is-native { padding: 0; width: 100%; min-height: 0; height: auto; aspect-ratio: 1; }
+.experience.is-native .widget { width: 100%; height: auto; aspect-ratio: 1; }
+.experience .widget-body { position: absolute; inset: 0; width: 100%; height: 100%; }
+.experience .aquarium-wrap { inset: 0; width: 100%; height: 100%; }
+.experience .aquarium { filter: none; cursor: grab; }
+.experience .is-moving, .experience .is-moving .aquarium { cursor: grabbing; }
+.experience .is-moving .aquarium { pointer-events: none; }
+.experience .aquarium.is-wiping { cursor: none; }
+.experience .aquarium.night .bowl-canvas { filter: none; }
+.experience .aquarium.muted .bowl-canvas { filter: saturate(.72); }
+.experience .quota-number { font-size: 13cqw; line-height: 1.05; }
+.experience .quota-number>span { font-size: 8cqw; }
+.experience .quota-caption { font-size: 3.1cqw; margin-top: 1.4cqw; }
+.experience .inside-amount { font-size: 3.1cqw; margin-top: 2cqw; }
+.experience .quota-overlay.empty .quota-number { font-size: 11cqw; }
+.experience .quota-overlay.empty .quota-caption { font-size: 3cqw; }
+.experience .widget-header, .experience .widget-footer, .experience .interaction-tools, .experience .floating-note, .experience .fish-message, .experience .login-pill, .resize-handle { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .2s, visibility .2s; }
+.experience .widget:is(:hover, :has(:focus-visible), .has-panel, .has-details) :is(.widget-header, .widget-footer, .interaction-tools, .floating-note, .fish-message, .login-pill, .resize-handle) { opacity: 1; visibility: visible; pointer-events: auto; }
+.experience .widget-header { position: absolute; height: 36px; top: 9%; left: 19%; right: 19%; padding: 0 7px; z-index: 6; border-radius: 22px; background: #f3fbffed; box-shadow: 0 3px 18px #173d5b18; }
+.experience .widget-title { min-width: 0; min-height: 0; gap: 5px; }
+.experience .widget-title>span { font-size: 11px; letter-spacing: 0; }
+.experience .widget-title>svg { width: 18px; height: 18px; }
+.experience .widget-title>small { display: none; }
+.experience .window-actions { gap: 0; }
+.experience .mini-play-button { display: inline-flex; }
+.experience .widget-footer { bottom: 8%; left: 26%; right: 26%; height: 29px; padding: 0 7px; border: 0; border-radius: 20px; background: #f3fbffef; z-index: 6; }
+.experience .status-pill { font-size: 10px; gap: 4px; }
+.experience .status-pill>small { display: none; }
+.experience .floating-note, .experience .fish-message { display: none; }
+.experience .interaction-tools { top: 30%; left: 6%; gap: 6px; display: flex; }
+.experience .interaction-tools>button { width: 38px; height: 43px; gap: 2px; border-radius: 12px; background: #f6fcffec; border: 0; box-shadow: 0 3px 10px #29527114; }
+.experience .interaction-tools>button>svg { width: 18px; height: 18px; }
+.experience .interaction-tools>button>span { font-size: 9px; }
+.experience .login-pill { top: 63%; left: 50%; padding: 8px 12px; max-width: 86%; font-size: 11px; }
+.experience .play-popover { top: 20%; left: 12%; right: 12%; padding: 12px; max-height: 67%; overflow: auto; }
+.experience .detail-popover { bottom: 18%; left: 12%; right: 12%; width: auto; max-height: 64%; overflow: auto; }
+.experience .toast { bottom: 20%; max-width: 80%; white-space: normal; text-align: center; }
+.night .experience .widget-header, .night .experience .widget-footer, .night .experience .interaction-tools>button { background: #16374ce8; box-shadow: 0 0 18px #65d4ff1a; color: #d5f3ff; }
+.night .experience .icon-button, .night .experience .status-pill, .night .experience .interaction-tools>button>span { color: #c0e4f4; }
+.experience .resize-handle { position: absolute; z-index: 30; width: 30px; height: 30px; padding: 8px; border-radius: 10px; background: #e7f6ffbf; color: #448daf; touch-action: none; }
+.resize-handle span { display: block; width: 10px; height: 10px; border-top: 2px solid currentColor; border-left: 2px solid currentColor; }
+.resize-handle.nw { top: 16%; left: 5%; cursor: nwse-resize; }
+.resize-handle.ne { top: 16%; right: 5%; cursor: nesw-resize; transform: rotate(90deg); }
+.resize-handle.sw { bottom: 7%; left: 5%; cursor: nesw-resize; transform: rotate(-90deg); }
+.resize-handle.se { bottom: 7%; right: 5%; cursor: nwse-resize; transform: rotate(180deg); }
+.night .experience .resize-handle { background: #153b55c9; color: #a7e3fa; }
+.size-slider { display: grid; gap: 10px; margin: 16px 0 28px; }
+.size-slider span { display: flex; justify-content: space-between; font-size: 12px; }
+.size-slider input { width: 100%; accent-color: #4d9abb; }
+.size-slider small { color: var(--secondary); font-size: 11px; }
+@container (max-width: 359px) {
+  .experience .widget-header { left: 19%; right: 19%; height: 30px; }
+  .experience .widget-title>span { display: none; }
+  .experience .icon-button { width: 25px; height: 25px; }
+  .experience .interaction-tools { left: 5%; top: 31%; gap: 4px; }
+  .experience .interaction-tools>button { width: 29px; height: 30px; }
+  .experience .interaction-tools>button>span { display: none; }
+  .experience .widget-footer { left: 25%; right: 25%; height: 25px; }
+  .experience .status-pill { font-size: 9px; }
+  .experience .play-popover { left: 8%; right: 8%; padding: 9px; }
+}
+@container (max-width: 249px) {
+  .experience .widget-header { left: 20%; right: 20%; height: 25px; padding: 0 2px; }
+  .experience .widget-title { display: none; }
+  .experience .window-actions { width: 100%; justify-content: space-around; }
+  .experience .interaction-tools { display: none; }
+  .experience .status-pill>svg { display: none; }
+  .experience .widget-footer { left: 23%; right: 23%; bottom: 8%; padding: 0 5px; height: 23px; }
+  .experience .resize-handle { width: 24px; height: 24px; padding: 7px; }
+  .experience .login-pill { font-size: 9px; white-space: normal; text-align: center; width: 78%; }
+  .experience .play-popover { top: 24%; max-height: 66%; padding: 7px; }
+  .experience .detail-popover { font-size: 10px; left: 5%; right: 5%; padding: 10px; }
+}
+@media (max-width: 1100px) { .experience { grid-template-columns: 500px 300px; gap: 30px; } .experience .widget { width: 500px; height: 500px; } }
+@media (max-width: 900px) { .experience { grid-template-columns: minmax(0, 560px); } .experience .widget { width: 100%; height: auto; aspect-ratio: 1; } .experience.is-native .widget { height: auto; } }
+@media (prefers-reduced-motion: reduce) { .experience .widget * { transition-duration: .01ms; } }
+
+.experience .aquarium.night.low-water .quota-overlay { color: #e5f8ff; text-shadow: 0 2px 12px #00334c; }
+
+.experience .aquarium.night.is-wiping .quota-overlay { color: #e5f8ff; text-shadow: 0 2px 12px #00334c; }
+.experience .widget:is(.has-panel,.has-details) .resize-handle { visibility: hidden; pointer-events: none; opacity: 0; }
+.experience.is-native.mini .play-popover { top: 24%; left: 5%; right: 5%; padding: 6px; max-height: 65%; }
+.experience.is-native.mini .play-popover>header { margin-bottom: 4px; }
+.experience.is-native.mini .play-options>button { padding: 4px 2px; gap: 2px; }
+.experience.is-native.mini .play-options>button>svg { width: 15px; height: 15px; }
+
+.experience .play-popover { scrollbar-width: thin; scrollbar-color: #7397ad transparent; }
+.experience .widget:has(.play-hud) .resize-handle { visibility: hidden; pointer-events: none; opacity: 0; }
+.experience.is-native.mini .play-hud { top: 24%; }

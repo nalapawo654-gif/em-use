@@ -1,0 +1,133 @@
+{
+  "defaults": {
+    "alwaysOnTop": true,
+    "clickThrough": false,
+    "launchAtLogin": false,
+    "size": "standard",
+    "windowWidth": 440,
+    "theme": "auto",
+    "reducedMotion": false,
+    "notifications": true,
+    "outfit": "classic",
+    "scene": "aquarium",
+    "batterySkin": "classic",
+    "batteryRealm": "office",
+    "cultivationSkin": "classic",
+    "cultivationAccessory": "none",
+    "cultivationTreasure": "none",
+    "cultivationRandom": true,
+    "cultivationRealm": "sunny",
+    "hamsterSkin": "classic",
+    "buddySkin": "classic",
+    "beaverSkin": "sunny",
+    "beaverCamp": false,
+    "beaverMotto": "gentle"
+  },
+  "enums": {
+    "size": [
+      "standard",
+      "compact",
+      "mini"
+    ],
+    "theme": [
+      "auto",
+      "day",
+      "night"
+    ],
+    "outfit": [
+      "classic",
+      "sailor",
+      "royal",
+      "ribbon"
+    ],
+    "scene": [
+      "aquarium",
+      "buddy",
+      "beaver",
+      "hamster",
+      "cultivation",
+      "battery"
+    ],
+    "batterySkin": [
+      "classic",
+      "nanfu",
+      "xiaomi",
+      "duracell",
+      "byd",
+      "catl"
+    ],
+    "batteryRealm": [
+      "office",
+      "balcony",
+      "overtime",
+      "weekend"
+    ],
+    "cultivationSkin": [
+      "classic",
+      "azure",
+      "astral",
+      "crimson"
+    ],
+    "cultivationAccessory": [
+      "none",
+      "lotus",
+      "moon",
+      "blossom"
+    ],
+    "cultivationTreasure": [
+      "none",
+      "gourd",
+      "jade",
+      "pouch"
+    ],
+    "cultivationRealm": [
+      "night",
+      "sunny",
+      "rain",
+      "thunder",
+      "tribulation",
+      "enlightened"
+    ],
+    "hamsterSkin": [
+      "classic",
+      "rain",
+      "worker",
+      "nightshift",
+      "summer",
+      "winter",
+      "holiday"
+    ],
+    "buddySkin": [
+      "classic",
+      "blossom",
+      "worker",
+      "holiday",
+      "midnight"
+    ],
+    "beaverSkin": [
+      "night",
+      "sunny",
+      "rain",
+      "snow",
+      "wind"
+    ],
+    "beaverMotto": [
+      "gentle",
+      "create",
+      "rest"
+    ]
+  },
+  "labels": {
+    "aquarium": "额度小鱼缸",
+    "buddy": "充气牛马",
+    "beaver": "林间海狸鼠",
+    "hamster": "仓鼠动力机房",
+    "cultivation": "修仙渡劫事务所",
+    "battery": "健身电池人"
+  },
+  "presets": {
+    "standard": 440,
+    "compact": 300,
+    "mini": 190
+  }
+}

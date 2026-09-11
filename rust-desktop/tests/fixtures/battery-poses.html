@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>电池人 · 逐姿态素材检查</title><style>body{margin:0;padding:24px;background:#eeeede;color:#344331;font:14px sans-serif}h1{font-size:24px}h2{margin-top:30px;font-size:18px}.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.cell{background:#faf9ef;border:1px solid #d8deca;border-radius:10px;text-align:center;overflow:hidden}canvas{width:100%;display:block}p{margin:0 0 12px;font-size:12px}.dark{background:#28382f;color:#e0ecd4}.dark .cell{background:#314739}</style><h1>电池人：实际渲染素材与姿态</h1><main></main><script type="module">
+import { loadBatteryAtlas } from '/src/battery/sprites.ts'
+import { renderBattery } from '/src/battery/render.ts'
+import { batteryIdle,beginBattery,liftBattery } from '/src/battery/play.ts'
+import { BATTERY_SKINS } from '/src/shared/types.ts'
+const atlas=await loadBatteryAtlas(), main=document.querySelector('main')
+window.batteryAtlasInfo={parts:atlas.length,sizes:atlas.map(x=>[x.width,x.height])}
+function group(name,items){const h=document.createElement('h2');h.textContent=name;main.append(h);const grid=document.createElement('div');grid.className='grid';main.append(grid);for(const item of items){const cell=document.createElement('div');cell.className='cell';const canvas=document.createElement('canvas');canvas.width=canvas.height=512;const p=document.createElement('p');p.textContent=item.label;cell.append(canvas,p);grid.append(cell);renderBattery(canvas.getContext('2d'),atlas,{percent:100,play:batteryIdle(),time:0,skin:'classic',realm:'office',gentle:true,night:false,scenery:false,...item})}}
+group('六款皮肤 / 原创趣味字标',BATTERY_SKINS.map(s=>({skin:s.id,label:s.label})))
+group('每档电量的身体与鞋子',[100,75,50,25,10,0].map(percent=>({percent,label:percent+'%'})))
+group('开合跳六个时刻',[0,130,260,390,520,650].map(time=>({time,gentle:false,label:time+' ms'})))
+group('原地跑六个时刻',[7000,7130,7260,7390,7520,7650].map(time=>({time,gentle:false,label:time+' ms'})))
+group('主动互动',['lift','rope','charge','towel','cheer','rest','taichi','aerobics','yoga'].map(action=>({play:action==='lift'?liftBattery(beginBattery(action,0,100),0):beginBattery(action,0,100),time:450,gentle:false,label:action})))
+group('周边布局 / 充电 / 瑜伽',[{label:'工位音箱',scenery:true},{label:'阳台盆栽',scenery:true,realm:'balcony'},{label:'充电接线',scenery:true,play:beginBattery('charge',0,100)},{label:'展开瑜伽垫',scenery:true,play:beginBattery('yoga',0,100)},{label:'零电量充电',scenery:true,percent:0,play:beginBattery('charge',0,0)},{label:'横躺休息',scenery:true,play:beginBattery('rest',0,100)}]);
+for(const action of ['taichi','aerobics','yoga'])group(action+' · 动作时间轴',[0,1500,3000,4500,6000,9000].map(time=>({label:time+' ms',scenery:true,time,gentle:false,play:beginBattery(action,0,100)})));
+document.body.dataset.ready='true'
+</script></html>
