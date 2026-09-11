@@ -1,6 +1,6 @@
 # EM Use · Rust 桌面版
 
-版本 **0.4.1**。独立项目目录，原项目保留作 Electron 对照基线。
+版本 **0.4.2**。独立项目目录，原项目保留作 Electron 对照基线。
 
 使用 **Rust + Tauri 2 原生层，Vue + Canvas 渲染层**。窗口、托盘、凭据库、网络查询、持久化和更新均在 Rust 中实现；六只桌宠的抠色、动作状态机、帧节奏、CSS 和共享窗口手势保留。48 张不透明图使用无损 WebP，8 张透明图使用优化 PNG，保持每个 RGBA 像素、分辨率和帧数；透明图保留 PNG 以避免浏览器预乘透明度取整差异。原始素材保留在仓库根目录作为对照。
 
@@ -22,11 +22,13 @@ cargo test --locked --manifest-path src-tauri/Cargo.toml
 
 ## 版本和发布
 
+当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
+
 ```sh
-npm run version:set -- 0.4.1
+npm run version:set -- 0.4.2
 ```
 
-该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.1`。提交版本变更后推送标签，即可触发完整发布。
+该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.2`。提交版本变更后推送标签，即可触发完整发布。
 
 普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64 和 Intel（`.dmg` + `.app.tar.gz` 更新包）。本机不生成分发安装包。
 
@@ -56,17 +58,17 @@ npm run version:set -- 0.4.1
 ├── index.html
 └── em-use/
     ├── index.html
-    ├── site-assets/0.4.1/
+    ├── site-assets/0.4.2/
     ├── stable/latest.json
-    └── releases/0.4.1/
-        ├── EM-Use-0.4.1-windows-x86_64.exe
-        ├── EM-Use-0.4.1-windows-x86_64.exe.sig
-        ├── EM-Use-0.4.1-darwin-aarch64.dmg
-        ├── EM-Use-0.4.1-darwin-aarch64.app.tar.gz
-        ├── EM-Use-0.4.1-darwin-aarch64.app.tar.gz.sig
-        ├── EM-Use-0.4.1-darwin-x86_64.dmg
-        ├── EM-Use-0.4.1-darwin-x86_64.app.tar.gz
-        ├── EM-Use-0.4.1-darwin-x86_64.app.tar.gz.sig
+    └── releases/0.4.2/
+        ├── EM-Use-0.4.2-windows-x86_64.exe
+        ├── EM-Use-0.4.2-windows-x86_64.exe.sig
+        ├── EM-Use-0.4.2-darwin-aarch64.dmg
+        ├── EM-Use-0.4.2-darwin-aarch64.app.tar.gz
+        ├── EM-Use-0.4.2-darwin-aarch64.app.tar.gz.sig
+        ├── EM-Use-0.4.2-darwin-x86_64.dmg
+        ├── EM-Use-0.4.2-darwin-x86_64.app.tar.gz
+        ├── EM-Use-0.4.2-darwin-x86_64.app.tar.gz.sig
         ├── SHA256SUMS.txt
         └── version.json
 ```
@@ -75,13 +77,13 @@ npm run version:set -- 0.4.1
 
 ## 迁移和边界
 
-- Rust 应用使用独立标识 `com.wantwant123.emuse.rust` 与独立数据目录，不覆盖旧版设置或读取旧版加密凭据。第一次启动需要重新登录。
+- Rust 应用使用独立标识 `com.wantwant123.emuse.rust` 与独立数据目录，不覆盖旧版设置或读取旧版加密凭据。首次使用默认尝试连接本机咚咚账户；已有手动账户升级后保留原方式，可在设置中切换。
 - 登录窗口使用临时浏览器会话，仅官方来源可提交三项 `X-Dong-*` 头；Rust 验证真实额度响应后写入系统 Keychain / Windows Credential Manager。令牌不发送给桌宠或设置窗口。
 - 登录捕获采用文档启动时的 fetch / XHR 请求观察。服务工作线程、未来官方站点请求实现变更、扫码跳转兼容性需要真实登录验证；浏览器预览不能替代这一层。
 - 复用 `src/windowGestures.ts`，Rust 负责屏幕工作区和 1:1 几何；轻点、5 px 拖动阈值与拖后 400 ms 点击抑制保留。
 - 设置和额度通过单个共享 Rust 状态广播到桌宠/设置窗口。默认启动关闭穿透；托盘可恢复和切换穿透。
 - 15 秒轮询检测唤醒与跨日，网络请求 15 秒超时、失败退避；旧响应有 generation 校验，退出不会被晚到的响应重新登录。
 - 截图使用当前 DOM/Canvas 生成透明 PNG，Rust 系统保存对话框选择目的路径；不调用系统全屏截图。
-- 源码、测试、浏览器、原生窗口、真实账户及实际升级验收分别记录在 [迁移验证报告](docs/verification.md) 和 [0.4.1 压缩及下载页验证](docs/release-0.4.1.md)。
+- 源码、测试、浏览器、原生窗口、真实账户及实际升级验收分别记录在 [迁移验证报告](docs/verification.md) 和 [0.4.1 压缩及下载页验证](docs/release-0.4.1.md)、[0.4.2 咚咚登录发布记录](docs/release-0.4.2.md)。
 
 参考：[Tauri 更新签名与静态清单](https://v2.tauri.app/plugin/updater/)、[WebviewWindow API](https://docs.rs/tauri/latest/tauri/webview/struct.WebviewWindow.html)、[项目桌宠基础交互规范](../docs/desktop-pet-interaction-standard.md)。
