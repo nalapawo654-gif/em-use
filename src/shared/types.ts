@@ -5,8 +5,24 @@ export interface Quota {
   estimatedAt: string; serverAt: string; receivedAt: number; day: string;
 }
 export type Outfit = 'classic' | 'sailor' | 'royal' | 'ribbon'
-export type Scene = 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation'
-export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所' }
+export type Scene = 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation' | 'battery'
+export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所', battery: '健身电池人' }
+export type BatterySkin = 'classic' | 'nanfu' | 'xiaomi' | 'duracell' | 'byd' | 'catl'
+export type BatteryRealm = 'office' | 'balcony' | 'overtime' | 'weekend'
+export const BATTERY_SKINS: { id: BatterySkin; label: string; hint: string; color: string; mark: string; body: number }[] = [
+  { id: 'classic', label: '元气绿', hint: '原味满格快乐', color: '#77b848', mark: 'ENERGY', body: 0 },
+  { id: 'nanfu', label: '北孚', hint: '金黑运动款', color: '#c99b3c', mark: '北孚', body: 1 },
+  { id: 'xiaomi', label: '大米', hint: '珊瑚橙的好心情', color: '#ee885f', mark: '大米', body: 2 },
+  { id: 'duracell', label: '铜霸王', hint: '经典铜黑配色', color: '#b47d55', mark: '铜霸王', body: 3 },
+  { id: 'byd', label: 'A亚迪', hint: '银白红边，蓄势待发', color: '#c4403e', mark: 'AYD', body: 16 },
+  { id: 'catl', label: '您德时代', hint: '银蓝运动，稳稳续航', color: '#17689c', mark: '您德时代', body: 17 },
+]
+export const BATTERY_REALMS: { id: BatteryRealm; label: string; hint: string; prop: number }[] = [
+  { id: 'office', label: '工位健身', hint: '摸鱼五分钟，运动两分钟', prop: 19 },
+  { id: 'balcony', label: '阳台晨练', hint: '晒晒太阳，伸个懒腰', prop: 12 },
+  { id: 'overtime', label: '深夜加班', hint: '放点音乐，陪你慢慢来', prop: 19 },
+  { id: 'weekend', label: '周末躺营', hint: '今天的计划：好好休息', prop: 10 },
+]
 export type CultivationSkin = 'classic' | 'azure' | 'astral' | 'crimson'
 export type CultivationAccessory = 'none' | 'lotus' | 'moon' | 'blossom'
 export type CultivationTreasure = 'none' | 'gourd' | 'jade' | 'pouch'
@@ -54,7 +70,7 @@ export interface Settings {
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
-  scene: Scene; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
+  scene: Scene; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
@@ -72,5 +88,5 @@ export interface DesktopAPI {
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
-  scene: 'aquarium', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
+  scene: 'aquarium', batterySkin: 'classic', batteryRealm: 'office', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
 }

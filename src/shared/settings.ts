@@ -8,7 +8,9 @@ export function validateSettings(input: unknown): Partial<Settings> {
   }
   const enums = {
     size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
-    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver', 'hamster', 'cultivation'],
+    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
+    batterySkin: ['classic', 'nanfu', 'xiaomi', 'duracell', 'byd', 'catl'],
+    batteryRealm: ['office', 'balcony', 'overtime', 'weekend'],
     cultivationSkin: ['classic', 'azure', 'astral', 'crimson'],
     cultivationAccessory: ['none', 'lotus', 'moon', 'blossom'],
     cultivationTreasure: ['none', 'gourd', 'jade', 'pouch'],

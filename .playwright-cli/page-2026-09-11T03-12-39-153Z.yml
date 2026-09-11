@@ -1,0 +1,161 @@
+- main [ref=f17e3]:
+  - generic [ref=f17e4]:
+    - link "EM Use" [ref=f17e5] [cursor=pointer]:
+      - /url: "#"
+    - generic "选择宠物场景" [ref=f17e11]:
+      - button "额度小鱼缸" [ref=f17e12] [cursor=pointer]
+      - button "充气牛马" [ref=f17e17] [cursor=pointer]
+      - button "林间海狸鼠" [ref=f17e22] [cursor=pointer]
+      - button "仓鼠动力机房" [ref=f17e26] [cursor=pointer]
+      - button "修仙渡劫事务所" [ref=f17e31] [cursor=pointer]
+      - button "健身电池人" [pressed] [ref=f17e36] [cursor=pointer]
+    - generic [ref=f17e41]:
+      - generic [ref=f17e42]: 桌面应用 · 外观预览
+      - button "偏好设置" [ref=f17e43] [cursor=pointer]
+  - generic [ref=f17e47]:
+    - generic [ref=f17e48]:
+      - region "健身电池人场景" [ref=f17e49]:
+        - button "和电池人击掌" [ref=f17e50] [cursor=pointer]
+        - paragraph: 今天也要，快乐流汗。
+        - button "电池人今日剩余额度 68%，已同步" [ref=f17e51] [cursor=pointer]:
+          - generic [ref=f17e52]: 今日剩余
+          - strong [ref=f17e56]: 68%
+          - generic [ref=f17e59]: ¥204.00
+        - generic: 工位健身 · 轻快小跑
+      - complementary [ref=f17e60]:
+        - generic [ref=f17e61]: LITTLE BATTERY · BIG ENERGY
+        - heading [level=1] [ref=f17e63]:
+          - text: 电量有限，
+          - emphasis [ref=f17e64]: 快乐满格。
+        - paragraph [ref=f17e65]: 桌角来了一位健身搭子。电量足，就蹦蹦跳跳；没力气，就陪你歇歇。
+        - generic [ref=f17e66]: 每一次努力，都值得一个击掌。
+        - generic [ref=f17e70]:
+          - button "陪它练一组" [ref=f17e71] [cursor=pointer]
+          - button "夜晚陪伴" [ref=f17e78] [cursor=pointer]
+        - text: 浏览器演示数据 · 桌面版连接账户后同步真实额度
+    - generic [ref=f17e82]:
+      - generic [ref=f17e83]:
+        - generic [ref=f17e84]:
+          - text: 01 / ENERGY DIARY
+          - heading "从满格，到好好休息。" [level=2] [ref=f17e85]
+        - button "预览未知电量 · —" [ref=f17e86] [cursor=pointer]
+      - generic [ref=f17e87]:
+        - button "100% 元气蹦蹦跳" [ref=f17e88] [cursor=pointer]:
+          - strong [ref=f17e90]: 100%
+          - generic [ref=f17e91]: 元气蹦蹦跳
+        - button "75% 轻快小跑" [ref=f17e92] [cursor=pointer]:
+          - strong [ref=f17e94]: 75%
+          - generic [ref=f17e95]: 轻快小跑
+        - button "50% 还能再练练" [ref=f17e96] [cursor=pointer]:
+          - strong [ref=f17e98]: 50%
+          - generic [ref=f17e99]: 还能再练练
+        - button "25% 坐着伸伸腿" [ref=f17e100] [cursor=pointer]:
+          - strong [ref=f17e102]: 25%
+          - generic [ref=f17e103]: 坐着伸伸腿
+        - button "10% 真的动不啦" [ref=f17e104] [cursor=pointer]:
+          - strong [ref=f17e106]: 10%
+          - generic [ref=f17e107]: 真的动不啦
+        - button "0% 今日已躺平" [ref=f17e108] [cursor=pointer]:
+          - strong [ref=f17e110]: 0%
+          - generic [ref=f17e111]: 今日已躺平
+    - generic [ref=f17e112]:
+      - generic [ref=f17e113]:
+        - generic [ref=f17e114]:
+          - generic [ref=f17e115]: 02 / TAKE A LITTLE BREAK
+          - heading "工作之外，还有这些小快乐。" [level=2] [ref=f17e116]
+        - generic [ref=f17e117]: 点一下，陪它玩。
+      - generic [ref=f17e118]:
+        - button "陪练举铁 一起完成六次举铁" [ref=f17e119] [cursor=pointer]:
+          - generic [ref=f17e120]:
+            - generic [ref=f17e121]: 陪练举铁
+            - generic [ref=f17e122]: 一起完成六次举铁
+        - button "跳绳时间 有多少力，跳多高" [ref=f17e126] [cursor=pointer]:
+          - generic [ref=f17e130]:
+            - generic [ref=f17e131]: 跳绳时间
+            - generic [ref=f17e132]: 有多少力，跳多高
+        - button "接上充电 接上电流，放松一下" [ref=f17e136] [cursor=pointer]:
+          - generic [ref=f17e137]:
+            - generic [ref=f17e138]: 接上充电
+            - generic [ref=f17e139]: 接上电流，放松一下
+        - button "擦擦汗 认真运动也要照顾自己" [ref=f17e143] [cursor=pointer]:
+          - generic [ref=f17e144]:
+            - generic [ref=f17e145]: 擦擦汗
+            - generic [ref=f17e146]: 认真运动也要照顾自己
+        - button "击掌打气 你已经很棒啦" [ref=f17e150] [cursor=pointer]:
+          - generic [ref=f17e154]:
+            - generic [ref=f17e155]: 击掌打气
+            - generic [ref=f17e156]: 你已经很棒啦
+        - button "躺平休息 休息是正经事" [ref=f17e160] [cursor=pointer]:
+          - generic [ref=f17e161]:
+            - generic [ref=f17e162]: 躺平休息
+            - generic [ref=f17e163]: 休息是正经事
+        - button "打一套太极 云手推掌，慢慢舒展" [ref=f17e167] [cursor=pointer]:
+          - generic [ref=f17e171]:
+            - generic [ref=f17e172]: 打一套太极
+            - generic [ref=f17e173]: 云手推掌，慢慢舒展
+        - button "跳健美操 左右踏步，伸展抬臂" [ref=f17e177] [cursor=pointer]:
+          - generic [ref=f17e181]:
+            - generic [ref=f17e182]: 跳健美操
+            - generic [ref=f17e183]: 左右踏步，伸展抬臂
+        - button "做会儿瑜伽 树式平衡，侧身伸展" [ref=f17e187] [cursor=pointer]:
+          - generic [ref=f17e191]:
+            - generic [ref=f17e192]: 做会儿瑜伽
+            - generic [ref=f17e193]: 树式平衡，侧身伸展
+    - generic [ref=f17e197]:
+      - generic [ref=f17e199]:
+        - text: 03 / DRESS FOR THE DAY
+        - heading "熟悉的电池，不一样的小性格。" [level=2] [ref=f17e200]
+      - generic [ref=f17e201]:
+        - generic [ref=f17e202]:
+          - button "电池皮肤：元气绿" [ref=f17e203] [cursor=pointer]:
+            - generic [ref=f17e205]: ENERGY
+            - generic [ref=f17e206]: 元气绿
+            - generic [ref=f17e208]: 原味满格快乐
+          - button "电池皮肤：北孚" [ref=f17e209] [cursor=pointer]:
+            - generic [ref=f17e211]: 北孚
+            - generic [ref=f17e212]: 北孚
+            - generic [ref=f17e214]: 金黑运动款
+          - button "电池皮肤：大米" [ref=f17e215] [cursor=pointer]:
+            - generic [ref=f17e217]: 大米
+            - generic [ref=f17e218]: 大米
+            - generic [ref=f17e220]: 珊瑚橙的好心情
+          - button "电池皮肤：铜霸王" [ref=f17e221] [cursor=pointer]:
+            - generic [ref=f17e223]: 铜霸王
+            - generic [ref=f17e224]: 铜霸王
+            - generic [ref=f17e226]: 经典铜黑配色
+          - button "电池皮肤：A亚迪" [pressed] [ref=f17e227] [cursor=pointer]:
+            - generic [ref=f17e229]: AYD
+            - generic [ref=f17e230]: A亚迪
+            - generic [ref=f17e232]: 银白红边，蓄势待发
+          - button "电池皮肤：您德时代" [ref=f17e233] [cursor=pointer]:
+            - generic [ref=f17e235]: 您德时代
+            - generic [ref=f17e236]: 您德时代
+            - generic [ref=f17e238]: 银蓝运动，稳稳续航
+        - heading "今天在哪儿锻炼？" [level=3] [ref=f17e239]
+        - generic [ref=f17e240]:
+          - button "工位健身 摸鱼五分钟，运动两分钟" [pressed] [ref=f17e241] [cursor=pointer]:
+            - generic [ref=f17e242]:
+              - generic [ref=f17e243]: 工位健身
+              - generic [ref=f17e244]: 摸鱼五分钟，运动两分钟
+          - button "阳台晨练 晒晒太阳，伸个懒腰" [ref=f17e245] [cursor=pointer]:
+            - generic [ref=f17e246]:
+              - generic [ref=f17e247]: 阳台晨练
+              - generic [ref=f17e248]: 晒晒太阳，伸个懒腰
+          - button "深夜加班 放点音乐，陪你慢慢来" [ref=f17e249] [cursor=pointer]:
+            - generic [ref=f17e250]:
+              - generic [ref=f17e251]: 深夜加班
+              - generic [ref=f17e252]: 放点音乐，陪你慢慢来
+          - button "周末躺营 今天的计划：好好休息" [ref=f17e253] [cursor=pointer]:
+            - generic [ref=f17e254]:
+              - generic [ref=f17e255]: 周末躺营
+              - generic [ref=f17e256]: 今天的计划：好好休息
+        - paragraph [ref=f17e257]: 原创趣味名字与字标。装扮与场景独立保存。
+    - generic [ref=f17e258]:
+      - generic [ref=f17e259]: 打工电池 · 每一格，都认真生活。
+      - generic [ref=f17e263]: Work hard. Rest well.
+  - generic [ref=f17e267]:
+    - generic [ref=f17e268]: 登录凭据保存在本机 · 额度由官方平台同步
+    - generic [ref=f17e272]:
+      - text: EM Use v0.3.0
+      - generic [ref=f17e273]: /
+      - text: Windows & macOS

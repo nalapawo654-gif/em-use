@@ -12,3 +12,5 @@ import "./beaver.css"
 import "./hamster.css"
 
 import './cultivation.css'
+
+import './battery.css'

@@ -203,6 +203,7 @@ function updateTray() {
       { label: '充气牛马', type: 'radio', checked: state.settings.scene === 'buddy', click: () => applySettings({ scene: 'buddy' }) },
       { label: '林间海狸鼠', type: 'radio', checked: state.settings.scene === 'beaver', click: () => applySettings({ scene: 'beaver' }) },
       { label: '修仙渡劫事务所', type: 'radio', checked: state.settings.scene === 'cultivation', click: () => applySettings({ scene: 'cultivation' }) },
+      { label: '健身电池人', type: 'radio', checked: state.settings.scene === 'battery', click: () => applySettings({ scene: 'battery' }) },
       { label: '仓鼠动力机房', type: 'radio', checked: state.settings.scene === 'hamster', click: () => applySettings({ scene: 'hamster' }) },
     ] },
     { label: '刷新额度', enabled: !!headers && !state.syncing, click: () => { void refresh(true) } },

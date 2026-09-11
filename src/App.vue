@@ -7,6 +7,7 @@ import OutfitPicker from './components/OutfitPicker.vue'
 import BuddyExperience from './components/BuddyExperience.vue'
 import BeaverExperience from './components/BeaverExperience.vue'
 import CultivationExperience from './components/CultivationExperience.vue'
+import BatteryExperience from './components/BatteryExperience.vue'
 import HamsterExperience from './components/HamsterExperience.vue'
 import { SCENE_LABELS } from './shared/types'
 import ScenePicker from './components/ScenePicker.vue'
@@ -55,12 +56,13 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
       <BuddyExperience v-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BeaverExperience v-else-if="state.settings.scene === 'beaver'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <BatteryExperience v-else-if="state.settings.scene === 'battery'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <HamsterExperience v-else-if="state.settings.scene === 'hamster'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <CultivationExperience v-else-if="state.settings.scene === 'cultivation'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <div v-else :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">

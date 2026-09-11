@@ -1,0 +1,54 @@
+- generic [active] [ref=f14e1]:
+  - heading "电池人：实际渲染素材与姿态" [level=1] [ref=f14e2]
+  - main [ref=f14e3]:
+    - heading "六款皮肤 / 原创趣味字标" [level=2] [ref=f14e4]
+    - generic [ref=f14e5]:
+      - paragraph [ref=f14e8]: 元气绿
+      - paragraph [ref=f14e11]: 北孚
+      - paragraph [ref=f14e14]: 大米
+      - paragraph [ref=f14e17]: 铜霸王
+      - paragraph [ref=f14e20]: A亚迪
+      - paragraph [ref=f14e23]: 您德时代
+    - heading "每档电量的身体与鞋子" [level=2] [ref=f14e24]
+    - generic [ref=f14e25]:
+      - paragraph [ref=f14e28]: 100%
+      - paragraph [ref=f14e31]: 75%
+      - paragraph [ref=f14e34]: 50%
+      - paragraph [ref=f14e37]: 25%
+      - paragraph [ref=f14e40]: 10%
+      - paragraph [ref=f14e43]: 0%
+    - heading "开合跳六个时刻" [level=2] [ref=f14e44]
+    - generic [ref=f14e45]:
+      - paragraph [ref=f14e48]: 0 ms
+      - paragraph [ref=f14e51]: 130 ms
+      - paragraph [ref=f14e54]: 260 ms
+      - paragraph [ref=f14e57]: 390 ms
+      - paragraph [ref=f14e60]: 520 ms
+      - paragraph [ref=f14e63]: 650 ms
+    - heading "原地跑六个时刻" [level=2] [ref=f14e64]
+    - generic [ref=f14e65]:
+      - paragraph [ref=f14e68]: 7000 ms
+      - paragraph [ref=f14e71]: 7130 ms
+      - paragraph [ref=f14e74]: 7260 ms
+      - paragraph [ref=f14e77]: 7390 ms
+      - paragraph [ref=f14e80]: 7520 ms
+      - paragraph [ref=f14e83]: 7650 ms
+    - heading "主动互动" [level=2] [ref=f14e84]
+    - generic [ref=f14e85]:
+      - paragraph [ref=f14e88]: lift
+      - paragraph [ref=f14e91]: rope
+      - paragraph [ref=f14e94]: charge
+      - paragraph [ref=f14e97]: towel
+      - paragraph [ref=f14e100]: cheer
+      - paragraph [ref=f14e103]: rest
+      - paragraph [ref=f14e106]: taichi
+      - paragraph [ref=f14e109]: aerobics
+      - paragraph [ref=f14e112]: yoga
+    - heading "周边布局 / 充电 / 瑜伽" [level=2] [ref=f14e113]
+    - generic [ref=f14e114]:
+      - paragraph [ref=f14e117]: 工位音箱
+      - paragraph [ref=f14e120]: 阳台盆栽
+      - paragraph [ref=f14e123]: 充电接线
+      - paragraph [ref=f14e126]: 展开瑜伽垫
+      - paragraph [ref=f14e129]: 零电量充电
+      - paragraph [ref=f14e132]: 横躺休息

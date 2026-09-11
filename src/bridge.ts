@@ -3,7 +3,11 @@ import { DEFAULT_SETTINGS, type AppState, type DesktopAPI, type Settings } from 
 import { normalizeQuota, quotaFreshness } from './shared/quota'
 import { validateSettings } from './shared/settings'
 export const isDesktop = !!window.emUse
-function previewSettings() { try { return validateSettings(JSON.parse(localStorage.getItem('em-use-preview-settings') ?? '{}')) } catch { return {} } }
+function previewSettings() {
+  let saved: Partial<Settings> = {}
+  try { saved = validateSettings(JSON.parse(localStorage.getItem('em-use-preview-settings') ?? '{}')) } catch { /* Preview links still work when storage is unavailable. */ }
+  return { ...saved, ...validateSettings({ scene: new URLSearchParams(location.search).get('scene') }) }
+}
 const local = reactive<AppState>({ status: 'signed-out', quota: null, message: '登录后，让小鱼陪你看额度', syncing: false, settings: { ...DEFAULT_SETTINGS, ...(!isDesktop ? previewSettings() : {}) }, version: '0.3.0', persistentLogin: false, loginOpen: false })
 const listeners = new Set<(s: AppState) => void>()
 function emit() { listeners.forEach(fn => fn(JSON.parse(JSON.stringify(local)))) }
