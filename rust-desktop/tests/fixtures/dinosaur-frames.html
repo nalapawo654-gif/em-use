@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>小恐龙九帧与四配色 / QA</title><div id="app"></div><script type="module">
+import {createApp,h} from '/node_modules/.vite/deps/vue.js'
+import DinosaurVisual from '/src/components/DinosaurVisual.vue'
+import {DINOSAUR_SKINS} from '/src/shared/types.ts'
+import '/src/dinosaur.css'
+createApp({render(){return h('main',DINOSAUR_SKINS.map(skin=>h('section',[h('h2',skin.label),h('div',Array.from({length:9},(_,frame)=>h('article',[h(DinosaurVisual,{frame,skin:skin.id,gentle:true}),h('b',String(frame))])))])))}}).mount('#app')
+</script><style>body{margin:0;background:#edf0e3;color:#344d36;font:14px system-ui}main{padding:20px}h2{font-size:18px;margin:12px 0}section>div{display:grid;grid-template-columns:repeat(9,1fr);gap:4px}article{position:relative;aspect-ratio:1;background:linear-gradient(135deg,#fff9e7 50%,#334239 50%);border-radius:8px}article>b{position:absolute;top:6px;left:6px;font-size:11px}.dinosaur-visual{inset:4px}</style></html>

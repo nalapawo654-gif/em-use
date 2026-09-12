@@ -1,0 +1,8 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>招财猫逐动作关键帧验收</title><div id="app"></div><script type="module">
+import {createApp,h,reactive} from '/node_modules/.vite/deps/vue.js'
+import LuckyCatVisual from '/src/components/LuckyCatVisual.vue'
+import '/src/luckycat.css'
+const qa=reactive({skin:new URLSearchParams(location.search).get('skin')??'classic'});window.catMatrixQA=qa
+const motions=['fortune','blink','stretch','coffee','toss'],frames=[0,.15,.3,.45,.6,.75,.9,1]
+createApp({render:()=>h('main',motions.map(m=>h('section',[h('h2',`${qa.skin} / ${m}`),h('div',{class:'row'},frames.map(p=>h('article',[h('div',[h(LuckyCatVisual,{skin:qa.skin,sample:{motion:m,progress:p}})]),h('small',`${Math.round(p*100)}%`)])))])))}).mount('#app')
+</script><style>body{margin:0;background:#eee3cf;color:#654b32;font:12px sans-serif}main{padding:10px}h2{margin:6px 0;font-size:14px}section{margin-bottom:8px}.row{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}article{text-align:center;background:repeating-conic-gradient(#efe5d5 0% 25%,#e2d5c0 0% 50%) 50%/14px 14px;border-radius:6px}article>div{position:relative;aspect-ratio:1}small{display:block;background:#fff6e8;padding:3px}</style></html>

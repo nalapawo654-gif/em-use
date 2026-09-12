@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT.parent / 'public/assets'
 DEST = ROOT / 'public/assets'
 REPORT = ROOT / 'docs/asset-compression.json'
+NATIVE = json.loads((ROOT / 'docs/native-assets.json').read_text())['assets']
 UNUSED = {
     'cultivation/cultivator.png': 'Replaced by cultivation/skins atlases',
     'beaver/quota-trees.png': 'Replaced by quota-trees-v2.png',
@@ -46,7 +47,12 @@ def verify():
     originals = {p.relative_to(SOURCE).as_posix() for p in SOURCE.rglob('*.png')}
     assert originals == {r['source'] for r in report['images']} | set(UNUSED), 'Unreviewed source artwork'
     assert report['excluded'] == UNUSED
-    expected = {r['target'] for r in report['images']}
+    expected = {r['target'] for r in report['images']} | {r['path'] for r in NATIVE}
+    for row in NATIVE:
+        path = DEST / row['path']
+        assert digest(path) == row['sha256'], row['path']
+        with Image.open(path) as image:
+            assert image.size == (row['width'], row['height']), row['path']
     assert {p.relative_to(DEST).as_posix() for p in DEST.rglob('*') if p.is_file()} == expected, 'Unexpected runtime assets'
     for row in report['images']:
         source, target = SOURCE / row['source'], DEST / row['target']
@@ -54,14 +60,14 @@ def verify():
         with Image.open(source) as a, Image.open(target) as b:
             assert a.size == b.size == (row['width'], row['height'])
             assert a.convert('RGBA').tobytes() == b.convert('RGBA').tobytes(), row['source']
-    print(f"{len(expected)} runtime atlases: identical dimensions and every RGBA pixel; {report['runtime_bytes']:,} bytes")
+    print(f"{len(NATIVE)} Tauri-only assets verified; {len(report['images'])} legacy runtime atlases: identical dimensions and every RGBA pixel; {report['runtime_bytes']:,} bytes")
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(); parser.add_argument('--check', action='store_true'); args = parser.parse_args()
     if not args.check:
         sources = sorted(p for p in SOURCE.rglob('*.png') if p.relative_to(SOURCE).as_posix() not in UNUSED)
         with ThreadPoolExecutor(max_workers=4) as pool: rows = list(pool.map(convert, sources))
         # Remove only unchanged mirrored originals; authoring material stays in the baseline.
-        expected = {r['target'] for r in rows}
+        expected = {r['target'] for r in rows} | {r['path'] for r in NATIVE}
         for path in sorted(DEST.rglob('*')):
             if path.is_file() and path.relative_to(DEST).as_posix() not in expected:
                 relative = path.relative_to(DEST).as_posix()

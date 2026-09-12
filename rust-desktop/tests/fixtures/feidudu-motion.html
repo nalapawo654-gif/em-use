@@ -1,0 +1,16 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><base href="/"><link rel="icon" href="data:,"><title>肥嘟嘟局部动作验收</title><style>body{margin:24px;background:#ede5d9;color:#4d3825;font:14px system-ui}#grid{display:grid;grid-template-columns:repeat(5,240px);gap:12px}.card{border:1px solid #cdbca6;border-radius:12px;background:#fff6e7;text-align:center;padding:8px}canvas{width:224px;height:224px}.dark{background:#29232e;color:white}h1{font-size:20px}</style></head><body><h1>实际素材 / 所有日常姿势与局部动作 · 随机调度另测</h1><div id="grid"></div><script type="module">
+import {loadFeidudu} from '/src/feidudu/sprites.ts';
+import {createFeiduduMotionRenderer} from '/src/feidudu/motionRenderer.ts';
+import {feiduduMotionPool,feiduduAmbientFrame,FEIDUDU_MOTIONS} from '/src/feidudu/ambient.ts';
+import {tintFeiduduPixels} from '/src/feidudu/skins.ts';
+const frames=await loadFeidudu(), samples=[];
+const skin=new URLSearchParams(location.search).get('skin')||'classic';
+for(let frame=0;frame<5;frame++)for(const motion of feiduduMotionPool(frame)){
+ const pose=feiduduAmbientFrame(frame,motion);
+ const source=document.createElement('canvas');source.width=source.height=512;const s=source.getContext('2d',{willReadFrequently:true});s.drawImage(frames[pose],0,0);const pixels=s.getImageData(0,0,512,512);tintFeiduduPixels(pixels.data,skin);s.putImageData(pixels,0,0);
+ const card=document.createElement('div');card.className='card'+(frame%2?' dark':'');const title=document.createElement('div');title.textContent=`姿势 ${frame} · ${FEIDUDU_MOTIONS[motion].label}`;const canvas=document.createElement('canvas');canvas.width=canvas.height=512;if(skin==='peach')canvas.style.filter='hue-rotate(315deg) saturate(.72)';if(skin==='cream')canvas.style.filter='saturate(.48) brightness(1.09)';card.append(title,canvas);document.querySelector('#grid').append(card);
+ const draw=createFeiduduMotionRenderer(source,frames[pose],pose);samples.push({frame,motion,canvas,draw,source});
+}
+window.feiduduMotionQA={samples,render(progress){for(const {canvas,draw,motion} of samples)draw(canvas.getContext('2d'),motion,progress)},measure(){const s=samples.find(s=>s.motion==='belly');const start=performance.now();for(let i=0;i<30;i++)s.draw(s.canvas.getContext('2d'),s.motion,i/30);return (performance.now()-start)/30}};
+window.feiduduMotionQA.render(.5);document.body.dataset.ready='true';
+</script></body></html>

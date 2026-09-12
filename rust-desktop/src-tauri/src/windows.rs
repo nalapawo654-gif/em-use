@@ -236,6 +236,11 @@ fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
         "hamster",
         "cultivation",
         "battery",
+        "feidudu",
+        "dinosaur",
+        "fox",
+        "luckycat",
+        "skadi",
     ] {
         scenes
             .append(

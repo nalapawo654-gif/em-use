@@ -1,9 +1,10 @@
+import { FINAL_FORM_PERCENT } from '../shared/petQuota'
 export type HamsterLevel = 'full' | 'working' | 'low' | 'empty' | 'unknown'
 export type HamsterAction = 'idle' | 'feed' | 'wheel' | 'sleep' | 'pet' | 'groom' | 'bell' | 'tease' | 'coffee' | 'cat-yawn' | 'cat-nap' | 'cat-snack'
 export interface HamsterPlay { action: HamsterAction; since: number; turns: number; lastTap: number; completedAt: number | null }
 export function hamsterLevel(percent: number | null): HamsterLevel {
   if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 60 ? 'full' : percent > 10 ? 'working' : percent > 0 ? 'low' : 'empty'
+  return percent > 60 ? 'full' : percent > 20 ? 'working' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
 }
 export const HAMSTER_LEVELS: Record<HamsterLevel, { label: string; speech: string }> = {
   full: { label: '活力满满', speech: '小小的身体，大大的能量！' },

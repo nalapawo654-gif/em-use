@@ -8,7 +8,15 @@ export function validateSettings(input: unknown): Partial<Settings> {
   }
   const enums = {
     size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
-    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
+    outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['skadi', 'dinosaur', 'luckycat', 'fox', 'feidudu', 'aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
+    skadiSkin: ['classic', 'moonlight', 'gothic', 'sakura', 'azure', 'pajamas'],
+    skadiAdultSkin: ['classic', 'moonlight', 'gothic', 'sakura', 'azure', 'pajamas'],
+    skadiForm: ['chibi', 'adult'],
+    skadiWeapon: ['sword', 'scythe', 'staff', 'twins', 'bow', 'butterfly'],
+    dinosaurSkin: ['classic', 'peach', 'cream', 'charcoal'],
+    luckycatSkin: ['classic', 'festival', 'jade', 'pajamas'],
+    foxSkin: ['classic', 'jade', 'sepia'],
+    feiduduSkin: ['classic', 'peach', 'cream', 'black-purple', 'eleme-blue', 'jd-red'],
     batterySkin: ['classic', 'nanfu', 'xiaomi', 'duracell', 'byd', 'catl'],
     batteryRealm: ['office', 'balcony', 'overtime', 'weekend'],
     cultivationSkin: ['classic', 'azure', 'astral', 'crimson'],

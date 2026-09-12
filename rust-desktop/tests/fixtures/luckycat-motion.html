@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>招财猫 · 动作衣橱</title><div id="app"></div><script type="module">
+import {createApp,h,reactive} from '/node_modules/.vite/deps/vue.js'
+import LuckyCatVisual from '/src/components/LuckyCatVisual.vue'
+import {LUCKYCAT_SKINS} from '/src/shared/types.ts'
+import {LUCKYCAT_ACTIONS} from '/src/luckycat/play.ts'
+import {CAT_DURATIONS} from '/src/luckycat/motion.ts'
+import '/src/luckycat.css'
+const qa=reactive({motion:'fortune',progress:.5,playing:new URLSearchParams(location.search).has('autoplay'),skin:'classic',percent:100,allSkins:true,frames:false})
+window.catMotionQA=qa
+let start=performance.now();function tick(now){if(qa.playing)qa.progress=((now-start)%CAT_DURATIONS[qa.motion])/CAT_DURATIONS[qa.motion];requestAnimationFrame(tick)}requestAnimationFrame(tick)
+createApp({render:()=>h('main',[
+ h('nav',[...Object.keys(CAT_DURATIONS).map(m=>h('button',{onClick:()=>{qa.motion=m;start=performance.now()}},LUCKYCAT_ACTIONS.find(a=>a.id===m)?.label??m)),h('button',{onClick:()=>{qa.playing=!qa.playing;start=performance.now()}},qa.playing?'暂停':'播放'),h('button',{onClick:()=>qa.frames=!qa.frames},'关键帧'),h('input',{type:'range',min:0,max:1,step:.01,value:qa.progress,onInput:e=>{qa.playing=false;qa.progress=Number(e.target.value)}})]),
+ h('div',{class:'grid'},(qa.frames?[0,.15,.3,.45,.6,.75,.9,1].map(p=>({id:qa.skin,label:p,progress:p})):LUCKYCAT_SKINS.map(s=>({...s,progress:qa.progress}))).map(s=>h('section',[h('div',[h(LuckyCatVisual,{skin:s.id,percent:qa.percent,sample:{motion:qa.motion,progress:s.progress}})]),h('b',s.label)])))
+])}).mount('#app')
+</script><style>body{margin:0;background:#eee3cf;font:14px sans-serif;color:#624832}nav{padding:15px;display:flex;gap:8px;flex-wrap:wrap}button{padding:8px;border:1px solid #cdb797;border-radius:6px;background:#fff6e8;color:#624832;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px}section{text-align:center;border:1px solid #ccbba5;border-radius:14px;background:repeating-conic-gradient(#efe5d5 0% 25%,#e2d5c0 0% 50%) 50%/18px 18px;padding:8px}section>div{position:relative;aspect-ratio:1}b{display:block;padding:8px;background:#fff5e4}</style></html>

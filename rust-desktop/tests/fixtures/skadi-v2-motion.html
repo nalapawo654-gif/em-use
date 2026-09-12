@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>月汐动作与技能检查</title><style>body{margin:0;background:#111b2b;color:#dce5f2;font:14px system-ui;padding:24px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.cell{position:relative;aspect-ratio:1;border:1px solid #53677e88;background:linear-gradient(135deg,#20334a,#111b2b);border-radius:8px}.cell>.skadi-visual{position:absolute;inset:0 0 22px}.cell>b{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:12px}</style><div id="app"></div><script type="module">
+import {createApp,h} from '/node_modules/.vite/deps/vue.js'
+import SkadiVisual from '/src/components/SkadiVisual.vue'
+import {SKADI_ACTIONS} from '/src/skadi/play.ts'
+import {SKADI_WEAPONS} from '/src/shared/types.ts'
+import '/src/skadi.css'
+import '/src/skadi-v2.css'
+const params=new URLSearchParams(location.search),form=params.get('form')||'adult',live=params.has('live')
+createApp({render(){return h('main',[h('h1',(form==='adult'?'御姐':'萝莉')+' / 动作与武器技能'),h('div',{class:'grid'},[...SKADI_WEAPONS.map(w=>({action:'blade',weapon:w.id,label:w.label})),...SKADI_ACTIONS.filter(a=>a.id!=='blade').map(a=>({action:a.id,weapon:'sword',label:a.label}))].map(item=>h('div',{class:'cell'},[h(SkadiVisual,{form,action:item.action,weapon:item.weapon,gentle:!live,paused:!live,fishing:'caught'}),h('b',item.label)])))])}}).mount('#app')
+</script></html>

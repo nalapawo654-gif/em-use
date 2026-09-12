@@ -1,0 +1,23 @@
+### Result
+{"checks":14,"results":["corner nw shared resize","corner ne shared resize","corner sw shared resize","corner se shared resize","ordinary wheel does not resize","modified wheel uses shared resize","new action replaces persistent work","blur clears active action","preview outfit survives reload","shared settings includes wardrobe","scene switch unmounts active feedback","returning scene has no orphan action","scene switch preserves separate outfit","phone preview has no horizontal overflow"]}
+### Ran Playwright code
+```js
+await (async page=>{
+const results=[];const check=(v,n)=>{if(!v)throw Error(n);results.push(n)};
+await page.goto('http://127.0.0.1:5186/tests/fixtures/skadi-native.html');await page.setViewportSize({width:440,height:440});await page.locator('.skadi-character .skadi-visual[data-loaded=true]').waitFor();
+await page.locator('.skadi-widget').hover();const corners=['nw','ne','sw','se'];
+for(const corner of corners){await page.evaluate(()=>window.skadiQA.calls.length=0);const b=await page.locator('.skadi-resize.'+corner).boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+(corner.includes('w')?-15:15),b.y+b.height/2+(corner.includes('n')?-15:15));await page.mouse.up();check(await page.evaluate(c=>window.skadiQA.calls.some(x=>x[0]==='begin'&&x[1]===c),corner),'corner '+corner+' shared resize')}
+await page.waitForTimeout(430);await page.evaluate(()=>window.skadiQA.calls.length=0);await page.mouse.move(250,200);await page.mouse.wheel(0,-100);check(await page.evaluate(()=>window.skadiQA.calls.length===0),'ordinary wheel does not resize');await page.keyboard.down('Control');await page.mouse.wheel(0,-100);await page.keyboard.up('Control');await page.waitForTimeout(100);check(await page.evaluate(()=>window.skadiQA.calls.some(c=>c[0]==='preferences'&&c[1].windowWidth>440)),'modified wheel uses shared resize');
+await page.locator('.skadi-widget').hover();await page.getByRole('button',{name:'月汐更多玩法',exact:true}).click();await page.getByRole('dialog').getByRole('button').filter({hasText:'陪你工作'}).click();await page.locator('.skadi-widget').hover();await page.getByRole('button',{name:'月汐更多玩法',exact:true}).click();await page.getByRole('dialog').getByRole('button').filter({hasText:'听她哼唱'}).click();check(await page.locator('.skadi-character .skadi-visual').getAttribute('data-frame')==='2','new action replaces persistent work');await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.waitForTimeout(80);check(await page.locator('.skadi-hud').count()===0,'blur clears active action');
+await page.goto('http://127.0.0.1:5186/?scene=skadi');await page.setViewportSize({width:1280,height:900});await page.locator('.skadi-character .skadi-visual[data-loaded=true]').waitFor();await page.locator('.skadi-preview-section .skadi-skins').getByRole('button').filter({hasText:'纯白圣歌'}).click();await page.reload();await page.locator('.skadi-character .skadi-visual[data-loaded=true]').waitFor();check(await page.locator('.skadi-character .skadi-visual').getAttribute('data-skin')==='moonlight','preview outfit survives reload');
+await page.getByRole('button',{name:'偏好设置',exact:true}).click();check(await page.getByRole('heading',{name:'月汐的衣橱'}).isVisible(),'shared settings includes wardrobe');
+await page.keyboard.press('Escape');await page.goto('http://127.0.0.1:5186/?scene=skadi');await page.locator('.skadi-character .skadi-visual[data-loaded=true]').waitFor();await page.locator('.skadi-widget').hover();await page.getByRole('button',{name:'月汐轻轻摸头',exact:true}).click();await page.getByRole('button',{name:'水墨小狐',exact:true}).click();check(await page.locator('.skadi-hud').count()===0,'scene switch unmounts active feedback');await page.getByRole('button',{name:'斯卡蒂 · 月汐',exact:true}).click();await page.locator('.skadi-character .skadi-visual[data-loaded=true]').waitFor();check(await page.locator('.skadi-hud').count()===0,'returning scene has no orphan action');check(await page.locator('.skadi-character .skadi-visual').getAttribute('data-skin')==='moonlight','scene switch preserves separate outfit');
+await page.setViewportSize({width:390,height:844});check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'phone preview has no horizontal overflow');await page.screenshot({path:'output/playwright/skadi-phone.png',fullPage:true});
+return {checks:results.length,results};
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:5186/?scene=skadi
+- Page Title: EM Use · 斯卡蒂 · 月汐
+npm warn Unknown user config "home". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.

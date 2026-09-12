@@ -1,0 +1,112 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - link "EM Use" [ref=e5] [cursor=pointer]:
+      - /url: "#"
+    - generic "选择宠物场景" [ref=e11]:
+      - button "额度小鱼缸" [ref=e12] [cursor=pointer]
+      - button "充气牛马" [ref=e17] [cursor=pointer]
+      - button "林间海狸鼠" [ref=e22] [cursor=pointer]
+      - button "仓鼠动力机房" [ref=e26] [cursor=pointer]
+      - button "修仙渡劫事务所" [ref=e31] [cursor=pointer]
+      - button "健身电池人" [ref=e36] [cursor=pointer]
+      - button "肥嘟嘟" [ref=e41] [cursor=pointer]
+      - button "水墨小狐" [ref=e46] [cursor=pointer]
+      - button "破产招财猫" [active] [pressed] [ref=e51] [cursor=pointer]
+    - button "偏好设置" [ref=e58] [cursor=pointer]
+  - generic [ref=e170]:
+    - generic [ref=e171]:
+      - region "破产招财猫场景" [ref=e172]:
+        - button "点点招财猫，招招财" [ref=e173] [cursor=pointer]
+        - paragraph: 稳！问题不大！
+        - generic [ref=e174]:
+          - button "招财猫今日剩余额度 68%，已同步" [ref=e175] [cursor=pointer]:
+            - generic [ref=e176]: 今日余粮
+            - strong [ref=e179]: 68%
+          - generic [ref=e180]: ¥204.00 / ¥300.00
+      - complementary [ref=e181]:
+        - text: A LITTLE LUCK, A LOT OF COMPANY
+        - generic [ref=e182]:
+          - heading "破产 招财猫。" [level=1] [ref=e183]: 破产招财猫。
+          - generic [ref=e184]: 财源喵进
+        - paragraph [ref=e185]: 额度有多少，猫猫说了算。
+        - paragraph [ref=e186]: 有余粮，就戴上墨镜享受。忙起来，就陪你认真敲键盘。哪怕小金库见底，也有猫猫一直在。
+        - generic [ref=e187]:
+          - button "接一点小财运" [ref=e188] [cursor=pointer]
+          - button "月下小金库" [ref=e195] [cursor=pointer]
+        - generic [ref=e199]: 桌角新朋友 / 09 · 浏览器预览 · 演示额度
+    - generic [ref=e200]:
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - text: 01 / 猫猫的小金库
+          - heading "从躺平到抱币，猫生全看余额。" [level=2] [ref=e203]
+        - button "未知额度 · —" [ref=e204] [cursor=pointer]
+      - generic [ref=e205]:
+        - button "预览招财猫 100%" [ref=e206] [cursor=pointer]:
+          - strong [ref=e210]: 100%
+          - text: 满量，躺平享受
+        - button "预览招财猫 50%" [ref=e211] [cursor=pointer]:
+          - strong [ref=e215]: 50%
+          - text: 认真工作，努力招财
+        - button "预览招财猫 10%" [ref=e216] [cursor=pointer]:
+          - strong [ref=e220]: 10%
+          - text: 抱紧最后的小金币
+        - button "预览招财猫 0%" [ref=e221] [cursor=pointer]:
+          - strong [ref=e225]: 0%
+          - text: 空碗求生，在线陪伴
+    - generic [ref=e226]:
+      - generic [ref=e227]:
+        - generic [ref=e228]:
+          - text: 02 / 今日份陪伴
+          - heading "小小互动，慢慢亲近。" [level=2] [ref=e229]
+        - generic [ref=e230]: 轻轻一点，让它回应你。
+      - generic [ref=e231]:
+        - button "招招财 挥挥小爪，接住好心情" [ref=e232] [cursor=pointer]:
+          - generic [ref=e236]: 招招财
+          - generic [ref=e237]: 挥挥小爪，接住好心情
+        - button "喂条小鱼 一口小鱼，猫猫满足" [ref=e241] [cursor=pointer]:
+          - generic [ref=e245]: 喂条小鱼
+          - generic [ref=e246]: 一口小鱼，猫猫满足
+        - button "续杯咖啡 举起咖啡，歇一小会" [ref=e250] [cursor=pointer]:
+          - generic [ref=e254]: 续杯咖啡
+          - generic [ref=e255]: 举起咖啡，歇一小会
+        - button "认真赶工 敲敲键盘，陪你开工" [ref=e259] [cursor=pointer]:
+          - generic [ref=e263]: 认真赶工
+          - generic [ref=e264]: 敲敲键盘，陪你开工
+        - button "纸箱摸鱼 躲进纸箱，随时回来" [ref=e268] [cursor=pointer]:
+          - generic [ref=e272]: 纸箱摸鱼
+          - generic [ref=e273]: 躲进纸箱，随时回来
+        - button "送个红包 收个小祝福，开心一下" [ref=e277] [cursor=pointer]:
+          - generic [ref=e281]: 送个红包
+          - generic [ref=e282]: 收个小祝福，开心一下
+    - generic [ref=e286]:
+      - generic [ref=e287]:
+        - generic [ref=e288]:
+          - text: 03 / 随身小福气
+          - heading "挂一点福气，陪你每一天。" [level=2] [ref=e289]
+        - generic [ref=e290]: 配饰独立保存
+      - generic [ref=e291]:
+        - button "原味金运 三花猫，金灿灿" [pressed] [ref=e292] [cursor=pointer]:
+          - generic [ref=e294]: 原味金运
+          - generic [ref=e295]: 三花猫，金灿灿
+        - button "红绳福牌 小小福牌，好运常在" [ref=e296] [cursor=pointer]:
+          - generic [ref=e297]:
+            - generic [aria-hidden]:
+              - generic: 福
+          - generic [ref=e298]: 红绳福牌
+          - generic [ref=e299]: 小小福牌，好运常在
+        - button "青玉平安 温润青玉，平安相伴" [ref=e300] [cursor=pointer]:
+          - generic [ref=e301]:
+            - generic [aria-hidden]:
+              - generic: 安
+          - generic [ref=e302]: 青玉平安
+          - generic [ref=e303]: 温润青玉，平安相伴
+    - generic [ref=e304]:
+      - generic [ref=e305]: 破产招财猫 · 额度会变，猫猫一直在。
+      - generic [ref=e306]: 有猫
+      - generic [ref=e307]: Stay lucky. Stay together.
+  - generic [ref=e163]:
+    - generic [ref=e164]: 登录凭据保存在本机 · 额度由官方平台同步
+    - generic [ref=e168]:
+      - text: EM Use v0.4.2
+      - generic [ref=e169]: /
+      - text: Windows & macOS

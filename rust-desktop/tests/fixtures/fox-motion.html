@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>小狐狸 · 优雅日常动作</title><div id="app"></div><script type="module">
+import {createApp,h} from '/node_modules/.vite/deps/vue.js'
+import FoxVisual from '/src/components/FoxVisual.vue'
+import {FOX_MOTIONS,foxMotionPool} from '/src/fox/ambient.ts'
+import {foxLevel} from '/src/fox/play.ts'
+import '/src/fox.css'
+const params=new URLSearchParams(location.search), percent=Number(params.get('percent')??100),skin=params.get('skin')??'classic'
+createApp({render(){return h('main',[
+  h('h1','水墨小狐 · 优雅日常动作'),
+  ...Object.entries(FOX_MOTIONS).filter(([motion])=>foxMotionPool(foxLevel(percent)).includes(motion)).map(([motion,spec])=>h('section',[h('h2',spec.label),h('div',{class:'samples'},[0,.35,.55,.82,1].map(progress=>h('figure',[h('div',{class:'pet'},[h(FoxVisual,{percent,skin,ambient:true,paused:true,sample:{motion,progress}})]),h('figcaption',`${Math.round(progress*100)}%`)])))])),
+])}}).mount('#app')
+</script><style>body{margin:0;padding:22px;background:#eeede4;color:#29352d;font:13px serif}h1{font-size:22px;font-weight:500}h2{font-size:16px;font-weight:500}section{border-top:1px solid #c5cdbd;padding-top:8px}.samples{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}figure{margin:0}.pet{position:relative;aspect-ratio:1}figcaption{text-align:center;margin:5px 0 18px}</style></html>

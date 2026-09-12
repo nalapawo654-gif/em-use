@@ -6,7 +6,7 @@ import { validateSettings } from '../src/shared/settings.ts'
 import { DEFAULT_SETTINGS } from '../src/shared/types.ts'
 
 test('quota levels distinguish exhausted, low, tired and full without inventing missing quota', () => {
-  assert.deepEqual([100, 61, 60, 26, 25, 1, 0, -1].map(buddyLevel), [0, 0, 1, 1, 2, 2, 3, 3])
+  assert.deepEqual([100, 61, 60, 26, 25, 16, 0, -1].map(buddyLevel), [0, 0, 1, 1, 2, 2, 3, 3])
   assert.equal(buddyLevel(null), 0); assert.equal(buddyLevel(NaN), 0)
 })
 test('every timed action ends, and replacing an action cancels its old schedule', () => {

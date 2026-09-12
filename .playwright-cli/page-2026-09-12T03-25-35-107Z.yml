@@ -1,0 +1,50 @@
+- main [ref=e3]:
+  - heading "水墨小狐 · 优雅日常动作" [level=1] [ref=e4]
+  - generic [ref=e5]:
+    - heading "缓缓眨眼" [level=2] [ref=e6]
+    - generic [ref=e7]:
+      - figure "0%" [ref=e8]
+      - figure "35%" [ref=e11]
+      - figure "55%" [ref=e14]
+      - figure "82%" [ref=e17]
+      - figure "100%" [ref=e20]
+  - generic [ref=e23]:
+    - heading "抬爪拂耳" [level=2] [ref=e24]
+    - generic [ref=e25]:
+      - figure "0%" [ref=e26]
+      - figure "35%" [ref=e29]
+      - figure "55%" [ref=e32]
+      - figure "82%" [ref=e35]
+      - figure "100%" [ref=e38]
+  - generic [ref=e41]:
+    - heading "侧首听风" [level=2] [ref=e42]
+    - generic [ref=e43]:
+      - figure "0%" [ref=e44]
+      - figure "35%" [ref=e47]
+      - figure "55%" [ref=e50]
+      - figure "82%" [ref=e53]
+      - figure "100%" [ref=e56]
+  - generic [ref=e59]:
+    - heading "轻嗅空气" [level=2] [ref=e60]
+    - generic [ref=e61]:
+      - figure "0%" [ref=e62]
+      - figure "35%" [ref=e65]
+      - figure "55%" [ref=e68]
+      - figure "82%" [ref=e71]
+      - figure "100%" [ref=e74]
+  - generic [ref=e77]:
+    - heading "舒卷尾尖" [level=2] [ref=e78]
+    - generic [ref=e79]:
+      - figure "0%" [ref=e80]
+      - figure "35%" [ref=e83]
+      - figure "55%" [ref=e86]
+      - figure "82%" [ref=e89]
+      - figure "100%" [ref=e92]
+  - generic [ref=e95]:
+    - heading "垂眸小憩" [level=2] [ref=e96]
+    - generic [ref=e97]:
+      - figure "0%" [ref=e98]
+      - figure "35%" [ref=e101]
+      - figure "55%" [ref=e104]
+      - figure "82%" [ref=e107]
+      - figure "100%" [ref=e110]

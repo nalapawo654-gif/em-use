@@ -1,0 +1,266 @@
+{
+  "description": "Tauri-only artwork added after the six-pet Electron migration. Legacy lossless parity remains in asset-compression.json.",
+  "assets": [
+    {
+      "path": "feidudu/atlas.png",
+      "sha256": "2471de11574b1760625a9b960bc9b117cf4706a05448e6639a8484b79766208c",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1378677,
+      "encoding": "PNG with magenta chroma; normalized and keyed by src/feidudu/sprites.ts",
+      "source": "Built-in image_gen; user reference ../../肥嘟嘟.png"
+    },
+    {
+      "path": "fox/atlas.png",
+      "sha256": "01c33dd2126378092f8ed9b96ca5e9578f0404ccb63725d029c8d3e24b19f4b3",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1971465,
+      "encoding": "PNG with green chroma; decoded once into six transparent layers by src/fox/sprites.ts",
+      "source": "Built-in image_gen; user reference ../../小狐狸.png"
+    },
+    {
+      "path": "fox/groom-rig.png",
+      "sha256": "23304dd5f88fed2f0e8bbcb04828d12db87d8a6056c2e8bf9d909a47974c278f",
+      "width": 2172,
+      "height": 724,
+      "bytes": 1491409,
+      "encoding": "PNG green chroma; two tailless base bodies without near foreleg plus one isolated foreleg",
+      "source": "Built-in image_gen; existing fox/atlas.png used as identity reference"
+    },
+    {
+      "path": "luckycat/atlas.png",
+      "width": 1774,
+      "height": 887,
+      "bytes": 1799678,
+      "sha256": "6c189eef9acb8296be3a485bcc5707cb3eaa4ddcce09d1c7170d79216d0a010b",
+      "encoding": "PNG green chroma; decoded into eight transparent poses by src/luckycat/sprites.ts",
+      "source": "Built-in imagegen; user reference ../../招财猫.png"
+    },
+    {
+      "path": "luckycat/outfits/classic.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1769324,
+      "sha256": "2a0fd58f5cf7bac7387669a39f5025d81e73dfd5b28e5b485ba3e3cc41d42d83",
+      "encoding": "PNG green chroma, connected-background decode and rig-part registration in src/luckycat/sprites.ts",
+      "source": "Built-in imagegen, grounded in the user lucky-cat reference and canonical puppet atlas"
+    },
+    {
+      "path": "luckycat/outfits/festival.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1926254,
+      "sha256": "54016453ce2bdf8b36c95f1ee9224050864ae4b94dba0017987b10ec2e8ca4d9",
+      "encoding": "PNG green chroma, connected-background decode and rig-part registration in src/luckycat/sprites.ts",
+      "source": "Built-in imagegen, grounded in the user lucky-cat reference and canonical puppet atlas"
+    },
+    {
+      "path": "luckycat/outfits/jade.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1790985,
+      "sha256": "fa65506ae40fe46544737c6dda5934b80da84abcb29de52fb1fb98ae43fc6796",
+      "encoding": "PNG green chroma, connected-background decode and rig-part registration in src/luckycat/sprites.ts",
+      "source": "Built-in imagegen, grounded in the user lucky-cat reference and canonical puppet atlas"
+    },
+    {
+      "path": "luckycat/outfits/pajamas.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1864928,
+      "sha256": "488b99317808acc01ca616f91255b29d7deb29746175f7127fa6db1be3a5da16",
+      "encoding": "PNG green chroma, connected-background decode and rig-part registration in src/luckycat/sprites.ts",
+      "source": "Built-in imagegen, grounded in the user lucky-cat reference and canonical puppet atlas"
+    },
+    {
+      "path": "luckycat/props.png",
+      "width": 2172,
+      "height": 724,
+      "bytes": 1525844,
+      "sha256": "ae9be08033f4eafdb375872a25b78ba014282d4ae7f530d26ab7c96182ddbbd0",
+      "encoding": "PNG green chroma, connected-background decode and rig-part registration in src/luckycat/sprites.ts",
+      "source": "Built-in imagegen, grounded in the user lucky-cat reference and canonical puppet atlas"
+    },
+    {
+      "path": "dinosaur/atlas.png",
+      "sha256": "37815f3cfa3ca44cb9555635c85a404e6252d39da840a06cd79f4a2bbbf4340d",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1557413,
+      "encoding": "PNG with magenta chroma; nine individually bounded poses normalized by src/dinosaur/sprites.ts",
+      "source": "Built-in image_gen; user reference ../../小恐龙.png"
+    },
+    {
+      "path": "dinosaur/motion-rig.png",
+      "sha256": "252c05c84d72e75fdac7c479b5a82eadb48e6b441d57d154132b32a9059e8ef2",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1260472,
+      "encoding": "PNG with magenta chroma; seven independently keyed parts for head, body, arms, wings and phone",
+      "source": "Built-in image_gen; reference dinosaur/atlas.png"
+    },
+    {
+      "path": "skadi/classic.png",
+      "sha256": "74217b1b0902546706a1b3655670ea25a4c168c68673e80ee5c66db8115d8f46",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2415375,
+      "encoding": "RGB PNG green screen; keyed and aligned once by src/skadi/sprites.ts",
+      "source": "Built-in image_gen; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/moonlight.png",
+      "sha256": "6f9acf5e726ee63b36e35413370195b087a3f56f73f46f29534dd1c6eecb49a5",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2378369,
+      "encoding": "RGB PNG green screen; keyed and aligned once by src/skadi/sprites.ts",
+      "source": "Built-in image_gen; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/pajamas.png",
+      "sha256": "ab04d7447905310e3ca1fe9212597c23b1d4fb2baba935676840b4279c82c3b1",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2319543,
+      "encoding": "RGB PNG green screen; keyed and aligned once by src/skadi/sprites.ts",
+      "source": "Built-in image_gen; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/cat.png",
+      "sha256": "5f9f35a002f11b84e2265f2403dfbd34dfbaaa7c2f2eb9e497be55bee39cbbda",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1889827,
+      "encoding": "RGB PNG green screen; keyed and aligned once by src/skadi/sprites.ts",
+      "source": "Built-in image_gen; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/adult-azure.png",
+      "sha256": "1ac32eb3a9c3db6000b043bb119e974e1f25adcfcaeffb48ccc7f0425fac5159",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2586846,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/adult-classic.png",
+      "sha256": "113acb7286609b542b1929fa78d5271678ef2a08c8cb5c7c7826998ac77d607a",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2448363,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/adult-gothic.png",
+      "sha256": "79ad347a726b8599c4681ad2f114ea8c204853923d782b0456e63e5d2bd3c994",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2664228,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/adult-moonlight.png",
+      "sha256": "2ca9517c95c709e19ce4464e528658a40960376223fcfc4e71905e4859399979",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2599795,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/adult-pajamas.png",
+      "sha256": "25eb5b2a41cec15ed42efd1ef87f61e8b17c3896c65d1042cae45296ce66266a",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2066896,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/adult-sakura.png",
+      "sha256": "1d924f8f37b3e705916def1d8c4301261dcdbb98a36e6fbf546f0173e3ed1d5f",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2593221,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/chibi-azure.png",
+      "sha256": "4f803963c8113eb1b1ea12ef025f7cc6265c4245a7ec3bb6c76e20faf3000b33",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2605147,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/chibi-classic.png",
+      "sha256": "36c251aa83cbd4794fae5b18d982087896a03b3ae6df1d7e71d036ae1a5cd6a1",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2497738,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/chibi-gothic.png",
+      "sha256": "6433274a8ba4e623dd293c406ad179c29a9e15aa59b7dae39933917bc5d22d14",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2807419,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/chibi-moonlight.png",
+      "sha256": "75b98bf0e52d16e277c333f0fe2b806387e6513ff98c0d0da1b34ebf26310ece",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2534299,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/chibi-pajamas.png",
+      "sha256": "be0d3f3cc6c272f01087adcf2c276a64cd4f705839adc8d268b82f754b3187bf",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2343551,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/chibi-sakura.png",
+      "sha256": "84131786f2f76e09007bfca02f98bc2c17efbab1e0ba4998c566761b4a560fba",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2427286,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/props.png",
+      "sha256": "0381b4a224bdcea5f004222128a1546016a091733a2d35f21df11c678a6ce5a1",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1766906,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "skadi/v2/weapons.png",
+      "sha256": "f3d3fd7cad12d29a8e4df62e69b437330889ca8275a3eae0b126dba2487056e1",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1865569,
+      "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
+      "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    }
+  ]
+}

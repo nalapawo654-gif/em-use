@@ -29,7 +29,7 @@ const interactions: { action: BatteryAction; label: string; hint: string; prop?:
   { action: 'yoga', label: '做会儿瑜伽', hint: '树式平衡，侧身伸展', icon: PhFlowerLotus },
 ]
 const quickInteractions = ['lift', 'charge', 'taichi', 'aerobics', 'yoga', 'rest'].map(action => interactions.find(item => item.action === action)!)
-const states = [{ percent: 100, label: '元气蹦蹦跳' }, { percent: 75, label: '轻快小跑' }, { percent: 50, label: '还能再练练' }, { percent: 25, label: '坐着伸伸腿' }, { percent: 10, label: '真的动不啦' }, { percent: 0, label: '今日已躺平' }]
+const states = [{ percent: 100, label: '元气蹦蹦跳' }, { percent: 75, label: '轻快小跑' }, { percent: 50, label: '还能再练练' }, { percent: 25, label: '坐着伸伸腿' }, { percent: 20, label: '真的动不啦' }, { percent: 15, label: '今日已躺平' }]
 const speech = computed(() => play.value.action === 'idle' ? BATTERY_LEVELS[level.value].speech : ({ lift: play.value.completedAt !== null ? '六次完成！给你一枚小奖章。' : '你点一下，我举一次！', rope: props.percent! <= 25 ? '小步跨绳，也算今天动过啦。' : '一、二、三，跳出好心情！', charge: '电流接通～充电特效不改变真实额度。', taichi: '起势、云手、推掌，慢下来。', aerobics: '左一步，右一步，跟着节拍动起来！', yoga: '站稳，伸展，呼——吸。', towel: '擦掉汗水，留下成就感。', cheer: '啪！和你击个掌。', rest: '今天也辛苦啦，先躺一会儿。' }[play.value.action]))
 const realm = computed(() => BATTERY_REALMS.find(r => r.id === state.settings.batteryRealm)!)
 function focusWidget() { void nextTick(() => widget.value?.focus({ preventScroll: true })) }

@@ -5,7 +5,7 @@ import { DEFAULT_SETTINGS, SCENE_LABELS } from '../src/shared/types.ts'
 import { validateSettings } from '../src/shared/settings.ts'
 
 test('quota boundaries distinguish full, working, low, zero, and unknown', () => {
-  assert.deepEqual([100,61,60,11,10,1,0,-1,null,NaN,Infinity].map(hamsterLevel), ['full','full','working','working','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([100,61,60,21,20,16,0,-1,null,NaN,Infinity].map(hamsterLevel), ['full','full','working','working','low','low','empty','empty','unknown','unknown','unknown'])
 })
 test('wheel requires six distinct taps; elapsed time and duplicate input cannot complete it', () => {
   let play = beginHamster('wheel', 0)

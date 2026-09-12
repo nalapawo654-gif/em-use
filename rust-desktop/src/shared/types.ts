@@ -5,8 +5,63 @@ export interface Quota {
   estimatedAt: string; serverAt: string; receivedAt: number; day: string;
 }
 export type Outfit = 'classic' | 'sailor' | 'royal' | 'ribbon'
-export type Scene = 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation' | 'battery'
-export const SCENE_LABELS: Record<Scene, string> = { aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所', battery: '健身电池人' }
+export type Scene = 'skadi' | 'dinosaur' | 'luckycat' | 'fox' | 'feidudu' | 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation' | 'battery'
+export const SCENE_LABELS: Record<Scene, string> = { skadi: '斯卡蒂 · 月汐', dinosaur: '摸鱼小恐龙', luckycat: '破产招财猫', fox: '水墨小狐', feidudu: '肥嘟嘟', aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所', battery: '健身电池人' }
+export type SkadiForm = 'chibi' | 'adult'
+export type SkadiSkin = 'classic' | 'moonlight' | 'gothic' | 'sakura' | 'azure' | 'pajamas'
+export type SkadiWeapon = 'sword' | 'scythe' | 'staff' | 'twins' | 'bow' | 'butterfly'
+export const SKADI_FORMS: { id: SkadiForm; label: string; hint: string }[] = [
+  { id: 'adult', label: '御姐', hint: '修长身姿，沉静而优雅' },
+  { id: 'chibi', label: '萝莉', hint: '小小身影，软软的陪伴' },
+]
+export const SKADI_SKINS: { id: SkadiSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '夜海之誓', hint: '黑红缎带，月下最初的约定' },
+  { id: 'moonlight', label: '纯白圣歌', hint: '银色蕾丝，披一身温柔月光' },
+  { id: 'gothic', label: '暗夜魅影', hint: '黑纱与玫瑰，夜色里的秘密' },
+  { id: 'sakura', label: '樱落和服', hint: '绯樱白绢，藏起一缕晚风' },
+  { id: 'azure', label: '星穹战姬', hint: '冰蓝铠甲，守护月下的你' },
+  { id: 'pajamas', label: '休闲居家', hint: '软软的针织，慢慢说声晚安' },
+]
+export const SKADI_WEAPONS: { id: SkadiWeapon; label: string; hint: string; color: string }[] = [
+  { id: 'sword', label: '赤渊长剑', hint: '月光斩弧 · 剑锋流光', color: '#ed91ab' },
+  { id: 'scythe', label: '月蚀镰刀', hint: '绯月轮舞 · 月牙环绕', color: '#c999ec' },
+  { id: 'staff', label: '星眠法杖', hint: '星阵咏唱 · 星辉汇聚', color: '#aab4ff' },
+  { id: 'twins', label: '冰霜双刃', hint: '双刃交错 · 冰晶绽放', color: '#8fdbff' },
+  { id: 'bow', label: '血月弓', hint: '绯红箭雨 · 弓弦蓄光', color: '#ef829a' },
+  { id: 'butterfly', label: '灵蝶浮刃', hint: '蝶刃回旋 · 蝶群流舞', color: '#9ea9ff' },
+]
+export function skadiSelectedSkin(settings: Pick<Settings, 'skadiForm' | 'skadiSkin' | 'skadiAdultSkin'>): SkadiSkin {
+  return settings.skadiForm === 'adult' ? settings.skadiAdultSkin : settings.skadiSkin
+}
+export type DinosaurSkin = 'classic' | 'peach' | 'cream' | 'charcoal'
+export const DINOSAUR_SKINS: { id: DinosaurSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '经典绿', hint: '一只原味的小恐龙' },
+  { id: 'peach', label: '樱花粉', hint: '把春天穿在身上' },
+  { id: 'cream', label: '奶龙黄', hint: '奶油味的好心情' },
+  { id: 'charcoal', label: '酷炭黑', hint: '看起来酷，摸起来软' },
+]
+export type LuckyCatSkin = 'classic' | 'festival' | 'jade' | 'pajamas'
+export const LUCKYCAT_SKINS: { id: LuckyCatSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '原味金链', hint: '墨镜推上头，金链晃悠悠' },
+  { id: 'festival', label: '财神唐装', hint: '红缎金绣，戴上小财神帽' },
+  { id: 'jade', label: '咖啡师', hint: '蓝围裙，奶油衬衫和贝雷帽' },
+  { id: 'pajamas', label: '星星睡衣', hint: '绸缎睡衣，晚安小绒球' },
+]
+export type FoxSkin = 'classic' | 'jade' | 'sepia'
+export const FOX_SKINS: { id: FoxSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '水墨', hint: '墨分五色，朱砂一点' },
+  { id: 'jade', label: '青墨', hint: '山色入墨，清风作伴' },
+  { id: 'sepia', label: '暖墨', hint: '旧笺暖色，落笔温柔' },
+]
+export type FeiduduSkin = 'classic' | 'peach' | 'cream' | 'black-purple' | 'eleme-blue' | 'jd-red'
+export const FEIDUDU_SKINS: { id: FeiduduSkin; label: string; hint: string }[] = [
+  { id: 'classic', label: '原味黄', hint: '圆圆的，好心情' },
+  { id: 'peach', label: '蜜桃粉', hint: '甜甜的，小欢喜' },
+  { id: 'cream', label: '奶油黄', hint: '软软的，慢生活' },
+  { id: 'black-purple', label: '小黑紫', hint: '酷酷的，也很圆' },
+  { id: 'eleme-blue', label: '饿了么蓝', hint: '蓝蓝的，快乐送达' },
+  { id: 'jd-red', label: '狗东红', hint: '红红的，元气开工' },
+]
 export type BatterySkin = 'classic' | 'nanfu' | 'xiaomi' | 'duracell' | 'byd' | 'catl'
 export type BatteryRealm = 'office' | 'balcony' | 'overtime' | 'weekend'
 export const BATTERY_SKINS: { id: BatterySkin; label: string; hint: string; color: string; mark: string; body: number }[] = [
@@ -70,7 +125,7 @@ export interface Settings {
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
-  scene: Scene; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
+  scene: Scene; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
   loginMode?: 'dongdong' | 'manual' | 'signed-out';
@@ -92,5 +147,5 @@ export interface DesktopAPI {
 export const DEFAULT_SETTINGS: Settings = {
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
-  scene: 'aquarium', batterySkin: 'classic', batteryRealm: 'office', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
+  scene: 'aquarium', skadiSkin: 'classic', skadiAdultSkin: 'classic', skadiForm: 'chibi', skadiWeapon: 'sword', dinosaurSkin: 'classic', luckycatSkin: 'classic', foxSkin: 'classic', feiduduSkin: 'classic', batterySkin: 'classic', batteryRealm: 'office', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
 }

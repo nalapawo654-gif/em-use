@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>小恐龙窗口布局 / 模拟桥接</title><div id="app"></div><script type="module">
+import { DEFAULT_SETTINGS } from '/src/shared/types.ts'
+import { validateSettings } from '/src/shared/settings.ts'
+import { normalizeQuota } from '/src/shared/quota.ts'
+const date=new Date(Date.now()+8*3600000).toISOString().slice(0,19)
+const quota=normalizeQuota({code:'000200',data:{dailyCostLimit:'300',currentDayCost:'0',currentTime:date,lastCostEstimateTime:date,quotaExceeded:false}})
+const state={status:'ready',quota,loginMode:'signed-out',account:null,message:'浏览器 IPC 模拟，非真实账户',syncing:false,settings:{...DEFAULT_SETTINGS,scene:'dinosaur',theme:'day'},version:'qa',persistentLogin:false,loginOpen:false}
+const listeners=[],calls=[];const publish=()=>listeners.forEach(cb=>cb(structuredClone(state)))
+window.dinosaurQA={state,calls,publish,setStatus(status){state.status=status;publish()},setSize(width){state.settings.windowWidth=width;publish()},setPercent(percent){state.quota={...quota,percent,remaining:3*percent,used:300-3*percent};state.status='ready';publish()}}
+window.emUse={async getState(){return structuredClone(state)},onState(cb){listeners.push(cb);return()=>listeners.splice(listeners.indexOf(cb),1)},async settings(patch){Object.assign(state.settings,validateSettings(patch));calls.push(['preferences',patch]);publish()},async beginGesture(mode){calls.push(['begin',mode]);return calls.length},async moveGesture(id){calls.push(['move',id])},async endGesture(id){calls.push(['end',id])},async login(){calls.push(['login'])},async logout(){state.status='signed-out';state.quota=null;publish()},async refresh(){calls.push(['refresh'])},async openSettings(){calls.push(['settings'])},async hide(){calls.push(['hide'])},async quit(){calls.push(['quit'])},async openPortal(){},async openReleases(){},async screenshot(){return null}}
+await import('/src/main.ts')
+</script></html>

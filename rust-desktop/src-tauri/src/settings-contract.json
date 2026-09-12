@@ -10,6 +10,14 @@
     "notifications": true,
     "outfit": "classic",
     "scene": "aquarium",
+    "skadiSkin": "classic",
+    "skadiAdultSkin": "classic",
+    "skadiForm": "chibi",
+    "skadiWeapon": "sword",
+    "dinosaurSkin": "classic",
+    "luckycatSkin": "classic",
+    "foxSkin": "classic",
+    "feiduduSkin": "classic",
     "batterySkin": "classic",
     "batteryRealm": "office",
     "cultivationSkin": "classic",
@@ -41,12 +49,70 @@
       "ribbon"
     ],
     "scene": [
+      "skadi",
+      "dinosaur",
+      "luckycat",
+      "fox",
+      "feidudu",
       "aquarium",
       "buddy",
       "beaver",
       "hamster",
       "cultivation",
       "battery"
+    ],
+    "skadiSkin": [
+      "classic",
+      "moonlight",
+      "gothic",
+      "sakura",
+      "azure",
+      "pajamas"
+    ],
+    "skadiAdultSkin": [
+      "classic",
+      "moonlight",
+      "gothic",
+      "sakura",
+      "azure",
+      "pajamas"
+    ],
+    "skadiForm": [
+      "chibi",
+      "adult"
+    ],
+    "skadiWeapon": [
+      "sword",
+      "scythe",
+      "staff",
+      "twins",
+      "bow",
+      "butterfly"
+    ],
+    "dinosaurSkin": [
+      "classic",
+      "peach",
+      "cream",
+      "charcoal"
+    ],
+    "luckycatSkin": [
+      "classic",
+      "pajamas",
+      "festival",
+      "jade"
+    ],
+    "foxSkin": [
+      "classic",
+      "jade",
+      "sepia"
+    ],
+    "feiduduSkin": [
+      "classic",
+      "peach",
+      "cream",
+      "black-purple",
+      "eleme-blue",
+      "jd-red"
     ],
     "batterySkin": [
       "classic",
@@ -75,9 +141,9 @@
       "blossom"
     ],
     "cultivationTreasure": [
+      "jade",
       "none",
       "gourd",
-      "jade",
       "pouch"
     ],
     "cultivationRealm": [
@@ -118,6 +184,11 @@
     ]
   },
   "labels": {
+    "skadi": "斯卡蒂 · 月汐",
+    "dinosaur": "摸鱼小恐龙",
+    "luckycat": "破产招财猫",
+    "fox": "水墨小狐",
+    "feidudu": "肥嘟嘟",
     "aquarium": "额度小鱼缸",
     "buddy": "充气牛马",
     "beaver": "林间海狸鼠",

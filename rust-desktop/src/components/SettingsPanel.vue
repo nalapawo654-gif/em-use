@@ -12,6 +12,18 @@ import BeaverSkinPicker from './BeaverSkinPicker.vue'
 import CultivationWardrobe from './CultivationWardrobe.vue'
 import CultivationRealmPicker from './CultivationRealmPicker.vue'
 import CultivatorSprite from './CultivatorSprite.vue'
+import LuckyCatVisual from './LuckyCatVisual.vue'
+import LuckyCatWardrobe from './LuckyCatWardrobe.vue'
+import { skadiSelectedSkin } from '../shared/types'
+import SkadiArmory from './SkadiArmory.vue'
+import SkadiVisual from './SkadiVisual.vue'
+import SkadiWardrobe from './SkadiWardrobe.vue'
+import FoxVisual from './FoxVisual.vue'
+import FoxWardrobe from './FoxWardrobe.vue'
+import DinosaurVisual from './DinosaurVisual.vue'
+import DinosaurWardrobe from './DinosaurWardrobe.vue'
+import FeiduduVisual from './FeiduduVisual.vue'
+import FeiduduWardrobe from './FeiduduWardrobe.vue'
 import BatteryWardrobe from './BatteryWardrobe.vue'
 import BatteryVisual from './BatteryVisual.vue'
 import HamsterVisual from './HamsterVisual.vue'
@@ -50,15 +62,20 @@ async function disconnect() {
       </nav>
       <div class="settings-content">
         <template v-if="tab === 'appearance'">
-          <h2>陪伴场景</h2><p class="section-description">小鱼、牛马、海狸鼠、仓鼠，陪你修行的小仙人，还有爱健身的电池人。</p><ScenePicker/>
+          <h2>陪伴场景</h2><p class="section-description">小鱼、牛马、海狸鼠、仓鼠，陪你修行的小仙人，还有爱健身的电池人、圆滚滚的肥嘟嘟和爱留白的水墨小狐。</p><ScenePicker/>
           <h2>刚刚好的大小</h2><p class="section-description">从一整片小世界，到桌角的一点陪伴。</p>
-          <div class="size-options"><button v-for="item in [{ id: 'standard', title: '标准', sub: '看见每个小细节' }, { id: 'compact', title: '紧凑', sub: '小巧，也很可爱' }, { id: 'mini', title: '迷你', sub: '轻轻待在桌角' }]" :key="item.id" :class="{ selected: state.settings.size === item.id }" @click="set('size', item.id as Settings['size'])"><BuddySprite v-if="state.settings.scene === 'buddy'" :skin="state.settings.buddySkin" class="size-buddy-preview" :class="item.id"/><BeaverSprite v-else-if="state.settings.scene === 'beaver'" class="size-beaver-preview" :class="item.id"/><span v-else-if="state.settings.scene === 'hamster'" class="hamster-settings-thumb" :class="item.id"><HamsterVisual level="full" :skin="state.settings.hamsterSkin" :reduced-motion="true"/></span><span v-else-if="state.settings.scene === 'battery'" class="battery-settings-thumb" :class="item.id"><BatteryVisual :percent="100" :skin="state.settings.batterySkin" :reduced-motion="true"/></span><CultivatorSprite v-else-if="state.settings.scene === 'cultivation'" class="cultivation-settings-thumb" :frame="0" :skin="state.settings.cultivationSkin"/><img v-else :src="'./assets/aquarium.webp'" alt="" :class="item.id"/><b>{{ item.title }}</b><small>{{ item.sub }}</small><PhCheck v-if="state.settings.size === item.id" class="selection-check"/></button></div>
+          <div class="size-options"><button v-for="item in [{ id: 'standard', title: '标准', sub: '看见每个小细节' }, { id: 'compact', title: '紧凑', sub: '小巧，也很可爱' }, { id: 'mini', title: '迷你', sub: '轻轻待在桌角' }]" :key="item.id" :class="{ selected: state.settings.size === item.id }" @click="set('size', item.id as Settings['size'])"><BuddySprite v-if="state.settings.scene === 'buddy'" :skin="state.settings.buddySkin" class="size-buddy-preview" :class="item.id"/><BeaverSprite v-else-if="state.settings.scene === 'beaver'" class="size-beaver-preview" :class="item.id"/><span v-else-if="state.settings.scene === 'hamster'" class="hamster-settings-thumb" :class="item.id"><HamsterVisual level="full" :skin="state.settings.hamsterSkin" :reduced-motion="true"/></span><span v-else-if="state.settings.scene === 'battery'" class="battery-settings-thumb" :class="item.id"><BatteryVisual :percent="100" :skin="state.settings.batterySkin" :reduced-motion="true"/></span><span v-else-if="state.settings.scene === 'luckycat'" class="luckycat-settings-thumb" :class="item.id"><LuckyCatVisual :percent="100" :skin="state.settings.luckycatSkin" gentle paused/></span><span v-else-if="state.settings.scene === 'skadi'" class="skadi-settings-thumb" :class="item.id"><SkadiVisual :percent="100" :skin="skadiSelectedSkin(state.settings)" :form="state.settings.skadiForm" :weapon="state.settings.skadiWeapon" gentle paused/></span><span v-else-if="state.settings.scene === 'fox'" class="fox-settings-thumb" :class="item.id"><FoxVisual :percent="100" :skin="state.settings.foxSkin" gentle paused/></span><span v-else-if="state.settings.scene === 'dinosaur'" class="dinosaur-settings-thumb" :class="item.id"><DinosaurVisual :percent="100" :skin="state.settings.dinosaurSkin" gentle/></span><span v-else-if="state.settings.scene === 'feidudu'" class="feidudu-settings-thumb" :class="item.id"><FeiduduVisual :percent="100" :skin="state.settings.feiduduSkin" gentle/></span><CultivatorSprite v-else-if="state.settings.scene === 'cultivation'" class="cultivation-settings-thumb" :frame="0" :skin="state.settings.cultivationSkin"/><img v-else :src="'./assets/aquarium.webp'" alt="" :class="item.id"/><b>{{ item.title }}</b><small>{{ item.sub }}</small><PhCheck v-if="state.settings.size === item.id" class="selection-check"/></button></div>
           <label class="size-slider"><span>自由缩放 <b>{{ state.settings.windowWidth }} px</b></span><input aria-label="宠物窗口大小" type="range" min="180" max="800" step="10" :value="state.settings.windowWidth" @input="set('windowWidth', Number(($event.target as HTMLInputElement).value))"/><small>拖窗口四角，或按住 Ctrl / ⌘ 滚动鼠标。</small></label>
           <template v-if="state.settings.scene === 'buddy'"><h2>牛马衣橱</h2><p class="section-description">换个装扮，换份好心情。</p><BuddySkinPicker/></template>
           <template v-else-if="state.settings.scene === 'beaver'"><h2>海狸鼠天气装扮</h2><p class="section-description">晴雨雪风，选择今天的出门装扮。</p><BeaverSkinPicker/></template>
           <template v-else-if="state.settings.scene === 'cultivation'"><h2>修仙渡劫事务所</h2><p class="section-description">云海听雨，观星悟道。选择今天的仙境。</p><CultivationRealmPicker/><CultivationWardrobe/></template>
           <template v-else-if="state.settings.scene === 'hamster'"><h2>仓鼠动力机房</h2><p class="section-description">红发带、安全帽、雨衣、夏装、冬装和节日装，挑一套今天的心情。</p><HamsterSkinPicker/></template>
           <template v-else-if="state.settings.scene === 'battery'"><h2>电池人的运动衣橱</h2><BatteryWardrobe/></template>
+          <template v-else-if="state.settings.scene === 'luckycat'"><h2>猫猫的换装衣橱</h2><p class="section-description">金链、唐装、围裙、睡衣，每套都能动起来。</p><LuckyCatWardrobe/></template>
+          <template v-else-if="state.settings.scene === 'skadi'"><h2>月汐的衣橱</h2><p class="section-description">御姐与萝莉形态，各有六套衣装。</p><SkadiWardrobe/><h2>月汐的武器库</h2><SkadiArmory/></template>
+          <template v-else-if="state.settings.scene === 'fox'"><h2>小狐狸的墨色</h2><p class="section-description">墨分五色，心有留白。</p><FoxWardrobe/></template>
+          <template v-else-if="state.settings.scene === 'dinosaur'"><h2>小恐龙的心情衣橱</h2><p class="section-description">背刺还是橘子味，身体换个新颜色。</p><DinosaurWardrobe/></template>
+          <template v-else-if="state.settings.scene === 'feidudu'"><h2>肥嘟嘟的甜味衣橱</h2><p class="section-description">换一份圆圆的好心情。</p><FeiduduWardrobe/></template>
           <template v-else><h2>小鱼衣橱</h2><p class="section-description">戴上喜欢的小装饰，一起出发。</p><OutfitPicker/></template>
           <h2>光线与氛围</h2><div class="theme-options"><button v-for="item in [{ id: 'auto', title: '跟随昼夜', icon: PhCircleHalf }, { id: 'day', title: '晴朗白天', icon: PhSun }, { id: 'night', title: '安静夜晚', icon: PhMoon }]" :key="item.id" :class="{ selected: state.settings.theme === item.id }" @click="set('theme', item.id as Settings['theme'])"><component :is="item.icon"/>{{ item.title }}</button></div>
           <label class="setting-row"><span><b>轻柔模式</b><small>减少动画，让小伙伴安静陪伴，也更省电。</small></span><input type="checkbox" role="switch" :checked="state.settings.reducedMotion" @change="set('reducedMotion', ($event.target as HTMLInputElement).checked)"/></label>

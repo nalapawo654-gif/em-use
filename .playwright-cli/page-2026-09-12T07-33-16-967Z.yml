@@ -1,0 +1,80 @@
+- main [ref=f15e3]:
+  - heading "月汐 · 月下衣装与兵装" [level=1] [ref=f15e4]
+  - paragraph [ref=f15e5]: TWO FORMS · TWELVE OUTFITS · SIX WEAPONS
+  - generic [ref=f15e6]:
+    - heading "御姐 / 六套独立衣装" [level=2] [ref=f15e7]
+    - generic [ref=f15e8]:
+      - generic [ref=f15e9]: 夜海之誓
+      - generic [ref=f15e11]: 纯白圣歌
+      - generic [ref=f15e13]: 暗夜魅影
+      - generic [ref=f15e15]: 樱落和服
+      - generic [ref=f15e17]: 星穹战姬
+      - generic [ref=f15e19]: 休闲居家
+  - generic [ref=f15e21]:
+    - heading "萝莉 / 六套独立衣装" [level=2] [ref=f15e22]
+    - generic [ref=f15e23]:
+      - generic [ref=f15e24]: 夜海之誓
+      - generic [ref=f15e26]: 纯白圣歌
+      - generic [ref=f15e28]: 暗夜魅影
+      - generic [ref=f15e30]: 樱落和服
+      - generic [ref=f15e32]: 星穹战姬
+      - generic [ref=f15e34]:
+        - generic [aria-hidden]:
+          - generic: 月汐的素材暂未加载，请切换场景重试。
+        - generic [ref=f15e35]: 休闲居家
+  - heading "月下兵装 / 待机常驻 · 独立切换" [level=2] [ref=f15e36]
+  - generic [ref=f15e37]:
+    - generic [ref=f15e38]:
+      - generic [aria-hidden]:
+        - generic: 武器加载失败
+        - generic:
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+      - generic [ref=f15e39]: 赤渊长剑
+    - generic [ref=f15e40]:
+      - generic [aria-hidden]:
+        - generic: 武器加载失败
+        - generic:
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+      - generic [ref=f15e41]: 月蚀镰刀
+    - generic [ref=f15e42]:
+      - generic [aria-hidden]:
+        - generic: 武器加载失败
+        - generic:
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+      - generic [ref=f15e43]: 星眠法杖
+    - generic [ref=f15e44]:
+      - generic [aria-hidden]:
+        - generic: 武器加载失败
+        - generic:
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+      - generic [ref=f15e45]: 冰霜双刃
+    - generic [ref=f15e46]:
+      - generic [aria-hidden]:
+        - generic: 武器加载失败
+        - generic:
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+      - generic [ref=f15e47]: 血月弓
+    - generic [ref=f15e48]:
+      - generic [aria-hidden]:
+        - generic: 武器加载失败
+        - generic:
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+          - generic: ✦
+      - generic [ref=f15e49]: 灵蝶浮刃

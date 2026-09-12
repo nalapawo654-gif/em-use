@@ -1,0 +1,116 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - link "EM Use" [ref=e5] [cursor=pointer]:
+      - /url: "#"
+    - generic "选择宠物场景" [ref=e11]:
+      - button "额度小鱼缸" [ref=e12] [cursor=pointer]
+      - button "充气牛马" [ref=e17] [cursor=pointer]
+      - button "林间海狸鼠" [ref=e22] [cursor=pointer]
+      - button "仓鼠动力机房" [ref=e26] [cursor=pointer]
+      - button "修仙渡劫事务所" [ref=e31] [cursor=pointer]
+      - button "健身电池人" [ref=e36] [cursor=pointer]
+      - button "肥嘟嘟" [ref=e41] [cursor=pointer]
+      - button "水墨小狐" [ref=e46] [cursor=pointer]
+      - button "破产招财猫" [ref=e51] [cursor=pointer]
+      - button "摸鱼小恐龙" [ref=e56] [cursor=pointer]
+      - button "斯卡蒂 · 月汐" [pressed] [ref=e61] [cursor=pointer]
+    - button "偏好设置" [ref=e67] [cursor=pointer]
+  - generic [ref=e71]:
+    - generic [ref=e72]:
+      - region "斯卡蒂月汐场景" [ref=e73]:
+        - generic [aria-hidden]:
+          - generic: ✦
+        - button "轻轻摸摸月汐的头" [ref=e74] [cursor=pointer]
+        - button "让月汐陪你工作" [ref=e75] [cursor=pointer]
+        - button "逗逗小黑猫夜影" [ref=e76] [cursor=pointer]
+        - paragraph: 月色很好。今天，也陪着你。
+        - generic [ref=e77]:
+          - button "月汐今日剩余额度 68%，已同步" [ref=e78] [cursor=pointer]:
+            - generic [ref=e79]: 今日余光
+            - strong [ref=e82]: 68%
+          - generic [ref=e83]: ¥204.00 / ¥300.00
+      - complementary [ref=e84]:
+        - generic [ref=e85]: MOONLIT OCEAN · DESKTOP COMPANION
+        - paragraph [ref=e87]: 斯卡蒂 / 月下的陪伴者
+        - heading "月 汐 Y U E X I" [level=1] [ref=e88]:
+          - text: 月 汐
+          - generic [ref=e89]: Y U E X I
+        - paragraph [ref=e90]: 月色为契，而我，只为陪伴。
+        - paragraph [ref=e91]: 无论工作多忙，世界多喧嚣。总有一缕月光，静静落在你的桌角。
+        - generic [ref=e92]:
+          - button "轻轻摸摸她" [ref=e93] [cursor=pointer]
+          - button "晨光微明" [active] [ref=e225] [cursor=pointer]
+        - text: 银发 / 红瞳 / 一只名叫夜影的小黑猫
+    - generic [ref=e104]:
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - text: 01 / THE TIDES OF TODAY
+          - heading "潮起潮落，都陪在你身边。" [level=2] [ref=e107]
+        - button "未知额度 · —" [ref=e108] [cursor=pointer]
+      - generic [ref=e109]:
+        - button "预览月汐 100%" [ref=e110] [cursor=pointer]:
+          - strong [ref=e114]: 100%
+          - text: 月光充盈
+        - button "预览月汐 50%" [ref=e115] [cursor=pointer]:
+          - strong [ref=e119]: 50%
+          - text: 潮声渐缓
+        - button "预览月汐 10%" [ref=e120] [cursor=pointer]:
+          - strong [ref=e124]: 10%
+          - text: 夜色渐深
+        - button "预览月汐 0%" [ref=e125] [cursor=pointer]:
+          - strong [ref=e129]: 0%
+          - text: 静候新潮
+    - generic [ref=e130]:
+      - generic [ref=e131]:
+        - generic [ref=e132]:
+          - text: 02 / LITTLE MOMENTS
+          - heading "一些只属于你们的小事。" [level=2] [ref=e133]
+        - generic [ref=e134]: 轻轻一点，让她回应你。
+      - generic [ref=e135]:
+        - button "轻轻摸头 摸摸头，让她安心一点" [ref=e136] [cursor=pointer]:
+          - generic [ref=e140]: 轻轻摸头
+          - generic [ref=e141]: 摸摸头，让她安心一点
+        - button "听她哼唱 看音符随她的歌声轻轻浮起" [ref=e145] [cursor=pointer]:
+          - generic [ref=e149]: 听她哼唱
+          - generic [ref=e150]: 看音符随她的歌声轻轻浮起
+        - button "月光演舞 剑与星月杖，画出一道月光" [ref=e154] [cursor=pointer]:
+          - generic [ref=e158]: 月光演舞
+          - generic [ref=e159]: 剑与星月杖，画出一道月光
+        - button "逗逗夜影 小黑猫也想陪你玩一会" [ref=e163] [cursor=pointer]:
+          - generic [ref=e167]: 逗逗夜影
+          - generic [ref=e168]: 小黑猫也想陪你玩一会
+        - button "陪你工作 托着脸颊，安静等你忙完" [ref=e172] [cursor=pointer]:
+          - generic [ref=e176]: 陪你工作
+          - generic [ref=e177]: 托着脸颊，安静等你忙完
+        - button "晚安月汐 把今天，交给温柔的月亮" [ref=e181] [cursor=pointer]:
+          - generic [ref=e185]: 晚安月汐
+          - generic [ref=e186]: 把今天，交给温柔的月亮
+    - generic [ref=e190]:
+      - generic [ref=e191]:
+        - generic [ref=e192]:
+          - text: 03 / HER WARDROBE
+          - heading "月光，落在不同的衣角。" [level=2] [ref=e193]
+        - generic [ref=e194]: 装扮独立保存
+      - generic [ref=e195]:
+        - button "01 夜海之誓 黑红缎带，月下最初的约定" [pressed] [ref=e196] [cursor=pointer]:
+          - generic [ref=e197]: "01"
+          - generic [ref=e202]: 夜海之誓
+          - generic [ref=e203]: 黑红缎带，月下最初的约定
+        - button "02 月华白裙 银色蕾丝，披一身温柔月光" [ref=e204] [cursor=pointer]:
+          - generic [ref=e205]: "02"
+          - generic [ref=e207]: 月华白裙
+          - generic [ref=e208]: 银色蕾丝，披一身温柔月光
+        - button "03 居家晚安 软软的针织，慢慢说声晚安" [ref=e209] [cursor=pointer]:
+          - generic [ref=e210]: "03"
+          - generic [ref=e212]: 居家晚安
+          - generic [ref=e213]: 软软的针织，慢慢说声晚安
+    - generic [ref=e214]:
+      - generic [ref=e215]: 斯卡蒂 · 月汐 · 把浪漫的夜色，装进你的桌面。
+      - generic [ref=e216]: ✦
+      - generic [ref=e217]: Same moon. Always with you.
+  - generic [ref=e218]:
+    - generic [ref=e219]: 登录凭据保存在本机 · 额度由官方平台同步
+    - generic [ref=e223]:
+      - text: EM Use v0.4.2
+      - generic [ref=e224]: /
+      - text: Windows & macOS

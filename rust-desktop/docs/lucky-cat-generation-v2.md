@@ -1,0 +1,33 @@
+# 招财猫服装与关节素材生成记录
+
+模式：内置 imagegen。角色参考：仓库根目录 `招财猫.png`，以及首次招财猫 `public/assets/luckycat/atlas.png`。四套独立 4×3 部件图集保存到 `public/assets/luckycat/outfits/{classic,festival,jade,pajamas}.png`；公共道具保存到 `public/assets/luckycat/props.png`。前一张原味部件图作为后三套服装的共同身份参考。
+
+## luckycat_rig_prompt
+
+```text
+Production 2D puppet animation sprite asset sheet of EXACT fluffy calico lucky cat in reference, same white fur orange dark brown patches, gold chain, pink paw pads, rounded 3D toy rendering. Original gold-chain outfit. Black sunglasses REST ON FOREHEAD, eyes visible for animation. Flat pure green #00ff00 background, no shadows on background, no text, no checkerboard. Exactly 12 isolated assets in uniform 4 columns x 3 rows grid, each cell same size, 10% green padding; all complete within cells. ROW 1: cell1 complete happy seated cat with gold ingots; cell2 complete cat at laptop with coffee; cell3 complete worried cat hugging last large coin; cell4 complete sad cat peeking from cracked bowl. ROW 2 for articulated animation: cell5 isolated seated TORSO with gold chain and pendant, belly, tail, EXACTLY TWO hind feet, NO HEAD AND NO FRONT ARMS OR PAWS (rounded shoulder stubs, neck ends cleanly); cell6 isolated HEAD ONLY eyes open friendly neutral mouth closed including ears sunglasses on forehead, NO NECK OR BODY; cell7 IDENTICAL head, eyes fully closed, mouth closed; cell8 IDENTICAL head, closed eyes and open yawning mouth. ROW 3: cell9 isolated single front forearm with paw, sleeve-free white fluffy upper arm on TOP and rounded pink-pad paw at BOTTOM, front view; cell10 other isolated single front forearm white fur upperarm top paw bottom no pads visible; cell11 isolated takeaway coffee cup brown lid; cell12 isolated golden boat-shaped ingot. Keep head geometry consistent across cells6,7,8; retain exactly same ears, markings, size, camera. These are puppet parts for animation, missing parts in torso deliberate; no duplicated limbs. No extra objects in rig-part cells. Landscape 4:3 high resolution sprite sheet.
+```
+
+## luckycat_festival_prompt
+
+```text
+Edit this exact 12-cell calico cat puppet asset sheet into a complete Chinese GOD OF WEALTH OUTFIT. Preserve exactly the same 4 columns, 3 rows, positions, individual part identities, green background and character proportions. Dress every complete cat in row1 with an unmistakable rich RED SILK TANG JACKET with GOLD EMBROIDERY and a traditional RED AND GOLD ROUND FORTUNE HAT with small side wings. Replace sunglasses with the fortune hat; keep cat ears and face visible. On row2 cell1 put the same red silk jacket on the HEADLESS ARMLESS torso, retaining two hind feet and tail only. On row2 cells2,3,4 put exactly the same hat on the open-eyes, closed-eyes and yawning isolated HEADS, same size and geometry, no torso. On row3 cells1,2 add matching red gold sleeves to only the upper parts of the isolated forearms; white paws and pink pads visible at lower tips. Row3 cell3 coffee cup and cell4 gold ingot remain unchanged. Strict 12 assets, no new text, no captions, no shadows on background, perfectly flat #00ff00. Preserve missing heads/forearms in rig parts, no extra limbs. Costumes are real modeled cloth around the body and arms, with matching hat. Keep every asset contained in its corresponding cell. High detail fluffy toy rendering.
+```
+
+## luckycat_jade_prompt
+
+```text
+Edit the exact 12-cell calico cat puppet asset sheet into a CAFE BARISTA OUTFIT, preserving grid layout positions and cat identity. Outfit is a rich TEAL BLUE APRON with two tan leather straps, cream short-sleeved shirt underneath, and large warm COCOA BROWN BERET tilted to one side. NOT GREEN clothing: use teal BLUE #216b87 safely distinct from chroma green. REMOVE all sunglasses. All four complete cats in row1 wear the apron and beret, including laptop, coin, bowl poses. Row2 cell1: headless armless seated torso wears cream shirt and teal blue apron with stitched large pocket, exactly TWO hindfeet and tail only; no head and no front paws. Row2 other three cells: isolated heads with same beret for eyes open, fully closed, and yawning; identical head shape ears markings geometry, no torso. Row3 cell1,cell2 isolated white forearms with cream short sleeves at TOP and paws at BOTTOM; cell3 coffee cup and cell4 gold ingot unchanged. Exactly 4 columns 3 rows twelve assets, flat pure #00ff00 background, no background shadows no captions no text no checkerboard. Everything fits own cell, preserve layout of reference. Genuine 3D cloth costume, fluffy adorable calico fur.
+```
+
+## luckycat_pajamas_prompt
+
+```text
+Edit this exact 12-cell calico cat puppet asset sheet to a very distinct COZY SLEEPY PAJAMA outfit. Keep exactly same 4 columns x 3 rows positions, cat identity and proportions, green background and individual assets. Costume: loose PERIWINKLE BLUE satin button-up PAJAMAS with ivory piping, little GOLD STAR patterns, matching drooping NIGHTCAP with fluffy cream pompom hanging to side; cat ears remain visible. NO sunglasses. All four complete cats in first row wear the full star pajamas and nightcap, even in laptop, coin and bowl poses. Row2 first cell: HEADLESS ARMLESS seated pajama torso with exactly TWO hindfeet and calico tail only, no head or forearms. Row2 remaining three cells isolated HEADS with identical nightcap, eyes open, fully closed, open yawning mouth respectively. Same head size and silhouette across expressions. Row3 first two cells isolated forearms with pajama sleeves at TOP and white paws at BOTTOM; remaining coffee cup and gold ingot unchanged. Keep every asset wholly inside corresponding cell with clean green gaps. High-detail fluffy 3D toy render, clearly modeled fabric outfit, pure flat #00ff00 green background with no cast shadows, no text no grid lines no checkerboard. Preserve missing parts in puppet torso; never add extra limbs.
+```
+
+## luckycat_props_prompt
+
+```text
+Four isolated 3D toy desktop-pet props, matching the warm fluffy calico cat reference. Exactly 4 equal square cells in ONE HORIZONTAL ROW. Flat pure #00ff00 green backdrop, no background shadows, no text, no grid. Cell1: adorable red fish-shaped snack with shiny gold details, recognizable eyes and fins, NO CAT. Cell2: gray open laptop front-facing in 3/4 view, keyboard and black screen back, unbranded, isolated. Cell3: EMPTY small brown cardboard box viewed slightly from above front, open top, four folded-out flaps, visible dark inside, no cat or paws inside or behind. Cell4: plush red lucky envelope with gold rim and round blank gold seal, no lettering. Entire each object within own cell with large clean margins. No characters, no extra props. High detail rounded 3D toy visual style and warm studio light.
+```

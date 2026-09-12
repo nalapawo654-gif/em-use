@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>水墨小狐 / 分层与待机检查</title><div id="app"></div><script type="module">
+import {createApp,h} from '/node_modules/.vite/deps/vue.js'
+import FoxVisual from '/src/components/FoxVisual.vue'
+import {loadFox} from '/src/fox/sprites.ts'
+import '/src/fox.css'
+createApp({data:()=>({frames:[],labels:['独立墨尾','睁眼主体','闭眼主体','中额坐姿','低额伏姿','留白墨团']}),async mounted(){this.frames=await loadFox()},render(){return h('main',[
+  h('h1','水墨小狐 · 实际加载分层'),h('div',{class:'frames'},this.frames.map((src,i)=>h('figure',[h('img',{src}),h('figcaption',this.labels[i])]))),
+  h('h1','常态待机 · 不需要鼠标操作'),h('div',{class:'motions'},[100,50,10,0].map(percent=>h('figure',[h('div',{class:'pet'},[h(FoxVisual,{percent})]),h('figcaption',percent+'%')]))),
+])}}).mount('#app')
+</script><style>body{margin:0;padding:24px;background:#eae8dc;color:#29362d;font:14px serif}h1{font-size:20px;font-weight:400}.frames{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.frames figure{margin:0;padding:12px;background:#27322c;color:#eee;min-width:0}.frames img{width:100%;display:block}.motions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.motions figure{margin:0}.pet{position:relative;aspect-ratio:1}.fox-body img{left:0;top:0}figcaption{text-align:center;padding:8px}</style></html>

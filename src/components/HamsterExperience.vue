@@ -31,7 +31,7 @@ const interactions = [
 const actionLabel = computed(()=>({idle:'',feed:'咔嚓咔嚓，瓜子真香',groom:'梳梳毛，蓬松又舒服',bell:'叮铃铃，给鼠鼠打气',tease:'监工猫也来玩啦',coffee:'喝一口，精神一下',sleep:'小被子盖好，安心睡吧',pet:'鼠鼠收到你的喜欢',wheel:'陪鼠鼠转一圈','cat-yawn':'监工猫打了个哈欠','cat-nap':'监工猫睡着了，Zzz…','cat-snack':'抓到猫猫偷吃瓜子！'}[play.value.action]))
 function place(name:keyof typeof HAMSTER_LAYOUT){const r=HAMSTER_LAYOUT[name];return {left:r.x+'%',top:r.y+'%',width:r.width+'%',height:r.height+'%'}}
 const actionProp = computed(()=>interactions.find(i=>i.action===play.value.action)?.prop)
-const states = [{ percent: 100, label: '活力满满', hint: '开工！能量满格' }, { percent: 50, label: '努力发电', hint: '鼠鼠还在坚持' }, { percent: 10, label: '鼠鼠累了', hint: '慢一点，歇口气' }, { percent: 0, label: '暂停营业', hint: '今日份工作结束' }]
+const states = [{ percent: 100, label: '活力满满', hint: '开工！能量满格' }, { percent: 50, label: '努力发电', hint: '鼠鼠还在坚持' }, { percent: 20, label: '鼠鼠累了', hint: '慢一点，歇口气' }, { percent: 15, label: '暂停营业', hint: '今日份工作结束' }]
 let timer: ReturnType<typeof setInterval> | undefined
 function focusWidget() { void nextTick(() => widget.value?.focus({ preventScroll: true })) }
 function act(action: HamsterAction) { panel.value = null; notice.value = ''; play.value = beginHamster(action, performance.now()); focusWidget() }

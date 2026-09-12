@@ -1,14 +1,15 @@
+import { FINAL_FORM_PERCENT } from '../shared/petQuota'
 export type BuddyAction = 'idle' | 'feed' | 'drink' | 'pet' | 'clean' | 'play' | 'swat' | 'wag' | 'sleep' | 'shake' | 'rest' | 'inflate' | 'celebrate'
 export interface BuddyPlay { mode: BuddyAction; since: number; cleaned: number[] }
 export const BUDDY_STATES = [
   { percent: 100, label: '饱满', hint: '精神抖擞，干劲十足', speech: '当前状态还不错\n继续加油呀！' },
   { percent: 50, label: '略瘪', hint: '开始有点累了', speech: '忙里偷个小闲\n陪我歇一会儿吧' },
   { percent: 20, label: '明显瘪', hint: '需要及时补充', speech: '能量有点不够了\n记得留点余量呀' },
-  { percent: 0, label: '瘫软', hint: '额度耗尽，休息一下', speech: '今天已经很努力了\n明天再一起出发' },
+  { percent: 15, label: '瘫软', hint: '额度不多，休息一下', speech: '今天已经很努力了\n明天再一起出发' },
 ] as const
 export function buddyLevel(percent: number | null) {
   if (percent === null || !Number.isFinite(percent)) return 0
-  return percent > 60 ? 0 : percent > 25 ? 1 : percent > 0 ? 2 : 3
+  return percent > 60 ? 0 : percent > 25 ? 1 : percent > FINAL_FORM_PERCENT ? 2 : 3
 }
 export const buddyIdle = (): BuddyPlay => ({ mode: 'idle', since: 0, cleaned: [] })
 export const beginBuddy = (mode: BuddyAction, now: number): BuddyPlay => ({ mode, since: now, cleaned: [] })

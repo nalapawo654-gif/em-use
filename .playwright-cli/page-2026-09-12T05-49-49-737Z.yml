@@ -1,0 +1,9 @@
+- main [ref=f10e3]:
+  - region "破产招财猫场景" [ref=f10e6]:
+    - button "点点招财猫，招招财" [ref=f10e7] [cursor=pointer]
+    - paragraph: 稳！问题不大！
+    - generic [ref=f10e8]:
+      - button "招财猫今日剩余额度 100%，已同步" [ref=f10e9] [cursor=pointer]:
+        - generic [ref=f10e10]: 今日余粮
+        - strong [ref=f10e13]: 100%
+      - generic [ref=f10e14]: ¥300.00 / ¥300.00

@@ -1,3 +1,4 @@
+import { FINAL_FORM_PERCENT } from '../shared/petQuota'
 export type BatteryLevel = 'full' | 'bright' | 'steady' | 'tired' | 'low' | 'empty' | 'unknown'
 export type BatteryAction = 'idle' | 'lift' | 'rope' | 'charge' | 'towel' | 'cheer' | 'rest' | 'taichi' | 'aerobics' | 'yoga'
 export interface BatteryPlay { action: BatteryAction; since: number; reps: number; lastRep: number; completedAt: number | null }
@@ -9,12 +10,12 @@ export const BATTERY_LEVELS: Record<BatteryLevel, { label: string; speech: strin
   steady: { label: '还能再练练', speech: '呼……有点累，但还能举。', color: '#c08c2c' },
   tired: { label: '坐着伸伸腿', speech: '休息一下，也是在进步。', color: '#d1833e' },
   low: { label: '真的动不啦', speech: '电量告急……陪我歇歇。', color: '#c45e4c' },
-  empty: { label: '今日已躺平', speech: '电量耗尽，先好好休息。', color: '#a36860' },
+  empty: { label: '今日已躺平', speech: '电量不多，先好好休息。', color: '#a36860' },
   unknown: { label: '等待电量信号', speech: '热身准备好，等一个信号。', color: '#82908a' },
 }
 export function batteryLevel(percent: number | null): BatteryLevel {
   if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 75 ? 'full' : percent > 50 ? 'bright' : percent > 25 ? 'steady' : percent > 10 ? 'tired' : percent > 0 ? 'low' : 'empty'
+  return percent > 75 ? 'full' : percent > 50 ? 'bright' : percent > 25 ? 'steady' : percent > 20 ? 'tired' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
 }
 export const BATTERY_EXERCISES: readonly BatteryAction[] = ['lift', 'rope', 'taichi', 'aerobics', 'yoga']
 export function isBatteryExercise(action: BatteryAction) { return BATTERY_EXERCISES.includes(action) }

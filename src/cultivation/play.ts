@@ -1,3 +1,4 @@
+import { FINAL_FORM_PERCENT } from '../shared/petQuota'
 export type CultivationAction = 'idle' | 'greet' | 'tea' | 'woodfish' | 'talisman' | 'comb' | 'incense' | 'peach'
 export type CultivationLevel = 'full' | 'settling' | 'low' | 'empty' | 'unknown'
 export const CULTIVATION_LEVELS = {
@@ -18,7 +19,7 @@ export const CULTIVATION_ACTIONS = [
 export interface CultivationPlay { action: CultivationAction; since: number; progress: number; completedAt: number | null }
 export function cultivationLevel(percent: number | null): CultivationLevel {
   if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 60 ? 'full' : percent > 10 ? 'settling' : percent > 0 ? 'low' : 'empty'
+  return percent > 60 ? 'full' : percent > 20 ? 'settling' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
 }
 export function cultivationIdle(): CultivationPlay { return { action: 'idle', since: 0, progress: 0, completedAt: null } }
 export function beginCultivation(action: CultivationAction, now: number): CultivationPlay { return { action, since: now, progress: 0, completedAt: null } }

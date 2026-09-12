@@ -7,6 +7,11 @@ import OutfitPicker from './components/OutfitPicker.vue'
 import BuddyExperience from './components/BuddyExperience.vue'
 import BeaverExperience from './components/BeaverExperience.vue'
 import CultivationExperience from './components/CultivationExperience.vue'
+import LuckyCatExperience from './components/LuckyCatExperience.vue'
+import SkadiExperience from './components/SkadiExperience.vue'
+import FoxExperience from './components/FoxExperience.vue'
+import DinosaurExperience from './components/DinosaurExperience.vue'
+import FeiduduExperience from './components/FeiduduExperience.vue'
 import BatteryExperience from './components/BatteryExperience.vue'
 import HamsterExperience from './components/HamsterExperience.vue'
 import { SCENE_LABELS } from './shared/types'
@@ -34,7 +39,7 @@ watch(() => state.settings.scene, scene => { document.title = `EM Use · ${SCENE
 const stateLabel = computed(() => ({ 'signed-out': '等待连接', connecting: '等待登录', ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '同步今日额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限' }[state.status]))
 const moodLabel = computed(() => ({ abundant: '充足', normal: '正常', warning: '留意额度', danger: '额度偏低' }[mood.value]))
 const updated = computed(() => state.quota?.estimatedAt.slice(11, 16) ?? '—')
-const greeting = computed(() => percent.value === null ? '小鱼已就位，就等你啦' : percent.value > 60 ? '水很清，今天也大有可为。' : percent.value > 30 ? '不急不忙，灵感慢慢来。' : percent.value > 10 ? '慢一点，给灵感留点余量。' : '歇一歇吧，明天又是满满能量。')
+const greeting = computed(() => percent.value === null ? '小鱼已就位，就等你啦' : percent.value > 60 ? '水很清，今天也大有可为。' : percent.value > 30 ? '不急不忙，灵感慢慢来。' : mood.value === 'warning' ? '慢一点，给灵感留点余量。' : '歇一歇吧，明天又是满满能量。')
 function notify(text: string) { toast.value = text; clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.value = '', 3000) }
 function interact(kind: string) {
   clearTimeout(toastTimer); toast.value = ''
@@ -56,12 +61,17 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
       <BuddyExperience v-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BeaverExperience v-else-if="state.settings.scene === 'beaver'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <LuckyCatExperience v-else-if="state.settings.scene === 'luckycat'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <SkadiExperience v-else-if="state.settings.scene === 'skadi'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <FoxExperience v-else-if="state.settings.scene === 'fox'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <DinosaurExperience v-else-if="state.settings.scene === 'dinosaur'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <FeiduduExperience v-else-if="state.settings.scene === 'feidudu'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BatteryExperience v-else-if="state.settings.scene === 'battery'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <HamsterExperience v-else-if="state.settings.scene === 'hamster'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <CultivationExperience v-else-if="state.settings.scene === 'cultivation'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>

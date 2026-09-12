@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>小恐龙分层日常动画验收</title><style>body{margin:20px;background:#e9eddd;color:#344d36;font:14px system-ui}#grid{display:grid;grid-template-columns:repeat(5,250px);gap:12px}.card{padding:6px;background:#fbfcf1;border-radius:12px}.card.dark{background:#27392e;color:#ecf0dc}canvas{display:block;width:250px;height:250px}h1{font-size:20px}</style><h1>五种日常动画 · 实际分层渲染</h1><div id="grid"></div><script type="module">
+import {loadDinosaurParts,createDinosaurMotionRenderer} from '/src/dinosaur/motionRenderer.ts';
+import {DINOSAUR_MOTIONS} from '/src/dinosaur/ambient.ts';
+const parts=await loadDinosaurParts(),samples=[],skin=new URLSearchParams(location.search).get('skin')||'classic';
+for(const [motion,spec] of Object.entries(DINOSAUR_MOTIONS))for(const progress of [.08,.3,.5,.7,.92]){
+ const card=document.createElement('div');card.className='card'+(progress===.5?' dark':'');card.textContent=spec.label+' / '+progress;
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=512;card.append(canvas);document.querySelector('#grid').append(card);
+ const draw=createDinosaurMotionRenderer(parts,skin);samples.push({motion,progress,canvas,draw});draw(canvas.getContext('2d'),motion,progress)
+}
+window.dinosaurMotionQA={samples,render(p){for(const s of samples)s.draw(s.canvas.getContext('2d'),s.motion,p??s.progress)},animate(){const start=performance.now();function tick(t){for(const s of samples)s.draw(s.canvas.getContext('2d'),s.motion,((t-start)%DINOSAUR_MOTIONS[s.motion].duration)/DINOSAUR_MOTIONS[s.motion].duration);window.dinosaurMotionQA.raf=requestAnimationFrame(tick)}this.raf=requestAnimationFrame(tick)},stop(){cancelAnimationFrame(this.raf)},parts};document.body.dataset.ready='true';
+</script></html>

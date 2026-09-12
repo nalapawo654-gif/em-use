@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>月汐 · 双形态衣装与兵装</title><style>body{margin:0;background:#111b2b;color:#dee7f5;font:14px system-ui;padding:28px}h1,h2{font-family:serif}h1{font-size:32px;margin:0 0 8px}p{color:#acbbce}.row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}.cell{position:relative;border:1px solid #53677e88;background:linear-gradient(135deg,#20334a,#101b2d);aspect-ratio:1;border-radius:12px}.cell>small{position:absolute;bottom:6px;left:0;right:0;text-align:center}.light{background:#dbe5ef}.cell>.skadi-visual{position:absolute;inset:0 0 15px}.cell>.skadi-weapon{position:absolute;inset:8px 15px 32px}.subtitle{letter-spacing:3px;font-size:10px}.row.frames{margin-bottom:12px}</style><div id="app"></div><script type="module">
+import {createApp,h} from '/node_modules/.vite/deps/vue.js'
+import SkadiVisual from '/src/components/SkadiVisual.vue'
+import SkadiWeapon from '/src/components/SkadiWeapon.vue'
+import {SKADI_FORMS,SKADI_SKINS,SKADI_WEAPONS} from '/src/shared/types.ts'
+import '/src/skadi.css'
+import '/src/skadi-v2.css'
+const params=new URLSearchParams(location.search),all=params.has('frames'),formOnly=params.get('form'),motion=params.get('motion')
+createApp({render(){return h('main',[
+ h('h1','月汐 · 月下衣装与兵装'),h('p',{class:'subtitle'},'TWO FORMS · TWELVE OUTFITS · SIX WEAPONS'),
+ ...SKADI_FORMS.filter(f=>!formOnly||f.id===formOnly).map(form=>h('section',[h('h2',form.label+' / 六套独立衣装'),...(all?SKADI_SKINS.map(skin=>h('div',[h('h3',skin.label),h('div',{class:'row frames'},Array.from({length:6},(_,i)=>h('div',{class:['cell',i%2?'light':'']},[h(SkadiVisual,{skin:skin.id,form:form.id,sampleFrame:i,showWeapon:params.has('held'),gentle:true,paused:true}),h('small',String(i))])))])):[h('div',{class:'row'},SKADI_SKINS.map(skin=>h('div',{class:'cell'},[h(SkadiVisual,{skin:skin.id,form:form.id,showWeapon:false,gentle:true,paused:true}),h('small',skin.label)])))] )])),
+ ...(!all?[h('h2','月下兵装 / 待机常驻 · 独立切换'),h('div',{class:'row'},SKADI_WEAPONS.map(weapon=>h('div',{class:'cell'},[motion?h(SkadiVisual,{form:formOnly||'adult',weapon:weapon.id,action:motion,gentle:true,paused:true}):h(SkadiWeapon,{weapon:weapon.id,gentle:true,paused:true}),h('small',weapon.label)])))]:[])
+])}}).mount('#app')
+</script></html>

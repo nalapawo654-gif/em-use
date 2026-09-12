@@ -4,7 +4,7 @@ import { cultivationLevel, cultivationIdle, beginCultivation, lightSeal, combStr
 import { DEFAULT_SETTINGS } from '../src/shared/types.ts'
 import { validateSettings } from '../src/shared/settings.ts'
 test('cultivation covers quota boundaries and unknown without inventing full quota', () => {
-  assert.deepEqual([100,61,60,11,10,1,0,-1,null,NaN,Infinity].map(cultivationLevel),['full','full','settling','settling','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([100,61,60,21,20,16,0,-1,null,NaN,Infinity].map(cultivationLevel),['full','full','settling','settling','low','low','empty','empty','unknown','unknown','unknown'])
 })
 test('talisman only progresses through three distinct seals in order', () => {
   let p=beginCultivation('talisman',100)

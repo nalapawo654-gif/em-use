@@ -1,3 +1,4 @@
+import { FINAL_FORM_PERCENT } from './petQuota.js'
 import type { Quota, Mood } from './types.js'
 export const QUOTA_URL = 'https://aihub.eastmoney.com/ai-cloud-hub/coding-plan/usage'
 export const PORTAL_URL = 'https://aihub.eastmoney.com/personal'
@@ -47,7 +48,7 @@ export function quotaFreshness(quota: Quota, now = Date.now()): 'ready' | 'stale
   return 'ready'
 }
 export function moodFor(percent: number): Mood {
-  return percent > 60 ? 'abundant' : percent > 30 ? 'normal' : percent > 10 ? 'warning' : 'danger'
+  return percent > 60 ? 'abundant' : percent > 30 ? 'normal' : percent > FINAL_FORM_PERCENT ? 'warning' : 'danger'
 }
 export function millisecondsToMidnight(now = Date.now()): number {
   return Date.parse(`${beijingDay(now)}T00:00:00+08:00`) + 86400_000 - now

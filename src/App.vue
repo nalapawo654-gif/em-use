@@ -34,7 +34,7 @@ watch(() => state.settings.scene, scene => { document.title = `EM Use · ${SCENE
 const stateLabel = computed(() => ({ 'signed-out': '等待连接', connecting: '等待登录', ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '同步今日额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限' }[state.status]))
 const moodLabel = computed(() => ({ abundant: '充足', normal: '正常', warning: '留意额度', danger: '额度偏低' }[mood.value]))
 const updated = computed(() => state.quota?.estimatedAt.slice(11, 16) ?? '—')
-const greeting = computed(() => percent.value === null ? '小鱼已就位，就等你啦' : percent.value > 60 ? '水很清，今天也大有可为。' : percent.value > 30 ? '不急不忙，灵感慢慢来。' : percent.value > 10 ? '慢一点，给灵感留点余量。' : '歇一歇吧，明天又是满满能量。')
+const greeting = computed(() => percent.value === null ? '小鱼已就位，就等你啦' : percent.value > 60 ? '水很清，今天也大有可为。' : percent.value > 30 ? '不急不忙，灵感慢慢来。' : mood.value === 'warning' ? '慢一点，给灵感留点余量。' : '歇一歇吧，明天又是满满能量。')
 function notify(text: string) { toast.value = text; clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.value = '', 3000) }
 function interact(kind: string) {
   clearTimeout(toastTimer); toast.value = ''

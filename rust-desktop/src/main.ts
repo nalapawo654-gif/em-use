@@ -14,3 +14,15 @@ import "./hamster.css"
 import './cultivation.css'
 
 import './battery.css'
+
+import './feidudu.css'
+
+import './fox.css'
+
+import './luckycat.css'
+
+import './dinosaur.css'
+
+import './skadi.css'
+
+import "./skadi-v2.css"

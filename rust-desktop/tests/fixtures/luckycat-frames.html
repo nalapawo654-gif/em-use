@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><base href="/"><link rel="icon" href="data:,"><title>招财猫全姿态检查</title><div id="app"></div><script type="module">
+import {createApp,h} from '/node_modules/.vite/deps/vue.js'
+import LuckyCatVisual from '/src/components/LuckyCatVisual.vue'
+import '/src/luckycat.css'
+const samples=[{name:'富足',percent:100},{name:'工作',percent:50},{name:'抱币',percent:10},{name:'空碗',percent:0},{name:'招财',action:'fortune'},{name:'喂鱼',action:'fish'},{name:'咖啡',action:'coffee'},{name:'纸箱',action:'box'}]
+createApp({render:()=>h('main',samples.map(s=>h('section',[h('div',[h(LuckyCatVisual,{percent:s.percent??100,action:s.action??'idle',gentle:true,paused:true})]),h('b',s.name)])))}).mount('#app')
+</script><style>body{margin:0;background:#eee3cf;color:#654c38;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:20px}section{text-align:center;background:repeating-conic-gradient(#eee8da 0% 25%,#ded4c2 0% 50%) 50%/18px 18px;border-radius:12px;padding:8px}section>div{position:relative;aspect-ratio:1}b{display:block;background:#fdf6e8;padding:8px}</style></html>
