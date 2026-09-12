@@ -1,6 +1,6 @@
 # EM Use · Rust 桌面版
 
-版本 **0.4.2**。独立项目目录，原项目保留作 Electron 对照基线。
+版本 **0.4.3**。独立项目目录，原项目保留作 Electron 对照基线。
 
 使用 **Rust + Tauri 2 原生层，Vue + Canvas 渲染层**。窗口、托盘、凭据库、网络查询、持久化和更新均在 Rust 中实现；原有六只桌宠的抠色、动作状态机、帧节奏、CSS 和共享窗口手势保留。另新增第七只「肥嘟嘟」，支持五档额度姿态、七种陪伴互动和六种独立配色，见 [角色方案与验证](docs/feidudu.md)。第八只「水墨小狐」支持分层摆尾与眨眼待机、四档额度姿态、五种互动和三种墨色，见 [小狐狸方案与验证](docs/ink-fox.md)。第九只「破产招财猫」支持四档额度姿态、十二种关节动画互动、自动日常动作和四套完整服装，见 [招财猫方案与验证](docs/lucky-cat.md)。第十只「摸鱼小恐龙」支持五档额度姿态、十二种角色互动（含随机拍翼飞行、刷手机等五种日常动画）和四种独立配色，见 [小恐龙方案与验证](docs/dinosaur.md)。第十一只「斯卡蒂 · 月汐」支持御姐 / 萝莉双形态、各六套独立衣装、六件待机常驻武器及专属技能动效、十六种互动和夜影黑猫，见 [月汐方案与验证](docs/skadi.md)。48 张不透明图使用无损 WebP，8 张透明图使用优化 PNG，保持每个 RGBA 像素、分辨率和帧数；透明图保留 PNG 以避免浏览器预乘透明度取整差异。原始素材保留在仓库根目录作为对照。
 
@@ -22,13 +22,13 @@ cargo test --locked --manifest-path src-tauri/Cargo.toml
 
 ## 版本和发布
 
-当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
+当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.3 纳入五只新桌宠、角色动画与装扮，并将所有桌宠末档形态统一为剩余 ≤15% 触发。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
 
 ```sh
-npm run version:set -- 0.4.2
+npm run version:set -- 0.4.3
 ```
 
-该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.2`。提交版本变更后推送标签，即可触发完整发布。
+该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.3`。提交版本变更后推送标签，即可触发完整发布。
 
 普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64 和 Intel（`.dmg` + `.app.tar.gz` 更新包）。本机不生成分发安装包。
 
@@ -58,17 +58,17 @@ npm run version:set -- 0.4.2
 ├── index.html
 └── em-use/
     ├── index.html
-    ├── site-assets/0.4.2/
+    ├── site-assets/0.4.3/
     ├── stable/latest.json
-    └── releases/0.4.2/
-        ├── EM-Use-0.4.2-windows-x86_64.exe
-        ├── EM-Use-0.4.2-windows-x86_64.exe.sig
-        ├── EM-Use-0.4.2-darwin-aarch64.dmg
-        ├── EM-Use-0.4.2-darwin-aarch64.app.tar.gz
-        ├── EM-Use-0.4.2-darwin-aarch64.app.tar.gz.sig
-        ├── EM-Use-0.4.2-darwin-x86_64.dmg
-        ├── EM-Use-0.4.2-darwin-x86_64.app.tar.gz
-        ├── EM-Use-0.4.2-darwin-x86_64.app.tar.gz.sig
+    └── releases/0.4.3/
+        ├── EM-Use-0.4.3-windows-x86_64.exe
+        ├── EM-Use-0.4.3-windows-x86_64.exe.sig
+        ├── EM-Use-0.4.3-darwin-aarch64.dmg
+        ├── EM-Use-0.4.3-darwin-aarch64.app.tar.gz
+        ├── EM-Use-0.4.3-darwin-aarch64.app.tar.gz.sig
+        ├── EM-Use-0.4.3-darwin-x86_64.dmg
+        ├── EM-Use-0.4.3-darwin-x86_64.app.tar.gz
+        ├── EM-Use-0.4.3-darwin-x86_64.app.tar.gz.sig
         ├── SHA256SUMS.txt
         └── version.json
 ```
