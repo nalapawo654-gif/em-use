@@ -1,4 +1,10 @@
 import type { MessageItem, MessageState, Scene } from './types'
+export function messageWindowError(error: unknown): string {
+  const detail = typeof error === 'string' ? error
+    : error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' ? error.message : ''
+  return `消息窗口未能打开${detail ? `：${detail}` : '。'}`
+}
+
 export const MESSAGE_PERSONAS: Record<Scene, { object: string; color: string; motion: string }> = {
   aquarium: { object: '水泡来信', color: '#2586b2', motion: 'float' },
   buddy: { object: '牛马小邮包', color: '#35669d', motion: 'swing' },

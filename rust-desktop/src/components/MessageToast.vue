@@ -2,7 +2,7 @@
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { PhX } from '@phosphor-icons/vue'
 import { api, appState as state } from '../bridge'
-import { MESSAGE_PERSONAS } from '../shared/messageNotice'
+import { MESSAGE_PERSONAS, messageWindowError } from '../shared/messageNotice'
 const hovering = ref(false), opening = ref(false), error = ref('')
 const persona = computed(() => MESSAGE_PERSONAS[state.settings.scene])
 const item = computed(() => state.messages?.status === 'ready' && state.messages.epoch === state.messageToast?.epoch
@@ -19,7 +19,9 @@ onUnmounted(() => clearInterval(timer))
 async function open() {
   if (opening.value) return
   opening.value = true
-  try { await api.openMessagePanel?.() } catch { error.value = '未能展开，点击角色旁的小道具重试。' }
+  try { await api.openMessagePanel?.() } catch(e) {
+    error.value = `${messageWindowError(e)} 点击角色旁的小道具重试。`
+  }
   finally { opening.value = false }
 }
 </script>

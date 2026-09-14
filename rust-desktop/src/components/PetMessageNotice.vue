@@ -2,7 +2,7 @@
 import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { PhX, PhBellSlash } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop } from '../bridge'
-import { MESSAGE_PERSONAS, claimArrival } from '../shared/messageNotice'
+import { MESSAGE_PERSONAS, claimArrival, messageWindowError } from '../shared/messageNotice'
 import MessageParcel from './MessageParcel.vue'
 import CharacterMessageParcel from './CharacterMessageParcel.vue'
 import { useCharacterMail } from '../shared/characterMail'
@@ -11,7 +11,7 @@ const illustratedScenes = new Set(['feidudu', 'cultivation', 'beaver', 'hamster'
 import MessageInbox from './MessageInbox.vue'
 const props=defineProps<{blocked?:boolean;deferred?:boolean}>()
 const emit=defineEmits<{openChange:[value:boolean]; bubbleChange:[value:boolean]}>()
-const host=ref<HTMLElement>(), trigger=ref<HTMLButtonElement>(), opened=ref(false), bubble=ref<string>(), hovering=ref(false), error=ref('')
+const host=ref<HTMLElement>(), trigger=ref<HTMLButtonElement>(), opened=ref(false), opening=ref(false), bubble=ref<string>(), hovering=ref(false), error=ref('')
 const persona=computed(()=>MESSAGE_PERSONAS[state.settings.scene])
 const current=computed(()=>state.messages?.items.find(i=>i.key===bubble.value))
 const count=computed(()=>state.messages?.newCount ?? 0)
@@ -39,8 +39,15 @@ watch([()=>current.value?.key,()=>state.messages?.epoch,()=>props.blocked,()=>pr
 },{immediate:true,flush:'post'})
 function escape(e:KeyboardEvent){if(e.key==='Escape' && opened.value && (parent?.contains(e.target as Node)||e.target===document.body)){e.preventDefault();e.stopImmediatePropagation();collapse()}}
 async function open(){
+  if(opening.value)return
   bubble.value=undefined;error.value=''
-  if(api.openMessagePanel){opened.value=true;try{await nextTick();await api.openMessagePanel()}catch{opened.value=false;error.value='请从设置查看咚咚消息。'}return}
+  if(api.openMessagePanel){
+    opening.value=true;opened.value=true
+    try{await nextTick();await api.openMessagePanel()}
+    catch(e){opened.value=false;error.value=`${messageWindowError(e)} 可重试，或从设置查看咚咚消息。`}
+    finally{opening.value=false}
+    return
+  }
   opened.value=true
 }
 watch(()=>[state.messages?.epoch,state.messages?.revision,props.blocked,props.deferred,state.messages?.status,opened.value],()=>{

@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod account;
 mod dongdong;
+mod message_panel_focus;
 mod message_source;
 mod messages;
 mod model;
@@ -270,9 +271,6 @@ fn main() {
                 }
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {
                     let _ = windows::end_gesture(app, None);
-                }
-                tauri::WindowEvent::Focused(false) if w.label() == "messages" => {
-                    let _ = w.close();
                 }
                 tauri::WindowEvent::Destroyed if w.label() == "messages" => {
                     let _ = app.emit_to("widget", "messages:closed", ());

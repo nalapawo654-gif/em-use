@@ -276,7 +276,7 @@ pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
     let w = if let Some(w) = app.get_webview_window("messages") {
         w
     } else {
-        WebviewWindowBuilder::new(
+        let w = WebviewWindowBuilder::new(
             app,
             "messages",
             WebviewUrl::App("index.html?view=messages".into()),
@@ -289,14 +289,65 @@ pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
         .resizable(false)
         .skip_taskbar(true)
         .always_on_top(true)
+        .focused(false)
         .visible(false)
         .build()
-        .map_err(|e| e.to_string())?
+        .map_err(|e| format!("创建消息窗口失败：{e}"))?;
+        install_message_panel_focus(&w);
+        w
     };
-    set_bounds(&w, card)?;
-    w.show().map_err(|e| e.to_string())?;
-    w.set_focus().map_err(|e| e.to_string())
+    set_bounds(&w, card).map_err(|e| format!("定位消息窗口失败：{e}"))?;
+    w.show().map_err(|e| format!("显示消息窗口失败：{e}"))?;
+    w.set_focus().map_err(|e| format!("激活消息窗口失败：{e}"))
 }
+
+fn install_message_panel_focus(window: &WebviewWindow) {
+    let focus = std::sync::Arc::new(Mutex::new(
+        message_panel_focus::MessagePanelFocus::default(),
+    ));
+    let window_handle = window.clone();
+    window.on_window_event(move |event| match event {
+        tauri::WindowEvent::Focused(focused) => {
+            let check = focus.lock().unwrap().changed(*focused);
+            if let Some(revision) = check {
+                let focus = focus.clone();
+                let window = window_handle.clone();
+                tauri::async_runtime::spawn(async move {
+                    tokio::time::sleep(Duration::from_millis(200)).await;
+                    // Check the host window, not just WebView2's transient LostFocus.
+                    // Each window owns its guard, so a destroyed card's timer cannot
+                    // close a newly created card with the same label.
+                    let focused = message_panel_is_focused(&window);
+                    let close = focus.lock().unwrap().should_close(revision, focused);
+                    if close {
+                        let _ = window.close();
+                    }
+                });
+            }
+        }
+        tauri::WindowEvent::Destroyed => focus.lock().unwrap().destroyed(),
+        _ => (),
+    });
+}
+
+#[cfg(windows)]
+fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
+    let hwnd = window.hwnd().map_err(|_| ())?;
+    // Tauri's Windows is_focused also tracks keyboard focus, which can belong
+    // to a WebView2 child. Compare the top-level foreground window instead.
+    let foreground = unsafe { ::windows::Win32::UI::WindowsAndMessaging::GetForegroundWindow() };
+    if foreground.0.is_null() {
+        Err(()) // Activation is still changing; this is not a confirmed blur.
+    } else {
+        Ok(foreground == hwnd)
+    }
+}
+
+#[cfg(not(windows))]
+fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
+    window.is_focused().map_err(|_| ())
+}
+
 fn message_panel_bounds(pet: Bounds, screen: Bounds, count: usize) -> Bounds {
     message_popup_bounds(pet, screen, 350., if count <= 1 { 240. } else { 360. }, 24.)
 }

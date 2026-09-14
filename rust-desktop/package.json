@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/nalapawo654-gif/em-use.git"
   },
-  "version": "0.4.5",
+  "version": "0.4.6",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "desktop": "tauri dev",

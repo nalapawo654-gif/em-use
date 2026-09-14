@@ -51,3 +51,12 @@
 ### 按角色姿态融合（2026-09-14，后续修订）
 
 四只角色通过同一个局部消息绘制上下文复用入口、角标和卡片；绘制器负责物料与手爪的前后关系，点击区域跟随当前画布变换。肥嘟嘟原有奶茶只增加挂信，不再叠加另一杯；修仙纸鹤移到岛屿左侧、额度牌下方。最新截图及验证边界见 [姿态融合记录](design/character-messages-v5/README.md)。
+
+### Windows 消息卡片焦点修正（2026-09-14，v0.4.6）
+
+- 用户反馈 Windows 点击海狸鼠消息道具打不开卡片。源码存在风险：原先收到 `Focused(false)` 就立即销毁消息窗口；当前 Tauri Windows 实现会将 WebView2 的 `LostFocus` 转成该事件。未在用户机器取得事件日志，因此这是源码定位出的可疑原因，不能视为已真机复现。
+- 卡片创建时不抢先激活，设置位置、显示后再激活。失焦关闭只在首次获得焦点后启用，延迟 200 ms 再核实；重新聚焦和销毁均使旧检查失效。Windows 使用 [GetForegroundWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow) 对比整个窗口，避免把 WebView2 内部焦点转移误判为切换窗口。其他平台保留窗口焦点查询。`×`、收起、Esc 仍直接关闭。
+- 消息道具正在打开时忽略重复点击；道具和气泡均保留原生错误的阶段与原因，允许重试。
+- **源码 / 测试：**macOS 上 Rust 30 项通过，2 项真实账户测试未运行；包含首次激活前失焦、内部焦点转移、重新聚焦和销毁后的旧检查四项回归。契约、类型检查、前端构建通过。
+- **浏览器：**`scripts/message-window-regression-qa.py` 使用海狸鼠演示数据，验证点击开卡、重复点击合并、错误提示、失败重试、收起后重开、键盘进入及 Esc 关闭、打开咚咚桥接调用和气泡错误提示；无页面脚本错误。运行前启动 `npm run dev -- --port 5188`，再运行 `python3 scripts/message-window-regression-qa.py`（需要 Python Playwright 及 Chromium）。
+- **未验证：**本轮 macOS 原生交互、Windows 目标编译和真机焦点事件、真实消息到卡片端到端链路。本次修正纳入 v0.4.6，安装包构建结果以该标签的 GitHub Actions 为准。
