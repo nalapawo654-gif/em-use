@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetNotices from './PetNotices.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhDeviceMobile, PhHeart, PhCoffee, PhCookie, PhHandPalm, PhLaptop, PhSparkle, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -17,10 +18,11 @@ const icons = { phone: PhDeviceMobile, heart: PhHeart, tea: PhCoffee, cookie: Ph
 const quick = DINOSAUR_ACTIONS.filter(item => ['tea', 'cookie', 'work', 'rest'].includes(item.id))
 const level = computed(() => dinosaurLevel(props.percent)), active = computed(() => play.value.action !== 'idle')
 const action = computed(() => DINOSAUR_ACTIONS.find(item => item.id === play.value.action))
+const updateLetterOpen = ref(false)
 const focused = ref(true), systemGentle = ref(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 let previousMotion: DinosaurMotion | null = null, idleTimer: ReturnType<typeof setTimeout> | undefined
 let firstIdle = true
-const idleEnabled = computed(() => visible.value && focused.value && !panel.value && !active.value && !moving.value && !state.settings.reducedMotion && !systemGentle.value)
+const idleEnabled = computed(() => visible.value && focused.value && !updateLetterOpen.value && !panel.value && !active.value && !moving.value && !state.settings.reducedMotion && !systemGentle.value)
 function stopIdle() { clearTimeout(idleTimer); idleTimer = undefined }
 function scheduleIdle() {
   stopIdle(); if (!idleEnabled.value) return
@@ -74,6 +76,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
   <div class="dinosaur-experience" :class="{ 'dinosaur-native': isDesktop }">
     <div class="dinosaur-hero">
       <section ref="widget" tabindex="-1" class="dinosaur-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dino-energy': DINOSAUR_LEVELS[level].color }" aria-label="小恐龙场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" @open-change="updateLetterOpen = $event"/>
         <div class="dinosaur-character"><DinosaurVisual :percent="percent" :action="play.action" :skin="state.settings.dinosaurSkin" :gentle="state.settings.reducedMotion" :paused="!visible || !focused || moving" :started-at="play.startedAt"/></div>
         <button class="dinosaur-body-hit scene-hit" :class="{ lying: lying && !(play.action in DINOSAUR_MOTIONS), 'in-flight': play.action === 'fly' }" :style="flightHit" :aria-label="play.action === 'rest' ? '叫小恐龙起床' : '摸摸小恐龙的头'" @click="pet"></button>
         <p class="dinosaur-speech" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet' || play.action === 'pillow'" weight="fill"/></p>

@@ -7,12 +7,19 @@ export async function installNativeBridge() {
   const call = <T = void>(action: string, payload?: unknown) => invoke<T>('desktop', { action, payload: payload ?? null })
   // Subscribe before mounting App, so an initial snapshot cannot leave a missed event.
   await listen<AppState>('state:changed', event => callbacks.forEach(fn => fn(event.payload)))
+  await listen('settings:updates', () => window.dispatchEvent(new CustomEvent('open-updates')))
+  await listen('settings:messages', () => window.dispatchEvent(new CustomEvent('open-messages')))
+  await listen('messages:closed', () => window.dispatchEvent(new CustomEvent('message-panel-closed')))
   const api: DesktopAPI = {
+    openMessagePanel: () => call('openMessagePanel'),
+    openMessages: () => call('openMessages'), openDongdong: () => call('openDongdong'), ackMessages: (epoch, keys) => call('ackMessages', { epoch, keys }),
     getState: () => call<AppState>('getState'), login: mode => call('login', mode), logout: () => call('logout'),
     refresh: () => call('refresh'), settings: patch => call('settings', patch),
     beginGesture: mode => call<number>('beginGesture', mode), moveGesture: id => call('moveGesture', id), endGesture: id => call('endGesture', id),
     openSettings: () => call('openSettings'), hide: () => call('hide'), quit: () => call('quit'),
     openPortal: () => call('openPortal'), openReleases: () => call('openReleases'),
+    openUpdates: () => call('openUpdates'),
+    dismissUpdate: version => invoke('dismiss_update', { version }),
     checkUpdate: () => invoke('check_update'), installUpdate: () => invoke('install_update'),
     async screenshot() {
       const { toPng } = await import('html-to-image')

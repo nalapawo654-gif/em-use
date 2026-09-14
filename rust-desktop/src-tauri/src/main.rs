@@ -1,6 +1,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod account;
 mod dongdong;
+mod message_source;
+mod messages;
 mod model;
 mod storage;
 mod updates;
@@ -32,16 +34,25 @@ struct Shared {
     settings_gate: tokio::sync::Mutex<()>,
     http: reqwest::Client,
     update: tokio::sync::Mutex<Option<tauri_plugin_updater::Update>>,
+    update_notified: Mutex<HashSet<String>>,
+    messages: Mutex<messages::Hub>,
 }
 fn shared(app: &tauri::AppHandle) -> tauri::State<'_, Shared> {
     app.state::<Shared>()
 }
 fn snapshot(app: &tauri::AppHandle) -> Value {
-    shared(app).inner.lock().unwrap().state.clone()
+    let mut state = shared(app).inner.lock().unwrap().state.clone();
+    state["messages"] = shared(app).messages.lock().unwrap().view(
+        state["settings"]["messagePreview"] != false,
+        state["settings"]["messagePausedUntil"]
+            .as_i64()
+            .unwrap_or(0),
+    );
+    state
 }
 fn publish(app: &tauri::AppHandle) {
     let s = snapshot(app);
-    for label in ["widget", "settings"] {
+    for label in ["widget", "settings", "messages"] {
         let _ = app.emit_to(label, "state:changed", &s);
     }
 }
@@ -53,7 +64,7 @@ fn trusted(w: &WebviewWindow) -> Result<(), String> {
             || (cfg!(debug_assertions)
                 && matches!(url.host_str(), Some("localhost" | "127.0.0.1"))
                 && url.port() == Some(5174)));
-    if matches!(w.label(), "widget" | "settings") && local {
+    if matches!(w.label(), "widget" | "settings" | "messages") && local {
         Ok(())
     } else {
         Err("Untrusted window".into())
@@ -67,6 +78,14 @@ async fn desktop(
     payload: Option<Value>,
 ) -> Result<Value, String> {
     trusted(&window)?;
+    if window.label() == "messages"
+        && !matches!(
+            action.as_str(),
+            "getState" | "ackMessages" | "openDongdong" | "hide"
+        )
+    {
+        return Err("Message panel action unavailable".into());
+    }
     let p = payload.unwrap_or(Value::Null);
     match action.as_str() {
         "getState" => return Ok(snapshot(&app)),
@@ -75,8 +94,17 @@ async fn desktop(
         "logout" => account::logout(&app)?,
         "settings" => windows::apply_settings(&app, p).await?,
         "openSettings" => windows::open_settings(&app)?,
+        "openUpdates" => windows::open_updates(&app)?,
+        "openMessagePanel" => windows::message_panel(&app)?,
+        "openMessages" => windows::open_messages(&app)?,
+        "openDongdong" => messages::open_dongdong(&app)?,
+        "ackMessages" => messages::acknowledge(&app, &p)?,
         "hide" => {
-            window.hide().map_err(|e| e.to_string())?;
+            if window.label() == "messages" {
+                window.close().map_err(|e| e.to_string())?;
+            } else {
+                window.hide().map_err(|e| e.to_string())?;
+            }
         }
         "quit" => app.exit(0),
         "openPortal" => app
@@ -151,12 +179,15 @@ fn main() {
                 .build()
                 .unwrap(),
             update: tokio::sync::Mutex::new(None),
+            update_notified: Mutex::new(HashSet::new()),
+            messages: Mutex::new(messages::Hub::default()),
         })
         .invoke_handler(tauri::generate_handler![
             desktop,
             account::auth_candidate,
             updates::check_update,
-            updates::install_update
+            updates::install_update,
+            updates::dismiss_update
         ])
         .setup(|app| {
             let handle = app.handle().clone();
@@ -175,17 +206,15 @@ fn main() {
                 }
                 r.state["settings"]["clickThrough"] = json!(false);
             }
+            updates::restore_notice(&handle);
             account::restore(&handle);
             windows::setup(app)?;
+            messages::start(handle.clone());
+            let update_app = handle.clone();
+            tauri::async_runtime::spawn(updates::watch_updates(update_app));
             tauri::async_runtime::spawn(async move {
                 account::refresh(handle.clone(), true).await;
-                let update_app = handle.clone();
-                tauri::async_runtime::spawn(async move {
-                    tokio::time::sleep(Duration::from_secs(10)).await;
-                    let _ = updates::check_updates(&update_app).await;
-                });
                 let mut last = now();
-                let mut update_at = now();
                 loop {
                     tokio::time::sleep(Duration::from_secs(15)).await;
                     {
@@ -200,10 +229,6 @@ fn main() {
                     publish(&handle);
                     windows::maintain(&handle);
                     account::refresh(handle.clone(), false).await;
-                    if now() - update_at > 6 * 3600_000 {
-                        let _ = updates::check_updates(&handle).await;
-                        update_at = now();
-                    }
                 }
             });
             Ok(())
@@ -218,6 +243,12 @@ fn main() {
                 }
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {
                     let _ = windows::end_gesture(app, None);
+                }
+                tauri::WindowEvent::Focused(false) if w.label() == "messages" => {
+                    let _ = w.close();
+                }
+                tauri::WindowEvent::Destroyed if w.label() == "messages" => {
+                    let _ = app.emit_to("widget", "messages:closed", ());
                 }
                 tauri::WindowEvent::Destroyed if w.label() == "login" => {
                     account::login_closed(app);

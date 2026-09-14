@@ -196,14 +196,84 @@ pub fn show(app: &tauri::AppHandle) {
     }
 }
 pub fn open_settings(app: &tauri::AppHandle) -> Result<(), String> {
+    settings_window(app, "")
+}
+pub fn open_updates(app: &tauri::AppHandle) -> Result<(), String> {
+    settings_window(app, "updates")
+}
+pub fn open_messages(app: &tauri::AppHandle) -> Result<(), String> {
+    settings_window(app, "messages")
+}
+// A separate card stays readable even with a 180px pet; prefer the free side of the pet.
+pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
+    let pet = widget(app)?;
+    let b = bounds(&pet)?;
+    let a = area(&pet, false)?;
+    let card = message_panel_bounds(b, a);
+    let w = if let Some(w) = app.get_webview_window("messages") {
+        w
+    } else {
+        WebviewWindowBuilder::new(
+            app,
+            "messages",
+            WebviewUrl::App("index.html?view=messages".into()),
+        )
+        .title("咚咚消息 · EM Use")
+        .inner_size(card.width, card.height)
+        .transparent(true)
+        .decorations(false)
+        .shadow(false)
+        .resizable(false)
+        .skip_taskbar(true)
+        .always_on_top(true)
+        .visible(false)
+        .build()
+        .map_err(|e| e.to_string())?
+    };
+    set_bounds(&w, card)?;
+    w.show().map_err(|e| e.to_string())?;
+    w.set_focus().map_err(|e| e.to_string())
+}
+fn message_panel_bounds(pet: Bounds, screen: Bounds) -> Bounds {
+    let width = 350_f64.min(screen.width);
+    let height = 360_f64.min(screen.height);
+    let right = pet.x + pet.width + 8.;
+    let left = pet.x - width - 8.;
+    let x = if right + width <= screen.x + screen.width {
+        right
+    } else {
+        left
+    };
+    Bounds {
+        x: x.clamp(screen.x, screen.x + screen.width - width),
+        y: (pet.y + 24.).clamp(screen.y, screen.y + screen.height - height),
+        width,
+        height,
+    }
+}
+
+fn settings_window(app: &tauri::AppHandle, tab: &str) -> Result<(), String> {
     if let Some(w) = app.get_webview_window("settings") {
+        if !tab.is_empty() {
+            app.emit_to("settings", &format!("settings:{tab}"), ())
+                .map_err(|e| e.to_string())?;
+        }
         w.show().map_err(|e| e.to_string())?;
         return w.set_focus().map_err(|e| e.to_string());
     }
     WebviewWindowBuilder::new(
         app,
         "settings",
-        WebviewUrl::App("index.html?view=settings".into()),
+        WebviewUrl::App(
+            if tab == "updates" {
+                "index.html?view=settings&tab=updates"
+            } else if tab == "messages" {
+                "index.html?view=settings&tab=messages"
+            } else {
+                "index.html?view=settings"
+            }
+            .into(),
+        ),
     )
     .title("桌面小伙伴设置 · EM Use")
     .inner_size(880., 680.)
@@ -212,7 +282,7 @@ pub fn open_settings(app: &tauri::AppHandle) -> Result<(), String> {
     .map_err(|e| e.to_string())?;
     Ok(())
 }
-fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
+pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
     use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem, Submenu};
     let s = snapshot(app);
     let scene = s["settings"]["scene"].as_str().unwrap_or("aquarium");
@@ -259,7 +329,9 @@ fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
     menu.append(&scenes).map_err(|e| e.to_string())?;
     add("refresh", "刷新额度")?;
     add("settings", "设置")?;
-    add("update", "检查更新")?;
+    add("messages", "咚咚消息")?;
+    let update_label = updates::tray_label(&s["update"]);
+    add("update", &update_label)?;
     for (key, label) in [("alwaysOnTop", "置顶显示"), ("clickThrough", "鼠标穿透")] {
         menu.append(
             &CheckMenuItem::with_id(
@@ -274,9 +346,9 @@ fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
         )
         .map_err(|e| e.to_string())?;
     }
-    add("dongdong-login", "使用咚咚账户")?;
-    add("login", "手动登录 / 切换账户")?;
-    add("logout", "退出账户（暂停自动连接）")?;
+    add("dongdong-login", "额度：使用咚咚账户")?;
+    add("login", "额度：手动登录 / 切换账户")?;
+    add("logout", "退出额度账户（消息不受影响）")?;
     menu.append(&PredefinedMenuItem::separator(app).map_err(|e| e.to_string())?)
         .map_err(|e| e.to_string())?;
     add("quit", "退出 EM Use")?;
@@ -342,6 +414,7 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                     Ok(())
                 }
                 "settings" => open_settings(app),
+                "messages" => open_messages(app),
                 "login" => account::open_login(app),
                 "logout" => account::logout(app),
                 "dongdong-login" => {
@@ -362,8 +435,10 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                 "update" => {
                     let app = app.clone();
                     tauri::async_runtime::spawn(async move {
-                        let _ = open_settings(&app);
-                        let _ = updates::check_updates(&app).await;
+                        let _ = open_updates(&app);
+                        if snapshot(&app)["update"]["status"] != "available" {
+                            let _ = updates::check_updates(&app, true).await;
+                        }
                     });
                     Ok(())
                 }
@@ -417,4 +492,30 @@ fn schedule_settings(app: &tauri::AppHandle, patch: Value) {
             publish(&app);
         }
     });
+}
+
+#[cfg(test)]
+mod message_panel_tests {
+    use super::*;
+    #[test]
+    fn card_avoids_pet_and_fits_offset_monitor() {
+        let screen = Bounds {
+            x: -1920.,
+            y: 24.,
+            width: 1920.,
+            height: 1056.,
+        };
+        for x in [-1900., -500.] {
+            let pet = Bounds {
+                x,
+                y: 900.,
+                width: 440.,
+                height: 440.,
+            };
+            let c = message_panel_bounds(pet, screen);
+            assert!(c.x >= screen.x && c.x + c.width <= screen.x + screen.width);
+            assert!(c.y >= screen.y && c.y + c.height <= screen.y + screen.height);
+            assert!(c.x + c.width <= pet.x || c.x >= pet.x + pet.width);
+        }
+    }
 }

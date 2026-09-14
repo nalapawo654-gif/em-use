@@ -120,7 +120,10 @@ export const BUDDY_SKINS: { id: BuddySkin; label: string }[] = [
   { id: 'midnight', label: '酷黑款' }, { id: 'blossom', label: '粉萌款' },
 ]
 export const OUTFITS: { id: Outfit; label: string }[] = [{ id: 'classic', label: '原生小鱼' }, { id: 'sailor', label: '海洋领航员' }, { id: 'royal', label: '小小王冠' }, { id: 'ribbon', label: '今日小可爱' }]
+export interface MessageItem { key: string; conversation: string; sender: string; title: string; body: string; kind: string; at: number; fresh: boolean; mentioned: boolean }
+export interface MessageState { epoch: string; status: 'waiting' | 'ready' | 'paused' | 'disabled' | 'unsupported'; message: string; account: { id: string; name: string } | null; items: MessageItem[]; revision: number; pausedUntil: number; newCount: number }
 export interface Settings {
+  messageEnabled: boolean; messagePreview: boolean; messageRespectMute: boolean; messagePausedUntil: number;
   alwaysOnTop: boolean; clickThrough: boolean; launchAtLogin: boolean;
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
@@ -128,6 +131,8 @@ export interface Settings {
   scene: Scene; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  messages?: MessageState;
+  dismissedUpdateVersion?: string;
   loginMode?: 'dongdong' | 'manual' | 'signed-out';
   account?: { id: string; name?: string } | null;
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
@@ -135,6 +140,11 @@ export interface AppState {
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }
 export interface DesktopAPI {
+  openMessagePanel?(): Promise<void>;
+  openMessages?(): Promise<void>; openDongdong?(): Promise<void>;
+  ackMessages?(epoch: string, keys: string[]): Promise<void>;
+  openUpdates?(): Promise<void>;
+  dismissUpdate?(version: string): Promise<void>;
   checkUpdate?(): Promise<void>; installUpdate?(): Promise<void>;
   getState(): Promise<AppState>; login(mode?: 'dongdong' | 'manual'): Promise<void>; logout(): Promise<void>;
   refresh(): Promise<void>; settings(patch: Partial<Settings>): Promise<void>;
@@ -145,6 +155,7 @@ export interface DesktopAPI {
   onState(callback: (state: AppState) => void): () => void;
 }
 export const DEFAULT_SETTINGS: Settings = {
+  messageEnabled: true, messagePreview: true, messageRespectMute: true, messagePausedUntil: 0,
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
   scene: 'aquarium', skadiSkin: 'classic', skadiAdultSkin: 'classic', skadiForm: 'chibi', skadiWeapon: 'sword', dinosaurSkin: 'classic', luckycatSkin: 'classic', foxSkin: 'classic', feiduduSkin: 'classic', batterySkin: 'classic', batteryRealm: 'office', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',

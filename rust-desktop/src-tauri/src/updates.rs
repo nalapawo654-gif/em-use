@@ -1,20 +1,98 @@
 use crate::*;
+use tauri_plugin_notification::NotificationExt;
 use tauri_plugin_updater::UpdaterExt;
-fn state(app: &tauri::AppHandle, v: Value) {
-    shared(app).inner.lock().unwrap().state["update"] = v;
+
+fn state(app: &tauri::AppHandle, value: Value) {
+    let sh = shared(app);
+    let mut runtime = sh.inner.lock().unwrap();
+    let menu_changed = runtime.state["update"]["status"] != value["status"]
+        || runtime.state["update"]["version"] != value["version"];
+    runtime.state["update"] = value;
+    drop(runtime);
     publish(app);
+    if menu_changed {
+        let _ = windows::update_tray(app);
+    }
+}
+pub fn restore_notice(app: &tauri::AppHandle) {
+    if let Some(value) = storage::read(app, "update-notice.json") {
+        if let Some(version) = value["dismissedVersion"]
+            .as_str()
+            .filter(|s| s.len() <= 128)
+        {
+            shared(app).inner.lock().unwrap().state["dismissedUpdateVersion"] = json!(version);
+        }
+    }
+}
+#[tauri::command]
+pub fn dismiss_update(
+    window: WebviewWindow,
+    app: tauri::AppHandle,
+    version: String,
+) -> Result<(), String> {
+    trusted(&window)?;
+    let sh = shared(&app);
+    let mut runtime = sh.inner.lock().unwrap();
+    if runtime.state["update"]["version"].as_str() != Some(version.as_str()) {
+        return Err("版本已经变化，请查看新的来信".into());
+    }
+    storage::write(
+        &app,
+        "update-notice.json",
+        &json!({"dismissedVersion":version}),
+    )?;
+    runtime.state["dismissedUpdateVersion"] = json!(version);
+    drop(runtime);
+    publish(&app);
+    Ok(())
+}
+pub async fn watch_updates(app: tauri::AppHandle) {
+    tokio::time::sleep(Duration::from_secs(10)).await;
+    loop {
+        let delay = if check_updates(&app, false).await.is_ok() {
+            6 * 3600
+        } else {
+            15 * 60
+        };
+        tokio::time::sleep(Duration::from_secs(delay)).await;
+    }
 }
 #[tauri::command]
 pub async fn check_update(window: WebviewWindow, app: tauri::AppHandle) -> Result<(), String> {
     trusted(&window)?;
-    check_updates(&app).await
+    check_updates(&app, true).await
 }
-pub async fn check_updates(app: &tauri::AppHandle) -> Result<(), String> {
+// A background network failure must not erase an already discovered installable version.
+fn failed_check(previous: &Value, manual: bool) -> Value {
+    if previous["status"] == "available" {
+        return previous.clone();
+    }
+    if !manual {
+        return previous.clone();
+    }
+    json!({"status":"error","message":"暂时无法检查更新，请确认已连接内网且服务器已上传版本清单"})
+}
+pub fn tray_label(update: &Value) -> String {
+    match update["status"].as_str() {
+        Some("available") => format!(
+            "发现新版本 v{} · 查看更新",
+            update["version"].as_str().unwrap_or("")
+        ),
+        Some("downloading") => "正在下载更新 · 查看进度".into(),
+        Some("installing") => "正在安装更新".into(),
+        Some("error") if update["version"].is_string() => "更新未完成 · 查看详情".into(),
+        _ => "检查更新".into(),
+    }
+}
+pub async fn check_updates(app: &tauri::AppHandle, manual: bool) -> Result<(), String> {
     let sh = shared(app);
     let Ok(mut slot) = sh.update.try_lock() else {
         return Ok(());
     };
-    state(app, json!({"status":"checking","message":"正在检查新版本"}));
+    let previous = snapshot(app)["update"].clone();
+    if manual && previous["status"] != "available" {
+        state(app, json!({"status":"checking","message":"正在检查新版本"}));
+    }
     let result = async {
         app.updater_builder()
             .timeout(Duration::from_secs(20))
@@ -27,11 +105,23 @@ pub async fn check_updates(app: &tauri::AppHandle) -> Result<(), String> {
     .await;
     match result {
         Ok(Some(update)) => {
+            let version = update.version.clone();
             state(
                 app,
-                json!({"status":"available","version":update.version,"notes":update.body,"message":"发现新版本，可下载并安装"}),
+                json!({"status":"available","version":version,"notes":update.body,"message":"发现新版本，可下载并安装"}),
             );
             *slot = Some(update);
+            // Keep notification policy separate from quota alerts. Never show or focus a hidden pet.
+            let runtime = sh.inner.lock().unwrap();
+            let notify = runtime.state["settings"]["notifications"] == true
+                && runtime.state["dismissedUpdateVersion"] != version
+                && sh.update_notified.lock().unwrap().insert(version.clone());
+            drop(runtime);
+            if notify {
+                let _ = app.notification().builder().title(format!("EM Use v{version} 已就绪"))
+                    .body("伙伴收到一封更新来信。可点击桌宠上的新版本入口，或从托盘查看更新；安装需要你确认。")
+                    .show();
+            }
             Ok(())
         }
         Ok(None) => {
@@ -43,11 +133,10 @@ pub async fn check_updates(app: &tauri::AppHandle) -> Result<(), String> {
             Ok(())
         }
         Err(_) => {
-            *slot = None;
-            state(
-                app,
-                json!({"status":"error","message":"暂时无法检查更新，请确认已连接内网且服务器已上传版本清单"}),
-            );
+            if previous["status"] != "available" {
+                *slot = None;
+            }
+            state(app, failed_check(&previous, manual));
             Err("检查更新失败".into())
         }
     }
@@ -58,12 +147,18 @@ pub async fn install_update(window: WebviewWindow, app: tauri::AppHandle) -> Res
     let sh = shared(&app);
     let mut slot = sh.update.try_lock().map_err(|_| "更新正在进行")?;
     let update = slot.as_ref().ok_or("请先检查更新")?;
+    let version = update.version.clone();
     state(
         &app,
-        json!({"status":"downloading","version":update.version,"message":"正在下载更新，完成后将重启应用"}),
+        json!({"status":"downloading","version":version,"message":"正在下载更新，完成后将重启应用"}),
     );
     let mut downloaded = 0_u64;
-    let result=update.download_and_install(|size,total|{downloaded+=size as u64;state(&app,json!({"status":"downloading","downloaded":downloaded,"total":total,"message":"正在下载并校验更新"}));},||{state(&app,json!({"status":"installing","message":"签名校验通过，正在安装"}));}).await;
+    let result = update.download_and_install(|size,total| {
+        downloaded += size as u64;
+        state(&app, json!({"status":"downloading","version":version,"downloaded":downloaded,"total":total,"message":"正在下载并校验更新"}));
+    }, || {
+        state(&app, json!({"status":"installing","version":version,"message":"签名校验通过，正在安装"}));
+    }).await;
     match result {
         Ok(()) => {
             *slot = None;
@@ -72,9 +167,28 @@ pub async fn install_update(window: WebviewWindow, app: tauri::AppHandle) -> Res
         Err(_) => {
             state(
                 &app,
-                json!({"status":"error","message":"更新失败，原版本仍可使用；请重新检查或手动下载"}),
+                json!({"status":"error","version":version,"message":"更新失败，原版本仍可使用；请重新检查或手动下载"}),
             );
             Err("更新未安装".into())
         }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn background_failure_preserves_the_pending_letter() {
+        let available = json!({"status":"available","version":"0.5.0","notes":"hello"});
+        assert_eq!(failed_check(&available, false), available);
+        assert_eq!(failed_check(&available, true), available);
+        let idle = json!({"status":"idle"});
+        assert_eq!(failed_check(&idle, false), idle);
+        assert_eq!(failed_check(&idle, true)["status"], "error");
+    }
+    #[test]
+    fn tray_exposes_pending_and_active_updates() {
+        assert!(tray_label(&json!({"status":"available","version":"0.5.0"})).contains("0.5.0"));
+        assert!(tray_label(&json!({"status":"downloading"})).contains("进度"));
+        assert_eq!(tray_label(&json!({"status":"current"})), "检查更新");
     }
 }

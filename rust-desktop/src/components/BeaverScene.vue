@@ -36,7 +36,7 @@ function pet() { if (performance.now() < suppressPetUntil) return; if (play.valu
 onMounted(() => { timer = setInterval(() => { if (document.hidden) return; elapsed.value = performance.now() - play.value.since; play.value = advanceBeaver(play.value, performance.now(), props.reducedMotion) }, 80); window.addEventListener('blur', release) })
 onUnmounted(() => { clearInterval(timer); release(); window.removeEventListener('blur', release) })
 watch(() => play.value.mode, (mode) => { if ((mode === 'celebrate' || mode === 'idle') && host.value?.contains(document.activeElement)) void nextTick(() => host.value?.focus({ preventScroll: true })) })
-defineExpose({ act, cancel })
+defineExpose({ updateBlocked: computed(() => play.value.mode !== 'idle'), act, cancel })
 </script>
 <template>
   <div ref="host" tabindex="-1" class="beaver-scene" :class="[{ night, muted, 'motion-off': reducedMotion, 'is-grooming': play.mode === 'groom' }, 'beaver-level-' + level, 'beaver-action-' + play.mode]" :data-action="play.mode" :data-level="level" :data-pet-gesture="play.mode === 'groom' ? 'groom' : undefined" @pointerdown="down" @pointermove="move" @pointerup="release" @pointercancel="release" @lostpointercapture="release">

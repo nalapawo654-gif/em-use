@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { PhX, PhArrowSquareOut, PhSignOut, PhDesktop, PhSun, PhMoon, PhCircleHalf, PhFish, PhCheck, PhShieldCheck, PhDownloadSimple } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop } from '../bridge'
 import type { Settings } from '../shared/types'
+import MessageSettings from './MessageSettings.vue'
 import OutfitPicker from './OutfitPicker.vue'
 import ScenePicker from './ScenePicker.vue'
 import BuddySkinPicker from './BuddySkinPicker.vue'
@@ -30,7 +31,13 @@ import HamsterVisual from './HamsterVisual.vue'
 import HamsterSkinPicker from './HamsterSkinPicker.vue'
 import { money } from '../shared/quota'
 const emit = defineEmits<{ close: [] }>()
-const tab = ref('appearance'), notice = ref('')
+const tab = ref(['updates', 'messages'].includes(new URLSearchParams(location.search).get('tab') ?? '') ? new URLSearchParams(location.search).get('tab')! : 'appearance'), notice = ref('')
+const openMessages = () => { tab.value = 'messages' }
+onMounted(() => window.addEventListener('open-messages', openMessages))
+onUnmounted(() => window.removeEventListener('open-messages', openMessages))
+const openUpdates = () => { tab.value = 'updates' }
+onMounted(() => window.addEventListener('open-updates', openUpdates))
+onUnmounted(() => window.removeEventListener('open-updates', openUpdates))
 const updateBusy = computed(() => ['checking', 'downloading', 'installing'].includes(state.update?.status ?? ''))
 async function checkUpdate() { try { await api.checkUpdate?.() } catch { /* Native update state includes a readable error. */ } }
 async function installUpdate() { try { await api.installUpdate?.() } catch { /* Native update state includes a readable error. */ } }
@@ -45,7 +52,7 @@ async function connect(mode: 'dongdong' | 'manual') {
 async function set<K extends keyof Settings>(key: K, value: Settings[K]) { try { await api.settings({ [key]: value }) } catch { notice.value = '设置暂未保存，请重试' } }
 async function disconnect() {
   const ticket = ++accountAction; notice.value = ''
-  try { await api.logout(); if (ticket === accountAction) notice.value = '已退出，重新启动也不会自动连接' }
+  try { await api.logout(); if (ticket === accountAction) notice.value = '已退出额度账户，咚咚消息不受影响' }
   catch { if (ticket === accountAction) notice.value = '退出状态暂未保存，请重试' }
 }
 </script>
@@ -57,6 +64,7 @@ async function disconnect() {
         <button :class="{ active: tab === 'appearance' }" @click="tab = 'appearance'"><PhFish/>外观与互动</button>
         <button :class="{ active: tab === 'desktop' }" @click="tab = 'desktop'"><PhDesktop/>桌面偏好</button>
         <button :class="{ active: tab === 'account' }" @click="tab = 'account'"><PhShieldCheck/>账户与额度</button>
+        <button :class="{ active: tab === 'messages' }" @click="tab = 'messages'"><PhShieldCheck/>咚咚消息</button>
         <button v-if="api.checkUpdate" :class="{ active: tab === 'updates' }" @click="tab = 'updates'"><PhDownloadSimple/>版本更新</button>
         <span class="nav-version">EM Use <small>v{{ state.version }}</small></span>
       </nav>
@@ -85,6 +93,7 @@ async function disconnect() {
           <label v-for="item in [{ key: 'alwaysOnTop', name: '置顶显示', help: '切换其他应用时，也能看到小伙伴。' }, { key: 'clickThrough', name: '鼠标穿透', help: '点击会落到后方窗口；从系统托盘可随时关闭。' }, { key: 'launchAtLogin', name: '开机启动', help: '登录电脑后自动出现，安装版生效。' }, { key: 'notifications', name: '低额度提醒', help: '剩余低于 30% 和 10% 时，每日各提醒一次。' }]" :key="item.key" class="setting-row"><span><b>{{ item.name }}</b><small>{{ item.help }}</small></span><input type="checkbox" role="switch" :checked="state.settings[item.key as keyof Settings] === true" @change="set(item.key as keyof Settings, ($event.target as HTMLInputElement).checked)"/></label>
           <div class="soft-note">按住场景空白或宠物拖动，轻点仍可互动；玩法使用拖动时优先处理互动。拖动四角调整大小，移开鼠标后操作自动隐去。关闭悬浮窗后，从系统托盘恢复。</div>
         </template>
+        <template v-else-if="tab === 'messages'"><MessageSettings/></template>
         <template v-else-if="tab === 'updates'">
           <h2>版本更新</h2><p class="section-description">当前版本 v{{ state.version }}，连接内网后可获取新版本。</p>
           <div class="soft-note" role="status">{{ state.update?.message ?? '尚未检查更新' }}<p v-if="state.update?.version">新版本 v{{ state.update.version }}</p><p v-if="state.update?.total">{{ Math.min(100, Math.round((state.update.downloaded ?? 0) / state.update.total * 100)) }}%</p></div>
@@ -92,7 +101,7 @@ async function disconnect() {
           <div class="account-actions"><button class="primary-button" :disabled="updateBusy" @click="checkUpdate">检查更新</button><button v-if="state.update?.status === 'available'" class="primary-button" @click="installUpdate">下载、安装并重启</button><button class="text-button" @click="api.openReleases()">手动下载<PhArrowSquareOut/></button></div>
         </template>
         <template v-else>
-          <h2>AI 云平台</h2><p class="section-description">每日额度，随时心里有数。</p>
+          <h2>额度账户 · AI 云平台</h2><p class="section-description">用于查询额度；咚咚消息始终跟随本机咚咚账户，可与此账户不同。</p>
           <div class="account-card"><PhShieldCheck weight="duotone"/><div><b>{{ accountTitle }}</b><p>{{ isDesktop ? loginDescription : '浏览器预览 · 未连接真实账户' }}</p><p v-if="state.account?.name && state.account?.id" class="account-id">账户 {{ state.account.id }}</p></div></div>
           <p class="account-status" role="status">{{ state.message }}</p>
           <div class="login-methods" aria-label="登录方式">
@@ -101,7 +110,7 @@ async function disconnect() {
           </div>
           <div v-if="state.quota" class="account-quota"><span>今日已用<b>¥{{ money(state.quota.used) }}</b></span><span>每日额度<b>¥{{ money(state.quota.limit) }}</b></span><span>每日重置<b>00:00 <small>北京时间</small></b></span></div>
           <p class="privacy-note">登录凭据仅保存在此设备；费用可能延迟数分钟，以平台返回的数据为准。{{ connected && !state.persistentLogin && isDesktop ? '当前仅在本次运行中保留登录。' : '' }}</p>
-          <div class="account-actions"><button class="text-button" @click="api.openPortal()">前往平台<PhArrowSquareOut/></button><button v-if="state.loginMode !== 'signed-out' || connected" class="text-button danger-text" @click="disconnect"><PhSignOut/>{{ connected ? '退出账户' : '停止连接并退出' }}</button></div>
+          <div class="account-actions"><button class="text-button" @click="api.openPortal()">前往平台<PhArrowSquareOut/></button><button v-if="state.loginMode !== 'signed-out' || connected" class="text-button danger-text" @click="disconnect"><PhSignOut/>{{ connected ? '退出额度账户' : '停止额度连接' }}</button></div>
           <div class="version-note"><span>EM Use v{{ state.version }}</span><button class="text-button" @click="api.openReleases()">下载新版本<PhDownloadSimple/></button></div>
         </template>
         <p v-if="notice" class="inline-notice" role="status">{{ notice }}</p>

@@ -1,5 +1,5 @@
 {
   "identifier": "local-desktop",
   "windows": ["widget", "settings"],
-  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten", "allow-desktop", "allow-check-update", "allow-install-update"]
+  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten", "allow-desktop", "allow-check-update", "allow-install-update", "allow-dismiss-update"]
 }

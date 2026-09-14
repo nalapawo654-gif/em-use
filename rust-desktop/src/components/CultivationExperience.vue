@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetNotices from './PetNotices.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhSparkle, PhGearSix, PhMinus, PhGameController, PhX, PhInfo, PhArrowsClockwise, PhMoon, PhSun, PhMountains, PhHeart, PhArrowUpLeft, PhTShirt, PhShuffle } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -22,7 +23,7 @@ import CultivationRealmPicker from './CultivationRealmPicker.vue'
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'details' | 'realm' | 'wardrobe' | null>(null), notice = ref('')
-const play = ref(cultivationIdle()), visible = ref(!document.hidden)
+const play = ref(cultivationIdle()), visible = ref(!document.hidden), updateLetterOpen = ref(false)
 const { moving, down, move, end, click, wheel } = useWindowGestures()
 const corners: Corner[] = ['nw','ne','sw','se']
 const level = computed(() => cultivationLevel(props.percent)), active = computed(() => play.value.action !== 'idle')
@@ -33,7 +34,7 @@ const practice = computed(() => PRACTICES.find(p=>p.id===training.value.practice
 const event = computed(()=>active.value ? null : training.value.encounter)
 const trainingActive = computed(()=>!active.value && !panel.value && !event.value)
 const trainingBackdrop = computed(()=>!!event.value && !['golden-pill','furnace-pop','runaway-sword'].includes(event.value.kind) && ['alchemy','stargaze'].includes(training.value.practice))
-const motionRunning = computed(()=>visible.value && !state.settings.reducedMotion && !panel.value && !moving.value)
+const motionRunning = computed(()=>visible.value && !updateLetterOpen.value && !state.settings.reducedMotion && !panel.value && !moving.value)
 const incenseVisible = computed(()=>showIncense(training.value.practice,active.value))
 const gentle = computed(()=>active.value || event.value?.kind==='drowsy' || !['full','settling'].includes(level.value))
 function previewEncounter(kind: EncounterKind) {
@@ -89,8 +90,8 @@ function visibility() { lastTick=performance.now(); visible.value = !document.hi
 onMounted(() => { timer=setInterval(() => {
   const now=performance.now(),delta=now-lastTick;lastTick=now
   if(visible.value) play.value=advanceCultivation(play.value,now)
-  ambience.value=advanceAmbience(ambience.value,delta,{paused:!visible.value||!!panel.value||moving.value,reduced:state.settings.reducedMotion,active:active.value,realm:realm.value,practice:training.value.practice,encounter:training.value.encounter})
-  training.value=advanceTraining(training.value,delta,{paused:!visible.value||active.value||!!panel.value||moving.value,random:state.settings.cultivationRandom,reduced:state.settings.reducedMotion})
+  ambience.value=advanceAmbience(ambience.value,delta,{paused:updateLetterOpen.value||!visible.value||!!panel.value||moving.value,reduced:state.settings.reducedMotion,active:active.value,realm:realm.value,practice:training.value.practice,encounter:training.value.encounter})
+  training.value=advanceTraining(training.value,delta,{paused:updateLetterOpen.value||!visible.value||active.value||!!panel.value||moving.value,random:state.settings.cultivationRandom,reduced:state.settings.reducedMotion})
 },1000/30); document.addEventListener('visibilitychange',visibility); window.addEventListener('blur',releaseStroke) })
 onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventListener('visibilitychange',visibility); window.removeEventListener('blur',releaseStroke) })
 </script>
@@ -98,6 +99,7 @@ onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventL
   <div class="cultivation-experience" :class="{ 'cultivation-native': isDesktop }">
     <div class="cultivation-hero">
       <section ref="widget" tabindex="-1" class="cultivation-widget" :class="['realm-' + realm, 'level-' + level, 'action-' + play.action, 'training-' + training.practice, event ? 'event-'+event.kind+' event-'+encounterPhase(event) : '', { 'is-training': trainingActive, 'has-panel': panel, 'has-action': active, 'has-encounter': !!event, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible || !!panel || moving }]" :style="encounterStyle" aria-label="修仙渡劫事务所场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!event || !!notice" @open-change="updateLetterOpen = $event"/>
         <div class="cultivation-aura" aria-hidden="true"><div class="cultivation-ring"><i v-for="(rune,i) in ['乾','坤','震','巽','坎','离','艮','兑']" :key="rune" :style="{ transform: `rotate(${i*45}deg) translateY(-23cqw) rotate(${-i*45}deg)` }">{{ rune }}</i></div><span>✧</span></div>
         <Transition name="realm-dissolve">
           <div :key="realm" class="cultivation-realm-layer" :class="'scenery-'+realm" aria-hidden="true">

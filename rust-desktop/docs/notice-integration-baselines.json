@@ -1,0 +1,37 @@
+{
+  "description": "Reviewed notification-only integration in legacy pet wrappers: PetNotices placement, exposed busy state, and cultivation idle pause. Artwork and state machines remain covered by the original parity checks. Hashes use .png image-extension normalization.",
+  "files": {
+    "src/components/Aquarium.vue": {
+      "baseline_sha256": "4c1316ff76ff36d83ad3913fcbf42d005ee1a3617d14526f28cfaacd96bea4cc",
+      "native_sha256": "2d422a18599188e54bd1d99ba021b3c5a2c68c4e37e91a8f64003d5e0e5d6e03"
+    },
+    "src/components/BatteryExperience.vue": {
+      "baseline_sha256": "e431bc3fedeecaf439187bdbba342df5dd8d1fb778a890b606b46a20d64782fa",
+      "native_sha256": "9633f6ea004f93ad2e8dfc1c48722c21197b3fd7af65f7f1284a0c44a8042452"
+    },
+    "src/components/BeaverExperience.vue": {
+      "baseline_sha256": "20c2603f1142313672eb612bf1d5f87bfd2630520b0aba634baabb85bae58987",
+      "native_sha256": "9bbd2e31e6e44f21535147be72fb80ba270406f45c3af4418199b06f0052a069"
+    },
+    "src/components/BeaverScene.vue": {
+      "baseline_sha256": "2572e657ef2e8e89cb8c8ddbf9b03f8a6d1a45887c6f49e48ab7da7286c3b765",
+      "native_sha256": "a215446eb7c6ec6bd0ba6dd9a5b762afbf92fac135ce6c3bf964c2e883be3035"
+    },
+    "src/components/BuddyExperience.vue": {
+      "baseline_sha256": "02bba7b761c0364f11fa0a675b591eebeecaf232c127ba40fb5ea66fc34e5703",
+      "native_sha256": "3d22882f2800abbc9350c6f7a72a255a878663a8c8f0c887c314f12673e94ad3"
+    },
+    "src/components/BuddyScene.vue": {
+      "baseline_sha256": "3ac72fc0e94c08e7ebb485f8c95a2fc2d81cdb0eff733a41e163096fc5931cf2",
+      "native_sha256": "a37a41b183516d18eb9cec1e8ee725d21d22277f31a6e0cadd7407f9e47dfbff"
+    },
+    "src/components/CultivationExperience.vue": {
+      "baseline_sha256": "24ef376a0ab43662432874741ae2351ae4d9beb7ebc4f52c812a037951abaeb2",
+      "native_sha256": "ee9c19072e984ba2d3f3e1d654b7e2916d4d0516fa827ec2475eb3ed0325a7b3"
+    },
+    "src/components/HamsterExperience.vue": {
+      "baseline_sha256": "6c55a91ef150a27114474a12979d81fdd2cbc2c193951d49777d60f9cbcdfe7c",
+      "native_sha256": "3e5a584d40608fdc0b4ce2ebea4f2340bd35b81a5e7ee68082fef8bc408311e6"
+    }
+  }
+}

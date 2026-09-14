@@ -23,7 +23,7 @@ fn format_error() -> Failure {
 // Deliberately no Debug/Serialize: session material must never reach logs or the frontend.
 pub struct Session {
     token: Zeroizing<String>,
-    badge: String,
+    pub(crate) badge: String,
     unique: String,
     pub name: String,
     pub fingerprint: String,
@@ -76,13 +76,13 @@ fn decrypt(bytes: &[u8], key: &str) -> Result<Zeroizing<Vec<u8>>, Failure> {
         .map_err(|_| format_error())
 }
 
-struct Archive {
+pub(crate) struct Archive {
     file: fs::File,
     header: Value,
     start: u64,
 }
 impl Archive {
-    fn open(path: &Path) -> Result<Self, Failure> {
+    pub(crate) fn open(path: &Path) -> Result<Self, Failure> {
         let mut file = fs::File::open(path).map_err(|_| format_error())?;
         let mut prefix = [0u8; 16];
         file.read_exact(&mut prefix).map_err(|_| format_error())?;
@@ -100,7 +100,7 @@ impl Archive {
             start: 8 + header_size,
         })
     }
-    fn text(&mut self, path: &str) -> Result<String, Failure> {
+    pub(crate) fn bytes(&mut self, path: &str) -> Result<Vec<u8>, Failure> {
         let mut entry = &self.header;
         for part in path.trim_start_matches("./").split('/') {
             if part.is_empty() || part == ".." {
@@ -131,7 +131,20 @@ impl Archive {
         self.file
             .read_exact(&mut bytes)
             .map_err(|_| format_error())?;
-        String::from_utf8(bytes).map_err(|_| format_error())
+        Ok(bytes)
+    }
+    pub(crate) fn text(&mut self, path: &str) -> Result<String, Failure> {
+        String::from_utf8(self.bytes(path)?).map_err(|_| format_error())
+    }
+    pub(crate) fn entries(&self, path: &str) -> Vec<String> {
+        let mut node = &self.header;
+        for part in path.split('/') {
+            node = &node["files"][part];
+        }
+        node["files"]
+            .as_object()
+            .map(|x| x.keys().cloned().collect())
+            .unwrap_or_default()
     }
 }
 fn installed_key(path: &Path) -> Result<(Zeroizing<String>, String), Failure> {
@@ -192,7 +205,7 @@ fn archives_in(root: &Path, out: &mut Vec<PathBuf>) {
         }
     }
 }
-fn archive_candidates() -> Vec<PathBuf> {
+pub(crate) fn archive_candidates() -> Vec<PathBuf> {
     let mut out = Vec::new();
     #[cfg(target_os = "macos")]
     {

@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'nod
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { buildSite, platforms } from './release-site.mjs'
+import { pets } from './download-page.mjs'
 import { validateVersion, checkVersion } from './version.mjs'
 function fixture(fn){const root=mkdtempSync(join(tmpdir(),'em-release-'));try{for(const platform of platforms){const dir=join(root,'input',platform);mkdirSync(dir,{recursive:true});const file=`EM-Use-0.4.0-${platform}${platform.startsWith('windows')?'.exe':'.app.tar.gz'}`;writeFileSync(join(dir,file),'fixture');writeFileSync(join(dir,`${file}.sig`),'test-signature');const installer=platform.startsWith('windows')?file:`EM-Use-0.4.0-${platform}.dmg`;if(installer!==file)writeFileSync(join(dir,installer),'disk-image');writeFileSync(join(dir,'artifact.json'),JSON.stringify({version:'0.4.0',platform,installers:[installer],update:{file,signature:'test-signature'}}))}fn(root)}finally{rmSync(root,{recursive:true,force:true})}}
 test('version sources agree and stable releases reject ambiguous tags',()=>{assert.ok(checkVersion());for(const v of ['01.2.3','1.2','1.2.3-beta','../1.2.3'])assert.throws(()=>validateVersion(v))})
@@ -16,8 +17,8 @@ test('download page explains the product and links to installers from both entry
   const page=readFileSync(join(root,'out/index.html'),'utf8')
   assert.equal(page,readFileSync(join(root,'out/em-use/index.html'),'utf8'))
   assert.match(page,/东方财富 AI 云平台/)
-  assert.match(page,/六类桌宠/)
+  assert.ok(page.includes(`${pets.length} 类桌宠`))
   for(const [platform,ext] of [['windows-x86_64','exe'],['darwin-aarch64','dmg'],['darwin-x86_64','dmg']])assert.ok(page.includes(`href="/em-use/releases/0.4.0/EM-Use-0.4.0-${platform}.${ext}"`))
   assert.doesNotMatch(page,/href="[^"]+\.app\.tar\.gz"/)
-  for(const pet of ['aquarium','buddy','beaver','hamster','cultivation','battery'])assert.ok(readFileSync(join(root,`out/em-use/site-assets/0.4.0/${pet}.webp`)).length>0)
+  for(const {id:pet} of pets)assert.ok(readFileSync(join(root,`out/em-use/site-assets/0.4.0/${pet}.webp`)).length>0)
 }))

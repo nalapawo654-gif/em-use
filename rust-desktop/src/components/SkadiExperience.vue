@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetNotices from './PetNotices.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhHandPalm, PhMusicNotes, PhSword, PhCat, PhBriefcase, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhPalette, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight, PhPersonSimpleWalk, PhArmchair, PhCoffee, PhSparkle, PhFish, PhCookie, PhWind, PhEye } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -45,6 +46,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
   <div class="skadi-experience" :class="{ 'skadi-native': isDesktop }">
     <div class="skadi-hero">
       <section ref="widget" tabindex="-1" class="skadi-widget" :class="[{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`,`form-${state.settings.skadiForm}`,`action-${play.action}`]" :style="{ '--skadi-energy': SKADI_LEVELS[level].color, '--skadi-glow': SKADI_LEVELS[level].glow }" aria-label="斯卡蒂月汐场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
         <div class="skadi-character"><SkadiVisual :key="play.startedAt" :percent="percent" :action="play.action" :skin="selectedSkin" :form="state.settings.skadiForm" :weapon="state.settings.skadiWeapon" :gentle="state.settings.reducedMotion" :paused="!visible || moving" :ambient="!panel" :fishing="fishing"/></div>
         <div class="skadi-moon" aria-hidden="true"><i></i><span>✦</span></div>
         <div class="skadi-tide" aria-hidden="true"></div>

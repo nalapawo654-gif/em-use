@@ -38,7 +38,7 @@ function hide() { if (hiding.value) reveal(); else { begin(props.reducedMotion ?
 function reveal() { begin('reveal'); happy.value = true; heartUntil = sceneNow() + 1800; emit('interact', 'found') }
 function treasure() { begin('treasure'); emit('interact', 'treasure') }
 function automaticClean() { autoWipe = true; autoIndex = 0 }
-defineExpose({ feed, clean, love, hide, treasure, cancel })
+defineExpose({ updateBlocked: computed(() => play.value.mode !== 'idle'), feed, clean, love, hide, treasure, cancel })
 watch(() => props.outfit, () => { happy.value = true; outfitSince = sceneNow(); heartUntil = outfitSince + 1700 })
 function point(event: PointerEvent) {
   const b = host.value!.getBoundingClientRect()

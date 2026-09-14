@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetNotices from './PetNotices.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhEye, PhPersonArmsSpread, PhHandPalm, PhEar, PhCoins, PhFish, PhCoffee, PhKeyboard, PhPackage, PhGift, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhPalette, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -37,6 +38,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
   <div class="luckycat-experience" :class="{ 'luckycat-native': isDesktop }">
     <div class="luckycat-hero">
       <section ref="widget" tabindex="-1" class="luckycat-widget" :class="[{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`]" :style="{ '--luckycat-energy': LUCKYCAT_LEVELS[level].color }" aria-label="破产招财猫场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
         <div class="luckycat-character"><LuckyCatVisual :percent="percent" :action="play.action" :restart="play.startedAt" :skin="state.settings.luckycatSkin" :gentle="state.settings.reducedMotion" :paused="!visible || moving" ambient :ambient-allowed="!panel && !active && !moving"/></div>
         <button class="luckycat-body-hit scene-hit" :aria-label="play.action === 'box' ? '叫招财猫回来' : '点点招财猫，招招财'" @click="play.action === 'box' ? cancel() : act('fortune')"></button>
         <p class="luckycat-speech" aria-live="polite">{{ speech }}</p>

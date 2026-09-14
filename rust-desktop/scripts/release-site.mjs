@@ -29,7 +29,7 @@ export function buildSite(input,output,version,base='http://172.27.12.77:5500/')
   writeFileSync(join(release,'SHA256SUMS.txt'),sums.join('\n')+'\n')
   writeFileSync(join(release,'version.json'),JSON.stringify(latest,null,2)+'\n')
   const siteAssets=join(root,'site-assets',version);mkdirSync(siteAssets,{recursive:true})
-  for(const pet of pets)copyFileSync(fileURLToPath(new URL(`../website/assets/${pet.id}.webp`,import.meta.url)),join(siteAssets,`${pet.id}.webp`))
+  for(const pet of pets)copyFileSync(fileURLToPath(new URL(`../../website/assets/${pet.id}.webp`,import.meta.url)),join(siteAssets,`${pet.id}.webp`))
   const prefix=new URL('em-use/',baseURL).pathname
   const page=renderDownloadPage(version,downloads,prefix)
   writeFileSync(join(root,'index.html'),page)

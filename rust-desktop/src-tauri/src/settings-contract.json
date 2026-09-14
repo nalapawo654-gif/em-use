@@ -1,5 +1,9 @@
 {
   "defaults": {
+    "messageEnabled": true,
+    "messagePreview": true,
+    "messageRespectMute": true,
+    "messagePausedUntil": 0,
     "alwaysOnTop": true,
     "clickThrough": false,
     "launchAtLogin": false,

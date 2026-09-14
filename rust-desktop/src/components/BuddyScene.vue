@@ -41,7 +41,7 @@ function down(event: PointerEvent) {
 function move(event: PointerEvent) { if (play.value.mode !== 'clean') return; const p = point(event); if (dragging) wipe(p); else brush.value = p }
 function up(event: PointerEvent) { dragging = false; previous = undefined; if (host.value?.hasPointerCapture(event.pointerId)) host.value.releasePointerCapture(event.pointerId) }
 function automatic() { autoIndex = 0; autoClean.value = true; previous = undefined }
-defineExpose({ act, cancel, togglePose })
+defineExpose({ updateBlocked: computed(() => play.value.mode !== 'idle'), act, cancel, togglePose })
 watch(() => props.skin, () => { resting.value = false; act('wag') })
 watch(() => props.percent, (value, old) => { if (value !== null && old !== null && value > old + 15) act('inflate') })
 onMounted(() => {

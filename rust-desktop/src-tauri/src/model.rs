@@ -20,6 +20,11 @@ pub fn validate(input: &Value) -> Value {
             {
                 out[key] = value.clone();
             }
+            if key == "messagePausedUntil" {
+                if let Some(n) = value.as_f64().filter(|n| n.is_finite()) {
+                    out[key] = json!(n.clamp(0., (now() + 86_400_000) as f64).round() as i64);
+                }
+            }
             if key == "windowWidth" {
                 if let Some(n) = value.as_f64().filter(|n| n.is_finite()) {
                     out[key] = json!(n.clamp(180., 800.).round() as u32);

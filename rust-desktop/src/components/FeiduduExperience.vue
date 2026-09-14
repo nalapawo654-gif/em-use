@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetNotices from './PetNotices.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { PhHeart, PhCoffee, PhCookie, PhHandPalm, PhLaptop, PhSparkle, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -47,6 +48,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
   <div class="feidudu-experience" :class="{ 'feidudu-native': isDesktop }">
     <div class="feidudu-hero">
       <section ref="widget" tabindex="-1" class="feidudu-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dudu-energy': FEIDUDU_LEVELS[level].color }" aria-label="肥嘟嘟场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
         <div class="feidudu-character"><FeiduduVisual :percent="percent" :action="play.action" :skin="state.settings.feiduduSkin" :gentle="state.settings.reducedMotion" :paused="!visible" :ambient="!panel && !active && !moving"/></div>
         <button class="feidudu-body-hit scene-hit" :class="{ lying }" :aria-label="play.action === 'rest' ? '叫肥嘟嘟起床' : '摸摸肥嘟嘟的头'" @click="pet"></button>
         <p class="feidudu-speech" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet' || play.action === 'belly'" weight="fill"/></p>

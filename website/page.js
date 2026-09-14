@@ -6,6 +6,6 @@ for(const button of document.querySelectorAll('[data-pet]'))button.addEventListe
   document.querySelector('#pet-title').textContent=pet.name;
   document.querySelector('#pet-tag').textContent=pet.tag;
   document.querySelector('#pet-description').textContent=pet.description;
-  document.querySelector('#pet-index').textContent=String(pets.indexOf(pet)+1).padStart(2,'0')+' / 06';
+  document.querySelector('#pet-index').textContent=String(pets.indexOf(pet)+1).padStart(2,'0')+' / '+String(pets.length).padStart(2,'0');
   for(const option of document.querySelectorAll('[data-pet]'))option.setAttribute('aria-pressed',String(option===button));
 });
