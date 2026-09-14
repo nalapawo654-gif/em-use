@@ -1,5 +1,5 @@
 {
   "identifier": "message-panel",
-  "windows": ["messages"],
+  "windows": ["messages", "message-toast"],
   "permissions": ["core:event:allow-listen", "core:event:allow-unlisten", "allow-desktop"]
 }

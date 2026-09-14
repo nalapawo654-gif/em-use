@@ -3,9 +3,11 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { beaverRig, type BeaverRig } from '../beaver/sprites'
 import { sampleBeaverMotion } from '../beaver/motion'
 import { renderBeaver } from '../beaver/render'
+import { useCharacterMail } from '../shared/characterMail'
 import type { BeaverAction } from '../beaver/play'
 import type { BeaverSkin } from '../shared/types'
-const props = defineProps<{ level: number; skin: BeaverSkin; action: BeaverAction; since: number; reducedMotion: boolean }>()
+const props = defineProps<{ message?:boolean; level: number; skin: BeaverSkin; action: BeaverAction; since: number; reducedMotion: boolean }>()
+const mail=useCharacterMail()
 const canvas = ref<HTMLCanvasElement>(), failed = ref(false)
 let rig: BeaverRig | undefined, loadedSkin: BeaverSkin = props.skin, revision=0, animation=0, last=0, disposed=false
 async function load() {
@@ -20,7 +22,7 @@ function draw(now: number) {
   if(!canvas.value||!rig||document.hidden||now-last<(props.reducedMotion?160:33)) return
   last=now
   const motion=sampleBeaverMotion(props.action,Math.max(0,now-props.since),now,props.level,props.reducedMotion)
-  renderBeaver(canvas.value.getContext('2d')!,rig,loadedSkin,props.action,now,motion)
+  renderBeaver(canvas.value.getContext('2d')!,rig,loadedSkin,props.action,now,motion,props.message&&mail?.active.value?mail.paint:undefined)
 }
 onMounted(()=>{void load();animation=requestAnimationFrame(draw)})
 watch(()=>props.skin,load)

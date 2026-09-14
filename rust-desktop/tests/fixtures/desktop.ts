@@ -7,9 +7,20 @@ document.body.style.width = `${({ standard: 440, compact: 300, mini: 190 })[size
 const state: AppState = { status: 'ready', quota: { limit: 300, used: 96, remaining: 204, percent: 68, exceeded: false, estimatedAt: '2026-09-09T18:00:00', serverAt: '2026-09-09T18:00:00', receivedAt: Date.now(), day: '2026-09-09' }, message: '仅用于组件测试 · 演示额度', syncing: false, persistentLogin: false, loginOpen: false, settings: { ...DEFAULT_SETTINGS, size, windowWidth: ({ standard: 440, compact: 300, mini: 190 })[size], theme: query.get('theme') === 'night' ? 'night' : 'day', outfit: 'sailor', scene: query.get('scene') === 'cultivation' ? 'cultivation' : query.get('scene') === 'hamster' ? 'hamster' : query.get('scene') === 'beaver' ? 'beaver' : query.get('scene') === 'buddy' ? 'buddy' : 'aquarium', reducedMotion: query.get('motion') === 'off' }, version: '0.3.0-visual-test' }
 const customWidth = Number(query.get('width'))
 if (customWidth >= 180 && customWidth <= 800) { state.settings.windowWidth = customWidth; document.body.style.width = `${customWidth}px` }
+// A wide QA canvas represents the neighbouring native notification window, not a larger pet.
+if(query.has('canvas')) {
+ const style=document.createElement('style')
+ style.textContent=['feidudu','fox','luckycat','dinosaur','skadi'].map(scene=>`.${scene}-native,.${scene}-native .${scene}-widget{width:var(--fixture-width)!important;height:var(--fixture-width)!important}`).join('')
+ document.head.append(style);document.documentElement.style.setProperty('--fixture-width',`${state.settings.windowWidth}px`)
+}
+// Separate notification windows use their own viewport, not the pet fixture width.
+if (['messages', 'message-toast'].includes(query.get('view') ?? '')) {
+  document.body.style.width = '100%'; document.body.style.overflow = 'hidden'
+}
 const requestedScene = query.get('scene')
 if (requestedScene && requestedScene in SCENE_LABELS) state.settings.scene = requestedScene as Settings['scene']
 state.settings.cultivationRandom=query.get('random')==='on'
+if(query.has('buddySkin')) state.settings.buddySkin=query.get('buddySkin') as Settings['buddySkin']
 if(query.has('cultivationSkin')) state.settings.cultivationSkin=query.get('cultivationSkin') as Settings['cultivationSkin']
 if(query.has('accessory')) state.settings.cultivationAccessory=query.get('accessory') as Settings['cultivationAccessory']
 if(query.has('treasure')) state.settings.cultivationTreasure=query.get('treasure') as Settings['cultivationTreasure']
@@ -35,7 +46,7 @@ if(query.has('messages')) {
   state.loginMode='manual';state.account={id:'quota-B',name:'额度用户 B'}
   state.messages={epoch:'dong-A',status:'ready',message:'正在接收本机咚咚消息（演示）',account:{id:'dong-A',name:'咚咚用户 A'},revision:1,pausedUntil:0,newCount:1,items:[{key:'msg-1',conversation:'chat-1',sender:'张三',title:'张三',body:'接口已经更新，方便的时候帮忙看一下。',kind:'text',at:Date.now(),fresh:true,mentioned:false}]}
 }
-Object.assign(window,{__setMessages:(messages: MessageState)=>{state.messages=messages;publish()},__messageFixtureState:()=>structuredClone(state)})
+Object.assign(window,{__setQuota:(percent:number|null)=>{state.quota=percent===null?null:{...state.quota!,limit:300,used:300-3*percent,remaining:3*percent,percent,exceeded:percent===0};state.status=percent===null?'signed-out':'ready';publish()},__setMessages:(messages: MessageState)=>{state.messages=messages;publish()},__messageFixtureState:()=>structuredClone(state)})
 // Explicit development fixture only. No network downloads or native installation.
 const updateDemo = query.has('update')
 if (updateDemo) {
@@ -43,8 +54,20 @@ if (updateDemo) {
   if (!query.has('fresh')) state.dismissedUpdateVersion = localStorage.getItem('em-use-fixture-update-dismissed') ?? ''
 }
 Object.assign(window, { __setUpdate: (patch: AppState['update']) => { state.update = patch; publish() } })
+let messageToastFrame: HTMLIFrameElement | undefined
 window.emUse = {
-  async openMessagePanel() { document.body.dataset.messagePanelRequested='true'; window.open('/tests/fixtures/desktop.html?view=messages&messages=1&width=350', 'em-use-message-fixture', 'width=350,height=360') },
+  async showMessageToast(epoch,key) {
+    state.messageToast={epoch,key,side:'right'}
+    if(!messageToastFrame){
+      messageToastFrame=document.createElement('iframe');messageToastFrame.name='message-toast';messageToastFrame.title='咚咚新消息';
+      messageToastFrame.src='/tests/fixtures/desktop.html?view=message-toast';
+      Object.assign(messageToastFrame.style,{position:'fixed',border:'0',width:'284px',height:'96px',zIndex:'1000'})
+      document.body.append(messageToastFrame)
+    }
+    Object.assign(messageToastFrame.style,{display:'block',left:`${state.settings.windowWidth+8}px`,top:`${state.settings.windowWidth*.12}px`});publish()
+  },
+  async hideMessageToast() {state.messageToast=null;if(messageToastFrame)messageToastFrame.style.display='none';publish()},
+  async openMessagePanel() { document.body.dataset.messagePanelRequested='true'; window.open('/tests/fixtures/desktop.html?view=messages&messages=1&width=350', 'em-use-message-fixture', `width=350,height=${(state.messages?.items.length??0)<=1?240:360}`) },
   async openMessages() { document.body.dataset.messageDetailsRequested='true'; window.open('/tests/fixtures/desktop.html?view=settings&tab=messages&messages=1&width=800','_blank','width=880,height=680') },
   async openDongdong() { document.body.dataset.dongdongOpened=String(Number(document.body.dataset.dongdongOpened??0)+1) },
   async ackMessages(epoch,keys) { if(epoch!==state.messages?.epoch)throw Error('stale epoch');state.messages.items.forEach(i=>{if(keys.includes(i.key))i.fresh=false});state.messages.newCount=state.messages.items.filter(i=>i.fresh).length;publish() },
@@ -59,10 +82,10 @@ window.emUse = {
   async login(mode='dongdong') {state.loginMode=mode;state.account={id:'quota-C',name:'额度用户 C'};publish()}, async logout() {state.loginMode='signed-out';state.account=null;state.quota=null;state.status='signed-out';publish()}, async refresh() {}, async hide() {}, async quit() {}, async openPortal() {}, async openReleases() {}, async screenshot() { return null },
   async openSettings() { window.dispatchEvent(new CustomEvent('open-settings')) },
 }
-if(query.get('view')==='messages' && window.opener?.emUse) {
-  const owner=window.opener as Window
+if((query.get('view')==='messages' && window.opener?.emUse)||(query.get('view')==='message-toast' && window.parent!==window)) {
+  const owner=(query.get('view')==='message-toast'?window.parent:window.opener) as Window
   const source=owner.emUse!
-  window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),ackMessages:(epoch,keys)=>source.ackMessages!(epoch,keys),openDongdong:()=>source.openDongdong!(),hide:async()=>window.close()}
-  window.addEventListener('pagehide',()=>owner.dispatchEvent(new CustomEvent('message-panel-closed')))
+  window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),ackMessages:(epoch,keys)=>source.ackMessages!(epoch,keys),openDongdong:()=>source.openDongdong!(),openMessagePanel:async()=>{await source.openMessagePanel!();await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-panel-opened'))},hide:async()=>{if(query.get('view')==='message-toast'){await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-toast-closed'))}else window.close()}}
+  if(query.get('view')==='messages')window.addEventListener('pagehide',()=>owner.dispatchEvent(new CustomEvent('message-panel-closed')))
 }
 await import('../../src/main')

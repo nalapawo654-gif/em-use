@@ -261,6 +261,78 @@
       "bytes": 1865569,
       "encoding": "PNG green chroma; six cells normalized by src/skadi/sprites.ts; weapons composited at palm pivots by SkadiFigure.vue",
       "source": "Built-in image_gen; see docs/skadi-generation-v2.md; user references ../../斯卡蒂.png and ../../斯卡蒂1.png"
+    },
+    {
+      "path": "buddy/message-bag.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1557471,
+      "sha256": "0c2d60eed58f485418c4487ebae9b2f3bdaffcb20add006b608492f96f9271b4",
+      "encoding": "PNG green chroma; decoded with edge spill removal by BuddyMessageParcel.vue",
+      "source": "Built-in image_gen, 2026-09-14, blue ground satchel from the user reference; see design/buddy-messages-v4/README.md"
+    },
+    {
+      "path": "feidudu/message-prop.png",
+      "sha256": "08e648448761896d0b507c9fd2d059deaba9c14300350f61d05fd044f6a17b4b",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1260467,
+      "encoding": "PNG with magenta chroma; decoded by CharacterMessageParcel.vue",
+      "source": "Built-in image_gen; user message-prop reference 2026-09-14"
+    },
+    {
+      "path": "cultivation/message-prop.png",
+      "sha256": "25f8cb1630812f0e6694e560ab7183fa4d78784c38f89bbc15a454083ee3ffe8",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1531128,
+      "encoding": "PNG with magenta chroma; decoded by CharacterMessageParcel.vue",
+      "source": "Built-in image_gen; user message-prop reference 2026-09-14"
+    },
+    {
+      "path": "beaver/message-prop.png",
+      "sha256": "59b685c2f46e3c48da9ea93750dedd6bec2df764069a743dbcf385113cde3335",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1620748,
+      "encoding": "PNG with magenta chroma; decoded by CharacterMessageParcel.vue",
+      "source": "Built-in image_gen; user message-prop reference 2026-09-14"
+    },
+    {
+      "path": "hamster/message-prop.png",
+      "sha256": "cce1a47cd443636625789e58e91443af932847ab0911224f8a37a081037ac3b6",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1660051,
+      "encoding": "PNG with magenta chroma; decoded by CharacterMessageParcel.vue",
+      "source": "Built-in image_gen; user message-prop reference 2026-09-14"
+    },
+    {
+      "path": "dinosaur/message-prop.png",
+      "sha256": "cf3a30155babaf88835df5229953e4a9110ba81223344765b5d4855833860db7",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1264115,
+      "encoding": "PNG with magenta chroma; decoded by CharacterMessageParcel.vue",
+      "source": "Built-in image_gen; user message-prop reference 2026-09-14"
+    },
+    {
+      "path": "skadi/message-prop.png",
+      "sha256": "1a151a279fa5112921dd2d388799705d27d30a6dc782e7e14b191fcb73196950",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1448928,
+      "encoding": "PNG with magenta chroma; decoded by CharacterMessageParcel.vue",
+      "source": "Built-in image_gen; user message-prop reference 2026-09-14"
+    },
+    {
+      "path": "feidudu/message-tag.png",
+      "sha256": "d6042a45136c6ba22c48b198522f13cfc5422d93b19e8fd79eeae2da005854af",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 837356,
+      "encoding": "RGBA PNG; transparent background preserved",
+      "source": "Built-in image_gen edit of feidudu/message-prop.png; docs/design/character-messages-v5/README.md"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "description": "Reviewed notification-only integration in legacy pet wrappers: PetNotices placement, exposed busy state, and cultivation idle pause. Artwork and state machines remain covered by the original parity checks. Hashes use .png image-extension normalization.",
+  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png.",
   "files": {
     "src/components/Aquarium.vue": {
       "baseline_sha256": "4c1316ff76ff36d83ad3913fcbf42d005ee1a3617d14526f28cfaacd96bea4cc",
@@ -11,15 +11,15 @@
     },
     "src/components/BeaverExperience.vue": {
       "baseline_sha256": "20c2603f1142313672eb612bf1d5f87bfd2630520b0aba634baabb85bae58987",
-      "native_sha256": "9bbd2e31e6e44f21535147be72fb80ba270406f45c3af4418199b06f0052a069"
+      "native_sha256": "809ff2c2958e97409fca2b257c9f576edcfb16bfc17ba542d0cd2ce525f8c249"
     },
     "src/components/BeaverScene.vue": {
       "baseline_sha256": "2572e657ef2e8e89cb8c8ddbf9b03f8a6d1a45887c6f49e48ab7da7286c3b765",
-      "native_sha256": "a215446eb7c6ec6bd0ba6dd9a5b762afbf92fac135ce6c3bf964c2e883be3035"
+      "native_sha256": "c1c96a16e492fa08c71ced7861a10550eb583f3384d090354f0a29a7797b55a0"
     },
     "src/components/BuddyExperience.vue": {
       "baseline_sha256": "02bba7b761c0364f11fa0a675b591eebeecaf232c127ba40fb5ea66fc34e5703",
-      "native_sha256": "3d22882f2800abbc9350c6f7a72a255a878663a8c8f0c887c314f12673e94ad3"
+      "native_sha256": "4bf20b18824a1690750dd527a201568612e631425249691b58d7197d73f026dd"
     },
     "src/components/BuddyScene.vue": {
       "baseline_sha256": "3ac72fc0e94c08e7ebb485f8c95a2fc2d81cdb0eff733a41e163096fc5931cf2",
@@ -27,11 +27,31 @@
     },
     "src/components/CultivationExperience.vue": {
       "baseline_sha256": "24ef376a0ab43662432874741ae2351ae4d9beb7ebc4f52c812a037951abaeb2",
-      "native_sha256": "ee9c19072e984ba2d3f3e1d654b7e2916d4d0516fa827ec2475eb3ed0325a7b3"
+      "native_sha256": "0b88151b38838f58cde9d0cf7bdf95281863bc675ba31a857d1c3e891b4d35cf"
     },
     "src/components/HamsterExperience.vue": {
       "baseline_sha256": "6c55a91ef150a27114474a12979d81fdd2cbc2c193951d49777d60f9cbcdfe7c",
-      "native_sha256": "3e5a584d40608fdc0b4ce2ebea4f2340bd35b81a5e7ee68082fef8bc408311e6"
+      "native_sha256": "b8d5bd93daaf6f0cbb94a04d0f438870907137589ba9eab6de8683ab72ecf3d4"
+    },
+    "src/components/BeaverVisual.vue": {
+      "baseline_sha256": "2c35a583536c80e675c2425b3aa62e1ddbead8ee7955e54bc92bb8cb57825b82",
+      "native_sha256": "9e2267fe5b613a1ea56fdc5068973d0c792ae344fcc9e51d41fa4ff0aef0edd6"
+    },
+    "src/components/BeaverActor.vue": {
+      "baseline_sha256": "56f70b48eb33f7deb323d01dee295b4b69fb930de7973776092c6255dfff01fd",
+      "native_sha256": "70d394023d47f6cfc479db7d95c6e9ce0eb6dff4ae6acdf2cc1813ecc66baeaa"
+    },
+    "src/beaver/render.ts": {
+      "baseline_sha256": "037528b3befb4ae9a966b480ed5254dbdc1866b3832ad49a0fe412756c247e48",
+      "native_sha256": "44c565140264f07bc25e074d388777ef1631d475b65be12583908477b6f1de74"
+    },
+    "src/components/HamsterVisual.vue": {
+      "baseline_sha256": "78c9e9f526d3919043778671992a0ee791050decdf57add98d6bb9cea938a854",
+      "native_sha256": "3c9da0b57b4e717bdc68e4e87e0d2bf95bc0f630b923d37568117a5c0121cf41"
+    },
+    "src/hamster/render.ts": {
+      "baseline_sha256": "d7e72d00a5629d726d83a596260b0a1ae20cdeeb3f8973e391425be0d1db1074",
+      "native_sha256": "5a2b9a82b49e2814138d7b6de5b39e664675244e85a4035ef0be1c49cec60a87"
     }
   }
 }

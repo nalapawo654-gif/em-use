@@ -15,6 +15,7 @@ import SkadiWardrobe from './SkadiWardrobe.vue'
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | 'armory' | null>(null), notice = ref(''), play = ref(skadiIdle()), visible = ref(!document.hidden)
+const noticeOpen = ref(false)
 const { moving, down, move, end, click, wheel } = useWindowGestures()
 const corners: Corner[] = ['nw', 'ne', 'sw', 'se']
 const icons = { hand: PhHandPalm, music: PhMusicNotes, sword: PhSword, cat: PhCat, work: PhBriefcase, moon: PhMoon, walk: PhPersonSimpleWalk, sit: PhArmchair, tea: PhCoffee, sparkle: PhSparkle, fish: PhFish, food: PhCookie, wind: PhWind, look: PhEye }
@@ -37,16 +38,18 @@ async function perform(fn: () => Promise<unknown>, message: string) { try { awai
 function demo(percent: number | null) { if (isDesktop) return; play.value = skadiIdle(); if (percent === null) void api.logout(); else previewQuota(percent) }
 function resetPlay() { play.value = skadiIdle();caught.value=false;fishNote.value='' }
 function visibility() { visible.value = !document.hidden; if (!visible.value) resetPlay() }
-watch(() => [state.settings.skadiSkin,state.settings.skadiAdultSkin,state.settings.skadiForm,state.settings.skadiWeapon], resetPlay)
+// A new shared message/quota snapshot is not a wardrobe change.
+watch([() => state.settings.skadiSkin, () => state.settings.skadiAdultSkin, () => state.settings.skadiForm, () => state.settings.skadiWeapon], resetPlay)
+function loseFocus() { if (!noticeOpen.value) resetPlay() }
 let timer: ReturnType<typeof setInterval> | undefined
-onMounted(() => { timer = setInterval(() => { if (visible.value) {tickNow.value=performance.now();play.value = advanceSkadi(play.value,tickNow.value)} }, 100); document.addEventListener('visibilitychange', visibility); window.addEventListener('blur', resetPlay) })
-onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('blur', resetPlay) })
+onMounted(() => { timer = setInterval(() => { if (visible.value) {tickNow.value=performance.now();play.value = advanceSkadi(play.value,tickNow.value)} }, 100); document.addEventListener('visibilitychange', visibility); window.addEventListener('blur', loseFocus) })
+onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('blur', loseFocus) })
 </script>
 <template>
   <div class="skadi-experience" :class="{ 'skadi-native': isDesktop }">
     <div class="skadi-hero">
       <section ref="widget" tabindex="-1" class="skadi-widget" :class="[{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`,`form-${state.settings.skadiForm}`,`action-${play.action}`]" :style="{ '--skadi-energy': SKADI_LEVELS[level].color, '--skadi-glow': SKADI_LEVELS[level].glow }" aria-label="斯卡蒂月汐场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" @open-change="noticeOpen = $event"/>
         <div class="skadi-character"><SkadiVisual :key="play.startedAt" :percent="percent" :action="play.action" :skin="selectedSkin" :form="state.settings.skadiForm" :weapon="state.settings.skadiWeapon" :gentle="state.settings.reducedMotion" :paused="!visible || moving" :ambient="!panel" :fishing="fishing"/></div>
         <div class="skadi-moon" aria-hidden="true"><i></i><span>✦</span></div>
         <div class="skadi-tide" aria-hidden="true"></div>

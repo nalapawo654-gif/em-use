@@ -1,0 +1,132 @@
+{
+  "source": {
+    "typescript_tests": 149,
+    "script_tests": 5,
+    "typecheck": "passed",
+    "contract": "passed",
+    "build": "passed with existing large-chunk warning",
+    "parity": {
+      "reviewed_files": 77,
+      "legacy_assets": 56,
+      "native_assets": 37
+    }
+  },
+  "browser": {
+    "initial_matrix": "Failed at cultivation 190 px quota overlap; corrected and scoped retested. Earlier completed samples were not counted as a successful whole run.",
+    "beaver_cultivation_final": {
+      "samples": 860,
+      "scenes": [
+        "beaver",
+        "cultivation"
+      ],
+      "errors": []
+    },
+    "other_mini_actions": {
+      "samples": 216,
+      "scenes": [
+        "feidudu",
+        "hamster",
+        "dinosaur"
+      ],
+      "errors": []
+    },
+    "message_flow": [
+      {
+        "scene": "feidudu",
+        "busyEntry": true,
+        "deferred": true,
+        "actionPreserved": true,
+        "panelRestored": true,
+        "keyboard": true,
+        "privacy": true,
+        "quotaLogoutIndependent": true,
+        "sourceSwitchClears": true
+      },
+      {
+        "scene": "cultivation",
+        "busyEntry": true,
+        "deferred": true,
+        "actionPreserved": true,
+        "panelRestored": true,
+        "keyboard": true,
+        "privacy": true,
+        "quotaLogoutIndependent": true,
+        "sourceSwitchClears": true
+      },
+      {
+        "scene": "beaver",
+        "busyEntry": true,
+        "deferred": true,
+        "actionPreserved": true,
+        "panelRestored": true,
+        "keyboard": true,
+        "privacy": true,
+        "quotaLogoutIndependent": true,
+        "sourceSwitchClears": true
+      },
+      {
+        "scene": "hamster",
+        "busyEntry": true,
+        "deferred": true,
+        "actionPreserved": true,
+        "panelRestored": true,
+        "keyboard": true,
+        "privacy": true,
+        "quotaLogoutIndependent": true,
+        "sourceSwitchClears": true
+      },
+      {
+        "scene": "dinosaur",
+        "busyEntry": true,
+        "deferred": true,
+        "actionPreserved": true,
+        "panelRestored": true,
+        "keyboard": true,
+        "privacy": true,
+        "quotaLogoutIndependent": true,
+        "sourceSwitchClears": true
+      },
+      {
+        "scene": "skadi",
+        "busyEntry": true,
+        "deferred": true,
+        "actionPreserved": true,
+        "panelRestored": true,
+        "keyboard": true,
+        "privacy": true,
+        "quotaLogoutIndependent": true,
+        "sourceSwitchClears": true
+      }
+    ],
+    "short_action_focus": [
+      {
+        "scene": "feidudu",
+        "action": "tea",
+        "preserved": true
+      },
+      {
+        "scene": "dinosaur",
+        "action": "tea",
+        "preserved": true
+      },
+      {
+        "scene": "skadi",
+        "action": "sing",
+        "preserved": true
+      }
+    ],
+    "hamster_frames": {
+      "frames": 84,
+      "source": "loadHamsterSkin corrected atlas selection",
+      "foreground": "same current corrected frame pixels"
+    },
+    "motion_boundaries": {
+      "motionBoundarySamples": 40,
+      "overview": "/Users/terriblewich/Documents/UI/emmmm/rust-desktop/docs/design/character-messages-v5/overview.png"
+    }
+  },
+  "native_desktop": "not tested this revision",
+  "real_dongdong_chain": "not tested this revision",
+  "windows": "not tested",
+  "release": "not built"
+}

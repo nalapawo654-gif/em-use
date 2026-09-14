@@ -10,7 +10,11 @@ export async function installNativeBridge() {
   await listen('settings:updates', () => window.dispatchEvent(new CustomEvent('open-updates')))
   await listen('settings:messages', () => window.dispatchEvent(new CustomEvent('open-messages')))
   await listen('messages:closed', () => window.dispatchEvent(new CustomEvent('message-panel-closed')))
+  await listen('messages:toast-closed', () => window.dispatchEvent(new CustomEvent('message-toast-closed')))
+  await listen('messages:opened', () => window.dispatchEvent(new CustomEvent('message-panel-opened')))
   const api: DesktopAPI = {
+    showMessageToast: (epoch, key) => call('showMessageToast', { epoch, key }),
+    hideMessageToast: () => call('hideMessageToast'),
     openMessagePanel: () => call('openMessagePanel'),
     openMessages: () => call('openMessages'), openDongdong: () => call('openDongdong'), ackMessages: (epoch, keys) => call('ackMessages', { epoch, keys }),
     getState: () => call<AppState>('getState'), login: mode => call('login', mode), logout: () => call('logout'),

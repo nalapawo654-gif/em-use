@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-14",
+  "layer": "Browser fixture using the production Vue components, simulated IPC and messages",
+  "nativeRuntimeVerifiedThisRevision": false,
+  "animationMatrix": {
+    "scenarios": 520,
+    "samples": 1920,
+    "errors": [],
+    "positionRange": {
+      "x": [
+        321.1875,
+        321.1875
+      ],
+      "y": [
+        286,
+        286
+      ]
+    },
+    "phases": [
+      "idle",
+      "prepare",
+      "perform",
+      "recover"
+    ]
+  },
+  "layoutMatrix": {
+    "count": 160,
+    "errors": [],
+    "clear": true
+  },
+  "buddyFlow": {
+    "passed": [
+      "cleaning: entry opens card and DongDong bridge without dragging or scrubbing",
+      "clean → celebrate → idle delivers queued toast once, closing retains badge",
+      "double-click lie down and stand restore",
+      "all five wardrobe selections retain the mail during wag",
+      "live animated/static switching during feed",
+      "quota logout retains DongDong A mail and unknown quota pose",
+      "paused entry and private preview retained",
+      "DongDong account switch clears old account mail"
+    ]
+  },
+  "sharedRegression": {
+    "hoverPause": true,
+    "autoCollapseKeepsCount": true,
+    "grouping": true,
+    "visibleOnlyAcknowledgement": true,
+    "incomingKeepsCurrentConversation": true,
+    "updatePriority": true,
+    "gameplayDeferred": true
+  },
+  "sourceChecks": {
+    "typescriptTests": 149,
+    "scriptTests": 5,
+    "typecheck": true,
+    "build": true,
+    "parity": true,
+    "legacyAssets": 56,
+    "nativeAssets": 30
+  }
+}

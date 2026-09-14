@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhGearSix, PhMinus, PhArrowsClockwise, PhFish, PhDrop, PhCamera, PhSun, PhMoon, PhArrowRight, PhCheckCircle, PhCloudSlash, PhArrowSquareOut, PhPlant, PhSparkle, PhInfo, PhHeart, PhShieldCheck, PhGameController, PhTreasureChest, PhEye, PhX } from '@phosphor-icons/vue'
+import MessageToast from './components/MessageToast.vue'
 import MessagePanel from './components/MessagePanel.vue'
 import PetNotices from './components/PetNotices.vue'
 import Aquarium from './components/Aquarium.vue'
@@ -63,8 +64,9 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
+    <MessageToast v-else-if="view === 'message-toast'"/>
     <MessagePanel v-else-if="view === 'messages'"/>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>

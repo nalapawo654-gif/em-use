@@ -5,6 +5,7 @@ import { api, appState as state } from '../bridge'
 import { messageGroups } from '../shared/messageNotice'
 const props = defineProps<{ closeable?: boolean }>()
 const emit = defineEmits<{ close: [] }>()
+const opening = ref(false), requested = ref(false)
 const selected = ref<string | null>(null), error = ref(''), area = ref<HTMLElement>(), close = ref<HTMLButtonElement>()
 const groups = computed(() => messageGroups(state.messages?.items ?? []))
 const conversation = computed(() => selected.value ?? (groups.value.length === 1 ? groups.value[0]?.id : null))
@@ -31,7 +32,13 @@ watch(() => state.messages?.epoch, () => { selected.value = null; pending.clear(
 nextTick(() => { if (props.closeable) close.value?.focus({ preventScroll: true }) })
 onMounted(()=>document.addEventListener('visibilitychange',observe))
 onUnmounted(() => {disposed=true;observer?.disconnect();document.removeEventListener('visibilitychange',observe)})
-async function openDongdong() { try { if (!api.openDongdong) throw Error(); await api.openDongdong() } catch { error.value = '未能打开咚咚，请手动打开。' } }
+async function openDongdong() {
+  if(opening.value)return
+  opening.value=true;error.value='';requested.value=false
+  try { if (!api.openDongdong) throw Error('请在桌面应用中打开咚咚。'); await api.openDongdong(); requested.value=true }
+  catch(e) { error.value = typeof e==='string' ? e : e instanceof Error ? e.message : '未能打开咚咚，请重试。' }
+  finally {opening.value=false}
+}
 </script>
 <template>
   <section class="message-inbox" :role="closeable ? 'dialog' : 'region'" :aria-modal="false" aria-label="咚咚消息">
@@ -43,6 +50,6 @@ async function openDongdong() { try { if (!api.openDongdong) throw Error(); awai
       <template v-else><button v-if="groups.length>1" class="message-back" @click="selected = null"><PhCaretLeft/>全部会话</button><article v-for="item in items" :key="item.key" class="message-detail"><div class="message-sender" :data-message-key="item.fresh ? item.key : undefined"><span class="message-avatar"><PhLockSimple v-if="!state.settings.messagePreview"/><template v-else>{{ item.sender.slice(0, 1) }}</template></span><strong>{{ item.title }}<small v-if="item.sender!==item.title">{{ item.sender }}</small></strong><time>{{ time(item.at) }}</time></div><span v-if="item.mentioned" class="message-mention">@我</span><p>{{ item.body }}</p></article></template>
     </div>
     <p v-if="error" class="message-error" role="alert">{{ error }}</p>
-    <footer class="message-inbox-footer"><button class="message-primary" @click="openDongdong">打开咚咚<PhArrowUpRight/></button><button v-if="closeable" class="message-secondary" @click="emit('close')">收起</button><small v-else>查看提醒不会标记咚咚已读</small></footer>
+    <footer class="message-inbox-footer"><button class="message-primary" :disabled="opening" @click="openDongdong">{{opening?'正在打开…':requested?'再次打开咚咚':'打开咚咚'}}<PhArrowUpRight/></button><button v-if="closeable" class="message-secondary" @click="emit('close')">收起</button><small v-else>查看提醒不会标记咚咚已读</small></footer>
   </section>
 </template>

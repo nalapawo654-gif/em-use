@@ -1,7 +1,9 @@
+import { foregroundPaw, type MailPainter } from '../shared/characterMail'
 import type { HamsterSkin } from '../shared/types'
 import type { HamsterRig } from './sprites'
 import { hamsterRunFrame } from './layout'
 import type { HamsterAction, HamsterLevel } from './play'
+const foregroundFrames=new WeakMap<HTMLCanvasElement,HTMLCanvasElement>()
 export function hamsterFrame(level: HamsterLevel, action: HamsterAction) {
   if (action === 'sleep' || ((action === 'idle' || action.startsWith('cat-')) && level === 'empty')) return 5
   if (action === 'feed' || (action === 'idle' && level === 'unknown')) return 4
@@ -11,14 +13,14 @@ export function hamsterFrame(level: HamsterLevel, action: HamsterAction) {
 export function hamsterRunning(level:HamsterLevel,action:HamsterAction){
   return action==='wheel'||((action==='idle'||action.startsWith('cat-'))&&(level==='full'||level==='working'))
 }
-export function renderHamster(ctx:CanvasRenderingContext2D,rig:HamsterRig,level:HamsterLevel,action:HamsterAction,time:number,motion:boolean,skin:HamsterSkin='classic'){
+export function renderHamster(ctx:CanvasRenderingContext2D,rig:HamsterRig,level:HamsterLevel,action:HamsterAction,time:number,motion:boolean,skin:HamsterSkin='classic',mail?:MailPainter){
   ctx.clearRect(0,0,512,512)
   const running=hamsterRunning(level,action), frame=hamsterFrame(level,action), resting=frame===3||frame===5
   ctx.drawImage(rig.base[7],65,354,382,130)
   ctx.save();ctx.translate(256,226)
   if(running&&motion)ctx.rotate(time/(action==='wheel'?1600:level==='working'?3000:2300))
   ctx.drawImage(rig.base[6],-201,-201,402,402);ctx.restore()
-  if(resting){ctx.drawImage(rig.base[frame],45,174,380,380);return -1}
+  if(resting){ctx.drawImage(rig.base[frame],45,174,380,380);mail?.(ctx,{x:127,y:410,width:103,height:75},'ground');return -1}
   const sequence=rig.skins[skin]
   if(!sequence)return -1
   const tired=level==='working'&&action!=='wheel', clock=action==='wheel'?time*1.25:time
@@ -29,5 +31,16 @@ export function renderHamster(ctx:CanvasRenderingContext2D,rig:HamsterRig,level:
   const breathe=motion&&action==='feed'?Math.sin(time/120)*.7:0
   if(action==='feed')ctx.drawImage(sequence[step],139,-47+breathe,236,472)
   else ctx.drawImage(sequence[step],118,-122+breathe,276,552)
+  if(mail){
+    if(action==='feed')mail(ctx,{x:150,y:354,width:96,height:70},'propped')
+    else {
+      // The envelope rides with the animal transform. Restore its actual paws,
+      // using the selected corrected atlas frame and costume, never extra limbs.
+      let actor=foregroundFrames.get(sequence[step]!)
+      if(!actor){actor=document.createElement('canvas');actor.width=actor.height=512;actor.getContext('2d')!.drawImage(sequence[step]!,118,-122,276,552);foregroundFrames.set(sequence[step]!,actor)}
+      mail(ctx,{x:256,y:302,width:105,height:77},'held')
+      foregroundPaw(ctx,actor,277,316,16,13);foregroundPaw(ctx,actor,357,324,12,17)
+    }
+  }
   ctx.restore();return step
 }

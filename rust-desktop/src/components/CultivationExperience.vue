@@ -99,7 +99,7 @@ onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventL
   <div class="cultivation-experience" :class="{ 'cultivation-native': isDesktop }">
     <div class="cultivation-hero">
       <section ref="widget" tabindex="-1" class="cultivation-widget" :class="['realm-' + realm, 'level-' + level, 'action-' + play.action, 'training-' + training.practice, event ? 'event-'+event.kind+' event-'+encounterPhase(event) : '', { 'is-training': trainingActive, 'has-panel': panel, 'has-action': active, 'has-encounter': !!event, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible || !!panel || moving }]" :style="encounterStyle" aria-label="修仙渡劫事务所场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!event || !!notice" @open-change="updateLetterOpen = $event"/>
+        <PetNotices :blocked="!!panel || active || moving || !!event || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active || !!event" @open-change="updateLetterOpen = $event"/>
         <div class="cultivation-aura" aria-hidden="true"><div class="cultivation-ring"><i v-for="(rune,i) in ['乾','坤','震','巽','坎','离','艮','兑']" :key="rune" :style="{ transform: `rotate(${i*45}deg) translateY(-23cqw) rotate(${-i*45}deg)` }">{{ rune }}</i></div><span>✧</span></div>
         <Transition name="realm-dissolve">
           <div :key="realm" class="cultivation-realm-layer" :class="'scenery-'+realm" aria-hidden="true">

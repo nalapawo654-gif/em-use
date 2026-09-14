@@ -281,37 +281,79 @@ pub fn acknowledge(app: &tauri::AppHandle, p: &Value) -> Result<(), String> {
     publish(app);
     Ok(())
 }
-pub fn open_dongdong(app: &tauri::AppHandle) -> Result<(), String> {
+pub fn open_dongdong(_app: &tauri::AppHandle) -> Result<(), String> {
+    launch_dongdong()
+}
+fn launch_dongdong() -> Result<(), String> {
+    // Prefer the actual running installation, including custom installation paths.
+    let processes = message_source::running_processes();
     #[cfg(target_os = "macos")]
     {
-        let path = dongdong::archive_candidates()
-            .into_iter()
-            .find(|p| p.is_file())
-            .and_then(|p| p.ancestors().nth(3).map(PathBuf::from))
-            .ok_or("未找到本机咚咚")?;
-        app.opener()
-            .open_path(path.to_string_lossy(), None::<&str>)
-            .map_err(|_| "未能打开咚咚，请手动打开".to_string())
+        let running_app = processes.iter().find_map(|(_, p)| {
+            p.ancestors()
+                .find(|p| p.extension().is_some_and(|e| e == "app"))
+                .map(PathBuf::from)
+        });
+        let path = running_app
+            .or_else(|| {
+                dongdong::archive_candidates()
+                    .into_iter()
+                    .find(|p| p.is_file())
+                    .and_then(|p| p.ancestors().nth(3).map(PathBuf::from))
+            })
+            .ok_or("未找到本机咚咚，请先安装或启动咚咚。")?;
+        // Launch Services activates an existing instance and restores its window.
+        let status = std::process::Command::new("/usr/bin/open")
+            .arg("-a")
+            .arg(path)
+            .status()
+            .map_err(|_| "系统未能唤起咚咚，请重试。")?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err("系统未能唤起咚咚，请手动打开后重试。".into())
+        }
     }
     #[cfg(windows)]
     {
-        for a in dongdong::archive_candidates() {
-            if let Some(root) = a.parent().and_then(|p| p.parent()) {
+        use std::os::windows::process::CommandExt;
+        let mut candidates: Vec<PathBuf> = processes.into_iter().map(|(_, path)| path).collect();
+        for archive in dongdong::archive_candidates() {
+            if let Some(root) = archive.parent().and_then(|p| p.parent()) {
                 for name in ["咚咚.exe", "emc.exe", "DongDong.exe", "EmDongDong.exe"] {
-                    let p = root.join(name);
-                    if p.is_file() {
-                        return app
-                            .opener()
-                            .open_path(p.to_string_lossy(), None::<&str>)
-                            .map_err(|_| "未能打开咚咚，请手动打开".to_string());
-                    }
+                    candidates.push(root.join(name));
                 }
             }
         }
-        Err("未找到本机咚咚".into())
+        let mut found = false;
+        for path in candidates.into_iter().filter(|p| p.is_file()) {
+            found = true;
+            // DongDong's single-instance handler restores/focuses the existing main window.
+            // Execute the installed client directly, without file associations or a shell.
+            let mut command = std::process::Command::new(&path);
+            if let Some(parent) = path.parent() {
+                command.current_dir(parent);
+            }
+            match command.creation_flags(0x08000000).spawn() {
+                Ok(mut child) => {
+                    std::thread::spawn(move || {
+                        let _ = child.wait();
+                    });
+                    return Ok(());
+                }
+                Err(_) => continue,
+            }
+        }
+        Err(if found {
+            "系统未能启动咚咚，请手动打开后重试。"
+        } else {
+            "未找到本机咚咚，请先安装或启动咚咚。"
+        }
+        .into())
     }
     #[cfg(not(any(target_os = "macos", windows)))]
     {
+        let _ = processes;
         Err("当前系统暂不支持打开咚咚".into())
     }
 }

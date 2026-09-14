@@ -131,6 +131,7 @@ export interface Settings {
   scene: Scene; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  messageToast?: { epoch: string; key: string; side: string } | null;
   messages?: MessageState;
   dismissedUpdateVersion?: string;
   loginMode?: 'dongdong' | 'manual' | 'signed-out';
@@ -141,6 +142,8 @@ export interface AppState {
 }
 export interface DesktopAPI {
   openMessagePanel?(): Promise<void>;
+  showMessageToast?(epoch: string, key: string): Promise<void>;
+  hideMessageToast?(): Promise<void>;
   openMessages?(): Promise<void>; openDongdong?(): Promise<void>;
   ackMessages?(epoch: string, keys: string[]): Promise<void>;
   openUpdates?(): Promise<void>;

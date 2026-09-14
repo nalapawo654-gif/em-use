@@ -1,3 +1,4 @@
+import type { MailPainter } from '../shared/characterMail'
 import { dinosaurMatte } from './sprites'
 import { tintDinosaurPixels } from './skins'
 import type { DinosaurSkin } from '../shared/types'
@@ -84,7 +85,7 @@ export function createDinosaurMotionRenderer(original: DinosaurParts, skin: Dino
   function part(ctx:CanvasRenderingContext2D,name:keyof DinosaurParts,x:number,y:number,w:number,h:number,angle=0,px=.5,py=.5,sx=1,sy=1){
     ctx.save();ctx.translate(x+w*px,y+h*py);ctx.rotate(angle);ctx.scale(sx,sy);ctx.drawImage(parts[name],-w*px,-h*py,w,h);ctx.restore()
   }
-  return (ctx:CanvasRenderingContext2D,motion:DinosaurMotion,p:number) => {
+  return (ctx:CanvasRenderingContext2D,motion:DinosaurMotion,p:number,mail?:MailPainter) => {
     ctx.clearRect(0,0,512,512)
     const e=envelope(p),flight=dinosaurFlight(p),phone=dinosaurPhone(p)
     const fly=motion==='fly',mobile=motion==='phone',stretch=motion==='stretch',yawn=motion==='yawn',look=motion==='look'
@@ -106,11 +107,16 @@ export function createDinosaurMotionRenderer(original: DinosaurParts, skin: Dino
     // Head pivots inside the neck; lower jaw always overlaps the attachment.
     ctx.save();ctx.translate(271,304);ctx.rotate(headAngle);ctx.translate(-271,-304+headLift)
     ctx.drawImage(face(blink,yawn?Math.sin(Math.PI*p)**2*e:0),115,41,306,291);ctx.restore()
-    if(mobile&&phone.hold>.001){
+    if(mobile&&mail)mail(ctx,{x:240,y:335+(1-phone.hold)*35,width:76,height:129},phone.hold>.2?'held':'lap')
+    if(mobile&&!mail&&phone.hold>.001){
       ctx.save();ctx.globalAlpha=phone.hold
       part(ctx,'phone',240,335+(1-phone.hold)*35,76,129,-.05+phone.nod*.018)
       // Small moving highlights convey scrolling without reading any real screen.
       ctx.fillStyle='#ffffffaa';ctx.beginPath();ctx.ellipse(278,392-phone.swipe*12,10,3,0,0,Math.PI*2);ctx.fill();ctx.restore()
+    }
+    if(mail&&!mobile){
+      if(stretch)mail(ctx,{x:423,y:374,width:49,height:91},'ground')
+      else mail(ctx,{x:209,y:347,width:64,height:117},'held')
     }
     part(ctx,'leftArm',150+(mobile?26*phone.hold:0),299+armLift,77,93,leftAngle,.28,.2)
     part(ctx,'rightArm',328-(mobile?37*phone.hold:0),293+armLift-(mobile?phone.swipe*8:0),74,94,rightAngle,.72,.2)

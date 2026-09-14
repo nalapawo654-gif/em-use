@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { PhHeart, PhCoffee, PhCookie, PhHandPalm, PhLaptop, PhSparkle, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -8,9 +9,11 @@ import type { Corner } from '../shared/windowGeometry'
 import { FEIDUDU_ACTIONS, FEIDUDU_LEVELS, advanceFeidudu, beginFeidudu, feiduduIdle, feiduduLevel, feiduduFrame, type FeiduduAction } from '../feidudu/play'
 import FeiduduVisual from './FeiduduVisual.vue'
 import FeiduduWardrobe from './FeiduduWardrobe.vue'
+provideCharacterMail('feidudu')
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | null>(null), notice = ref(''), play = ref(feiduduIdle()), visible = ref(!document.hidden)
+const noticeOpen = ref(false)
 const { moving, down, move, end, click, wheel } = useWindowGestures()
 const corners: Corner[] = ['nw', 'ne', 'sw', 'se']
 const icons = { heart: PhHeart, tea: PhCoffee, cookie: PhCookie, hand: PhHandPalm, work: PhLaptop, sparkle: PhSparkle, moon: PhMoon }
@@ -39,17 +42,18 @@ function closePanel() { panel.value = null; focusWidget() }
 async function perform(fn: () => Promise<unknown>, error: string) { try { await fn() } catch { notice.value = error } }
 function demo(percent: number | null) { if (isDesktop) return; play.value = feiduduIdle(); if (percent === null) void api.logout(); else previewQuota(percent) }
 function visibility() { visible.value = !document.hidden; if (!visible.value) clearShortAction() }
+function loseFocus() { if (!noticeOpen.value) clearShortAction() }
 function clearShortAction() { if (action.value?.duration != null) play.value = feiduduIdle() }
 let timer: ReturnType<typeof setInterval> | undefined
-onMounted(() => { timer = setInterval(() => { if (visible.value) play.value = advanceFeidudu(play.value, performance.now()) }, 100); document.addEventListener('visibilitychange', visibility); window.addEventListener('blur', clearShortAction) })
-onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('blur', clearShortAction) })
+onMounted(() => { timer = setInterval(() => { if (visible.value) play.value = advanceFeidudu(play.value, performance.now()) }, 100); document.addEventListener('visibilitychange', visibility); window.addEventListener('blur', loseFocus) })
+onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('blur', loseFocus) })
 </script>
 <template>
   <div class="feidudu-experience" :class="{ 'feidudu-native': isDesktop }">
     <div class="feidudu-hero">
       <section ref="widget" tabindex="-1" class="feidudu-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dudu-energy': FEIDUDU_LEVELS[level].color }" aria-label="肥嘟嘟场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
-        <div class="feidudu-character"><FeiduduVisual :percent="percent" :action="play.action" :skin="state.settings.feiduduSkin" :gentle="state.settings.reducedMotion" :paused="!visible" :ambient="!panel && !active && !moving"/></div>
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" @open-change="noticeOpen = $event"/>
+        <div class="feidudu-character"><FeiduduVisual message :percent="percent" :action="play.action" :skin="state.settings.feiduduSkin" :gentle="state.settings.reducedMotion" :paused="!visible" :ambient="!panel && !active && !moving"/></div>
         <button class="feidudu-body-hit scene-hit" :class="{ lying }" :aria-label="play.action === 'rest' ? '叫肥嘟嘟起床' : '摸摸肥嘟嘟的头'" @click="pet"></button>
         <p class="feidudu-speech" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet' || play.action === 'belly'" weight="fill"/></p>
         <span v-if="play.action === 'rest'" class="feidudu-zzz" aria-hidden="true">z Z</span>

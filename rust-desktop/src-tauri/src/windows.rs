@@ -205,11 +205,74 @@ pub fn open_messages(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window(app, "messages")
 }
 // A separate card stays readable even with a 180px pet; prefer the free side of the pet.
+// Keep the transient bubble outside the pet window without activating it.
+pub fn message_toast(app: &tauri::AppHandle, selection: &Value) -> Result<(), String> {
+    let state = snapshot(app);
+    let valid = state["settings"]["messageEnabled"] == true
+        && state["messages"]["status"] == "ready"
+        && selection["epoch"] == state["messages"]["epoch"]
+        && state["messages"]["items"]
+            .as_array()
+            .is_some_and(|items| items.iter().any(|i| i["key"] == selection["key"]));
+    if !valid {
+        return Err("Message source changed".into());
+    }
+    let pet = widget(app)?;
+    let b = bounds(&pet)?;
+    let screen = area(&pet, false)?;
+    let toast = message_popup_bounds(b, screen, 284., 96., b.height * 0.12);
+    let side = if toast.x >= b.x + b.width {
+        "right"
+    } else {
+        "left"
+    };
+    let w = if let Some(w) = app.get_webview_window("message-toast") {
+        w
+    } else {
+        WebviewWindowBuilder::new(
+            app,
+            "message-toast",
+            WebviewUrl::App("index.html?view=message-toast".into()),
+        )
+        .title("咚咚新消息 · EM Use")
+        .inner_size(toast.width, toast.height)
+        .transparent(true)
+        .decorations(false)
+        .shadow(false)
+        .resizable(false)
+        .skip_taskbar(true)
+        .always_on_top(true)
+        .focused(false)
+        .focusable(false)
+        .accept_first_mouse(true)
+        .visible(false)
+        .build()
+        .map_err(|e| e.to_string())?
+    };
+    set_bounds(&w, toast)?;
+    *shared(app).message_toast.lock().unwrap() =
+        Some(json!({"epoch": selection["epoch"], "key": selection["key"], "side": side}));
+    publish(app);
+    w.show().map_err(|e| e.to_string())
+}
+pub fn hide_message_toast(app: &tauri::AppHandle, notify: bool) {
+    *shared(app).message_toast.lock().unwrap() = None;
+    if let Some(w) = app.get_webview_window("message-toast") {
+        let _ = w.hide();
+    }
+    publish(app);
+    if notify {
+        let _ = app.emit_to("widget", "messages:toast-closed", ());
+    }
+}
 pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
     let pet = widget(app)?;
     let b = bounds(&pet)?;
     let a = area(&pet, false)?;
-    let card = message_panel_bounds(b, a);
+    let count = snapshot(app)["messages"]["items"]
+        .as_array()
+        .map_or(0, Vec::len);
+    let card = message_panel_bounds(b, a, count);
     let w = if let Some(w) = app.get_webview_window("messages") {
         w
     } else {
@@ -234,9 +297,18 @@ pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
     w.show().map_err(|e| e.to_string())?;
     w.set_focus().map_err(|e| e.to_string())
 }
-fn message_panel_bounds(pet: Bounds, screen: Bounds) -> Bounds {
-    let width = 350_f64.min(screen.width);
-    let height = 360_f64.min(screen.height);
+fn message_panel_bounds(pet: Bounds, screen: Bounds, count: usize) -> Bounds {
+    message_popup_bounds(pet, screen, 350., if count <= 1 { 240. } else { 360. }, 24.)
+}
+fn message_popup_bounds(
+    pet: Bounds,
+    screen: Bounds,
+    width: f64,
+    height: f64,
+    offset: f64,
+) -> Bounds {
+    let width = width.min(screen.width);
+    let height = height.min(screen.height);
     let right = pet.x + pet.width + 8.;
     let left = pet.x - width - 8.;
     let x = if right + width <= screen.x + screen.width {
@@ -246,7 +318,7 @@ fn message_panel_bounds(pet: Bounds, screen: Bounds) -> Bounds {
     };
     Bounds {
         x: x.clamp(screen.x, screen.x + screen.width - width),
-        y: (pet.y + 24.).clamp(screen.y, screen.y + screen.height - height),
+        y: (pet.y + offset).clamp(screen.y, screen.y + screen.height - height),
         width,
         height,
     }
@@ -498,6 +570,29 @@ fn schedule_settings(app: &tauri::AppHandle, patch: Value) {
 mod message_panel_tests {
     use super::*;
     #[test]
+    fn toast_is_outside_all_pet_sizes_on_either_monitor_edge() {
+        let screen = Bounds {
+            x: -1920.,
+            y: 24.,
+            width: 1920.,
+            height: 1056.,
+        };
+        for size in [190., 300., 440., 800.] {
+            for x in [-1920., -size] {
+                let pet = Bounds {
+                    x,
+                    y: 24.,
+                    width: size,
+                    height: size,
+                };
+                let toast = message_popup_bounds(pet, screen, 284., 96., size * 0.12);
+                assert!(toast.x >= screen.x && toast.x + toast.width <= screen.x + screen.width);
+                assert!(toast.y >= screen.y && toast.y + toast.height <= screen.y + screen.height);
+                assert!(toast.x + toast.width <= pet.x || toast.x >= pet.x + pet.width);
+            }
+        }
+    }
+    #[test]
     fn card_avoids_pet_and_fits_offset_monitor() {
         let screen = Bounds {
             x: -1920.,
@@ -512,10 +607,27 @@ mod message_panel_tests {
                 width: 440.,
                 height: 440.,
             };
-            let c = message_panel_bounds(pet, screen);
+            let c = message_panel_bounds(pet, screen, 3);
             assert!(c.x >= screen.x && c.x + c.width <= screen.x + screen.width);
             assert!(c.y >= screen.y && c.y + c.height <= screen.y + screen.height);
             assert!(c.x + c.width <= pet.x || c.x >= pet.x + pet.width);
         }
+    }
+    #[test]
+    fn single_message_card_is_compact() {
+        let screen = Bounds {
+            x: 0.,
+            y: 0.,
+            width: 1920.,
+            height: 1080.,
+        };
+        let pet = Bounds {
+            x: 20.,
+            y: 20.,
+            width: 190.,
+            height: 190.,
+        };
+        assert_eq!(message_panel_bounds(pet, screen, 1).height, 240.);
+        assert_eq!(message_panel_bounds(pet, screen, 3).height, 360.);
     }
 }

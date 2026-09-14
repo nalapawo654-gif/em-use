@@ -5,8 +5,12 @@ import { loadDinosaur } from '../dinosaur/sprites'
 import { tintDinosaurPixels } from '../dinosaur/skins'
 import { DINOSAUR_MOTIONS, type DinosaurMotion } from '../dinosaur/ambient'
 import { loadDinosaurParts, createDinosaurMotionRenderer, type DinosaurParts } from '../dinosaur/motionRenderer'
+import { useCharacterMail } from '../shared/characterMail'
+import { renderDinosaurMail } from '../dinosaur/mail'
 import type { DinosaurSkin } from '../shared/types'
-const props = withDefaults(defineProps<{ percent?: number | null; action?: DinosaurAction; skin?: DinosaurSkin; gentle?: boolean; paused?: boolean; frame?: number; startedAt?: number }>(), { percent: null, action: 'idle', skin: 'classic', startedAt: 0 })
+const props = withDefaults(defineProps<{ message?: boolean; percent?: number | null; action?: DinosaurAction; skin?: DinosaurSkin; gentle?: boolean; paused?: boolean; frame?: number; startedAt?: number }>(), { percent: null, action: 'idle', skin: 'classic', startedAt: 0 })
+const mail=useCharacterMail()
+const carrying=computed(()=>props.message&&mail?.active.value)
 const canvas = ref<HTMLCanvasElement>(), loaded = ref(false), failed = ref(false), motionFailed = ref(false), rigLoaded = ref(false)
 const index = computed(() => props.frame ?? dinosaurFrame(props.percent, props.action))
 const motion = computed(() => props.action in DINOSAUR_MOTIONS ? props.action as DinosaurMotion : null)
@@ -16,7 +20,10 @@ let source: HTMLCanvasElement | undefined, raf = 0
 const gentle = computed(() => props.gentle || systemGentle.value)
 function drawIdle() {
   const ctx=canvas.value?.getContext('2d')
-  if(ctx&&source){ctx.clearRect(0,0,512,512);ctx.drawImage(source,0,0)}
+  if(ctx&&source){ctx.clearRect(0,0,512,512);ctx.drawImage(source,0,0);if(carrying.value){
+    if(index.value===0&&parts){renderer??=createDinosaurMotionRenderer(parts,props.skin);renderer(ctx,'phone',.5,mail!.paint)}
+    else renderDinosaurMail(ctx,source,index.value,mail!.paint)
+  }}
 }
 function prepare() {
   const original=frames[index.value]; if(!original)return
@@ -26,18 +33,17 @@ function prepare() {
 }
 function stop() { cancelAnimationFrame(raf); raf=0 }
 function render() {
-  stop();prepare()
+  stop();prepare();renderer=parts?createDinosaurMotionRenderer(parts,props.skin):undefined
   if(!motion.value||!parts){drawIdle();return}
-  renderer=createDinosaurMotionRenderer(parts,props.skin)
   const ctx=canvas.value?.getContext('2d');if(!ctx)return
   const current=motion.value, duration=DINOSAUR_MOTIONS[current].duration
-  if(gentle.value){renderer(ctx,current,current==='fly'?.08:.5);return}
+  if(gentle.value){renderer!(ctx,current,current==='fly'?.08:.5,carrying.value?mail!.paint:undefined);return}
   if(props.paused||hidden.value){drawIdle();return}
   const start=props.startedAt||performance.now();let last=-Infinity
   function tick(now:number){
     if(disposed||!renderer)return
     const progress=Math.max(0,Math.min(1,(now-start)/duration))
-    if(now-last>=1000/30){renderer(ctx!,current,progress);last=now}
+    if(now-last>=1000/30){renderer(ctx!,current,progress,carrying.value?mail!.paint:undefined);last=now}
     if(progress<1)raf=requestAnimationFrame(tick);else raf=0
   }
   raf=requestAnimationFrame(tick)
@@ -50,7 +56,7 @@ onMounted(async () => {
   try { const images = await loadDinosaur(); if (!disposed) { frames = images; loaded.value = true; render() } }
   catch { if (!disposed) failed.value = true }
 })
-watch(() => [index.value, props.skin, props.action, props.startedAt, gentle.value, props.paused, hidden.value], render)
+watch(() => [index.value, props.skin, props.action, props.startedAt, gentle.value, props.paused, hidden.value,carrying.value], render)
 onUnmounted(() => { disposed = true; stop(); media.removeEventListener('change', systemMotionChanged); document.removeEventListener('visibilitychange', visibility) })
 </script>
 <template>

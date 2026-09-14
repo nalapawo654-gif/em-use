@@ -1,0 +1,726 @@
+{
+  "initialLayout": {
+    "count": 48,
+    "results": [
+      {
+        "scene": "feidudu",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "feidudu",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "cultivation",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "beaver",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "dinosaur",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      }
+    ],
+    "errors": []
+  },
+  "initialStateGeometry": {
+    "samples": 2996,
+    "scenes": [
+      "feidudu",
+      "cultivation",
+      "beaver",
+      "hamster",
+      "dinosaur",
+      "skadi"
+    ],
+    "errors": []
+  },
+  "finalHamsterSkadiStates": {
+    "samples": 1344,
+    "scenes": [
+      "hamster",
+      "skadi"
+    ],
+    "errors": []
+  },
+  "sixSceneMessageFlows": [
+    {
+      "scene": "feidudu",
+      "busyEntry": true,
+      "deferred": true,
+      "actionPreserved": true,
+      "panelRestored": true,
+      "keyboard": true,
+      "privacy": true,
+      "quotaLogoutIndependent": true,
+      "sourceSwitchClears": true
+    },
+    {
+      "scene": "cultivation",
+      "busyEntry": true,
+      "deferred": true,
+      "actionPreserved": true,
+      "panelRestored": true,
+      "keyboard": true,
+      "privacy": true,
+      "quotaLogoutIndependent": true,
+      "sourceSwitchClears": true
+    },
+    {
+      "scene": "beaver",
+      "busyEntry": true,
+      "deferred": true,
+      "actionPreserved": true,
+      "panelRestored": true,
+      "keyboard": true,
+      "privacy": true,
+      "quotaLogoutIndependent": true,
+      "sourceSwitchClears": true
+    },
+    {
+      "scene": "hamster",
+      "busyEntry": true,
+      "deferred": true,
+      "actionPreserved": true,
+      "panelRestored": true,
+      "keyboard": true,
+      "privacy": true,
+      "quotaLogoutIndependent": true,
+      "sourceSwitchClears": true
+    },
+    {
+      "scene": "dinosaur",
+      "busyEntry": true,
+      "deferred": true,
+      "actionPreserved": true,
+      "panelRestored": true,
+      "keyboard": true,
+      "privacy": true,
+      "quotaLogoutIndependent": true,
+      "sourceSwitchClears": true
+    },
+    {
+      "scene": "skadi",
+      "busyEntry": true,
+      "deferred": true,
+      "actionPreserved": true,
+      "panelRestored": true,
+      "keyboard": true,
+      "privacy": true,
+      "quotaLogoutIndependent": true,
+      "sourceSwitchClears": true
+    }
+  ],
+  "source": {
+    "typescriptTests": 149,
+    "scriptTests": 5,
+    "typecheck": true,
+    "build": true,
+    "parity": true
+  },
+  "nativeDesktop": "not verified in this turn",
+  "realDongdong": "not verified in this turn",
+  "published": false,
+  "finalLayout": {
+    "count": 16,
+    "results": [
+      {
+        "scene": "hamster",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "hamster",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 440,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 440,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 300,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 300,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 190,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 190,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 180,
+        "theme": "day",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      },
+      {
+        "scene": "skadi",
+        "width": 180,
+        "theme": "night",
+        "outside": true,
+        "propClear": true,
+        "overlaps": [],
+        "openDongdong": true
+      }
+    ],
+    "errors": []
+  },
+  "focusAndSharedRegression": {
+    "focusResult": [
+      {
+        "scene": "feidudu",
+        "action": "tea",
+        "preserved": true
+      },
+      {
+        "scene": "dinosaur",
+        "action": "tea",
+        "preserved": true
+      },
+      {
+        "scene": "skadi",
+        "action": "sing",
+        "preserved": true
+      }
+    ],
+    "sharedResult": {
+      "hoverPause": true,
+      "autoCollapseKeepsCount": true,
+      "grouping": true,
+      "visibleOnlyAcknowledgement": true,
+      "incomingKeepsCurrentConversation": true,
+      "updatePriority": true,
+      "gameplayDeferred": true
+    },
+    "captureResult": {
+      "scenes": [
+        "feidudu",
+        "cultivation",
+        "beaver",
+        "hamster",
+        "dinosaur",
+        "skadi"
+      ]
+    }
+  }
+}

@@ -3,6 +3,7 @@ import type { BeaverAction } from './play'
 import type { BeaverSkin } from '../shared/types'
 import { BEAVER_WARDROBE } from './wardrobe'
 import { beaverMouth, type BeaverMotion } from './motion'
+import type { MailPainter } from '../shared/characterMail'
 type Art = HTMLCanvasElement
 function part(ctx: CanvasRenderingContext2D, image: Art, x: number, y: number, width: number, angle = 0, ax = .5, ay = .5) {
   const height = width * image.height / image.width
@@ -15,11 +16,12 @@ function arm(ctx: CanvasRenderingContext2D, art: Art, x: number, y: number, hand
   const width=distance+30,height=width*art.height/art.width*.76
   ctx.drawImage(art,-width*.12,-height*.56,width,height);ctx.restore()
 }
-export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin: BeaverSkin, action: BeaverAction, clock: number, m: BeaverMotion) {
+export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin: BeaverSkin, action: BeaverAction, clock: number, m: BeaverMotion, mail?:MailPainter) {
   ctx.setTransform(1,0,0,1,64,0); ctx.clearRect(-64,0,640,512)
   const fit = BEAVER_WARDROBE[skin]
   if (m.resting) {
     ctx.save(); ctx.translate(0,470); ctx.scale(1,1+m.breathe); ctx.drawImage(rig.sleeping,0,-470,512,512); ctx.restore()
+    mail?.(ctx,{x:190,y:428,width:100,height:83},'ground')
     return
   }
   ctx.save(); ctx.translate(m.x,m.y)
@@ -29,11 +31,13 @@ export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin
   // Feet stay on the ground: breathing scales from the seated pelvis.
   ctx.save(); ctx.translate(285,475); ctx.scale(1,(1+m.breathe)*m.bodyScale); part(ctx,rig.body,0,0,280,0,.5,1)
   ctx.restore()
+  const carrying=!!mail&&['idle','pet','groom','celebrate'].includes(action)
   const holding = action === 'feed' || action === 'drink' || action === 'wood'
   let hand = {x:440*(1-a)+(holding?mouth.x-7:355)*a,y:(292+m.headY)*(1-a)+(holding?mouth.y+52:340+m.paw)*a}
   if (action === 'ball') hand = {x:440*(1-a)+(ball.x-28)*a,y:(292+m.headY)*(1-a)+ball.y*a}
   if (action === 'leaves') hand={x:440*(1-a)+400*a,y:(292+m.headY)*(1-a)+(250+m.paw)*a}
   if (action === 'bird') hand={x:440*(1-a)+465*a,y:(292+m.headY)*(1-a)+226*a}
+  if(carrying)hand={x:385,y:341+m.paw}
   arm(ctx,rig.arm,329,298+m.headY*.7,hand.x+9,hand.y-22,true)
   ctx.save(); ctx.translate(334+m.headX,210+m.headY); ctx.rotate(m.head)
   const head=rig.heads[m.level] ?? rig.heads[0]
@@ -55,6 +59,10 @@ export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin
     else if(action==='bird') part(ctx,rig.bird,477+(1-a)*40,194+(1-a)*-110+Math.sin(m.time/170)*3,77,-.05)
     else if(action==='leaves') part(ctx,rig.leaf,405,252+m.paw,58,-.4)
     ctx.restore()
+  }
+  if(mail){
+    if(carrying)mail(ctx,{x:hand.x-60,y:hand.y-53,width:115,height:96},'held')
+    else mail(ctx,{x:193,y:368,width:96,height:80},'propped')
   }
   arm(ctx,rig.arm,292,310+m.headY*.7,hand.x,hand.y)
   if(m.chips) for(let i=0;i<5;i++) {

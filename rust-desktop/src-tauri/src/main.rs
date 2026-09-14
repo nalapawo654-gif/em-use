@@ -36,6 +36,7 @@ struct Shared {
     update: tokio::sync::Mutex<Option<tauri_plugin_updater::Update>>,
     update_notified: Mutex<HashSet<String>>,
     messages: Mutex<messages::Hub>,
+    message_toast: Mutex<Option<Value>>,
 }
 fn shared(app: &tauri::AppHandle) -> tauri::State<'_, Shared> {
     app.state::<Shared>()
@@ -48,11 +49,17 @@ fn snapshot(app: &tauri::AppHandle) -> Value {
             .as_i64()
             .unwrap_or(0),
     );
+    state["messageToast"] = shared(app)
+        .message_toast
+        .lock()
+        .unwrap()
+        .clone()
+        .unwrap_or(Value::Null);
     state
 }
 fn publish(app: &tauri::AppHandle) {
     let s = snapshot(app);
-    for label in ["widget", "settings", "messages"] {
+    for label in ["widget", "settings", "messages", "message-toast"] {
         let _ = app.emit_to(label, "state:changed", &s);
     }
 }
@@ -64,7 +71,11 @@ fn trusted(w: &WebviewWindow) -> Result<(), String> {
             || (cfg!(debug_assertions)
                 && matches!(url.host_str(), Some("localhost" | "127.0.0.1"))
                 && url.port() == Some(5174)));
-    if matches!(w.label(), "widget" | "settings" | "messages") && local {
+    if matches!(
+        w.label(),
+        "widget" | "settings" | "messages" | "message-toast"
+    ) && local
+    {
         Ok(())
     } else {
         Err("Untrusted window".into())
@@ -86,6 +97,11 @@ async fn desktop(
     {
         return Err("Message panel action unavailable".into());
     }
+    if window.label() == "message-toast"
+        && !matches!(action.as_str(), "getState" | "openMessagePanel" | "hide")
+    {
+        return Err("Message toast action unavailable".into());
+    }
     let p = payload.unwrap_or(Value::Null);
     match action.as_str() {
         "getState" => return Ok(snapshot(&app)),
@@ -95,14 +111,23 @@ async fn desktop(
         "settings" => windows::apply_settings(&app, p).await?,
         "openSettings" => windows::open_settings(&app)?,
         "openUpdates" => windows::open_updates(&app)?,
-        "openMessagePanel" => windows::message_panel(&app)?,
+        "openMessagePanel" => {
+            windows::message_panel(&app)?;
+            windows::hide_message_toast(&app, true);
+            let _ = app.emit_to("widget", "messages:opened", ());
+        }
+        "showMessageToast" => windows::message_toast(&app, &p)?,
+        "hideMessageToast" => windows::hide_message_toast(&app, false),
         "openMessages" => windows::open_messages(&app)?,
         "openDongdong" => messages::open_dongdong(&app)?,
         "ackMessages" => messages::acknowledge(&app, &p)?,
         "hide" => {
-            if window.label() == "messages" {
+            if window.label() == "message-toast" {
+                windows::hide_message_toast(&app, true);
+            } else if window.label() == "messages" {
                 window.close().map_err(|e| e.to_string())?;
             } else {
+                windows::hide_message_toast(&app, true);
                 window.hide().map_err(|e| e.to_string())?;
             }
         }
@@ -181,6 +206,7 @@ fn main() {
             update: tokio::sync::Mutex::new(None),
             update_notified: Mutex::new(HashSet::new()),
             messages: Mutex::new(messages::Hub::default()),
+            message_toast: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
             desktop,
@@ -239,6 +265,7 @@ fn main() {
                 tauri::WindowEvent::CloseRequested { api, .. } if w.label() == "widget" => {
                     api.prevent_close();
                     let _ = windows::end_gesture(app, None);
+                    windows::hide_message_toast(app, true);
                     let _ = w.hide();
                 }
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {

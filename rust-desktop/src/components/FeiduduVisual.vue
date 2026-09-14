@@ -5,8 +5,12 @@ import { loadFeidudu } from '../feidudu/sprites'
 import { hasFeiduduTint, tintFeiduduPixels } from '../feidudu/skins'
 import { chooseFeiduduMotion, feiduduMotionDelay, feiduduAmbientFrame, motionEnvelope, FEIDUDU_MOTIONS, type FeiduduMotion } from '../feidudu/ambient'
 import { createFeiduduMotionRenderer } from '../feidudu/motionRenderer'
+import { useCharacterMail } from '../shared/characterMail'
+import { renderFeiduduMail } from '../feidudu/mail'
 import type { FeiduduSkin } from '../shared/types'
-const props = withDefaults(defineProps<{ percent?: number | null; action?: FeiduduAction; skin?: FeiduduSkin; gentle?: boolean; paused?: boolean; frame?: number; ambient?: boolean }>(), { percent: null, action: 'idle', skin: 'classic' })
+const props = withDefaults(defineProps<{ message?: boolean; percent?: number | null; action?: FeiduduAction; skin?: FeiduduSkin; gentle?: boolean; paused?: boolean; frame?: number; ambient?: boolean }>(), { percent: null, action: 'idle', skin: 'classic' })
+const mail=useCharacterMail()
+const carrying=computed(()=>props.message&&mail?.active.value)
 const canvas = ref<HTMLCanvasElement>(), loaded = ref(false), failed = ref(false), motion = ref<FeiduduMotion | null>(null)
 const index = computed(() => props.frame ?? feiduduFrame(props.percent, props.action))
 const media = window.matchMedia('(prefers-reduced-motion: reduce)'), systemGentle = ref(media.matches)
@@ -17,7 +21,7 @@ let freeHands: { canvas: HTMLCanvasElement; render: ReturnType<typeof createFeid
 let timeout: ReturnType<typeof setTimeout> | undefined, raf = 0, previous: FeiduduMotion | null = null
 function draw() {
   const ctx = canvas.value?.getContext('2d')
-  if (ctx && source) { ctx.clearRect(0, 0, 512, 512); ctx.drawImage(source, 0, 0) }
+  if (ctx && source) { ctx.clearRect(0, 0, 512, 512); ctx.drawImage(source, 0, 0); if(carrying.value)renderFeiduduMail(ctx,source,index.value,mail!.paint) }
 }
 function prepare() {
   const original = frames[index.value]
@@ -41,7 +45,13 @@ function schedule(first = false) {
   if (!enabled.value || disposed) return
   timeout = setTimeout(() => {
     if (!enabled.value || !source || disposed) return
-    const chosen = chooseFeiduduMotion(index.value, previous)
+    let chosen = chooseFeiduduMotion(index.value, previous)
+    // While carrying mail, keep eye/ear/head gestures; reserve free-hand gestures
+    // for explicit interactions, whose authored pose has its own mail placement.
+    if(carrying.value&&chosen&&['belly','yawn','stretch','foot'].includes(chosen)){
+      const quiet:FeiduduMotion[]=['eyes','ears','blink','sniff','nod'].filter(value=>value!==previous) as FeiduduMotion[]
+      chosen=quiet[Math.floor(Math.random()*quiet.length)]!
+    }
     if (!chosen) return
     renderMotion ??= createFeiduduMotionRenderer(source, frames[index.value]!, index.value)
     const ctx = canvas.value?.getContext('2d')
@@ -65,6 +75,7 @@ function schedule(first = false) {
           alternate.render(alternate.canvas.getContext('2d')!, chosen!, progress, variation)
           ctx!.clearRect(0, 0, 512, 512); ctx!.save(); ctx!.globalAlpha = 1 - motionEnvelope(progress); ctx!.drawImage(source!, 0, 0); ctx!.globalAlpha = motionEnvelope(progress); ctx!.drawImage(alternate.canvas, 0, 0); ctx!.restore()
         } else renderMotion!(ctx!, chosen!, progress, variation)
+        if(carrying.value)renderFeiduduMail(ctx!,source!,index.value,mail!.paint)
         last = now
       }
       raf = requestAnimationFrame(tick)
@@ -79,7 +90,7 @@ onMounted(async () => {
   try { const images = await loadFeidudu(); if (!disposed) { frames = images; loaded.value = true; prepare() } }
   catch { if (!disposed) failed.value = true }
 })
-watch(() => [index.value, props.skin, enabled.value], reset)
+watch(() => [index.value, props.skin, enabled.value, carrying.value], reset)
 onUnmounted(() => { disposed = true; stop(); media.removeEventListener('change', systemMotionChanged) })
 </script>
 <template>

@@ -41,7 +41,7 @@ defineExpose({ updateBlocked: computed(() => play.value.mode !== 'idle'), act, c
 <template>
   <div ref="host" tabindex="-1" class="beaver-scene" :class="[{ night, muted, 'motion-off': reducedMotion, 'is-grooming': play.mode === 'groom' }, 'beaver-level-' + level, 'beaver-action-' + play.mode]" :data-action="play.mode" :data-level="level" :data-pet-gesture="play.mode === 'groom' ? 'groom' : undefined" @pointerdown="down" @pointermove="move" @pointerup="release" @pointercancel="release" @lostpointercapture="release">
     <BeaverSprite prop="ground" class="beaver-ground"/>
-    <BeaverVisual :level="level" :skin="skin" :action="play.mode" :since="play.since" :reduced-motion="reducedMotion"/>
+    <BeaverVisual message :level="level" :skin="skin" :action="play.mode" :since="play.since" :reduced-motion="reducedMotion"/>
     <div class="beaver-quota"><BeaverSprite prop="sign"/><div class="beaver-quota-copy"><span>今日剩余额度</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><div v-if="percent !== null" class="beaver-meter"><i :style="{ width: `${percent}%` }"/></div><small>{{ percent !== null && remaining !== undefined && limit !== undefined ? `¥${money(remaining)} / ¥${money(limit)}` : '等待连接账户' }}</small></div></div>
     <button class="beaver-actor scene-hit" aria-label="摸摸海狸鼠" @click="pet" @keydown.enter.prevent="pet" @keydown.space.prevent="pet"></button>
     <p class="beaver-speech">{{ percent === null ? '小伙伴已就位，等你连上账户' : BEAVER_STATES[level].hint }}</p>
