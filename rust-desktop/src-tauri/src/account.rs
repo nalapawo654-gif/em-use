@@ -133,12 +133,11 @@ fn exchange_retry_at(status: &str, failures: u32, time: i64) -> i64 {
     }
 }
 pub async fn login(app: &tauri::AppHandle, requested: Option<&str>) -> Result<(), String> {
-    let current = shared(app).inner.lock().unwrap().login_mode;
+    // Unqualified login is a user click (connect / sign in again).
+    // Automatic startup uses the saved mode; DongDong buttons request it explicitly.
     let mode = match requested {
-        Some("manual") => LoginMode::Manual,
+        None | Some("manual") => LoginMode::Manual,
         Some("dongdong") => LoginMode::Dongdong,
-        None if current == LoginMode::Manual => LoginMode::Manual,
-        None => LoginMode::Dongdong,
         _ => return Err("未知登录方式".into()),
     };
     if mode == LoginMode::Manual {

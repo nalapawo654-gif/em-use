@@ -20,7 +20,7 @@ export const MESSAGE_PERSONAS: Record<Scene, { object: string; color: string; mo
 }
 export function messageGroups(items: MessageItem[]) {
   const groups = new Map<string, { id: string; title: string; items: MessageItem[]; fresh: number }>()
-  for (const item of items) { const group = groups.get(item.conversation) ?? { id: item.conversation, title: item.title, items: [], fresh: 0 }; group.items.push(item); if (item.fresh) group.fresh++; groups.set(item.conversation, group) }
+  for (const item of [...items].sort((a, b) => b.at - a.at)) { const group = groups.get(item.conversation) ?? { id: item.conversation, title: item.title, items: [], fresh: 0 }; group.items.push(item); if (item.fresh) group.fresh++; groups.set(item.conversation, group) }
   return [...groups.values()]
 }
 // Widget remounts / scene switches share the announcement history. It has no quota account dependency.

@@ -318,6 +318,43 @@ pub fn read_session() -> Result<Session, Failure> {
         failure("未找到咚咚安装目录，可使用手动登录；自定义安装请反馈路径")
     })
 }
+impl Session {
+    pub(crate) fn calendar_identity(&self) -> String {
+        format!("{}:{}", self.unique, self.badge)
+    }
+}
+/// Only a read request to the installed client's calendar endpoint; never exchange quota auth.
+pub async fn calendar_day(
+    http: &reqwest::Client,
+    source: &Session,
+    day: &str,
+) -> Result<Value, String> {
+    let os = if cfg!(windows) { "win32" } else { "darwin" };
+    let arch = if cfg!(target_arch = "aarch64") {
+        "arm64"
+    } else {
+        "x64"
+    };
+    let mut response = http.get("https://dongdong-api.eastmoney.com/chatserver/app/api/calendars/v2/personalCalendar")
+        .query(&[("startTime", format!("{day} 00:00:00")), ("endTime", format!("{day} 23:59:59")), ("userIds", source.badge.clone()), ("excludeCalendarIds", String::new())])
+        .header("token", source.token.as_str()).header("X-Job-Number", &source.badge).header("X-Unique-Key", &source.unique)
+        .header("Device-Info", json!({"sessionType":"PC","deviceSystem":format!("{os} {arch}"),"productVersion":source.version,"version":source.version}).to_string())
+        .send().await.map_err(|_| "暂时连接不上咚咚日程，保留上次安排")?;
+    if matches!(response.status().as_u16(), 401 | 403) {
+        return Err("咚咚日程登录已失效或无权限，请重新登录咚咚".into());
+    }
+    if !response.status().is_success() {
+        return Err("咚咚日程暂不可用，请稍后重试".into());
+    }
+    let mut bytes = Zeroizing::new(Vec::new());
+    while let Some(chunk) = response.chunk().await.map_err(|_| "日程读取中断")? {
+        if bytes.len() + chunk.len() > 4 * 1024 * 1024 {
+            return Err("日程数据超过安全读取范围".into());
+        }
+        bytes.extend_from_slice(&chunk);
+    }
+    serde_json::from_slice(&bytes).map_err(|_| "日程数据格式暂不支持".into())
+}
 pub struct PlatformSession {
     pub auth: Value,
     pub profile: Value,

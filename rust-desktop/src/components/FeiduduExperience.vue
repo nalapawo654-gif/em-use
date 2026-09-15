@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { PhHeart, PhCoffee, PhCookie, PhHandPalm, PhLaptop, PhSparkle, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
@@ -10,6 +11,7 @@ import { FEIDUDU_ACTIONS, FEIDUDU_LEVELS, advanceFeidudu, beginFeidudu, feiduduI
 import FeiduduVisual from './FeiduduVisual.vue'
 import FeiduduWardrobe from './FeiduduWardrobe.vue'
 provideCharacterMail('feidudu')
+const calendarOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | null>(null), notice = ref(''), play = ref(feiduduIdle()), visible = ref(!document.hidden)
@@ -51,8 +53,9 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="feidudu-experience" :class="{ 'feidudu-native': isDesktop }">
     <div class="feidudu-hero">
-      <section ref="widget" tabindex="-1" class="feidudu-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dudu-energy': FEIDUDU_LEVELS[level].color }" aria-label="肥嘟嘟场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" @open-change="noticeOpen = $event"/>
+      <section ref="widget" tabindex="-1" class="feidudu-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dudu-energy': FEIDUDU_LEVELS[level].color }" aria-label="肥嘟嘟场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" @open-change="noticeOpen = $event" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" />
+        <PetCalendar appearance="feidudu" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
         <div class="feidudu-character"><FeiduduVisual message :percent="percent" :action="play.action" :skin="state.settings.feiduduSkin" :gentle="state.settings.reducedMotion" :paused="!visible" :ambient="!panel && !active && !moving"/></div>
         <button class="feidudu-body-hit scene-hit" :class="{ lying }" :aria-label="play.action === 'rest' ? '叫肥嘟嘟起床' : '摸摸肥嘟嘟的头'" @click="pet"></button>
         <p class="feidudu-speech" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet' || play.action === 'belly'" weight="fill"/></p>

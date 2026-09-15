@@ -333,6 +333,105 @@
       "bytes": 837356,
       "encoding": "RGBA PNG; transparent background preserved",
       "source": "Built-in image_gen edit of feidudu/message-prop.png; docs/design/character-messages-v5/README.md"
+    },
+    {
+      "path": "buddy/calendar-stand.png",
+      "sha256": "3af45621a4e22ecdf20f37bf0772cb31e833995a94baf96ffe4a632cc26f48fb",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1600088,
+      "encoding": "PNG green chroma; keyed once by BuddyCalendarArt.vue",
+      "source": "Built-in image_gen; option 3 grass flip calendar. See design/buddy-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "aquarium/calendar-clip.png",
+      "sha256": "abbeafee7fb096960260f329f2ec18d6cc273284bee7008bc1da4e2f8a7109c0",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1629667,
+      "encoding": "PNG green chroma; shared calendarArt runtime matte",
+      "source": "Built-in image_gen, original aquarium.webp style reference; design/aquarium-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "beaver/calendar-prop.png",
+      "sha256": "57c00fa479062fbb475224b3d3dd8709c5f1d7e02c871dfb77fd568e1a137f00",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2160434,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "hamster/calendar-prop.png",
+      "sha256": "e1862463d355e47667a8a26bb4b5f06a06b1947da19cf956471a30577cd93224",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2071538,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "cultivation/calendar-prop.png",
+      "sha256": "abd825ae5b483736b93263415bdbd7bfbd035bf0b9ec501b3ec92a4622b90ea4",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1860898,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "battery/calendar-prop.png",
+      "sha256": "3799f15ad33c6c0643ff62baf37dc340f20801be32f41abc0b9a279fec202f60",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1195584,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "feidudu/calendar-prop.png",
+      "sha256": "7210a1b8c27de7b96f44612dd1d50e3ede4e800136255cc63ea3067ea67cf3dc",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1548084,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "dinosaur/calendar-prop.png",
+      "sha256": "062e7d5413a52a250be3f568aefe9d2fe71fec7e3b356a598e7c5383af92770c",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2093684,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "fox/calendar-prop.png",
+      "sha256": "8450ebf7a519c3cd01e33db0a1a10ce1f2ca44cc93b46f38a6da20076b0fb982",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1752699,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "luckycat/calendar-prop.png",
+      "sha256": "ce91739fce1dd1a4c33b136f1b018458634622ec5414676ad9b0e826e2e07169",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1775313,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "skadi/calendar-prop.png",
+      "sha256": "ef3b06c326fe8c26a2dcb66e30f63227495d86f045f5aceebdff143fe19f0a62",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2284360,
+      "encoding": "PNG with green chroma; shared calendarArt runtime decode",
+      "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
     }
   ]
 }

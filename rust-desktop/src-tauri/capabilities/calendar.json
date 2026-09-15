@@ -1,0 +1,5 @@
+{
+  "identifier": "calendar-panel",
+  "windows": ["calendar", "calendar-toast"],
+  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten", "allow-desktop"]
+}

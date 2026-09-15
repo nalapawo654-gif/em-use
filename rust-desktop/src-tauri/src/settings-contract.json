@@ -1,5 +1,10 @@
 {
   "defaults": {
+    "calendarEnabled": true,
+    "calendarPreview": true,
+    "calendarAtStart": false,
+    "calendarSystemNotifications": false,
+    "calendarLeadMinutes": 5,
     "messageEnabled": true,
     "messagePreview": true,
     "messageRespectMute": true,

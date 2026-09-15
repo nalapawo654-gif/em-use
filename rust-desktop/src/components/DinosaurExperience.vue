@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhDeviceMobile, PhHeart, PhCoffee, PhCookie, PhHandPalm, PhLaptop, PhSparkle, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
@@ -11,6 +12,7 @@ import { dinosaurFlight, chooseDinosaurMotion, dinosaurMotionDelay, DINOSAUR_MOT
 import DinosaurVisual from './DinosaurVisual.vue'
 import DinosaurWardrobe from './DinosaurWardrobe.vue'
 provideCharacterMail('dinosaur')
+const calendarOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | null>(null), notice = ref(''), play = ref(dinosaurIdle()), visible = ref(!document.hidden)
@@ -77,8 +79,9 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="dinosaur-experience" :class="{ 'dinosaur-native': isDesktop }">
     <div class="dinosaur-hero">
-      <section ref="widget" tabindex="-1" class="dinosaur-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dino-energy': DINOSAUR_LEVELS[level].color }" aria-label="小恐龙场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" @open-change="updateLetterOpen = $event"/>
+      <section ref="widget" tabindex="-1" class="dinosaur-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }" :style="{ '--dino-energy': DINOSAUR_LEVELS[level].color }" aria-label="小恐龙场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" @open-change="updateLetterOpen = $event" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" />
+        <PetCalendar appearance="dinosaur" :blocked="!!panel || moving || !!notice || updateLetterOpen || active" @open-change="calendarOpen = $event"/>
         <div class="dinosaur-character"><DinosaurVisual message :percent="percent" :action="play.action" :skin="state.settings.dinosaurSkin" :gentle="state.settings.reducedMotion" :paused="!visible || !focused || moving" :started-at="play.startedAt"/></div>
         <button class="dinosaur-body-hit scene-hit" :class="{ lying: lying && !(play.action in DINOSAUR_MOTIONS), 'in-flight': play.action === 'fly' }" :style="flightHit" :aria-label="play.action === 'rest' ? '叫小恐龙起床' : '摸摸小恐龙的头'" @click="pet"></button>
         <p class="dinosaur-speech" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet' || play.action === 'pillow'" weight="fill"/></p>

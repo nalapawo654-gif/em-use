@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, ref, watch } from 'vue'
 import { PhTree, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhInfo, PhArrowsClockwise, PhCamera, PhHandHeart, PhChatCircleDots, PhTent, PhSignpost, PhShareNetwork, PhSun, PhMoon, PhArrowUpLeft } from '@phosphor-icons/vue'
@@ -14,6 +15,8 @@ import BeaverVisual from './BeaverVisual.vue'
 import BeaverSprite from './BeaverSprite.vue'
 import BeaverSkinPicker from './BeaverSkinPicker.vue'
 provideCharacterMail('beaver')
+const calendarOpen = ref(false)
+const noticeOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const scene = ref<InstanceType<typeof BeaverScene>>(), widget = ref<HTMLElement>()
@@ -55,8 +58,9 @@ watch(panel, (value, previous) => { if (!value && previous) void nextTick(() => 
 <template>
   <div class="beaver-experience" :class="{ 'beaver-native': isDesktop }">
     <div class="beaver-hero">
-      <section ref="widget" tabindex="-1" class="beaver-widget" :class="{ 'has-panel': panel, 'is-moving': moving, 'is-capturing': capturing }" aria-label="林间海狸鼠场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="toggle('play')" @keydown.esc.stop="escape">
-        <PetNotices :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked" :message-blocked="!!panel || moving || capturing || !!notice" :message-deferred="!!scene?.updateBlocked"/>
+      <section ref="widget" tabindex="-1" class="beaver-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'is-moving': moving, 'is-capturing': capturing }" aria-label="林间海狸鼠场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="toggle('play')" @keydown.esc.stop="escape">
+        <PetNotices :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked" :message-blocked="!!panel || moving || capturing || !!notice" :message-deferred="!!scene?.updateBlocked" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetCalendar appearance="beaver" :blocked="!!panel || moving || !!notice || noticeOpen || capturing || !!scene?.updateBlocked" @open-change="calendarOpen = $event"/>
         <BeaverScene ref="scene" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.beaverSkin" :night="night" :reduced-motion="state.settings.reducedMotion" :camp="state.settings.beaverCamp" :motto="state.settings.beaverMotto" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
         <header class="beaver-header beaver-chrome"><span><PhTree weight="duotone"/><b>林间海狸鼠</b></span><div><button aria-label="更多海狸鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="toggle('play')"><PhGameController/></button><button aria-label="海狸鼠换装" title="天气换装" :aria-expanded="panel === 'wardrobe'" @click="toggle('wardrobe')"><PhTShirt/></button><button aria-label="海狸鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起海狸鼠到托盘" title="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
         <nav class="beaver-tools beaver-chrome" aria-label="照顾海狸鼠"><button v-for="item in interactions" :key="item.action" :aria-label="`海狸鼠${item.label}`" :title="item.label" @click="act(item.action)"><BeaverSprite :prop="item.prop"/><span>{{ item.label }}</span></button><button aria-label="给海狸鼠拍照" title="拍照" :disabled="capturing" @click="photo()"><PhCamera/><span>拍照</span></button></nav>

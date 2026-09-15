@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import BuddyCalendar from './BuddyCalendar.vue'
 import BuddyMessageParcel from './BuddyMessageParcel.vue'
 import '../buddy/message.css'
 import { computed, ref } from 'vue'
@@ -12,6 +13,7 @@ import type { BuddyProp } from '../buddy/sprites'
 import BuddyScene from './BuddyScene.vue'
 import BuddySprite from './BuddySprite.vue'
 import BuddySkinPicker from './BuddySkinPicker.vue'
+const calendarOpen = ref(false), noticeOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const scene = ref<InstanceType<typeof BuddyScene> | null>(null), wardrobe = ref(false), details = ref(false), moreActions = ref(false)
@@ -38,8 +40,9 @@ function chooseState(percent: number) { previewQuota(percent); scene.value?.canc
 <template>
   <div class="buddy-experience" :class="{ 'buddy-native': isDesktop }">
     <div class="buddy-main-column">
-      <section class="buddy-widget" :class="{ 'is-moving': moving, 'has-panel': wardrobe || details || moreActions, 'has-mail': state.settings.messageEnabled && (!!state.messages?.items.length || state.messages?.status === 'paused') }" aria-label="充气牛马场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="moreActions = !moreActions; wardrobe = false; details = false" @keydown.esc="wardrobe = false; details = false; moreActions = false">
-        <PetNotices :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked" :message-blocked="wardrobe || details || moreActions || moving" :message-deferred="!!scene?.updateBlocked"><template #parcel><BuddyMessageParcel/></template></PetNotices>
+      <section class="buddy-widget" :class="{ 'is-moving': moving, 'has-panel': wardrobe || details || moreActions, 'calendar-is-open': calendarOpen, 'has-mail': state.settings.messageEnabled && (!!state.messages?.items.length || state.messages?.status === 'paused') }" aria-label="充气牛马场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="moreActions = !moreActions; wardrobe = false; details = false" @keydown.esc="wardrobe = false; details = false; moreActions = false">
+        <BuddyCalendar :blocked="wardrobe || details || moreActions || moving || noticeOpen" :deferred="!!scene?.updateBlocked" @open-change="calendarOpen=$event"/>
+        <PetNotices :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen=$event" :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked" :message-blocked="wardrobe || details || moreActions || moving" :message-deferred="!!scene?.updateBlocked"><template #parcel><BuddyMessageParcel/></template></PetNotices>
         <BuddyScene ref="scene" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.buddySkin" :night="night" :reduced-motion="state.settings.reducedMotion" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
         <header class="buddy-header"><div class="buddy-title"><BuddySprite/><div><h1>充气牛马</h1><p>努力工作 · 快速回血</p></div></div><div class="buddy-window-actions"><button aria-label="更多牛马动作" title="更多牛马动作" @click="moreActions = !moreActions; wardrobe = false; details = false"><PhGameController/></button><button aria-label="牛马换装" title="牛马换装" @click="wardrobe = !wardrobe; details = false; moreActions = false"><PhTShirt/></button><button aria-label="设置" title="设置" @click="emit('settings')"><PhGearSix/></button><span></span><button aria-label="收起到托盘" title="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
         <nav class="buddy-tools" aria-label="照顾牛马"><button v-for="item in interactions" :key="item.action" :aria-label="item.label" @click="act(item.action)"><BuddySprite :prop="item.prop"/><span>{{ item.label }}</span></button></nav>

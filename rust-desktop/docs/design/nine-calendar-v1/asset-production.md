@@ -1,0 +1,39 @@
+# 九宠日程物料
+
+Built-in image_gen 制作，九次独立生成；PNG 原始绿幕保留，运行时复用 calendarArt 解码。没有改动角色图集。正式物料位于 public/assets/<scene>/calendar-prop.png。
+
+## beaver
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a tiny woodland appointment stand: warm acorn-brown carved bark frame, ivory rectangular blank paper, two short twig feet on a small rough wood base, delicate woodgrain and two amber leaves. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## hamster
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a miniature steampunk machine-room shift card: brushed brass riveted frame with tiny cog on top, warm ivory blank rectangular face, squat iron feet, amber indicator jewel; precise handcrafted mechanical model. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## cultivation
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a tiny Chinese immortal jade calendar tablet on a carved dark rosewood stand: pale icy cyan jade edge, blank warm ivory rectangular silk face, a fine gold cloud flourish, tassel in muted teal. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## battery
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a miniature friendly gym interval timer: cream and orange enamel squat rectangular body, dark chocolate blank rectangular display, small orange crown button and two rubber feet, beautifully finished toy appliance. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## feidudu
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a tiny buttery cream memo stand: rounded peach and cream frame, blank ivory rectangular paper face, honey-yellow rounded base, a small toasted biscuit clip at top, soft clay toy material. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## dinosaur
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a tiny fossil calendar stand: warm sandstone rectangular tablet with rounded eroded corners, smooth blank ivory rectangular face, one little amber fossil spiral at upper corner, short stone feet, delicately speckled clay. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## fox
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a tiny Chinese ink wash desk memo screen: dark walnut slender frame, blank cream rice-paper rectangular center, delicate black ink bamboo illustration only on narrow right border, low wooden feet, refined hand-painted object. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## luckycat
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a tiny Japanese ema appointment stand: warm honey wood frame, blank ivory rectangular central face, bright red cord bow at top and a miniature golden bell on right edge, short wooden feet, polished lucky charm toy. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.
+
+## skadi
+
+Use case: stylized-concept. Production desktop-pet accessory sprite, one isolated object. Subject: a miniature moonlit appointment book on a low silver reading stand: navy blue leather rectangular frame, blank ivory rectangular central page, tiny silver crescent at top, garnet jewel and fine silver filigree corners, elegant fantasy collectible. Front-facing nearly orthographic view, straight level face for software-rendered time. Subject bounds x=10%-90%, y=10%-90%, central BLANK text area x=25%-75%, y=35%-60%. Square image. Fine high quality 3D storybook render with soft upper-left light, bevels and subtle contact shadow directly under feet. NO letters, NO numbers, NO characters, NO additional objects, NO background scene. Flat pure chroma green (#00ff00) background for existing sprite pipeline. No green on the object; teal must be cyan blue. Keep every part inside frame.

@@ -91,3 +91,44 @@
 /* Clear the companion crane, treasure and right-side cultivation orbit. */
 .message-cultivation{--message-x:1%;--message-y:53%;--message-size:16cqw}
 @container(max-width:220px){.message-cultivation{--message-x:80%;--message-y:19%;--message-size:17cqw}}
+
+/* One letter per conversation, with a single title and a message timeline. */
+.message-inbox-header{padding:8px 12px;border-bottom:0;background:transparent}
+.message-inbox-header>span{font-size:11px;letter-spacing:.04em;color:var(--msg-muted)}
+.message-inbox-header .message-header-actions{gap:8px}
+.message-header-actions>small{font-size:10px;font-weight:400;letter-spacing:0}
+.message-conversation-header{display:flex;align-items:center;gap:10px;padding:6px 14px 13px;flex-shrink:0;border-bottom:1px solid var(--msg-line)}
+.message-conversation-avatar{display:grid;place-items:center;flex:0 0 36px;height:36px;border:1px solid color-mix(in srgb,var(--msg-color,#357f8e) 20%,var(--msg-paper));border-radius:11px;background:color-mix(in srgb,var(--msg-color,#357f8e) 9%,var(--msg-paper));color:var(--msg-color,#357f8e);font-size:16px;font-weight:600}
+.message-conversation-avatar svg{width:18px;height:18px}
+.message-conversation-copy{min-width:0;flex:1}
+.message-conversation-copy h2{font-size:15px;line-height:1.4;font-weight:650;letter-spacing:.02em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.message-conversation-copy p{display:flex;gap:9px;margin:3px 0 0;color:var(--msg-muted);font-size:10px}
+.message-conversation-copy p span{border-left:1px solid var(--msg-line);padding-left:9px}
+.message-conversation-header .message-back{padding:4px;margin-left:-7px;width:22px}
+.message-list-caption{display:flex;justify-content:space-between;margin:0;padding:4px 14px 10px;border-bottom:1px solid var(--msg-line);font-size:14px;font-weight:600}
+.message-list-caption>span{font-size:10px;font-weight:400;align-self:center;color:var(--msg-muted)}
+.message-detail{position:relative;margin:0 14px;padding:12px 0 12px 14px;border-bottom:1px solid color-mix(in srgb,var(--msg-line) 55%,transparent)}
+.message-detail::before{content:'';position:absolute;left:2px;top:23px;bottom:-17px;width:1px;background:var(--msg-line)}
+.message-detail:last-child::before{display:none}
+.message-sender{gap:6px;position:relative;min-height:16px}
+.message-arrival-dot{position:absolute;left:-15px;top:5px;width:5px;height:5px;border:1px solid var(--msg-paper);border-radius:50%;background:var(--msg-color,#357f8e)}
+.message-sender strong{font-size:11px;font-weight:600}
+.message-sender time{font-size:10px;font-variant-numeric:tabular-nums;opacity:.8}
+.message-detail p{margin:5px 0 0;font-size:12px;line-height:1.7}
+.message-group{gap:10px;padding:12px 14px}
+.message-group-copy{gap:3px}
+.message-group-copy b{font-size:13px}
+.message-group-copy>span{font-size:10px;color:var(--msg-muted)}
+.message-group-meta{gap:6px;align-self:stretch;justify-content:center}
+.message-group-meta b{border-radius:8px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;text-align:center;font:600 10px/17px 'PingFang SC',sans-serif;background:#db7157;color:#fff}
+.message-group-meta svg{width:13px;height:13px}
+.message-inbox-footer{padding:9px 12px;gap:7px;background:color-mix(in srgb,var(--msg-color,#357f8e) 3%,var(--msg-paper))}
+.message-footer-source{font-size:10px;color:var(--msg-muted);margin-right:auto;line-height:1.6}
+.message-footer-source small{display:block;font-size:9px}
+.message-inbox-footer .message-primary{flex:0 0 auto;padding:7px 10px}
+.message-inbox-footer .message-secondary{border:0;padding:7px 4px;color:var(--msg-muted)}
+.message-bubble-content b{display:flex;align-items:center;gap:7px;width:100%}
+.message-bubble-content b>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.message-bubble-total{flex-shrink:0;margin-left:auto;font-size:10px;font-weight:500;color:var(--msg-color,#357f8e);background:color-mix(in srgb,var(--msg-color,#357f8e) 9%,var(--msg-paper));padding:0 5px;border-radius:5px}
+.night .message-inbox-header{background:transparent}
+@container(max-width:320px){.pet-message-notice>.message-inbox .message-conversation-header{padding:4px 10px 9px}.pet-message-notice>.message-inbox .message-footer-source{display:none}}

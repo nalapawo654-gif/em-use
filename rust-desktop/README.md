@@ -22,13 +22,13 @@ cargo test --locked --manifest-path src-tauri/Cargo.toml
 
 ## 版本和发布
 
-当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.6 修正 Windows 消息卡片短暂失焦即关闭的问题，并显示窗口打开失败原因、支持重试。0.4.5 改进独立消息气泡、客户端唤起及道具随角色姿态融合。0.4.4 新增 11 只桌宠的咚咚消息提醒、独立消息账户、自动检查版本及专属更新提示，并更新 11 只桌宠说明页。0.4.3 纳入五只新桌宠、角色动画与装扮，并将所有桌宠末档形态统一为剩余 ≤15% 触发。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
+当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.7 为全部 11 只桌宠加入本机咚咚当日日程、专属日历物料和会前提醒，并改进会话消息标题及内置登录入口。0.4.6 修正 Windows 消息卡片短暂失焦即关闭的问题，并显示窗口打开失败原因、支持重试。0.4.5 改进独立消息气泡、客户端唤起及道具随角色姿态融合。0.4.4 新增 11 只桌宠的咚咚消息提醒、独立消息账户、自动检查版本及专属更新提示，并更新 11 只桌宠说明页。0.4.3 纳入五只新桌宠、角色动画与装扮，并将所有桌宠末档形态统一为剩余 ≤15% 触发。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
 
 ```sh
-npm run version:set -- 0.4.6
+npm run version:set -- 0.4.7
 ```
 
-该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.6`。提交版本变更后推送标签，即可触发完整发布。
+该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.7`。提交版本变更后推送标签，即可触发完整发布。
 
 普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64 和 Intel（`.dmg` + `.app.tar.gz` 更新包）。本机不生成分发安装包。
 
@@ -60,7 +60,7 @@ npm run version:set -- 0.4.6
     ├── index.html
     ├── site-assets/0.4.6/
     ├── stable/latest.json
-    └── releases/0.4.6/
+    └── releases/0.4.7/
         ├── EM-Use-0.4.6-windows-x86_64.exe
         ├── EM-Use-0.4.6-windows-x86_64.exe.sig
         ├── EM-Use-0.4.6-darwin-aarch64.dmg

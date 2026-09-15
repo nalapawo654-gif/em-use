@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhEye, PhPersonArmsSpread, PhHandPalm, PhEar, PhCoins, PhFish, PhCoffee, PhKeyboard, PhPackage, PhGift, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhPalette, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -8,6 +9,8 @@ import type { Corner } from '../shared/windowGeometry'
 import { LUCKYCAT_ACTIONS, LUCKYCAT_LEVELS, advanceLuckyCat, beginLuckyCat, luckycatIdle, luckycatLevel, type LuckyCatAction } from '../luckycat/play'
 import LuckyCatVisual from './LuckyCatVisual.vue'
 import LuckyCatWardrobe from './LuckyCatWardrobe.vue'
+const calendarOpen = ref(false)
+const noticeOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | null>(null), notice = ref(''), play = ref(luckycatIdle()), visible = ref(!document.hidden)
@@ -37,8 +40,9 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="luckycat-experience" :class="{ 'luckycat-native': isDesktop }">
     <div class="luckycat-hero">
-      <section ref="widget" tabindex="-1" class="luckycat-widget" :class="[{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`]" :style="{ '--luckycat-energy': LUCKYCAT_LEVELS[level].color }" aria-label="破产招财猫场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
+      <section ref="widget" tabindex="-1" class="luckycat-widget" :class="[{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`]" :style="{ '--luckycat-energy': LUCKYCAT_LEVELS[level].color }" aria-label="破产招财猫场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetCalendar appearance="luckycat" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
         <div class="luckycat-character"><LuckyCatVisual :percent="percent" :action="play.action" :restart="play.startedAt" :skin="state.settings.luckycatSkin" :gentle="state.settings.reducedMotion" :paused="!visible || moving" ambient :ambient-allowed="!panel && !active && !moving"/></div>
         <button class="luckycat-body-hit scene-hit" :aria-label="play.action === 'box' ? '叫招财猫回来' : '点点招财猫，招招财'" @click="play.action === 'box' ? cancel() : act('fortune')"></button>
         <p class="luckycat-speech" aria-live="polite">{{ speech }}</p>

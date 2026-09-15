@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod account;
+mod calendar;
 mod dongdong;
 mod message_panel_focus;
 mod message_source;
@@ -37,6 +38,7 @@ struct Shared {
     update: tokio::sync::Mutex<Option<tauri_plugin_updater::Update>>,
     update_notified: Mutex<HashSet<String>>,
     messages: Mutex<messages::Hub>,
+    calendar: Mutex<calendar::Hub>,
     message_toast: Mutex<Option<Value>>,
 }
 fn shared(app: &tauri::AppHandle) -> tauri::State<'_, Shared> {
@@ -44,6 +46,11 @@ fn shared(app: &tauri::AppHandle) -> tauri::State<'_, Shared> {
 }
 fn snapshot(app: &tauri::AppHandle) -> Value {
     let mut state = shared(app).inner.lock().unwrap().state.clone();
+    state["calendar"] = shared(app)
+        .calendar
+        .lock()
+        .unwrap()
+        .view(state["settings"]["calendarPreview"] != false);
     state["messages"] = shared(app).messages.lock().unwrap().view(
         state["settings"]["messagePreview"] != false,
         state["settings"]["messagePausedUntil"]
@@ -60,7 +67,14 @@ fn snapshot(app: &tauri::AppHandle) -> Value {
 }
 fn publish(app: &tauri::AppHandle) {
     let s = snapshot(app);
-    for label in ["widget", "settings", "messages", "message-toast"] {
+    for label in [
+        "widget",
+        "settings",
+        "messages",
+        "message-toast",
+        "calendar",
+        "calendar-toast",
+    ] {
         let _ = app.emit_to(label, "state:changed", &s);
     }
 }
@@ -74,7 +88,7 @@ fn trusted(w: &WebviewWindow) -> Result<(), String> {
                 && url.port() == Some(5174)));
     if matches!(
         w.label(),
-        "widget" | "settings" | "messages" | "message-toast"
+        "widget" | "settings" | "messages" | "message-toast" | "calendar" | "calendar-toast"
     ) && local
     {
         Ok(())
@@ -103,9 +117,36 @@ async fn desktop(
     {
         return Err("Message toast action unavailable".into());
     }
+    if matches!(window.label(), "calendar" | "calendar-toast")
+        && !matches!(
+            action.as_str(),
+            "getState"
+                | "refreshCalendar"
+                | "respondCalendar"
+                | "openCalendar"
+                | "hide"
+                | "openDongdong"
+        )
+    {
+        return Err("Calendar window action unavailable".into());
+    }
     let p = payload.unwrap_or(Value::Null);
     match action.as_str() {
         "getState" => return Ok(snapshot(&app)),
+        "refreshCalendar" => calendar::refresh(&app),
+        "calendarUi" => calendar::ui(&app, p["blocked"] == true),
+        "respondCalendar" => calendar::respond(&app, &p)?,
+        "openCalendar" => {
+            windows::calendar_popup(&app, true)?;
+            calendar::dismiss(&app);
+        }
+        "calendarNotificationPermission" => {
+            use tauri_plugin_notification::NotificationExt;
+            let _ = app
+                .notification()
+                .request_permission()
+                .map_err(|_| "无法申请通知权限")?;
+        }
         "login" => account::login(&app, p.as_str()).await?,
         "refresh" => account::refresh(app.clone(), true).await,
         "logout" => account::logout(&app)?,
@@ -113,6 +154,10 @@ async fn desktop(
         "openSettings" => windows::open_settings(&app)?,
         "openUpdates" => windows::open_updates(&app)?,
         "openMessagePanel" => {
+            if let Some(w) = app.get_webview_window("calendar") {
+                let _ = w.close();
+            }
+            calendar::dismiss(&app);
             windows::message_panel(&app)?;
             windows::hide_message_toast(&app, true);
             let _ = app.emit_to("widget", "messages:opened", ());
@@ -123,20 +168,25 @@ async fn desktop(
         "openDongdong" => messages::open_dongdong(&app)?,
         "ackMessages" => messages::acknowledge(&app, &p)?,
         "hide" => {
-            if window.label() == "message-toast" {
+            if window.label() == "calendar-toast" {
+                calendar::dismiss(&app);
+            } else if window.label() == "calendar" {
+                window.close().map_err(|e| e.to_string())?;
+            } else if window.label() == "message-toast" {
                 windows::hide_message_toast(&app, true);
             } else if window.label() == "messages" {
                 window.close().map_err(|e| e.to_string())?;
             } else {
                 windows::hide_message_toast(&app, true);
+                calendar::dismiss(&app);
+                if let Some(w) = app.get_webview_window("calendar") {
+                    let _ = w.close();
+                }
                 window.hide().map_err(|e| e.to_string())?;
             }
         }
         "quit" => app.exit(0),
-        "openPortal" => app
-            .opener()
-            .open_url(PORTAL, None::<&str>)
-            .map_err(|e| e.to_string())?,
+        "openPortal" => account::open_login(&app)?,
         "openReleases" => app
             .opener()
             .open_url(RELEASES, None::<&str>)
@@ -207,6 +257,7 @@ fn main() {
             update: tokio::sync::Mutex::new(None),
             update_notified: Mutex::new(HashSet::new()),
             messages: Mutex::new(messages::Hub::default()),
+            calendar: Mutex::new(calendar::Hub::default()),
             message_toast: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
@@ -237,6 +288,7 @@ fn main() {
             account::restore(&handle);
             windows::setup(app)?;
             messages::start(handle.clone());
+            calendar::start(handle.clone());
             let update_app = handle.clone();
             tauri::async_runtime::spawn(updates::watch_updates(update_app));
             tauri::async_runtime::spawn(async move {
@@ -267,10 +319,17 @@ fn main() {
                     api.prevent_close();
                     let _ = windows::end_gesture(app, None);
                     windows::hide_message_toast(app, true);
+                    calendar::dismiss(app);
+                    if let Some(w) = app.get_webview_window("calendar") {
+                        let _ = w.close();
+                    }
                     let _ = w.hide();
                 }
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {
                     let _ = windows::end_gesture(app, None);
+                }
+                tauri::WindowEvent::Destroyed if w.label() == "calendar" => {
+                    let _ = app.emit_to("widget", "calendar:closed", ());
                 }
                 tauri::WindowEvent::Destroyed if w.label() == "messages" => {
                     let _ = app.emit_to("widget", "messages:closed", ());

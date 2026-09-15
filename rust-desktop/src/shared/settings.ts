@@ -3,7 +3,7 @@ import type { Settings } from './types.js'
 export function validateSettings(input: unknown): Partial<Settings> {
   if (!input || typeof input !== 'object') return {}
   const data = input as Record<string, unknown>, out: Record<string, unknown> = {}
-  for (const key of ['alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
+  for (const key of ['calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
   const enums = {
@@ -30,5 +30,6 @@ export function validateSettings(input: unknown): Partial<Settings> {
   for (const [key, values] of Object.entries(enums)) if (typeof data[key] === 'string' && values.includes(data[key] as string)) out[key] = data[key]
   if (typeof data.windowWidth === 'number' && Number.isFinite(data.windowWidth)) out.windowWidth = Math.round(Math.min(800, Math.max(180, data.windowWidth)))
   if (typeof data.messagePausedUntil === 'number' && Number.isFinite(data.messagePausedUntil)) out.messagePausedUntil = Math.round(Math.min(Date.now() + 86400_000, Math.max(0, data.messagePausedUntil)))
+  if (typeof data.calendarLeadMinutes === 'number' && [1, 5, 10, 15].includes(data.calendarLeadMinutes)) out.calendarLeadMinutes = data.calendarLeadMinutes
   return out as Partial<Settings>
 }

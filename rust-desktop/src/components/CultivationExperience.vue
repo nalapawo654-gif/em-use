@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhSparkle, PhGearSix, PhMinus, PhGameController, PhX, PhInfo, PhArrowsClockwise, PhMoon, PhSun, PhMountains, PhHeart, PhArrowUpLeft, PhTShirt, PhShuffle } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -20,6 +21,7 @@ import CultivationWardrobe from './CultivationWardrobe.vue'
 import CultivatorSprite from './CultivatorSprite.vue'
 import CultivationProp from './CultivationProp.vue'
 import CultivationRealmPicker from './CultivationRealmPicker.vue'
+const calendarOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'details' | 'realm' | 'wardrobe' | null>(null), notice = ref('')
@@ -98,8 +100,9 @@ onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventL
 <template>
   <div class="cultivation-experience" :class="{ 'cultivation-native': isDesktop }">
     <div class="cultivation-hero">
-      <section ref="widget" tabindex="-1" class="cultivation-widget" :class="['realm-' + realm, 'level-' + level, 'action-' + play.action, 'training-' + training.practice, event ? 'event-'+event.kind+' event-'+encounterPhase(event) : '', { 'is-training': trainingActive, 'has-panel': panel, 'has-action': active, 'has-encounter': !!event, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible || !!panel || moving }]" :style="encounterStyle" aria-label="修仙渡劫事务所场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!event || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active || !!event" @open-change="updateLetterOpen = $event"/>
+      <section ref="widget" tabindex="-1" class="cultivation-widget" :class="['realm-' + realm, 'level-' + level, 'action-' + play.action, 'training-' + training.practice, event ? 'event-'+event.kind+' event-'+encounterPhase(event) : '', { 'is-training': trainingActive, 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-encounter': !!event, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible || !!panel || moving }]" :style="encounterStyle" aria-label="修仙渡劫事务所场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!event || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active || !!event" @open-change="updateLetterOpen = $event" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" />
+        <PetCalendar appearance="cultivation" :blocked="!!panel || moving || !!notice || updateLetterOpen || active || !!event" @open-change="calendarOpen = $event"/>
         <div class="cultivation-aura" aria-hidden="true"><div class="cultivation-ring"><i v-for="(rune,i) in ['乾','坤','震','巽','坎','离','艮','兑']" :key="rune" :style="{ transform: `rotate(${i*45}deg) translateY(-23cqw) rotate(${-i*45}deg)` }">{{ rune }}</i></div><span>✧</span></div>
         <Transition name="realm-dissolve">
           <div :key="realm" class="cultivation-realm-layer" :class="'scenery-'+realm" aria-hidden="true">

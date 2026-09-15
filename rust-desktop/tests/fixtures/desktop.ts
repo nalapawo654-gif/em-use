@@ -5,6 +5,7 @@ const query = new URLSearchParams(location.search)
 const size = (query.get('size') ?? 'standard') as Settings['size']
 document.body.style.width = `${({ standard: 440, compact: 300, mini: 190 })[size]}px`
 const state: AppState = { status: 'ready', quota: { limit: 300, used: 96, remaining: 204, percent: 68, exceeded: false, estimatedAt: '2026-09-09T18:00:00', serverAt: '2026-09-09T18:00:00', receivedAt: Date.now(), day: '2026-09-09' }, message: '仅用于组件测试 · 演示额度', syncing: false, persistentLogin: false, loginOpen: false, settings: { ...DEFAULT_SETTINGS, size, windowWidth: ({ standard: 440, compact: 300, mini: 190 })[size], theme: query.get('theme') === 'night' ? 'night' : 'day', outfit: 'sailor', scene: query.get('scene') === 'cultivation' ? 'cultivation' : query.get('scene') === 'hamster' ? 'hamster' : query.get('scene') === 'beaver' ? 'beaver' : query.get('scene') === 'buddy' ? 'buddy' : 'aquarium', reducedMotion: query.get('motion') === 'off' }, version: '0.3.0-visual-test' }
+const quotaTemplate = structuredClone(state.quota!)
 const customWidth = Number(query.get('width'))
 if (customWidth >= 180 && customWidth <= 800) { state.settings.windowWidth = customWidth; document.body.style.width = `${customWidth}px` }
 // A wide QA canvas represents the neighbouring native notification window, not a larger pet.
@@ -14,7 +15,7 @@ if(query.has('canvas')) {
  document.head.append(style);document.documentElement.style.setProperty('--fixture-width',`${state.settings.windowWidth}px`)
 }
 // Separate notification windows use their own viewport, not the pet fixture width.
-if (['messages', 'message-toast'].includes(query.get('view') ?? '')) {
+if (['messages', 'message-toast', 'calendar', 'calendar-toast'].includes(query.get('view') ?? '')) {
   document.body.style.width = '100%'; document.body.style.overflow = 'hidden'
 }
 const requestedScene = query.get('scene')
@@ -38,6 +39,7 @@ const status = query.get('status')
 if (status && ['ready','stale','expired','resetting','unavailable','forbidden','signed-out','connecting'].includes(status)) { state.status = status as AppState['status']; state.message = '状态契约组件测试 · ' + status }
 function snapshot() {
   const copy = structuredClone(state)
+  if(copy.calendar&&!copy.settings.calendarPreview)copy.calendar.items.forEach(e=>{e.title='一项日程';e.rooms=[]})
   if (copy.messages && !copy.settings.messagePreview) copy.messages.items.forEach(i => { i.body='你收到了一条新消息'; i.sender='咚咚'; i.title='新消息'; i.mentioned=false })
   return copy
 }
@@ -46,7 +48,21 @@ if(query.has('messages')) {
   state.loginMode='manual';state.account={id:'quota-B',name:'额度用户 B'}
   state.messages={epoch:'dong-A',status:'ready',message:'正在接收本机咚咚消息（演示）',account:{id:'dong-A',name:'咚咚用户 A'},revision:1,pausedUntil:0,newCount:1,items:[{key:'msg-1',conversation:'chat-1',sender:'张三',title:'张三',body:'接口已经更新，方便的时候帮忙看一下。',kind:'text',at:Date.now(),fresh:true,mentioned:false}]}
 }
-Object.assign(window,{__setQuota:(percent:number|null)=>{state.quota=percent===null?null:{...state.quota!,limit:300,used:300-3*percent,remaining:3*percent,percent,exceeded:percent===0};state.status=percent===null?'signed-out':'ready';publish()},__setMessages:(messages: MessageState)=>{state.messages=messages;publish()},__messageFixtureState:()=>structuredClone(state)})
+if(query.has('calendar')) {
+ const start=Date.now()+(query.get('calendar')==='soon'?5:30)*60000;
+ state.calendar={epoch:'calendar-demo-A',account:{id:'dong-A',name:'咚咚用户 A（演示）'},status:'ready',message:'演示日程 · 未连接真实账户',fetchedAt:Date.now(),date:new Date(Date.now()+8*3600000).toISOString().slice(0,10),active:query.get('calendar')==='soon'?['calendar-1']:[],items:[{key:'calendar-1',title:'需求评审',start,end:start+90*60000,rooms:['成都 602'],allDay:false},{key:'calendar-2',title:'生产发布项对齐',start:start+150*60000,end:start+180*60000,rooms:['成都 603'],allDay:false}]}
+}
+let calendarFrame: HTMLIFrameElement|undefined,calendarToast: HTMLIFrameElement|undefined;
+function closeCalendarFrame(){calendarFrame?.remove();calendarFrame=undefined;window.dispatchEvent(new CustomEvent('calendar-panel-closed'))}
+function hideCalendarToast(){if(state.calendar)state.calendar.active=[];calendarToast?.remove();calendarToast=undefined;publish()}
+function calendarWindow(toast=false){
+ if(toast&&calendarToast)return;
+ if(!toast){closeCalendarFrame();hideCalendarToast();window.dispatchEvent(new CustomEvent('calendar-panel-opened'))}
+ const f=document.createElement('iframe');f.title=toast?'日程提醒':'今日日程';f.src='/tests/fixtures/desktop.html?view='+ (toast?'calendar-toast':'calendar');
+ Object.assign(f.style,{position:'fixed',border:'0',left:`${state.settings.windowWidth+8}px`,top:`${state.settings.windowWidth*.12}px`,width:toast?'360px':'380px',height:toast?'260px':'460px',zIndex:'1001'});
+ document.body.append(f);if(toast)calendarToast=f;else calendarFrame=f;
+}
+Object.assign(window,{__setCalendar:(calendar:AppState['calendar'])=>{state.calendar=calendar;publish()},__setQuota:(percent:number|null)=>{state.quota=percent===null?null:{...quotaTemplate,limit:300,used:300-3*percent,remaining:3*percent,percent,exceeded:percent===0};state.status=percent===null?'signed-out':'ready';publish()},__setMessages:(messages: MessageState)=>{state.messages=messages;publish()},__messageFixtureState:()=>structuredClone(state)})
 // Explicit development fixture only. No network downloads or native installation.
 const updateDemo = query.has('update')
 if (updateDemo) {
@@ -56,6 +72,10 @@ if (updateDemo) {
 Object.assign(window, { __setUpdate: (patch: AppState['update']) => { state.update = patch; publish() } })
 let messageToastFrame: HTMLIFrameElement | undefined
 window.emUse = {
+ async openCalendar(){calendarWindow(false)},
+ async refreshCalendar(){if(state.calendar){state.calendar.fetchedAt=Date.now();state.calendar.status='ready'}publish()},
+ async calendarUi(blocked){document.body.dataset.calendarBlocked=String(blocked);if(!blocked&&state.calendar?.active.length)calendarWindow(true)},
+ async respondCalendar(epoch,key,choice){if(epoch!==state.calendar?.epoch)throw Error('日程账户已变化');state.calendar.active=state.calendar.active.filter(k=>k!==key);document.body.dataset.calendarResponse=choice+':'+key;if(!state.calendar.active.length){calendarToast?.remove();calendarToast=undefined}publish()},
   async showMessageToast(epoch,key) {
     state.messageToast={epoch,key,side:'right'}
     if(!messageToastFrame){
@@ -77,15 +97,22 @@ window.emUse = {
   async dismissUpdate(version) { localStorage.setItem('em-use-fixture-update-dismissed', version); state.dismissedUpdateVersion = version; publish() },
   async checkUpdate() { document.body.dataset.updateChecks = String(Number(document.body.dataset.updateChecks ?? 0) + 1); state.update = { status: 'available', version: '0.5.0', message: '发现演示新版本' }; publish() },
   async installUpdate() { document.body.dataset.updateInstalls = String(Number(document.body.dataset.updateInstalls ?? 0) + 1); state.update = { status: 'downloading', version: state.update?.version, downloaded: 42, total: 100, message: '演示下载进度，不会安装或重启' }; publish() },
-  async settings(patch) { Object.assign(state.settings, patch); if(state.messages) {state.messages.status=!state.settings.messageEnabled?'disabled':state.settings.messagePausedUntil>Date.now()?'paused':'ready';state.messages.pausedUntil=state.settings.messagePausedUntil} if (patch.size) state.settings.windowWidth = ({ standard: 440, compact: 300, mini: 190 })[patch.size]; document.body.style.width = `${state.settings.windowWidth}px`; publish() },
+  async settings(patch) { if(patch.scene||patch.windowWidth){closeCalendarFrame();hideCalendarToast()} Object.assign(state.settings, patch); if(state.messages) {state.messages.status=!state.settings.messageEnabled?'disabled':state.settings.messagePausedUntil>Date.now()?'paused':'ready';state.messages.pausedUntil=state.settings.messagePausedUntil} if (patch.size) state.settings.windowWidth = ({ standard: 440, compact: 300, mini: 190 })[patch.size]; document.body.style.width = `${state.settings.windowWidth}px`; publish() },
   onState(fn) { listeners.add(fn); return () => listeners.delete(fn) },
   async login(mode='dongdong') {state.loginMode=mode;state.account={id:'quota-C',name:'额度用户 C'};publish()}, async logout() {state.loginMode='signed-out';state.account=null;state.quota=null;state.status='signed-out';publish()}, async refresh() {}, async hide() {}, async quit() {}, async openPortal() {}, async openReleases() {}, async screenshot() { return null },
   async openSettings() { window.dispatchEvent(new CustomEvent('open-settings')) },
 }
-if((query.get('view')==='messages' && window.opener?.emUse)||(query.get('view')==='message-toast' && window.parent!==window)) {
+if(['calendar','calendar-toast'].includes(query.get('view')??'')&&window.parent!==window){
+ const owner=window.parent as Window;const source=owner.emUse!;
+ window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),respondCalendar:(epoch,key,choice)=>source.respondCalendar!(epoch,key,choice),refreshCalendar:()=>source.refreshCalendar!(),openCalendar:()=>source.openCalendar!(),openDongdong:()=>source.openDongdong!(),hide:async()=>{owner.postMessage({type:'calendar-close',toast:query.get('view')==='calendar-toast'},location.origin)}}
+}
+window.addEventListener('message',e=>{if(e.origin!==location.origin)return;if(e.data?.type==='calendar-close'){if(e.source===calendarToast?.contentWindow)hideCalendarToast();if(e.source===calendarFrame?.contentWindow)closeCalendarFrame()}})
+if((query.get('view')==='messages'  && window.opener?.emUse)||(query.get('view')==='message-toast' && window.parent!==window)) {
   const owner=(query.get('view')==='message-toast'?window.parent:window.opener) as Window
   const source=owner.emUse!
   window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),ackMessages:(epoch,keys)=>source.ackMessages!(epoch,keys),openDongdong:()=>source.openDongdong!(),openMessagePanel:async()=>{await source.openMessagePanel!();await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-panel-opened'))},hide:async()=>{if(query.get('view')==='message-toast'){await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-toast-closed'))}else window.close()}}
   if(query.get('view')==='messages')window.addEventListener('pagehide',()=>owner.dispatchEvent(new CustomEvent('message-panel-closed')))
 }
 await import('../../src/main')
+if(query.get('qa')==='calendar')await import('./calendar-qa')
+if(query.get('qa')==='aquarium-calendar')await import('./aquarium-calendar-qa')

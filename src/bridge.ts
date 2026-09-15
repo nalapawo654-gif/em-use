@@ -26,7 +26,7 @@ const previewAPI: DesktopAPI = {
   async openSettings() { window.dispatchEvent(new CustomEvent('open-settings')) },
   async hide() { local.message = '桌面版可收起到系统托盘'; emit() },
   async quit() { local.message = '浏览器预览不会关闭标签页'; emit() },
-  async openPortal() { window.open('https://aihub.eastmoney.com/personal', '_blank', 'noopener') },
+  async openPortal() { await previewAPI.login() },
   async openReleases() { window.open('https://github.com/wantwant123/em-use/releases', '_blank', 'noopener') },
   async screenshot() { return null },
   onState(callback) { listeners.add(callback); return () => listeners.delete(callback) },

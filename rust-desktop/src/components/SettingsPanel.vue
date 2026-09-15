@@ -4,6 +4,7 @@ import { PhX, PhArrowSquareOut, PhSignOut, PhDesktop, PhSun, PhMoon, PhCircleHal
 import { api, appState as state, isDesktop } from '../bridge'
 import type { Settings } from '../shared/types'
 import MessageSettings from './MessageSettings.vue'
+import CalendarSettings from './CalendarSettings.vue'
 import OutfitPicker from './OutfitPicker.vue'
 import ScenePicker from './ScenePicker.vue'
 import BuddySkinPicker from './BuddySkinPicker.vue'
@@ -31,7 +32,7 @@ import HamsterVisual from './HamsterVisual.vue'
 import HamsterSkinPicker from './HamsterSkinPicker.vue'
 import { money } from '../shared/quota'
 const emit = defineEmits<{ close: [] }>()
-const tab = ref(['updates', 'messages'].includes(new URLSearchParams(location.search).get('tab') ?? '') ? new URLSearchParams(location.search).get('tab')! : 'appearance'), notice = ref('')
+const tab = ref(['updates', 'messages', 'calendar'].includes(new URLSearchParams(location.search).get('tab') ?? '') ? new URLSearchParams(location.search).get('tab')! : 'appearance'), notice = ref('')
 const openMessages = () => { tab.value = 'messages' }
 onMounted(() => window.addEventListener('open-messages', openMessages))
 onUnmounted(() => window.removeEventListener('open-messages', openMessages))
@@ -64,6 +65,7 @@ async function disconnect() {
         <button :class="{ active: tab === 'appearance' }" @click="tab = 'appearance'"><PhFish/>外观与互动</button>
         <button :class="{ active: tab === 'desktop' }" @click="tab = 'desktop'"><PhDesktop/>桌面偏好</button>
         <button :class="{ active: tab === 'account' }" @click="tab = 'account'"><PhShieldCheck/>账户与额度</button>
+        <button :class="{ active: tab === 'calendar' }" @click="tab = 'calendar'"><PhSun/>咚咚日程</button>
         <button :class="{ active: tab === 'messages' }" @click="tab = 'messages'"><PhShieldCheck/>咚咚消息</button>
         <button v-if="api.checkUpdate" :class="{ active: tab === 'updates' }" @click="tab = 'updates'"><PhDownloadSimple/>版本更新</button>
         <span class="nav-version">EM Use <small>v{{ state.version }}</small></span>
@@ -93,6 +95,7 @@ async function disconnect() {
           <label v-for="item in [{ key: 'alwaysOnTop', name: '置顶显示', help: '切换其他应用时，也能看到小伙伴。' }, { key: 'clickThrough', name: '鼠标穿透', help: '点击会落到后方窗口；从系统托盘可随时关闭。' }, { key: 'launchAtLogin', name: '开机启动', help: '登录电脑后自动出现，安装版生效。' }, { key: 'notifications', name: '低额度提醒', help: '剩余低于 30% 和 10% 时，每日各提醒一次。' }]" :key="item.key" class="setting-row"><span><b>{{ item.name }}</b><small>{{ item.help }}</small></span><input type="checkbox" role="switch" :checked="state.settings[item.key as keyof Settings] === true" @change="set(item.key as keyof Settings, ($event.target as HTMLInputElement).checked)"/></label>
           <div class="soft-note">按住场景空白或宠物拖动，轻点仍可互动；玩法使用拖动时优先处理互动。拖动四角调整大小，移开鼠标后操作自动隐去。关闭悬浮窗后，从系统托盘恢复。</div>
         </template>
+        <template v-else-if="tab === 'calendar'"><CalendarSettings/></template>
         <template v-else-if="tab === 'messages'"><MessageSettings/></template>
         <template v-else-if="tab === 'updates'">
           <h2>版本更新</h2><p class="section-description">当前版本 v{{ state.version }}，连接内网后可获取新版本。</p>

@@ -234,7 +234,7 @@ function setupIPC() {
   handle('window:gesture-move', moveGesture, true)
   handle('window:gesture-end', finishGesture, true)
   handle('window:settings', openSettings); handle('window:hide', () => widget?.hide()); handle('app:quit', () => app.quit())
-  handle('portal:open', () => shell.openExternal(PORTAL_URL))
+  handle('portal:open', openLogin)
   handle('releases:open', () => shell.openExternal('https://github.com/wantwant123/em-use/releases'))
   handle('window:screenshot', async () => {
     if (!widget) return null

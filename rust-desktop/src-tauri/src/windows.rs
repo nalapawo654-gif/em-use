@@ -150,6 +150,7 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     end_gesture(app, None)?;
     let valid = model::validate(&patch);
     let mut settings = snapshot(app)["settings"].clone();
+    let previous_scene = settings["scene"].clone();
     model::merge(&mut settings, &valid);
     let w = widget(app)?;
     if valid.get("launchAtLogin").is_some() {
@@ -184,7 +185,14 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
         settings["windowWidth"] = json!(b.width.round() as u32);
     }
     storage::write(app, "preferences.json", &settings)?;
+    let scene_changed = settings["scene"] != previous_scene;
     shared(app).inner.lock().unwrap().state["settings"] = settings;
+    if scene_changed {
+        if let Some(panel) = app.get_webview_window("calendar") {
+            let _ = panel.close();
+        }
+        calendar::dismiss(app);
+    }
     update_tray(app)?;
     publish(app);
     Ok(())
@@ -207,6 +215,9 @@ pub fn open_messages(app: &tauri::AppHandle) -> Result<(), String> {
 // A separate card stays readable even with a 180px pet; prefer the free side of the pet.
 // Keep the transient bubble outside the pet window without activating it.
 pub fn message_toast(app: &tauri::AppHandle, selection: &Value) -> Result<(), String> {
+    if calendar_panel_open(app) || !shared(app).calendar.lock().unwrap().active.is_empty() {
+        return Ok(());
+    }
     let state = snapshot(app);
     let valid = state["settings"]["messageEnabled"] == true
         && state["messages"]["status"] == "ready"
@@ -301,10 +312,82 @@ pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
     w.set_focus().map_err(|e| format!("激活消息窗口失败：{e}"))
 }
 
+// Calendar shares the same screen-edge placement and native focus lifecycle as messages.
+pub fn calendar_panel_open(app: &tauri::AppHandle) -> bool {
+    app.get_webview_window("calendar")
+        .is_some_and(|w| w.is_visible().unwrap_or(false))
+}
+pub fn hide_calendar_toast(app: &tauri::AppHandle) {
+    if let Some(w) = app.get_webview_window("calendar-toast") {
+        let _ = w.hide();
+    }
+}
+pub fn calendar_popup(app: &tauri::AppHandle, panel: bool) -> Result<(), String> {
+    let pet = widget(app)?;
+    let b = bounds(&pet)?;
+    let screen = area(&pet, false)?;
+    let rect = message_popup_bounds(
+        b,
+        screen,
+        if panel { 380. } else { 360. },
+        if panel { 460. } else { 260. },
+        b.height * 0.12,
+    );
+    let label = if panel { "calendar" } else { "calendar-toast" };
+    if panel {
+        if let Some(w) = app.get_webview_window("messages") {
+            let _ = w.close();
+        }
+    } else if app
+        .get_webview_window("messages")
+        .is_some_and(|w| w.is_visible().unwrap_or(false))
+    {
+        return Err("正在查看消息，稍后提醒".into());
+    }
+    hide_message_toast(app, true);
+    let w = if let Some(w) = app.get_webview_window(label) {
+        w
+    } else {
+        let w = WebviewWindowBuilder::new(
+            app,
+            label,
+            WebviewUrl::App(format!("index.html?view={label}").into()),
+        )
+        .title(if panel {
+            "今日日程 · EM Use"
+        } else {
+            "日程提醒 · EM Use"
+        })
+        .inner_size(rect.width, rect.height)
+        .transparent(true)
+        .decorations(false)
+        .shadow(false)
+        .resizable(false)
+        .skip_taskbar(true)
+        .always_on_top(true)
+        .focused(false)
+        .focusable(panel)
+        .accept_first_mouse(true)
+        .visible(false)
+        .build()
+        .map_err(|e| format!("创建日程窗口失败：{e}"))?;
+        if panel {
+            install_message_panel_focus(&w);
+        }
+        w
+    };
+    set_bounds(&w, rect)?;
+    publish(app);
+    w.show().map_err(|e| e.to_string())?;
+    if panel {
+        w.set_focus().map_err(|e| e.to_string())?;
+        let _ = app.emit_to("widget", "calendar:opened", ());
+    }
+    Ok(())
+}
+
 fn install_message_panel_focus(window: &WebviewWindow) {
-    let focus = std::sync::Arc::new(Mutex::new(
-        message_panel_focus::MessagePanelFocus::default(),
-    ));
+    let focus = std::sync::Arc::new(Mutex::new(message_panel_focus::MessagePanelFocus::default()));
     let window_handle = window.clone();
     window.on_window_event(move |event| match event {
         tauri::WindowEvent::Focused(focused) => {
@@ -453,6 +536,7 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
     add("refresh", "刷新额度")?;
     add("settings", "设置")?;
     add("messages", "咚咚消息")?;
+    add("calendar", "今日日程")?;
     let update_label = updates::tray_label(&s["update"]);
     add("update", &update_label)?;
     for (key, label) in [("alwaysOnTop", "置顶显示"), ("clickThrough", "鼠标穿透")] {
@@ -538,6 +622,7 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                 }
                 "settings" => open_settings(app),
                 "messages" => open_messages(app),
+                "calendar" => calendar_popup(app, true),
                 "login" => account::open_login(app),
                 "logout" => account::logout(app),
                 "dongdong-login" => {

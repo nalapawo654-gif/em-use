@@ -2,11 +2,12 @@
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { PhX } from '@phosphor-icons/vue'
 import { api, appState as state } from '../bridge'
-import { MESSAGE_PERSONAS, messageWindowError } from '../shared/messageNotice'
+import { MESSAGE_PERSONAS, messageGroups, messageWindowError } from '../shared/messageNotice'
 const hovering = ref(false), opening = ref(false), error = ref('')
 const persona = computed(() => MESSAGE_PERSONAS[state.settings.scene])
 const item = computed(() => state.messages?.status === 'ready' && state.messages.epoch === state.messageToast?.epoch
   ? state.messages.items.find(i => i.key === state.messageToast?.key) : undefined)
+const group = computed(() => messageGroups(state.messages?.items ?? []).find(g => g.id === item.value?.conversation))
 let remaining = 5000, last = Date.now()
 watch(() => item.value?.key, () => { remaining = 5000; last = Date.now(); error.value = '' })
 const timer = setInterval(() => {
@@ -28,7 +29,7 @@ async function open() {
 <template>
   <div class="message-toast-window" :class="[`side-${state.messageToast?.side}`, {'message-gentle': state.settings.reducedMotion}]" :style="{'--msg-color':persona.color}" @mouseenter="hovering=true" @mouseleave="hovering=false" @keydown.esc="api.hide()">
     <div v-if="item" class="message-bubble">
-      <button class="message-bubble-content" :disabled="opening" aria-label="查看咚咚消息" @click="open"><b>咚咚 · {{ state.settings.messagePreview ? item.sender : '新消息' }}</b><span>{{item.body}}</span></button>
+      <button class="message-bubble-content" :disabled="opening" aria-label="查看咚咚消息" @click="open"><b><span>咚咚 · {{ state.settings.messagePreview ? item.title : '新消息' }}</span><small v-if="group && group.fresh>1" class="message-bubble-total">{{group.fresh}} 条</small></b><span>{{!state.settings.messagePreview ? '你收到了一条新消息' : `${item.sender!==item.title ? item.sender+'：' : ''}${item.body}`}}</span></button>
       <button class="message-bubble-close" aria-label="收起消息气泡" @click="api.hide()"><PhX/></button>
     </div>
     <p v-if="error" class="message-error" role="alert">{{error}}</p>

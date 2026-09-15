@@ -1,0 +1,15 @@
+{
+  "environment": "Codex IAB, actual Vue components, local fixture; native windows mocked",
+  "layouts": 160,
+  "motions": 1300,
+  "actorCanvasOverlaps": 0,
+  "findings": [],
+  "errors": [],
+  "passed": true,
+  "checks": [
+    "4 widths x 5 skins x 2 themes x 4 quota states, original controls forced visible",
+    "5 skins x 4 quota levels x 13 actions x 5 motion samples; clipped actor canvas disjoint from calendar",
+    "clean action remains active when calendar opens/closes",
+    "ack feedback shown, snooze:calendar-1 sent and toast removed, mail restored"
+  ]
+}

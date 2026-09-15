@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhBatteryCharging, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhInfo, PhArrowsClockwise, PhArrowUpLeft, PhSun, PhMoon, PhArrowRight, PhHeart, PhBarbell, PhPersonSimpleRun, PhYinYang, PhMusicNotes, PhFlowerLotus } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -10,6 +11,8 @@ import { BATTERY_LEVELS, batteryLevel, batteryIdle, beginBattery, advanceBattery
 import BatteryVisual from './BatteryVisual.vue'
 import BatteryProp from './BatteryProp.vue'
 import BatteryWardrobe from './BatteryWardrobe.vue'
+const calendarOpen = ref(false)
+const noticeOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | null>(null), notice = ref('')
@@ -59,8 +62,9 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="battery-experience" :class="{ 'battery-native': isDesktop }">
     <div class="battery-hero">
-      <section ref="widget" tabindex="-1" class="battery-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" :style="{ '--battery-charge': BATTERY_LEVELS[level].color }" aria-label="健身电池人场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
+      <section ref="widget" tabindex="-1" class="battery-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" :style="{ '--battery-charge': BATTERY_LEVELS[level].color }" aria-label="健身电池人场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetCalendar appearance="battery" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
         <BatteryVisual :percent="percent" :skin="state.settings.batterySkin" :realm="state.settings.batteryRealm" :play="play" :night="night" :scenery="true" :reduced-motion="state.settings.reducedMotion" :active="visible"/>
         <button class="battery-body-hit scene-hit" :class="{ lying: play.action === 'rest' || (level === 'empty' && play.action !== 'charge') }" :aria-label="play.action === 'rest' ? '叫电池人起床' : '和电池人击掌'" @click="pet"></button>
         <p v-if="!active" class="battery-speech" aria-live="polite">{{ speech }}</p>

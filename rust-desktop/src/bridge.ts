@@ -19,7 +19,7 @@ export function previewQuota(percent: number) {
 }
 const previewAPI: DesktopAPI = {
   async getState() { return JSON.parse(JSON.stringify(local)) },
-  async login(mode = 'dongdong') { local.loginMode = mode; local.quota = null; local.account = null; local.status = 'signed-out'; local.message = mode === 'dongdong' ? '请启动桌面应用，连接本机咚咚账户' : '请启动桌面应用，在官方窗口手动登录'; emit() },
+  async login(mode = 'manual') { local.loginMode = mode; local.quota = null; local.account = null; local.status = 'signed-out'; local.message = mode === 'dongdong' ? '请启动桌面应用，连接本机咚咚账户' : '请启动桌面应用，在官方窗口手动登录'; emit() },
   async logout() { local.loginMode = 'signed-out'; local.account = null; local.quota = null; local.status = 'signed-out'; local.message = '已退出登录，自动连接已暂停'; emit() },
   async refresh() { local.syncing = true; emit(); await new Promise(r => setTimeout(r, 600)); local.syncing = false; if (local.quota) previewQuota(local.quota.percent); else emit() },
   async settings(patch: Partial<Settings>) { Object.assign(local.settings, validateSettings(patch)); try { localStorage.setItem('em-use-preview-settings', JSON.stringify(local.settings)) } catch { /* Private browsing can disable storage; the current session still works. */ } emit() },
@@ -27,7 +27,7 @@ const previewAPI: DesktopAPI = {
   async openSettings() { window.dispatchEvent(new CustomEvent('open-settings')) },
   async hide() { local.message = '桌面版可收起到系统托盘'; emit() },
   async quit() { local.message = '浏览器预览不会关闭标签页'; emit() },
-  async openPortal() { window.open('https://aihub.eastmoney.com/personal', '_blank', 'noopener') },
+  async openPortal() { await previewAPI.login('manual') },
   async openReleases() { window.open('http://172.27.12.77:5500/em-use/', '_blank', 'noopener') },
   async screenshot() { return null },
   onState(callback) { listeners.add(callback); return () => listeners.delete(callback) },

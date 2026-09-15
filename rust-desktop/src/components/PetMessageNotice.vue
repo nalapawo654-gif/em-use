@@ -2,7 +2,7 @@
 import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { PhX, PhBellSlash } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop } from '../bridge'
-import { MESSAGE_PERSONAS, claimArrival, messageWindowError } from '../shared/messageNotice'
+import { MESSAGE_PERSONAS, claimArrival, messageGroups, messageWindowError } from '../shared/messageNotice'
 import MessageParcel from './MessageParcel.vue'
 import CharacterMessageParcel from './CharacterMessageParcel.vue'
 import { useCharacterMail } from '../shared/characterMail'
@@ -14,6 +14,7 @@ const emit=defineEmits<{openChange:[value:boolean]; bubbleChange:[value:boolean]
 const host=ref<HTMLElement>(), trigger=ref<HTMLButtonElement>(), opened=ref(false), opening=ref(false), bubble=ref<string>(), hovering=ref(false), error=ref('')
 const persona=computed(()=>MESSAGE_PERSONAS[state.settings.scene])
 const current=computed(()=>state.messages?.items.find(i=>i.key===bubble.value))
+const currentGroup=computed(()=>messageGroups(state.messages?.items??[]).find(g=>g.id===current.value?.conversation))
 const count=computed(()=>state.messages?.newCount ?? 0)
 const visible=computed(()=>state.settings.messageEnabled && (!!state.messages?.items.length || state.messages?.status==='paused'))
 watch([visible,()=>props.blocked],()=>{if(mail)mail.enabled.value=visible.value&&!props.blocked},{immediate:true,flush:'sync'})
@@ -70,7 +71,7 @@ onUnmounted(()=>{disposed=true;document.removeEventListener('visibilitychange',v
   <div ref="host" v-show="visible && !blocked" class="pet-message-notice" :class="[`message-${state.settings.scene}`, `message-motion-${persona.motion}`,{ 'has-message-bubble':!!current&&!deferred, 'message-embedded':embedded, 'message-open':opened, 'message-paused':paused, 'message-gentle':state.settings.reducedMotion }]" :style="{ '--msg-color':persona.color }" data-pet-gesture @pointerdown.stop @click.stop @contextmenu.stop.prevent @wheel.stop @mouseenter="hovering=true" @mouseleave="hovering=false">
     <template v-if="!opened || isDesktop">
       <button ref="trigger" class="message-launcher" :style="embedded ? mail?.position.value : undefined" :data-mail-pose="embedded ? mail?.pose.value : undefined" :aria-label="`${persona.object}，${count} 条新提醒，查看咚咚消息`" :aria-expanded="opened" @click="open"><span v-if="embedded" class="character-mail-art embedded-mail" data-ready="true" aria-hidden="true"/><slot v-else name="parcel"><CharacterMessageParcel v-if="illustratedScenes.has(state.settings.scene)" :key="state.settings.scene" :scene="state.settings.scene"/><MessageParcel v-else :scene="state.settings.scene"/></slot><span v-if="count&&!paused" class="message-count">{{ count>99?'99+':count }}</span><PhBellSlash v-if="paused" class="message-muted-badge"/><span class="message-launcher-tooltip">{{paused?'提醒已暂停':'查看消息 · 卡片内打开咚咚'}}</span></button>
-      <div v-if="current && !paused && !deferred && !api.showMessageToast" class="message-bubble"><button class="message-bubble-content" @click="open"><b>咚咚 · {{ mutedPreview ? '新消息' : current.sender }}<span v-if="current.mentioned&&!mutedPreview" class="message-mention">@我</span></b><span>{{mutedPreview?'你收到了一条新消息':current.body}}</span></button><button class="message-bubble-close" aria-label="收起消息气泡" @click="bubble=undefined"><PhX/></button></div>
+      <div v-if="current && !paused && !deferred && !api.showMessageToast" class="message-bubble"><button class="message-bubble-content" @click="open"><b><span>咚咚 · {{ mutedPreview ? '新消息' : current.title }}</span><small v-if="currentGroup&&currentGroup.fresh>1" class="message-bubble-total">{{currentGroup.fresh}} 条</small><span v-if="current.mentioned&&!mutedPreview" class="message-mention">@我</span></b><span>{{mutedPreview?'你收到了一条新消息':`${current.sender!==current.title?current.sender+'：':''}${current.body}`}}</span></button><button class="message-bubble-close" aria-label="收起消息气泡" @click="bubble=undefined"><PhX/></button></div>
     </template>
     <MessageInbox v-else closeable @close="collapse"/>
     <p v-if="error" class="message-error" role="alert">{{error}}</p>

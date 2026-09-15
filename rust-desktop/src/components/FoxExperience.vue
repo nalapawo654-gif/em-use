@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhHandPalm, PhNote, PhButterfly, PhSparkle, PhMoon, PhSun, PhGearSix, PhMinus, PhGameController, PhPalette, PhX, PhArrowsClockwise, PhArrowUpLeft, PhArrowRight } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop, previewQuota } from '../bridge'
@@ -8,6 +9,8 @@ import type { Corner } from '../shared/windowGeometry'
 import { FOX_ACTIONS, FOX_LEVELS, advanceFox, beginFox, foxIdle, foxLevel, foxPose, type FoxAction } from '../fox/play'
 import FoxVisual from './FoxVisual.vue'
 import FoxWardrobe from './FoxWardrobe.vue'
+const calendarOpen = ref(false)
+const noticeOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'wardrobe' | 'details' | null>(null), notice = ref(''), play = ref(foxIdle()), visible = ref(!document.hidden)
@@ -37,8 +40,9 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="fox-experience" :class="{ 'fox-native': isDesktop }">
     <div class="fox-hero">
-      <section ref="widget" tabindex="-1" class="fox-widget" :class="[{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`]" :style="{ '--fox-energy': FOX_LEVELS[level].color }" aria-label="水墨小狐场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice"/>
+      <section ref="widget" tabindex="-1" class="fox-widget" :class="[{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible }, `pose-${pose}`]" :style="{ '--fox-energy': FOX_LEVELS[level].color }" aria-label="水墨小狐场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetCalendar appearance="fox" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
         <div class="fox-character"><FoxVisual :key="play.startedAt" :percent="percent" :action="play.action" :skin="state.settings.foxSkin" :gentle="state.settings.reducedMotion" :paused="!visible || moving" ambient :ambient-allowed="!panel && !active && !moving"/></div>
         <button class="fox-tail-hit scene-hit" aria-label="摸摸小狐狸尾巴" @click="act('tail')"></button>
         <button class="fox-body-hit scene-hit" :aria-label="play.action === 'rest' ? '叫小狐狸回来' : '点点小狐狸，追一只蝶'" @click="play.action === 'rest' ? cancel() : act('butterfly')"></button>

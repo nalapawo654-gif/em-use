@@ -30,3 +30,5 @@ import "./skadi-v2.css"
 import './update-notice.css'
 
 import './message-notice.css'
+
+import './calendar.css'

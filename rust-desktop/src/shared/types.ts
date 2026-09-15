@@ -122,7 +122,10 @@ export const BUDDY_SKINS: { id: BuddySkin; label: string }[] = [
 export const OUTFITS: { id: Outfit; label: string }[] = [{ id: 'classic', label: '原生小鱼' }, { id: 'sailor', label: '海洋领航员' }, { id: 'royal', label: '小小王冠' }, { id: 'ribbon', label: '今日小可爱' }]
 export interface MessageItem { key: string; conversation: string; sender: string; title: string; body: string; kind: string; at: number; fresh: boolean; mentioned: boolean }
 export interface MessageState { epoch: string; status: 'waiting' | 'ready' | 'paused' | 'disabled' | 'unsupported'; message: string; account: { id: string; name: string } | null; items: MessageItem[]; revision: number; pausedUntil: number; newCount: number }
+export interface CalendarEvent { key: string; title: string; start: number; end: number; rooms: string[]; allDay: boolean }
+export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
 export interface Settings {
+  calendarEnabled: boolean; calendarPreview: boolean; calendarAtStart: boolean; calendarSystemNotifications: boolean; calendarLeadMinutes: number;
   messageEnabled: boolean; messagePreview: boolean; messageRespectMute: boolean; messagePausedUntil: number;
   alwaysOnTop: boolean; clickThrough: boolean; launchAtLogin: boolean;
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
@@ -131,6 +134,7 @@ export interface Settings {
   scene: Scene; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  calendar?: CalendarState;
   messageToast?: { epoch: string; key: string; side: string } | null;
   messages?: MessageState;
   dismissedUpdateVersion?: string;
@@ -141,6 +145,11 @@ export interface AppState {
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }
 export interface DesktopAPI {
+  openCalendar?(): Promise<void>;
+  refreshCalendar?(): Promise<void>;
+  calendarUi?(blocked: boolean): Promise<void>;
+  respondCalendar?(epoch: string, key: string, choice: 'ack' | 'snooze'): Promise<void>;
+  calendarNotificationPermission?(): Promise<void>;
   openMessagePanel?(): Promise<void>;
   showMessageToast?(epoch: string, key: string): Promise<void>;
   hideMessageToast?(): Promise<void>;
@@ -158,6 +167,7 @@ export interface DesktopAPI {
   onState(callback: (state: AppState) => void): () => void;
 }
 export const DEFAULT_SETTINGS: Settings = {
+  calendarEnabled: true, calendarPreview: true, calendarAtStart: false, calendarSystemNotifications: false, calendarLeadMinutes: 5,
   messageEnabled: true, messagePreview: true, messageRespectMute: true, messagePausedUntil: 0,
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',

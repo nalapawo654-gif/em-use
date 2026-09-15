@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetNotices from './PetNotices.vue'
+import PetCalendar from './PetCalendar.vue'
 import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { PhLightning, PhGearSix, PhMinus, PhGameController, PhX, PhInfo, PhArrowsClockwise, PhMoon, PhSun, PhHandHeart, PhGrains, PhCircleDashed, PhArrowUpLeft, PhHeart, PhArrowRight, PhTShirt, PhBell, PhCoffee, PhCat, PhPaintBrush } from '@phosphor-icons/vue'
@@ -14,6 +15,8 @@ import HamsterProp from './HamsterProp.vue'
 import HamsterSkinPicker from './HamsterSkinPicker.vue'
 import HamsterVisual from './HamsterVisual.vue'
 provideCharacterMail('hamster')
+const calendarOpen = ref(false)
+const noticeOpen = ref(false)
 const props = defineProps<{ percent: number | null; night: boolean; usable: boolean }>()
 const emit = defineEmits<{ settings: [] }>()
 const widget = ref<HTMLElement>(), panel = ref<'play' | 'details' | 'wardrobe' | null>(null), notice = ref('')
@@ -58,8 +61,9 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="hamster-experience" :class="{ 'hamster-native': isDesktop }">
     <div class="hamster-hero">
-      <section ref="widget" tabindex="-1" class="hamster-widget" :class="{ 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" aria-label="仓鼠动力机房场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active"/>
+      <section ref="widget" tabindex="-1" class="hamster-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" aria-label="仓鼠动力机房场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetCalendar appearance="hamster" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
         <HamsterVisual message :style="place('visual')" :skin="state.settings.hamsterSkin" :level="level" :action="play.action" :reduced-motion="state.settings.reducedMotion" :active="visible"/>
         <button class="hamster-scene-prop hamster-cat scene-hit" :style="place('cat')" aria-label="看看监工猫的小动作" title="点击切换：哈欠、睡觉、偷吃" @click="catAction"><HamsterCat :action="play.action" :since="play.since" :night="night" :reduced-motion="state.settings.reducedMotion" :active="visible"/></button>
         <button class="hamster-scene-prop hamster-cup scene-hit" :style="place('cup')" aria-label="从瓜子杯喂仓鼠" @click="act('feed')"><HamsterProp :index="1"/></button>

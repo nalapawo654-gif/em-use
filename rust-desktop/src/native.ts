@@ -12,7 +12,13 @@ export async function installNativeBridge() {
   await listen('messages:closed', () => window.dispatchEvent(new CustomEvent('message-panel-closed')))
   await listen('messages:toast-closed', () => window.dispatchEvent(new CustomEvent('message-toast-closed')))
   await listen('messages:opened', () => window.dispatchEvent(new CustomEvent('message-panel-opened')))
+  await listen('calendar:opened', () => window.dispatchEvent(new CustomEvent('calendar-panel-opened')))
+  await listen('calendar:closed', () => window.dispatchEvent(new CustomEvent('calendar-panel-closed')))
   const api: DesktopAPI = {
+    openCalendar: () => call('openCalendar'), refreshCalendar: () => call('refreshCalendar'),
+    calendarUi: blocked => call('calendarUi', {blocked}),
+    respondCalendar: (epoch, key, choice) => call('respondCalendar', {epoch, key, choice}),
+    calendarNotificationPermission: () => call('calendarNotificationPermission'),
     showMessageToast: (epoch, key) => call('showMessageToast', { epoch, key }),
     hideMessageToast: () => call('hideMessageToast'),
     openMessagePanel: () => call('openMessagePanel'),

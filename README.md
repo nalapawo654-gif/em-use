@@ -1,4 +1,4 @@
-> **当前版本：Rust 0.4.2，已包含咚咚自动登录。** 应用源码和启动命令见 [`rust-desktop/`](rust-desktop/README.md)，Windows / macOS 分发统一由 [GitHub Actions](https://github.com/nalapawo654-gif/em-use/actions) 构建。请选择 `v0.4.2` 的发布产物；`v0.4.1` 安装包和根目录的历史 Electron 项目均不含咚咚自动登录。以下 Electron 文档保留用于旧版对照。
+> **当前版本：Rust 0.4.7，包含 11 只桌宠的咚咚当日日程与会前提醒。** 应用源码和启动命令见 [`rust-desktop/`](rust-desktop/README.md)，Windows / macOS 分发统一由 [GitHub Actions](https://github.com/nalapawo654-gif/em-use/actions) 构建。以下 Electron 文档保留用于旧版对照。
 
 # EM Use · 额度小鱼缸
 

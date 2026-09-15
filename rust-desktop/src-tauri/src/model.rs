@@ -20,6 +20,11 @@ pub fn validate(input: &Value) -> Value {
             {
                 out[key] = value.clone();
             }
+            if key == "calendarLeadMinutes"
+                && value.as_i64().is_some_and(|n| [1, 5, 10, 15].contains(&n))
+            {
+                out[key] = value.clone();
+            }
             if key == "messagePausedUntil" {
                 if let Some(n) = value.as_f64().filter(|n| n.is_finite()) {
                     out[key] = json!(n.clamp(0., (now() + 86_400_000) as f64).round() as i64);

@@ -2,6 +2,8 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhGearSix, PhMinus, PhArrowsClockwise, PhFish, PhDrop, PhCamera, PhSun, PhMoon, PhArrowRight, PhCheckCircle, PhCloudSlash, PhArrowSquareOut, PhPlant, PhSparkle, PhInfo, PhHeart, PhShieldCheck, PhGameController, PhTreasureChest, PhEye, PhX } from '@phosphor-icons/vue'
 import MessageToast from './components/MessageToast.vue'
+import CalendarWindow from './components/CalendarWindow.vue'
+import PetCalendar from './components/PetCalendar.vue'
 import MessagePanel from './components/MessagePanel.vue'
 import PetNotices from './components/PetNotices.vue'
 import Aquarium from './components/Aquarium.vue'
@@ -29,6 +31,7 @@ const effectiveSize = computed(() => state.settings.windowWidth < 250 ? 'mini' :
 const view = new URLSearchParams(location.search).get('view')
 const showSettings = ref(view === 'settings'), details = ref(false), toast = ref('')
 const playPanel = ref<'outfit' | 'play' | null>(null)
+const aquariumCalendarOpen=ref(false),aquariumNoticeOpen=ref(false)
 const aquarium = ref<InstanceType<typeof Aquarium> | null>(null)
 const now = ref(Date.now())
 const timeTimer = setInterval(() => now.value = Date.now(), 30_000)
@@ -64,8 +67,9 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'calendar-view': view === 'calendar', 'calendar-toast-view': view === 'calendar-toast', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
+    <CalendarWindow v-else-if="view === 'calendar' || view === 'calendar-toast'" :toast="view === 'calendar-toast'"/>
     <MessageToast v-else-if="view === 'message-toast'"/>
     <MessagePanel v-else-if="view === 'messages'"/>
     <template v-else>
@@ -81,8 +85,9 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
       <HamsterExperience v-else-if="state.settings.scene === 'hamster'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <CultivationExperience v-else-if="state.settings.scene === 'cultivation'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <div v-else :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">
-        <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving }" aria-label="额度小鱼缸">
-          <PetNotices :blocked="!!playPanel || details || moving || !!aquarium?.updateBlocked"/>
+        <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving, 'calendar-is-open': aquariumCalendarOpen }" aria-label="额度小鱼缸">
+          <PetCalendar appearance="aquarium" :blocked="!!playPanel || details || moving || aquariumNoticeOpen" :deferred="!!aquarium?.updateBlocked" @open-change="aquariumCalendarOpen=$event"/>
+          <PetNotices :blocked="!!playPanel || details || moving || !!aquarium?.updateBlocked" :external-blocked="aquariumCalendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="aquariumNoticeOpen=$event"/>
           <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="resize-handle" :class="corner" :aria-label="`缩放鱼缸 ${corner}`" title="拖动调整大小 · Ctrl/⌘ + 滚轮也可以" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><span></span></button>
           <header class="widget-header"><div class="widget-title"><PhFish weight="duotone"/><span>额度小鱼缸</span><small v-if="!isDesktop">让监控变得有温度</small></div><div class="window-actions"><button class="icon-button mini-play-button" aria-label="玩耍" title="玩耍" @click="togglePanel('play')"><PhGameController/></button><button class="icon-button" title="设置" aria-label="设置" @click="openSettings"><PhGearSix/></button><button class="icon-button" title="收起到托盘" aria-label="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
           <div class="widget-body">
