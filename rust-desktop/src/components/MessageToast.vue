@@ -2,12 +2,11 @@
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { PhX } from '@phosphor-icons/vue'
 import { api, appState as state } from '../bridge'
-import { MESSAGE_PERSONAS, messageGroups, messageWindowError } from '../shared/messageNotice'
+import { MESSAGE_PERSONAS, toastGroup, messageWindowError } from '../shared/messageNotice'
 const hovering = ref(false), opening = ref(false), error = ref('')
 const persona = computed(() => MESSAGE_PERSONAS[state.settings.scene])
-const item = computed(() => state.messages?.status === 'ready' && state.messages.epoch === state.messageToast?.epoch
-  ? state.messages.items.find(i => i.key === state.messageToast?.key) : undefined)
-const group = computed(() => messageGroups(state.messages?.items ?? []).find(g => g.id === item.value?.conversation))
+const group = computed(() => toastGroup(state.messages, state.messageToast))
+const item = computed(() => group.value?.items[0])
 let remaining = 5000, last = Date.now()
 watch(() => item.value?.key, () => { remaining = 5000; last = Date.now(); error.value = '' })
 const timer = setInterval(() => {

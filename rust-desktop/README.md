@@ -22,15 +22,15 @@ cargo test --locked --manifest-path src-tauri/Cargo.toml
 
 ## 版本和发布
 
-当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.7 为全部 11 只桌宠加入本机咚咚当日日程、专属日历物料和会前提醒，并改进会话消息标题及内置登录入口。0.4.6 修正 Windows 消息卡片短暂失焦即关闭的问题，并显示窗口打开失败原因、支持重试。0.4.5 改进独立消息气泡、客户端唤起及道具随角色姿态融合。0.4.4 新增 11 只桌宠的咚咚消息提醒、独立消息账户、自动检查版本及专属更新提示，并更新 11 只桌宠说明页。0.4.3 纳入五只新桌宠、角色动画与装扮，并将所有桌宠末档形态统一为剩余 ≤15% 触发。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
+当前发布仓库：[nalapawo654-gif/em-use](https://github.com/nalapawo654-gif/em-use)。0.4.8 合并同一会话的连续消息气泡，Mac 改为手动检查和下载 DMG，补齐基础应用签名与打包校验；Windows 更新方式保持不变。0.4.7 为全部 11 只桌宠加入本机咚咚当日日程、专属日历物料和会前提醒，并改进会话消息标题及内置登录入口。0.4.6 修正 Windows 消息卡片短暂失焦即关闭的问题，并显示窗口打开失败原因、支持重试。0.4.5 改进独立消息气泡、客户端唤起及道具随角色姿态融合。0.4.4 新增 11 只桌宠的咚咚消息提醒、独立消息账户、自动检查版本及专属更新提示，并更新 11 只桌宠说明页。0.4.3 纳入五只新桌宠、角色动画与装扮，并将所有桌宠末档形态统一为剩余 ≤15% 触发。0.4.2 首次将咚咚自动登录、手动账户切换与启动默认选择纳入正式版本；0.4.1 安装包不含这套功能。
 
 ```sh
-npm run version:set -- 0.4.7
+npm run version:set -- 0.4.8
 ```
 
-该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.7`。提交版本变更后推送标签，即可触发完整发布。
+该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.8`。提交版本变更后推送标签，即可触发完整发布。
 
-普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64 和 Intel（`.dmg` + `.app.tar.gz` 更新包）。本机不生成分发安装包。
+普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64 和 Intel（仅 `.dmg` 手动安装包）。本机不生成分发安装包。
 
 本仓库已于 2026-09-11 配置下列 GitHub Actions 更新签名项；公钥同时固定在应用配置中，构建时会拒绝不一致的公钥，避免误换密钥：
 
@@ -40,9 +40,9 @@ npm run version:set -- 0.4.7
 | Actions Secret | `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | 私钥密码；未设置密码时可不填 |
 | Actions Variable | `TAURI_UPDATER_PUBLIC_KEY` | 对应公钥全文 |
 
-迁移到另一个新仓库且尚无更新签名密钥时，可在安全目录运行 `npm run tauri -- signer generate -w /绝对路径/em-use-updater.key`。私钥不要提交进仓库。每次发布必须沿用同一对密钥，否则旧客户端无法验证新版。标签构建在密钥缺失时明确失败，不生成假装可更新的发布包。普通验证构建可在无密钥时生成不带自动更新签名的安装包。
+迁移到另一个新仓库且尚无更新签名密钥时，可在安全目录运行 `npm run tauri -- signer generate -w /绝对路径/em-use-updater.key`。私钥不要提交进仓库。每次发布必须沿用同一对密钥，否则旧客户端无法验证新版。Windows 标签构建在密钥缺失时明确失败，不生成假装可更新的发布包。普通验证构建可在无密钥时生成不带自动更新签名的安装包。
 
-更新签名用于客户端验证安装包来源，与 Apple/Windows 系统代码签名不同。当前工作流未配置 Apple 公证或 Windows Authenticode，操作系统可能显示未签名发布者提示。
+更新签名用于客户端验证安装包来源，与 Apple/Windows 系统代码签名不同。macOS 使用完整 app bundle 的 ad-hoc 签名，并在 CI 中校验 app 和 DMG 内应用的资源封印；未配置 Apple 开发者证书、公证或 Windows Authenticode。ad-hoc 签名不等于 Apple 认证，Mac 首次打开仍可能需要在系统「隐私与安全性」中允许。参见 [Tauri ad-hoc 签名说明](https://v2.tauri.app/distribute/sign/macos/#ad-hoc-signing)。
 
 本机私钥与密码备份位于仓库根目录下被 Git 忽略的 `.local-data/release-signing/`，目录权限 0700、文件权限 0600。请单独安全备份；不要删除或公开该目录，也不要用新密钥覆盖已发行应用的密钥。
 
@@ -58,22 +58,20 @@ npm run version:set -- 0.4.7
 ├── index.html
 └── em-use/
     ├── index.html
-    ├── site-assets/0.4.6/
+    ├── site-assets/0.4.8/
     ├── stable/latest.json
-    └── releases/0.4.7/
-        ├── EM-Use-0.4.6-windows-x86_64.exe
-        ├── EM-Use-0.4.6-windows-x86_64.exe.sig
-        ├── EM-Use-0.4.6-darwin-aarch64.dmg
-        ├── EM-Use-0.4.6-darwin-aarch64.app.tar.gz
-        ├── EM-Use-0.4.6-darwin-aarch64.app.tar.gz.sig
-        ├── EM-Use-0.4.6-darwin-x86_64.dmg
-        ├── EM-Use-0.4.6-darwin-x86_64.app.tar.gz
-        ├── EM-Use-0.4.6-darwin-x86_64.app.tar.gz.sig
+    └── releases/0.4.8/
+        ├── EM-Use-0.4.8-windows-x86_64.exe
+        ├── EM-Use-0.4.8-windows-x86_64.exe.sig
+        ├── EM-Use-0.4.8-darwin-aarch64.dmg
+        ├── EM-Use-0.4.8-darwin-x86_64.dmg
         ├── SHA256SUMS.txt
         └── version.json
 ```
 
-客户端启动 10 秒后、随后每 6 小时检查；设置和托盘可手动检查。检查地址固定为 `http://172.27.12.77:5500/em-use/stable/latest.json`。只有新版本才显示安装入口，用户点击后下载、验证签名、安装并重启。内网不通、清单缺失和签名校验失败都保留原版并显示错误。建议静态服务器对 `latest.json` 返回 `Cache-Control: no-cache`。旧版 Electron 不会自动升级到 Rust，第一次需安装 Rust 包。
+Windows 客户端启动 10 秒后、随后每 6 小时检查；设置和托盘可手动检查。检查地址固定为 `http://172.27.12.77:5500/em-use/stable/latest.json`。只有新版本才显示安装入口，用户点击后下载、验证签名、安装并重启。内网不通、清单缺失和签名校验失败都保留原版并显示错误。建议静态服务器对 `latest.json` 返回 `Cache-Control: no-cache`。旧版 Electron 不会自动升级到 Rust，第一次需安装 Rust 包。
+
+macOS 只在用户主动点击「检查更新」时读取同一清单的顶层 `version` / `notes`，不依赖 Mac 更新包或更新签名；不启动后台检查，不下载、安装或自动重启。设置和桌宠来信的「前往下载」打开固定下载页，下载对应芯片的 DMG 后手动退出并替换应用。`latest.json.platforms` 仅包含 Windows；已安装的旧 Mac 客户端需要通过下载页手动升级到此版本。
 
 ## 迁移和边界
 

@@ -135,12 +135,13 @@ export interface Settings {
 }
 export interface AppState {
   calendar?: CalendarState;
-  messageToast?: { epoch: string; key: string; side: string } | null;
+  messageToast?: { epoch: string; key: string; conversation?: string; side: string } | null;
   messages?: MessageState;
   dismissedUpdateVersion?: string;
   loginMode?: 'dongdong' | 'manual' | 'signed-out';
   account?: { id: string; name?: string } | null;
   status: QuotaState; quota: Quota | null; message: string; syncing: boolean;
+  updateMode?: 'manual' | 'automatic';
   update?: { status: 'idle' | 'checking' | 'available' | 'current' | 'downloading' | 'installing' | 'error'; message: string; version?: string; notes?: string; downloaded?: number; total?: number };
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }

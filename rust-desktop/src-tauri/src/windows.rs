@@ -261,8 +261,17 @@ pub fn message_toast(app: &tauri::AppHandle, selection: &Value) -> Result<(), St
         .map_err(|e| e.to_string())?
     };
     set_bounds(&w, toast)?;
-    *shared(app).message_toast.lock().unwrap() =
-        Some(json!({"epoch": selection["epoch"], "key": selection["key"], "side": side}));
+    // Resolve the conversation from the validated native message, never from caller input.
+    let conversation = state["messages"]["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|i| i["key"] == selection["key"])
+        .unwrap()["conversation"]
+        .clone();
+    *shared(app).message_toast.lock().unwrap() = Some(
+        json!({"epoch": selection["epoch"], "key": selection["key"], "conversation": conversation, "side": side}),
+    );
     publish(app);
     w.show().map_err(|e| e.to_string())
 }

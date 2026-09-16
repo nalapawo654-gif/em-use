@@ -36,6 +36,7 @@ struct Shared {
     settings_gate: tokio::sync::Mutex<()>,
     http: reqwest::Client,
     update: tokio::sync::Mutex<Option<tauri_plugin_updater::Update>>,
+    #[cfg(not(target_os = "macos"))]
     update_notified: Mutex<HashSet<String>>,
     messages: Mutex<messages::Hub>,
     calendar: Mutex<calendar::Hub>,
@@ -223,16 +224,18 @@ async fn desktop(
     Ok(Value::Null)
 }
 fn main() {
-    let state = json!({"status":"signed-out","quota":null,"message":"登录后，让小伙伴陪你看额度","syncing":false,"settings":model::contract()["defaults"],"version":env!("CARGO_PKG_VERSION"),"persistentLogin":false,"loginOpen":false,"update":{"status":"idle","message":"尚未检查更新"}});
-    tauri::Builder::default()
+    let state = json!({"status":"signed-out","quota":null,"message":"登录后，让小伙伴陪你看额度","syncing":false,"settings":model::contract()["defaults"],"version":env!("CARGO_PKG_VERSION"),"persistentLogin":false,"loginOpen":false,"updateMode":if cfg!(target_os = "macos") { "manual" } else { "automatic" },"update":{"status":"idle","message":"尚未检查更新"}});
+    let builder = tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             windows::show(app)
         }))
         .plugin(tauri_plugin_autostart::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_notification::init());
+    #[cfg(not(target_os = "macos"))]
+    let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
+    builder
         .manage(Shared {
             inner: Mutex::new(Runtime {
                 state,
@@ -255,6 +258,7 @@ fn main() {
                 .build()
                 .unwrap(),
             update: tokio::sync::Mutex::new(None),
+            #[cfg(not(target_os = "macos"))]
             update_notified: Mutex::new(HashSet::new()),
             messages: Mutex::new(messages::Hub::default()),
             calendar: Mutex::new(calendar::Hub::default()),
@@ -289,8 +293,8 @@ fn main() {
             windows::setup(app)?;
             messages::start(handle.clone());
             calendar::start(handle.clone());
-            let update_app = handle.clone();
-            tauri::async_runtime::spawn(updates::watch_updates(update_app));
+            #[cfg(not(target_os = "macos"))]
+            tauri::async_runtime::spawn(updates::watch_updates(handle.clone()));
             tauri::async_runtime::spawn(async move {
                 account::refresh(handle.clone(), true).await;
                 let mut last = now();

@@ -101,7 +101,8 @@ async function disconnect() {
           <h2>版本更新</h2><p class="section-description">当前版本 v{{ state.version }}，连接内网后可获取新版本。</p>
           <div class="soft-note" role="status">{{ state.update?.message ?? '尚未检查更新' }}<p v-if="state.update?.version">新版本 v{{ state.update.version }}</p><p v-if="state.update?.total">{{ Math.min(100, Math.round((state.update.downloaded ?? 0) / state.update.total * 100)) }}%</p></div>
           <p v-if="state.update?.notes" class="section-description" style="white-space: pre-wrap">{{ state.update.notes }}</p>
-          <div class="account-actions"><button class="primary-button" :disabled="updateBusy" @click="checkUpdate">检查更新</button><button v-if="state.update?.status === 'available'" class="primary-button" @click="installUpdate">下载、安装并重启</button><button class="text-button" @click="api.openReleases()">手动下载<PhArrowSquareOut/></button></div>
+          <p v-if="state.updateMode === 'manual'" class="section-description">Mac 版由你手动检查和下载安装，不会后台检查、自动安装或重启。</p>
+          <div class="account-actions"><button class="primary-button" :disabled="updateBusy" @click="checkUpdate">检查更新</button><button v-if="state.updateMode !== 'manual' && state.update?.status === 'available'" class="primary-button" @click="installUpdate">下载、安装并重启</button><button class="text-button" @click="api.openReleases()">{{ state.updateMode === 'manual' ? '前往下载' : '手动下载' }}<PhArrowSquareOut/></button></div>
         </template>
         <template v-else>
           <h2>额度账户 · AI 云平台</h2><p class="section-description">用于查询额度；咚咚消息始终跟随本机咚咚账户，可与此账户不同。</p>

@@ -23,14 +23,26 @@ export function messageGroups(items: MessageItem[]) {
   for (const item of [...items].sort((a, b) => b.at - a.at)) { const group = groups.get(item.conversation) ?? { id: item.conversation, title: item.title, items: [], fresh: 0 }; group.items.push(item); if (item.fresh) group.fresh++; groups.set(item.conversation, group) }
   return [...groups.values()]
 }
-// Widget remounts / scene switches share the announcement history. It has no quota account dependency.
-let epoch = '', announced = new Set<string>()
-export function claimArrival(state: MessageState | undefined, blocked: boolean): MessageItem | undefined {
+// Widget remounts / scene switches share both message and conversation arrival history.
+// An open toast updates in place. After it closes, a continuing burst stays quiet.
+export const MESSAGE_BURST_GAP = 30_000
+let epoch = '', announced = new Set<string>(), lastArrival = new Map<string, number>()
+export function claimArrival(state: MessageState | undefined, blocked: boolean, activeConversation?: string, now = Date.now()): MessageItem | undefined {
   if (!state) return
-  if (state.epoch !== epoch) { epoch = state.epoch; announced = new Set() }
+  if (state.epoch !== epoch) { epoch = state.epoch; announced = new Set(); lastArrival = new Map() }
+  const unread = new Set(state.items.filter(i => i.fresh).map(i => i.conversation))
+  for (const conversation of lastArrival.keys()) if (!unread.has(conversation)) lastArrival.delete(conversation)
   if (blocked || state.status !== 'ready') return
-  const pending = state.items.filter(i => i.fresh && !announced.has(i.key))
-  pending.forEach(i => announced.add(i.key))
+  const pending = state.items.filter(i => i.fresh && !announced.has(i.key)).sort((a, b) => b.at - a.at)
+  const arrival = pending.find(i => i.conversation === activeConversation || !lastArrival.has(i.conversation) || now - lastArrival.get(i.conversation)! >= MESSAGE_BURST_GAP)
+  pending.forEach(i => { announced.add(i.key); lastArrival.set(i.conversation, now) })
   if (announced.size > 1000) announced = new Set(state.items.map(i => i.key))
-  return pending[0]
+  return arrival
+}
+
+// Keep a toast attached to its conversation even when its original message is evicted.
+export function toastGroup(state: MessageState | undefined, toast: { epoch: string; key: string; conversation?: string } | null | undefined) {
+  if (!state || state.status !== 'ready' || state.epoch !== toast?.epoch) return
+  const conversation = toast.conversation ?? state.items.find(i => i.key === toast.key)?.conversation
+  return messageGroups(state.items).find(g => g.id === conversation)
 }

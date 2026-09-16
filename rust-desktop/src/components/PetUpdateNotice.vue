@@ -14,6 +14,7 @@ const visible = computed(() => updateNoticeVisible(state.update))
 const busy = computed(() => pending.value || ['downloading', 'installing'].includes(state.update?.status ?? ''))
 const snoozed = computed(() => !busy.value && state.update?.version === state.dismissedUpdateVersion)
 const progress = computed(() => updateProgress(state.update))
+const manualUpdate = computed(() => state.updateMode === 'manual')
 const status = computed(() => state.update?.status ?? 'idle')
 const badge = computed(() => busy.value ? (status.value === 'installing' ? '正在安装' : progress.value === null ? '正在下载' : `下载 ${progress.value}%`) : status.value === 'error' ? '更新未完成' : '新版本')
 let parent: HTMLElement | null = null
@@ -40,6 +41,11 @@ async function dismiss() {
 }
 async function install() {
   if (busy.value || saving.value) return
+  if (manualUpdate.value) {
+    error.value = ''
+    try { await api.openReleases() } catch { error.value = '下载页未能打开，请稍后重试。' }
+    return
+  }
   error.value = ''; pending.value = true
   await nextTick(); closeButton.value?.focus({ preventScroll: true })
   try { if (!api.installUpdate) throw Error(); await api.installUpdate() }
@@ -75,7 +81,7 @@ onUnmounted(() => { emit('openChange', false); releaseSiblings(); document.remov
     <section v-else class="update-letter" role="dialog" aria-modal="false" :aria-label="`${persona.tag} · 版本更新`">
       <header class="update-letter-header"><UpdateParcel :scene="state.settings.scene"/><div><small>{{ persona.tag }}</small><strong>新版本 <span>v{{ state.update?.version }}</span></strong></div><button ref="closeButton" class="update-close" :disabled="saving" :aria-label="busy ? '收起更新进度' : '稍后更新，关闭来信'" @click="dismiss"><PhX/></button></header>
       <div class="update-letter-scroll" tabindex="0"><h2>{{ persona.title }}</h2><p class="update-story">{{ persona.body }}</p><p v-if="state.update?.notes && !busy && status !== 'error'" class="update-release-notes">{{ state.update.notes }}</p><p v-if="status === 'error'" class="update-error" role="alert">{{ state.update?.message }}</p><p v-if="error" class="update-error" role="alert">{{ error }}</p><div v-if="busy" class="update-transfer" role="status"><span>{{ state.update?.message || '正在开始更新…' }}</span><progress :value="progress ?? undefined" max="100" aria-label="更新下载进度"></progress><small>{{ progress === null ? '请稍候' : `${progress}%` }}</small></div></div>
-      <div class="update-letter-footer"><p class="update-restart-note">{{ busy ? '安装完成后将重启 EM Use' : '安装后会重启 EM Use' }}<button class="update-details" aria-label="在设置中查看更新说明" @click="openDetails">说明 ↗</button></p><div class="update-letter-actions"><button v-if="status === 'error'" class="update-primary" :disabled="pending || saving" @click="retry"><PhArrowClockwise/>重新检查</button><button v-else class="update-primary" :disabled="busy || saving" @click="install">{{ busy ? '更新进行中' : '更新并重启' }}<PhArrowUpRight v-if="!busy"/></button><button class="update-later" :disabled="saving" @click="dismiss">{{ busy ? '收起进度' : '稍后' }}</button></div></div>
+      <div class="update-letter-footer"><p class="update-restart-note">{{ manualUpdate ? '下载新版后，请退出并手动替换应用' : busy ? '安装完成后将重启 EM Use' : '安装后会重启 EM Use' }}<button class="update-details" aria-label="在设置中查看更新说明" @click="openDetails">说明 ↗</button></p><div class="update-letter-actions"><button v-if="status === 'error'" class="update-primary" :disabled="pending || saving" @click="retry"><PhArrowClockwise/>重新检查</button><button v-else class="update-primary" :disabled="busy || saving" @click="install">{{ manualUpdate ? '前往下载' : busy ? '更新进行中' : '更新并重启' }}<PhArrowUpRight v-if="!busy"/></button><button class="update-later" :disabled="saving" @click="dismiss">{{ busy ? '收起进度' : '稍后' }}</button></div></div>
       <span class="update-stamp" aria-hidden="true">{{ persona.stamp }}</span>
     </section>
   </div>

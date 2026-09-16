@@ -70,8 +70,8 @@ jobs:
       - run: npm ci
       - run: npm run contract
       - run: cargo test --locked --manifest-path src-tauri/Cargo.toml
-      - name: Configure signed release (tag builds require persistent keys)
-        run: node scripts/ci-config.mjs
+      - name: Configure platform release (Windows requires persistent updater keys)
+        run: node scripts/ci-config.mjs ${{ matrix.target }}
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_UPDATER_PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
@@ -80,6 +80,9 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      - name: Verify macOS app and DMG signatures
+        if: runner.os == 'macOS'
+        run: bash scripts/verify-macos-bundle.sh 'src-tauri/target/${{ matrix.target }}/release/bundle'
       - run: node scripts/collect-artifacts.mjs ${{ matrix.target }} src-tauri/target/${{ matrix.target }}/release/bundle installers
       - uses: actions/upload-artifact@v4
         with:

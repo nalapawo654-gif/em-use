@@ -1,5 +1,7 @@
 use crate::*;
+#[cfg(not(target_os = "macos"))]
 use tauri_plugin_notification::NotificationExt;
+#[cfg(not(target_os = "macos"))]
 use tauri_plugin_updater::UpdaterExt;
 
 fn state(app: &tauri::AppHandle, value: Value) {
@@ -46,6 +48,7 @@ pub fn dismiss_update(
     publish(&app);
     Ok(())
 }
+#[cfg(not(target_os = "macos"))]
 pub async fn watch_updates(app: tauri::AppHandle) {
     tokio::time::sleep(Duration::from_secs(10)).await;
     loop {
@@ -84,6 +87,7 @@ pub fn tray_label(update: &Value) -> String {
         _ => "检查更新".into(),
     }
 }
+#[cfg(not(target_os = "macos"))]
 pub async fn check_updates(app: &tauri::AppHandle, manual: bool) -> Result<(), String> {
     let sh = shared(app);
     let Ok(mut slot) = sh.update.try_lock() else {
@@ -141,6 +145,7 @@ pub async fn check_updates(app: &tauri::AppHandle, manual: bool) -> Result<(), S
         }
     }
 }
+#[cfg(not(target_os = "macos"))]
 #[tauri::command]
 pub async fn install_update(window: WebviewWindow, app: tauri::AppHandle) -> Result<(), String> {
     trusted(&window)?;
@@ -173,9 +178,102 @@ pub async fn install_update(window: WebviewWindow, app: tauri::AppHandle) -> Res
         }
     }
 }
+// macOS only reads release metadata on demand. It never creates an installable Update.
+#[cfg(any(target_os = "macos", test))]
+fn manual_release(manifest: &Value, current: &str) -> Result<Value, String> {
+    let version = manifest["version"].as_str().ok_or("版本清单缺少版本号")?;
+    let latest = semver::Version::parse(version).map_err(|_| "版本清单格式不正确")?;
+    let current = semver::Version::parse(current).map_err(|_| "当前版本格式不正确")?;
+    if !latest.pre.is_empty() {
+        return Err("正式版本清单不能包含预览版本".into());
+    }
+    if latest.cmp_precedence(&current).is_gt() {
+        Ok(
+            json!({"status":"available","version":version,"notes":manifest["notes"].as_str().unwrap_or(""),"message":"发现新版本，请前往下载页手动安装"}),
+        )
+    } else {
+        Ok(json!({"status":"current","message":"当前已是最新版本"}))
+    }
+}
+
+#[cfg(target_os = "macos")]
+pub async fn check_updates(app: &tauri::AppHandle, manual: bool) -> Result<(), String> {
+    if !manual {
+        return Ok(());
+    }
+    let sh = shared(app);
+    let Ok(_guard) = sh.update.try_lock() else {
+        return Ok(());
+    };
+    let previous = snapshot(app)["update"].clone();
+    state(app, json!({"status":"checking","message":"正在检查新版本"}));
+    let result = async {
+        let manifest: Value = sh
+            .http
+            .get(format!("{RELEASES}stable/latest.json"))
+            .header(reqwest::header::CACHE_CONTROL, "no-cache")
+            .send()
+            .await
+            .map_err(|e| e.to_string())?
+            .error_for_status()
+            .map_err(|e| e.to_string())?
+            .json()
+            .await
+            .map_err(|e| e.to_string())?;
+        manual_release(&manifest, env!("CARGO_PKG_VERSION"))
+    }
+    .await;
+    match result {
+        Ok(value) => {
+            state(app, value);
+            Ok(())
+        }
+        Err(_) => {
+            let mut value = failed_check(&previous, true);
+            value["message"] = json!("暂时无法检查更新，请连接内网后重试，或前往下载页查看");
+            state(app, value);
+            Err("检查更新失败".into())
+        }
+    }
+}
+
+// Keep the command registered for compatibility, but reject stale UI / direct IPC installs.
+#[cfg(target_os = "macos")]
+#[tauri::command]
+pub async fn install_update(window: WebviewWindow, _app: tauri::AppHandle) -> Result<(), String> {
+    trusted(&window)?;
+    Err("Mac 版请前往下载页手动安装新版本".into())
+}
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn manual_checks_do_not_require_platform_packages_or_signatures() {
+        let manifest = json!({"version":"0.4.10","notes":"new","platforms":{"windows-x86_64":{}}});
+        assert_eq!(
+            manual_release(&manifest, "0.4.9").unwrap()["status"],
+            "available"
+        );
+        assert_eq!(
+            manual_release(&manifest, "0.4.10").unwrap()["status"],
+            "current"
+        );
+        assert_eq!(
+            manual_release(&manifest, "0.5.0").unwrap()["status"],
+            "current"
+        );
+        assert_eq!(
+            manual_release(&json!({"version":"0.4.9+other"}), "0.4.9+local").unwrap()["status"],
+            "current"
+        );
+        for manifest in [
+            json!({}),
+            json!({"version":"oops"}),
+            json!({"version":"1.0.0-beta"}),
+        ] {
+            assert!(manual_release(&manifest, "0.4.9").is_err());
+        }
+    }
     #[test]
     fn background_failure_preserves_the_pending_letter() {
         let available = json!({"status":"available","version":"0.5.0","notes":"hello"});

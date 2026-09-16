@@ -13,8 +13,8 @@ const props=defineProps<{blocked?:boolean;deferred?:boolean}>()
 const emit=defineEmits<{openChange:[value:boolean]; bubbleChange:[value:boolean]}>()
 const host=ref<HTMLElement>(), trigger=ref<HTMLButtonElement>(), opened=ref(false), opening=ref(false), bubble=ref<string>(), hovering=ref(false), error=ref('')
 const persona=computed(()=>MESSAGE_PERSONAS[state.settings.scene])
-const current=computed(()=>state.messages?.items.find(i=>i.key===bubble.value))
-const currentGroup=computed(()=>messageGroups(state.messages?.items??[]).find(g=>g.id===current.value?.conversation))
+const currentGroup=computed(()=>messageGroups(state.messages?.items??[]).find(g=>g.id===bubble.value))
+const current=computed(()=>currentGroup.value?.items[0])
 const count=computed(()=>state.messages?.newCount ?? 0)
 const visible=computed(()=>state.settings.messageEnabled && (!!state.messages?.items.length || state.messages?.status==='paused'))
 watch([visible,()=>props.blocked],()=>{if(mail)mail.enabled.value=visible.value&&!props.blocked},{immediate:true,flush:'sync'})
@@ -25,13 +25,13 @@ let remaining=5000,last=Date.now(),parent:HTMLElement|null=null,timer:ReturnType
 const inert=new Map<HTMLElement,boolean>()
 function release(){for(const [el,before] of inert)el.inert=before;inert.clear();parent?.classList.remove('message-letter-open')}
 function collapse(){opened.value=false;bubble.value=undefined;void nextTick(()=>trigger.value?.focus({preventScroll:true}))}
-function visibilityChanged(){if(!document.hidden&&state.messages&&!opened.value&&!props.blocked&&!props.deferred){const arrival=claimArrival(state.messages,paused.value);if(arrival){bubble.value=arrival.key;remaining=5000;last=Date.now()}}}
+function visibilityChanged(){if(!document.hidden&&state.messages&&!opened.value&&!props.blocked&&!props.deferred){const arrival=claimArrival(state.messages,paused.value,bubble.value);if(arrival){bubble.value=arrival.conversation;remaining=5000;last=Date.now()}}}
 function panelClosed(){opened.value=false}
 function panelOpened(){opened.value=true;bubble.value=undefined}
 function toastClosed(){bubble.value=undefined}
 let toastQueue=Promise.resolve()
 let disposed=false
-watch([()=>current.value?.key,()=>state.messages?.epoch,()=>props.blocked,()=>props.deferred,()=>state.settings.windowWidth,()=>state.settings.scene,visible,opened],()=>{
+watch([()=>current.value?.conversation,()=>state.messages?.epoch,()=>props.blocked,()=>props.deferred,()=>state.settings.windowWidth,()=>state.settings.scene,visible,opened],()=>{
  if(!api.showMessageToast)return
  toastQueue=toastQueue.catch(()=>{}).then(async()=>{
   if(!disposed&&current.value&&!props.blocked&&!props.deferred&&visible.value&&!opened.value)await api.showMessageToast!(state.messages!.epoch,current.value.key)
@@ -51,11 +51,11 @@ async function open(){
   }
   opened.value=true
 }
-watch(()=>[state.messages?.epoch,state.messages?.revision,props.blocked,props.deferred,state.messages?.status,opened.value],()=>{
+watch(()=>[state.messages?.epoch,state.messages?.revision,state.messages?.newCount,props.blocked,props.deferred,state.messages?.status,opened.value],()=>{
   if(props.blocked){opened.value=false;return}
   if(state.messages?.status!=='ready'){bubble.value=undefined;return}
-  const arrival=claimArrival(state.messages,opened.value||document.hidden||paused.value||!!props.deferred)
-  if(arrival){bubble.value=arrival.key;remaining=5000;last=Date.now()}
+  const arrival=claimArrival(state.messages,opened.value||document.hidden||paused.value||!!props.deferred,bubble.value)
+  if(arrival){bubble.value=arrival.conversation;remaining=5000;last=Date.now()}
 },{immediate:true})
 watch(()=>state.messages?.epoch,()=>{opened.value=false;bubble.value=undefined;error.value=''},{flush:'sync'})
 watch(()=>current.value, item=>{if(!item)bubble.value=undefined})
