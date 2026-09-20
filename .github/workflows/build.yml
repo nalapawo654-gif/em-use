@@ -27,6 +27,7 @@ jobs:
       - run: node scripts/version.mjs --check
         env:
           RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
+      - run: node scripts/release-notes.mjs
       - run: npm run verify:parity
       - uses: actions/setup-python@v5
         with:

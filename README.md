@@ -1,4 +1,4 @@
-> **当前版本：Rust 0.4.8，修复连续消息气泡重复提示，Mac 改为手动更新，Windows 保留自动更新。** 应用源码和启动命令见 [`rust-desktop/`](rust-desktop/README.md)，Windows / macOS 分发统一由 [GitHub Actions](https://github.com/nalapawo654-gif/em-use/actions) 构建。以下 Electron 文档保留用于旧版对照。
+> **当前版本：Rust 0.4.9，支持桌宠内图文消息阅读与会话直达，修复已查看提醒残留，更新提示展示具体版本说明。** 应用源码和启动命令见 [`rust-desktop/`](rust-desktop/README.md)，Windows / macOS 分发统一由 [GitHub Actions](https://github.com/nalapawo654-gif/em-use/actions) 构建。以下 Electron 文档保留用于旧版对照。
 
 # EM Use · 额度小鱼缸
 

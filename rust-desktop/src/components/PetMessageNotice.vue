@@ -13,10 +13,11 @@ const props=defineProps<{blocked?:boolean;deferred?:boolean}>()
 const emit=defineEmits<{openChange:[value:boolean]; bubbleChange:[value:boolean]}>()
 const host=ref<HTMLElement>(), trigger=ref<HTMLButtonElement>(), opened=ref(false), opening=ref(false), bubble=ref<string>(), hovering=ref(false), error=ref('')
 const persona=computed(()=>MESSAGE_PERSONAS[state.settings.scene])
-const currentGroup=computed(()=>messageGroups(state.messages?.items??[]).find(g=>g.id===bubble.value))
+const currentGroup=computed(()=>messageGroups(state.messages?.items??[]).find(g=>g.id===bubble.value&&g.fresh>0))
 const current=computed(()=>currentGroup.value?.items[0])
 const count=computed(()=>state.messages?.newCount ?? 0)
-const visible=computed(()=>state.settings.messageEnabled && (!!state.messages?.items.length || state.messages?.status==='paused'))
+// Retained history remains available from settings; only new reminders need a prop.
+const visible=computed(()=>state.settings.messageEnabled && count.value>0)
 watch([visible,()=>props.blocked],()=>{if(mail)mail.enabled.value=visible.value&&!props.blocked},{immediate:true,flush:'sync'})
 const embedded=computed(()=>!!mail?.active.value&&mail.painted.value)
 const paused=computed(()=>state.messages?.status==='paused' || state.settings.messagePausedUntil>Date.now())
@@ -68,7 +69,7 @@ onMounted(()=>{document.addEventListener('visibilitychange',visibilityChanged);w
 onUnmounted(()=>{disposed=true;document.removeEventListener('visibilitychange',visibilityChanged);window.removeEventListener('message-panel-closed',panelClosed);window.removeEventListener('message-toast-closed',toastClosed);window.removeEventListener('message-panel-opened',panelOpened);void api.hideMessageToast?.();clearInterval(timer);release();document.removeEventListener('keydown',escape,true);emit('openChange',false);emit('bubbleChange',false)})
 </script>
 <template>
-  <div ref="host" v-show="visible && !blocked" class="pet-message-notice" :class="[`message-${state.settings.scene}`, `message-motion-${persona.motion}`,{ 'has-message-bubble':!!current&&!deferred, 'message-embedded':embedded, 'message-open':opened, 'message-paused':paused, 'message-gentle':state.settings.reducedMotion }]" :style="{ '--msg-color':persona.color }" data-pet-gesture @pointerdown.stop @click.stop @contextmenu.stop.prevent @wheel.stop @mouseenter="hovering=true" @mouseleave="hovering=false">
+  <div ref="host" v-show="(visible || (opened && !isDesktop)) && !blocked" class="pet-message-notice" :class="[`message-${state.settings.scene}`, `message-motion-${persona.motion}`,{ 'has-message-bubble':!!current&&!deferred, 'message-embedded':embedded, 'message-open':opened, 'message-paused':paused, 'message-gentle':state.settings.reducedMotion }]" :style="{ '--msg-color':persona.color }" data-pet-gesture @pointerdown.stop @click.stop @contextmenu.stop.prevent @wheel.stop @mouseenter="hovering=true" @mouseleave="hovering=false">
     <template v-if="!opened || isDesktop">
       <button ref="trigger" class="message-launcher" :style="embedded ? mail?.position.value : undefined" :data-mail-pose="embedded ? mail?.pose.value : undefined" :aria-label="`${persona.object}，${count} 条新提醒，查看咚咚消息`" :aria-expanded="opened" @click="open"><span v-if="embedded" class="character-mail-art embedded-mail" data-ready="true" aria-hidden="true"/><slot v-else name="parcel"><CharacterMessageParcel v-if="illustratedScenes.has(state.settings.scene)" :key="state.settings.scene" :scene="state.settings.scene"/><MessageParcel v-else :scene="state.settings.scene"/></slot><span v-if="count&&!paused" class="message-count">{{ count>99?'99+':count }}</span><PhBellSlash v-if="paused" class="message-muted-badge"/><span class="message-launcher-tooltip">{{paused?'提醒已暂停':'查看消息 · 卡片内打开咚咚'}}</span></button>
       <div v-if="current && !paused && !deferred && !api.showMessageToast" class="message-bubble"><button class="message-bubble-content" @click="open"><b><span>咚咚 · {{ mutedPreview ? '新消息' : current.title }}</span><small v-if="currentGroup&&currentGroup.fresh>1" class="message-bubble-total">{{currentGroup.fresh}} 条</small><span v-if="current.mentioned&&!mutedPreview" class="message-mention">@我</span></b><span>{{mutedPreview?'你收到了一条新消息':`${current.sender!==current.title?current.sender+'：':''}${current.body}`}}</span></button><button class="message-bubble-close" aria-label="收起消息气泡" @click="bubble=undefined"><PhX/></button></div>

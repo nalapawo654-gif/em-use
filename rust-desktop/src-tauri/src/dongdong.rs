@@ -611,3 +611,289 @@ mod tests {
         });
     }
 }
+
+/// Private-only transport. Group targets and arbitrary renderer payloads are never accepted.
+pub(crate) async fn send_private_text(
+    http: &reqwest::Client,
+    source: &Session,
+    peer: &str,
+    text: &str,
+) -> Result<String, String> {
+    if peer.is_empty()
+        || peer == source.badge
+        || !peer.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')
+        || text.chars().count() > 320
+        || text.is_empty()
+    {
+        return Err("私聊回复参数无效，未发送".into());
+    }
+    let os = if cfg!(windows) { "win32" } else { "darwin" };
+    let arch = if cfg!(target_arch = "aarch64") {
+        "arm64"
+    } else {
+        "x64"
+    };
+    let body = private_text_payload(peer, text);
+    let mut response = http.post("https://dongdong-api.eastmoney.com/chatserver/app/api/message/send/")
+        .timeout(std::time::Duration::from_secs(10))
+        .header("token", source.token.as_str()).header("X-Job-Number", &source.badge).header("X-Unique-Key", &source.unique)
+        .header("deviceDate", chrono::Local::now().format("%Y-%m-%d").to_string())
+        .header("Device-Info", json!({"sessionType":"PC","deviceSystem":format!("{os} {arch}"),"productVersion":source.version,"version":source.version}).to_string())
+        .json(&body).send().await.map_err(|_| "发送结果未知，请在咚咚核对；不会自动重试")?;
+    if !response.status().is_success() {
+        return Err("咚咚未确认发送，请在咚咚核对；不会自动重试".into());
+    }
+    let mut bytes = Zeroizing::new(Vec::new());
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .map_err(|_| "发送结果未知，请在咚咚核对；不会自动重试")?
+    {
+        if bytes.len() + chunk.len() > 256 * 1024 {
+            return Err("发送回执异常，请在咚咚核对；不会自动重试".into());
+        }
+        bytes.extend_from_slice(&chunk);
+    }
+    let v: Value =
+        serde_json::from_slice(&bytes).map_err(|_| "发送回执异常，请在咚咚核对；不会自动重试")?;
+    if confirmed_private_reply(&v, peer) {
+        Ok(v["data"]["msgId"]
+            .as_str()
+            .map(str::to_owned)
+            .unwrap_or_else(|| v["data"]["msgId"].to_string()))
+    } else {
+        Err("未取得有效发送回执，请在咚咚核对；不会自动重试".into())
+    }
+}
+fn private_text_payload(peer: &str, text: &str) -> Value {
+    json!({"chatType":1,"toUserId":peer,"toGroupId":null,"msgType":"text","content":text,"fromClientId":uuid::Uuid::new_v4().to_string(),"createdAt":crate::now(),"atEmpIds":""})
+}
+fn confirmed_private_reply(v: &Value, peer: &str) -> bool {
+    let code = v["code"]
+        .as_i64()
+        .or_else(|| v["code"].as_str()?.parse().ok());
+    let d = &v["data"];
+    code == Some(200)
+        && (d["msgId"].as_i64().is_some_and(|id| id > 0)
+            || d["msgId"].as_str().is_some_and(|id| !id.is_empty()))
+        && d["chatType"] == 1
+        && (d["toUserId"].as_str() == Some(peer) || d["toUser"]["badgeId"].as_str() == Some(peer))
+        && d["toGroupId"].is_null()
+}
+
+#[cfg(test)]
+mod reply_tests {
+    use super::*;
+    #[test]
+    fn transport_is_private_only_and_requires_a_matching_receipt() {
+        let payload = private_text_payload("alice", "test");
+        assert_eq!(payload["chatType"], 1);
+        assert!(payload["toGroupId"].is_null());
+        assert_eq!(payload["toUserId"], "alice");
+        let good = json!({"code":200,"data":{"msgId":"123","chatType":1,"toUserId":"alice","toGroupId":null}});
+        assert!(confirmed_private_reply(&good, "alice"));
+        assert!(!confirmed_private_reply(&good, "bob"));
+        for bad in [
+            json!({"code":200}),
+            json!({"code":500,"data":good["data"]}),
+            json!({"code":200,"data":{"msgId":"123","chatType":2,"toUserId":"alice","toGroupId":"group"}}),
+        ] {
+            assert!(!confirmed_private_reply(&bad, "alice"));
+        }
+    }
+}
+
+#[derive(Clone)]
+pub(crate) struct DirectoryUser {
+    pub id: String,
+    pub name: String,
+    pub department: String,
+}
+pub(crate) async fn search_users(
+    http: &reqwest::Client,
+    source: &Session,
+    keyword: &str,
+    page: u32,
+) -> Result<(Vec<DirectoryUser>, bool), String> {
+    if keyword.trim().is_empty()
+        || keyword.chars().count() > 80
+        || keyword.chars().any(char::is_control)
+        || !(1..=20).contains(&page)
+    {
+        return Err("请输入 1–80 字姓名或账号".into());
+    }
+    let os = if cfg!(windows) { "win32" } else { "darwin" };
+    let arch = if cfg!(target_arch = "aarch64") {
+        "arm64"
+    } else {
+        "x64"
+    };
+    // CONTACT_V2 is the installed client's people-only directory search. No chat creation.
+    let mut response = http.post("https://dongdong-api.eastmoney.com/chatserver/app/api/search/")
+        .query(&[("searchType", "CONTACT_V2")]).timeout(std::time::Duration::from_secs(10))
+        .header("token", source.token.as_str()).header("X-Job-Number", &source.badge).header("X-Unique-Key", &source.unique)
+        .header("Device-Info", json!({"sessionType":"PC","deviceSystem":format!("{os} {arch}"),"productVersion":source.version,"version":source.version}).to_string())
+        .json(&json!({"type":"CONTACT_V2","content":keyword.trim(),"params":{"pageNum":page,"pageSize":20}}))
+        .send().await.map_err(|_| "暂时无法搜索咚咚用户，请重试")?;
+    if !response.status().is_success() {
+        return Err("咚咚用户查询失败，请检查登录或稍后重试".into());
+    }
+    let mut bytes = Zeroizing::new(Vec::new());
+    while let Some(chunk) = response.chunk().await.map_err(|_| "用户查询中断，请重试")? {
+        if bytes.len() + chunk.len() > 1024 * 1024 {
+            return Err("用户查询结果过大，请缩小搜索范围".into());
+        }
+        bytes.extend_from_slice(&chunk);
+    }
+    let body: Value = serde_json::from_slice(&bytes).map_err(|_| "用户查询格式暂不支持")?;
+    let more = body["data"]["searchResult"]
+        .as_array()
+        .is_some_and(|groups| {
+            groups.iter().any(|g| {
+                g["searchType"] == "CONTACT_V2"
+                    && g["result"].as_array().is_some_and(|rows| rows.len() >= 20)
+            })
+        })
+        && page < 20;
+    Ok((parse_directory(&body, &source.badge)?, more))
+}
+fn parse_directory(v: &Value, self_id: &str) -> Result<Vec<DirectoryUser>, String> {
+    let code = v["code"]
+        .as_i64()
+        .or_else(|| v["code"].as_str()?.parse().ok());
+    if code != Some(200) {
+        return Err("咚咚用户查询未成功，请重新登录或重试".into());
+    }
+    let groups = v["data"]["searchResult"]
+        .as_array()
+        .ok_or("用户查询格式暂不支持")?;
+    let mut users = Vec::new();
+    for group in groups.iter().filter(|g| g["searchType"] == "CONTACT_V2") {
+        let Some(rows) = group["result"].as_array() else {
+            continue;
+        };
+        for r in rows.iter().take(20) {
+            let id = r["jobNumber"].as_str().unwrap_or("");
+            let name = crate::message_source::clean(r["name"].as_str().unwrap_or(""), 80);
+            if id.is_empty()
+                || id.len() > 128
+                || id == self_id
+                || !id.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')
+                || name.is_empty()
+                || users.iter().any(|u: &DirectoryUser| u.id == id)
+            {
+                continue;
+            }
+            users.push(DirectoryUser {
+                id: id.into(),
+                name,
+                department: crate::message_source::clean(
+                    r["departmentFullName"].as_str().unwrap_or(""),
+                    160,
+                ),
+            });
+        }
+    }
+    Ok(users)
+}
+#[cfg(test)]
+mod directory_tests {
+    use super::*;
+    #[test]
+    fn only_people_with_stable_ids_are_returned() {
+        let v = json!({"code":200,"data":{"searchResult":[{"searchType":"GROUP","result":[{"jobNumber":"group","name":"群"}]},{"searchType":"CONTACT_V2","result":[{"jobNumber":"alice","name":"<em>同名</em>","departmentFullName":"部门 A"},{"jobNumber":"bob","name":"同名"},{"jobNumber":"alice","name":"重复"},{"jobNumber":"self","name":"本人"},{"name":"无账号"}]}]}});
+        let users = parse_directory(&v, "self").unwrap();
+        assert_eq!(users.len(), 2);
+        assert_eq!(users[0].name, "同名");
+        assert_eq!(users[0].department, "部门 A");
+        assert!(parse_directory(&json!({"code":401}), "self").is_err());
+        assert!(parse_directory(&json!({"code":200,"data":{}}), "self").is_err());
+    }
+    #[test]
+    #[ignore = "Explicit read-only directory query; never sends a message or logs identities"]
+    fn live_directory_lookup() {
+        let query = std::env::var("EM_USE_DIRECTORY_QUERY").expect("explicit query required");
+        let source = read_session().unwrap_or_else(|_| panic!("No local session"));
+        tauri::async_runtime::block_on(async {
+            let http = reqwest::Client::builder()
+                .redirect(reqwest::redirect::Policy::none())
+                .build()
+                .unwrap();
+            let (users, _) = search_users(&http, &source, &query, 1)
+                .await
+                .unwrap_or_else(|e| panic!("{e}"));
+            println!(
+                "directory_count={} exact_name_found={}",
+                users.len(),
+                users.iter().any(|u| u.name == query)
+            );
+        });
+    }
+}
+
+pub(crate) fn message_request(
+    http: &reqwest::Client,
+    s: &Session,
+    path: &str,
+) -> reqwest::RequestBuilder {
+    http.get(format!("https://dongdong-api.eastmoney.com/chatserver/app/api/{path}"))
+      .timeout(std::time::Duration::from_secs(15)).header("token",s.token.as_str()).header("X-Job-Number",&s.badge).header("X-Unique-Key",&s.unique)
+      .header("Device-Info",json!({"sessionType":"PC","deviceSystem":if cfg!(windows){"win32"}else{"darwin"},"productVersion":s.version,"version":s.version}).to_string())
+}
+
+// Reuse the installed client's media signing convention; do not persist session data.
+pub(crate) fn image_request(
+    http: &reqwest::Client,
+    s: &Session,
+    id: &str,
+) -> Result<reqwest::RequestBuilder, String> {
+    static SALT: std::sync::OnceLock<Option<Zeroizing<String>>> = std::sync::OnceLock::new();
+    let salt = SALT
+        .get_or_init(|| {
+            let formula = regex::Regex::new(
+                r#"hashStr\(`\$\{[^}]+\.format\("YYYY-MM-DD"\)\}\|\|\$\{\w+\}\|\|\$\{(\w+)\}`\)"#,
+            )
+            .ok()?;
+            for path in archive_candidates() {
+                let Ok(mut archive) = Archive::open(&path) else {
+                    continue;
+                };
+                for name in archive
+                    .entries("seagull/renderer/dist/assets")
+                    .into_iter()
+                    .filter(|n| n.starts_with("index-") && n.ends_with(".js"))
+                {
+                    let Ok(js) = archive.text(&format!("seagull/renderer/dist/assets/{name}"))
+                    else {
+                        continue;
+                    };
+                    let Some(c) = formula.captures(&js) else {
+                        continue;
+                    };
+                    let assign = regex::Regex::new(&format!(
+                        r#"\b{}=("[^"\r\n]{{1,128}}")"#,
+                        regex::escape(&c[1])
+                    ))
+                    .ok()?;
+                    if let Some(c) = assign.captures(&js) {
+                        if let Ok(s) = serde_json::from_str::<String>(&c[1]) {
+                            return Some(Zeroizing::new(s));
+                        }
+                    }
+                }
+            }
+            None
+        })
+        .as_ref()
+        .ok_or("当前咚咚版本的图片加载方式暂不兼容")?;
+    let date = chrono::Local::now().format("%Y-%m-%d").to_string();
+    let sign = format!(
+        "{:x}",
+        md5::compute(format!("{date}||{id}||{}", salt.as_str()))
+    );
+    Ok(message_request(http, s, "chat-file/downloadFile").query(&[
+        ("id", id),
+        ("sign", sign.as_str()),
+        ("deviceDate", date.as_str()),
+    ]))
+}

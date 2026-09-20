@@ -1,8 +1,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod account;
+mod auto_reply;
 mod calendar;
 mod dongdong;
 mod message_panel_focus;
+mod message_reading;
 mod message_source;
 mod messages;
 mod model;
@@ -39,6 +41,8 @@ struct Shared {
     #[cfg(not(target_os = "macos"))]
     update_notified: Mutex<HashSet<String>>,
     messages: Mutex<messages::Hub>,
+    auto_reply: Mutex<auto_reply::Engine>,
+    reading: Mutex<message_reading::Cache>,
     calendar: Mutex<calendar::Hub>,
     message_toast: Mutex<Option<Value>>,
 }
@@ -58,6 +62,11 @@ fn snapshot(app: &tauri::AppHandle) -> Value {
             .as_i64()
             .unwrap_or(0),
     );
+    state["autoReply"] = shared(app)
+        .auto_reply
+        .lock()
+        .unwrap()
+        .view(state["settings"]["messagePreview"] != false);
     state["messageToast"] = shared(app)
         .message_toast
         .lock()
@@ -108,7 +117,15 @@ async fn desktop(
     if window.label() == "messages"
         && !matches!(
             action.as_str(),
-            "getState" | "ackMessages" | "openDongdong" | "hide"
+            "getState"
+                | "ackMessages"
+                | "clearMessages"
+                | "messageConversations"
+                | "messageHistory"
+                | "messageImage"
+                | "readMessages"
+                | "openDongdong"
+                | "hide"
         )
     {
         return Err("Message panel action unavailable".into());
@@ -134,6 +151,18 @@ async fn desktop(
     let p = payload.unwrap_or(Value::Null);
     match action.as_str() {
         "getState" => return Ok(snapshot(&app)),
+        "searchReplyUsers" => {
+            if window.label() != "settings" {
+                return Err("请在消息设置中搜索联系人".into());
+            }
+            return auto_reply::search(&app, &p).await;
+        }
+        "configureAutoReply" => {
+            if window.label() != "settings" {
+                return Err("请在消息设置中配置自动回复".into());
+            }
+            auto_reply::configure(&app, &p)?;
+        }
         "refreshCalendar" => calendar::refresh(&app),
         "calendarUi" => calendar::ui(&app, p["blocked"] == true),
         "respondCalendar" => calendar::respond(&app, &p)?,
@@ -166,8 +195,26 @@ async fn desktop(
         "showMessageToast" => windows::message_toast(&app, &p)?,
         "hideMessageToast" => windows::hide_message_toast(&app, false),
         "openMessages" => windows::open_messages(&app)?,
-        "openDongdong" => messages::open_dongdong(&app)?,
+        "openDongdong" => messages::open_dongdong(&app, &p)?,
+        "messageConversations" | "messageHistory" | "messageImage" | "readMessages" => {
+            if !matches!(window.label(), "messages" | "settings") {
+                return Err("请在消息窗口查看正文".into());
+            }
+            if action == "readMessages"
+                && (!window.is_visible().unwrap_or(false)
+                    || !windows::message_panel_is_focused(&window).unwrap_or(false))
+            {
+                return Err("请在前台阅读消息后同步已读".into());
+            }
+            return match action.as_str() {
+                "messageConversations" => message_reading::conversations(&app, &p),
+                "messageHistory" => message_reading::history(&app, &p).await,
+                "messageImage" => message_reading::image(&app, &p).await,
+                _ => message_reading::read(&app, &p).await,
+            };
+        }
         "ackMessages" => messages::acknowledge(&app, &p)?,
+        "clearMessages" => messages::clear_reminders(&app, &p)?,
         "hide" => {
             if window.label() == "calendar-toast" {
                 calendar::dismiss(&app);
@@ -261,6 +308,8 @@ fn main() {
             #[cfg(not(target_os = "macos"))]
             update_notified: Mutex::new(HashSet::new()),
             messages: Mutex::new(messages::Hub::default()),
+            auto_reply: Mutex::new(auto_reply::Engine::default()),
+            reading: Mutex::new(message_reading::Cache::default()),
             calendar: Mutex::new(calendar::Hub::default()),
             message_toast: Mutex::new(None),
         })

@@ -1,6 +1,6 @@
 [package]
 name = "em-use-rust"
-version = "0.4.8"
+version = "0.4.9"
 edition = "2021"
 rust-version = "1.91"
 
@@ -33,6 +33,7 @@ zeroize = "1"
 walletkit-sqlite = "=0.22.0"
 wasmi = "0.40"
 sysinfo = { version = "0.33", default-features = false, features = ["system"] }
+md5 = "0.7.0"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.55"

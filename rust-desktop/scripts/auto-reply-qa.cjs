@@ -1,0 +1,32 @@
+async page => {
+  await page.setViewportSize({width:960,height:840})
+  const start = page.getByRole('button',{name:'开启 1 小时',exact:true})
+  if(!await start.isDisabled()) throw Error('Empty selection can enable')
+  await page.getByRole('checkbox',{name:'测试同事 test_alice',exact:true}).check()
+  await page.getByRole('textbox',{name:/回复内容/}).fill('我正在开会，结束后联系你。')
+  await page.locator('.auto-reply-settings').scrollIntoViewIfNeeded()
+  await page.screenshot({path:'output/playwright/auto-reply-config.png'})
+  await start.click()
+  await page.getByRole('button',{name:'关闭自动回复',exact:true}).waitFor()
+  const config=await page.evaluate(()=>JSON.parse(document.body.dataset.replyConfigured))
+  if(config.contacts.join()!=='alice-key' || config.text!=='我正在开会，结束后联系你。' || !config.enabled) throw Error('Wrong configuration')
+  if(!await page.getByRole('textbox',{name:/回复内容/}).isDisabled())throw Error('Active rule editable without stop')
+  await page.getByRole('button',{name:'关闭自动回复',exact:true}).click()
+  await start.waitFor()
+  await page.evaluate(()=>document.body.dataset.replyFail='true')
+  await start.click()
+  await page.getByRole('alert').filter({hasText:'自动回复设置未保存'}).waitFor()
+  if(await page.evaluate(()=>window.__messageFixtureState().autoReply.enabled))throw Error('Failure enabled reply')
+  await page.evaluate(()=>{
+    delete document.body.dataset.replyFail
+    const a=window.__messageFixtureState().autoReply
+    window.__setAutoReply({...a,epoch:'new-account',enabled:false,text:'',contacts:[],logs:[]})
+  })
+  if(!await start.isDisabled())throw Error('Account switch retained selection')
+  await page.getByText('输入姓名或账号，搜索咚咚通讯录。').waitFor()
+  await page.setViewportSize({width:640,height:720})
+  await page.locator('.auto-reply-settings').scrollIntoViewIfNeeded()
+  const box=await start.boundingBox();if(!box || box.x<0 || box.x+box.width>640)throw Error('Action clipped')
+  if(await page.evaluate(()=>document.body.dataset.openDongdong))throw Error('Unexpected DongDong launch')
+  console.log('PASS: default OFF, selected private contact, fixed text, start/stop, locked active rule, failure retry, account reset, compact layout. Fixture only: no real messages sent.')
+}

@@ -120,7 +120,14 @@ export const BUDDY_SKINS: { id: BuddySkin; label: string }[] = [
   { id: 'midnight', label: '酷黑款' }, { id: 'blossom', label: '粉萌款' },
 ]
 export const OUTFITS: { id: Outfit; label: string }[] = [{ id: 'classic', label: '原生小鱼' }, { id: 'sailor', label: '海洋领航员' }, { id: 'royal', label: '小小王冠' }, { id: 'ribbon', label: '今日小可爱' }]
+export interface ReplyContact {key: string; name: string; id: string; department?: string; selected: boolean; paused: boolean}
+export interface AutoReplyState { epoch: string; enabled: boolean; until: number; text: string; contacts: ReplyContact[]; logs: {at: number; name: string; ok: boolean; message: string}[] }
+export interface AutoReplyConfig { epoch: string; enabled: boolean; contacts: string[]; text: string }
 export interface MessageItem { key: string; conversation: string; sender: string; title: string; body: string; kind: string; at: number; fresh: boolean; mentioned: boolean }
+export interface MessagePart { kind: 'text' | 'image' | 'quote' | 'unsupported'; text: string; image: number | null }
+export interface ReadableMessage { key: string; at: number; sender: string; own: boolean; parts: MessagePart[]; complete: boolean; withdrawn: boolean; readState: 'unread' | 'server' | 'synced' }
+export interface RecentConversation { key: string; title: string; body: string; at: number }
+export interface MessageHistory { epoch: string; items: ReadableMessage[]; hasMore: boolean }
 export interface MessageState { epoch: string; status: 'waiting' | 'ready' | 'paused' | 'disabled' | 'unsupported'; message: string; account: { id: string; name: string } | null; items: MessageItem[]; revision: number; pausedUntil: number; newCount: number }
 export interface CalendarEvent { key: string; title: string; start: number; end: number; rooms: string[]; allDay: boolean }
 export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
@@ -137,6 +144,7 @@ export interface AppState {
   calendar?: CalendarState;
   messageToast?: { epoch: string; key: string; conversation?: string; side: string } | null;
   messages?: MessageState;
+  autoReply?: AutoReplyState;
   dismissedUpdateVersion?: string;
   loginMode?: 'dongdong' | 'manual' | 'signed-out';
   account?: { id: string; name?: string } | null;
@@ -146,6 +154,8 @@ export interface AppState {
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }
 export interface DesktopAPI {
+  searchReplyUsers?(epoch: string, keyword: string, page: number): Promise<{epoch: string; items: ReplyContact[]; hasMore: boolean}>;
+  configureAutoReply?(config: AutoReplyConfig): Promise<void>;
   openCalendar?(): Promise<void>;
   refreshCalendar?(): Promise<void>;
   calendarUi?(blocked: boolean): Promise<void>;
@@ -154,7 +164,12 @@ export interface DesktopAPI {
   openMessagePanel?(): Promise<void>;
   showMessageToast?(epoch: string, key: string): Promise<void>;
   hideMessageToast?(): Promise<void>;
-  openMessages?(): Promise<void>; openDongdong?(): Promise<void>;
+  openMessages?(): Promise<void>; openDongdong?(target?: { epoch: string; conversation: string }): Promise<void>;
+  clearMessages?(epoch: string, keys: string[]): Promise<void>;
+  messageConversations?(epoch: string): Promise<{epoch: string; items: RecentConversation[]}>;
+  messageHistory?(epoch: string, conversation: string, before?: string): Promise<MessageHistory>;
+  messageImage?(epoch: string, key: string, image: number): Promise<{epoch: string; url: string}>;
+  readMessages?(epoch: string, keys: string[]): Promise<{epoch: string; states: {key: string; state: 'unread' | 'server' | 'synced'}[]}>;
   ackMessages?(epoch: string, keys: string[]): Promise<void>;
   openUpdates?(): Promise<void>;
   dismissUpdate?(version: string): Promise<void>;

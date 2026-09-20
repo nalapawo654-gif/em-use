@@ -3,10 +3,13 @@ import assert from 'node:assert/strict'
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { buildSite, platforms } from './release-site.mjs'
+import { buildSite as assembleSite, platforms } from './release-site.mjs'
 import { createCiConfig } from './ci-config.mjs'
 import { pets } from './download-page.mjs'
+import { readReleaseNotes } from './release-notes.mjs'
 import { validateVersion, checkVersion } from './version.mjs'
+const releaseNotes='本次更新\n• 图文消息与提醒修复\n• Mac 手动更新，Windows 自动更新'
+const buildSite=(input,output,version)=>assembleSite(input,output,version,undefined,releaseNotes)
 function fixture(fn) {
   const root=mkdtempSync(join(tmpdir(),'em-release-'))
   try {
@@ -52,3 +55,22 @@ test('missing Windows updater metadata blocks publishing even with manual Mac in
   const path=join(root,'input/windows-x86_64/artifact.json'),data=JSON.parse(readFileSync(path));data.update=null;writeFileSync(path,JSON.stringify(data))
   assert.throws(()=>buildSite(join(root,'input'),join(root,'out'),'0.4.0'))
 }))
+
+test('release manifest preserves version notes for both update modes',()=>fixture(root=>{
+  const manifest=buildSite(join(root,'input'),join(root,'out'),'0.4.0')
+  assert.equal(manifest.notes,releaseNotes)
+  for(const file of ['stable/latest.json','releases/0.4.0/version.json'])assert.equal(JSON.parse(readFileSync(join(root,'out/em-use',file),'utf8')).notes,releaseNotes)
+}))
+
+test('release notes require a valid version and a nonempty matching file',()=>{
+  assert.ok(readReleaseNotes(checkVersion()).length>30)
+  const root=mkdtempSync(join(tmpdir(),'em-notes-'))
+  try {
+    assert.throws(()=>readReleaseNotes('../1.2.3',root))
+    assert.throws(()=>readReleaseNotes('1.2.3',root))
+    writeFileSync(join(root,'1.2.3.md'),'   ')
+    assert.throws(()=>readReleaseNotes('1.2.3',root))
+    writeFileSync(join(root,'1.2.3.md'),releaseNotes)
+    assert.equal(readReleaseNotes('1.2.3',root),releaseNotes)
+  } finally {rmSync(root,{recursive:true,force:true})}
+})

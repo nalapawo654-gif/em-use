@@ -6,6 +6,7 @@ const size = (query.get('size') ?? 'standard') as Settings['size']
 document.body.style.width = `${({ standard: 440, compact: 300, mini: 190 })[size]}px`
 const state: AppState = { status: 'ready', quota: { limit: 300, used: 96, remaining: 204, percent: 68, exceeded: false, estimatedAt: '2026-09-09T18:00:00', serverAt: '2026-09-09T18:00:00', receivedAt: Date.now(), day: '2026-09-09' }, message: '仅用于组件测试 · 演示额度', syncing: false, persistentLogin: false, loginOpen: false, settings: { ...DEFAULT_SETTINGS, size, windowWidth: ({ standard: 440, compact: 300, mini: 190 })[size], theme: query.get('theme') === 'night' ? 'night' : 'day', outfit: 'sailor', scene: query.get('scene') === 'cultivation' ? 'cultivation' : query.get('scene') === 'hamster' ? 'hamster' : query.get('scene') === 'beaver' ? 'beaver' : query.get('scene') === 'buddy' ? 'buddy' : 'aquarium', reducedMotion: query.get('motion') === 'off' }, version: '0.3.0-visual-test' }
 state.updateMode = query.get('platform') === 'macos' ? 'manual' : 'automatic'
+if (query.has('autoReply')) state.autoReply = {epoch:'reply-fixture',enabled:false,until:0,text:'',contacts:[{key:'alice-key',name:'测试同事',id:'test_alice',selected:false,paused:false},{key:'bob-key',name:'另一位同事',id:'test_bob',selected:false,paused:false}],logs:[]}
 const quotaTemplate = structuredClone(state.quota!)
 const customWidth = Number(query.get('width'))
 if (customWidth >= 180 && customWidth <= 800) { state.settings.windowWidth = customWidth; document.body.style.width = `${customWidth}px` }
@@ -49,6 +50,10 @@ if(query.has('messages')) {
   state.loginMode='manual';state.account={id:'quota-B',name:'额度用户 B'}
   state.messages={epoch:'dong-A',status:'ready',message:'正在接收本机咚咚消息（演示）',account:{id:'dong-A',name:'咚咚用户 A'},revision:1,pausedUntil:0,newCount:1,items:[{key:'msg-1',conversation:'chat-1',sender:'张三',title:'张三',body:'接口已经更新，方便的时候帮忙看一下。',kind:'text',at:Date.now(),fresh:true,mentioned:false}]}
 }
+if(query.has('messagesSeen') && state.messages) {
+  state.messages.items.forEach(item=>item.fresh=false);state.messages.newCount=0
+  if(query.has('messagesPaused'))state.messages.status='paused'
+}
 if(query.has('calendar')) {
  const start=Date.now()+(query.get('calendar')==='soon'?5:30)*60000;
  state.calendar={epoch:'calendar-demo-A',account:{id:'dong-A',name:'咚咚用户 A（演示）'},status:'ready',message:'演示日程 · 未连接真实账户',fetchedAt:Date.now(),date:new Date(Date.now()+8*3600000).toISOString().slice(0,10),active:query.get('calendar')==='soon'?['calendar-1']:[],items:[{key:'calendar-1',title:'需求评审',start,end:start+90*60000,rooms:['成都 602'],allDay:false},{key:'calendar-2',title:'生产发布项对齐',start:start+150*60000,end:start+180*60000,rooms:['成都 603'],allDay:false}]}
@@ -63,16 +68,33 @@ function calendarWindow(toast=false){
  Object.assign(f.style,{position:'fixed',border:'0',left:`${state.settings.windowWidth+8}px`,top:`${state.settings.windowWidth*.12}px`,width:toast?'360px':'380px',height:toast?'260px':'460px',zIndex:'1001'});
  document.body.append(f);if(toast)calendarToast=f;else calendarFrame=f;
 }
-Object.assign(window,{__setCalendar:(calendar:AppState['calendar'])=>{state.calendar=calendar;publish()},__setQuota:(percent:number|null)=>{state.quota=percent===null?null:{...quotaTemplate,limit:300,used:300-3*percent,remaining:3*percent,percent,exceeded:percent===0};state.status=percent===null?'signed-out':'ready';publish()},__setMessages:(messages: MessageState)=>{state.messages=messages;publish()},__messageFixtureState:()=>structuredClone(state)})
+Object.assign(window,{__setAutoReply:(autoReply:AppState['autoReply'])=>{state.autoReply=autoReply;publish()},__setCalendar:(calendar:AppState['calendar'])=>{state.calendar=calendar;publish()},__setQuota:(percent:number|null)=>{state.quota=percent===null?null:{...quotaTemplate,limit:300,used:300-3*percent,remaining:3*percent,percent,exceeded:percent===0};state.status=percent===null?'signed-out':'ready';publish()},__setMessages:(messages: MessageState)=>{state.messages=messages;publish()},__messageFixtureState:()=>structuredClone(state)})
 // Explicit development fixture only. No network downloads or native installation.
 const updateDemo = query.has('update')
 if (updateDemo) {
   state.update = { status: 'available', version: '0.5.0', message: '发现演示新版本', notes: '新的陪伴小动作\n优化小尺寸显示与日常体验' }
+  if(query.has('releaseNotes'))state.update={...state.update,version:'0.4.9',notes:(await import('../../release-notes/0.4.9.md?raw')).default}
   if (!query.has('fresh')) state.dismissedUpdateVersion = localStorage.getItem('em-use-fixture-update-dismissed') ?? ''
 }
 Object.assign(window, { __setUpdate: (patch: AppState['update']) => { state.update = patch; publish() } })
 let messageToastFrame: HTMLIFrameElement | undefined
 window.emUse = {
+  async searchReplyUsers(epoch, keyword, page) {
+    const delay=keyword==='慢查询'?1200:30
+    await new Promise(resolve=>setTimeout(resolve,delay))
+    if(document.body.dataset.searchFail==='true')throw new Error('fixture search failure')
+    const a=state.autoReply;if(!a || epoch!==a.epoch)throw new Error('stale epoch')
+    const matches=keyword==='无匹配'?[]:[{key:'directory-'+keyword+'-'+page,name:keyword==='慢查询'?'过时结果':keyword,id:'directory_demo_'+page,department:'测试部门',selected:false,paused:false}]
+    for(const c of matches)if(!a.contacts.some(old=>old.key===c.key))a.contacts.push(c)
+    publish();return {epoch,items:matches,hasMore:keyword==='分页'&&page===1}
+  },
+  async configureAutoReply(config) {
+    if (document.body.dataset.replyFail === 'true') throw new Error('fixture failure')
+    const a=state.autoReply;if(!a || config.epoch !== a.epoch) throw new Error('stale epoch')
+    a.enabled=config.enabled;a.until=config.enabled?Date.now()+3600_000:0
+    if(config.enabled){a.text=config.text;a.contacts.forEach(c=>{c.selected=config.contacts.includes(c.key)})}
+    document.body.dataset.replyConfigured=JSON.stringify(config);publish()
+  },
  async openCalendar(){calendarWindow(false)},
  async refreshCalendar(){if(state.calendar){state.calendar.fetchedAt=Date.now();state.calendar.status='ready'}publish()},
  async calendarUi(blocked){document.body.dataset.calendarBlocked=String(blocked);if(!blocked&&state.calendar?.active.length)calendarWindow(true)},
@@ -91,7 +113,16 @@ window.emUse = {
   async hideMessageToast() {state.messageToast=null;if(messageToastFrame)messageToastFrame.style.display='none';publish()},
   async openMessagePanel() { document.body.dataset.messagePanelRequested='true'; window.open('/tests/fixtures/desktop.html?view=messages&messages=1&width=350', 'em-use-message-fixture', `width=350,height=${(state.messages?.items.length??0)<=1?240:360}`) },
   async openMessages() { document.body.dataset.messageDetailsRequested='true'; window.open('/tests/fixtures/desktop.html?view=settings&tab=messages&messages=1&width=800','_blank','width=880,height=680') },
-  async openDongdong() { document.body.dataset.dongdongOpened=String(Number(document.body.dataset.dongdongOpened??0)+1) },
+  async openDongdong(target) { document.body.dataset.dongdongTarget=JSON.stringify(target??null); document.body.dataset.dongdongOpened=String(Number(document.body.dataset.dongdongOpened??0)+1) },
+  async clearMessages(epoch,keys) {
+    if(epoch!==state.messages?.epoch)throw Error('stale epoch')
+    if(document.body.dataset.clearMessagesFail==='true')throw Error('fixture failure')
+    const incoming=(window as Window & {__clearRaceMessage?: NonNullable<AppState['messages']>['items'][number]}).__clearRaceMessage
+    if(incoming){state.messages.items.unshift(incoming);delete (window as Window & {__clearRaceMessage?: NonNullable<AppState['messages']>['items'][number]}).__clearRaceMessage}
+    state.messages.items=state.messages.items.filter(i=>!keys.includes(i.key))
+    state.messages.newCount=state.messages.items.filter(i=>i.fresh).length;state.messages.revision++
+    document.body.dataset.messageClears=String(Number(document.body.dataset.messageClears??0)+1);publish()
+  },
   async ackMessages(epoch,keys) { if(epoch!==state.messages?.epoch)throw Error('stale epoch');state.messages.items.forEach(i=>{if(keys.includes(i.key))i.fresh=false});state.messages.newCount=state.messages.items.filter(i=>i.fresh).length;publish() },
   async beginGesture(mode) { document.body.dataset.gesture = mode; return 1 }, async moveGesture() { document.body.dataset.gestureMoved = 'true' }, async endGesture() { document.body.dataset.gestureEnded = 'true' },
   async getState() { return snapshot() },
@@ -106,14 +137,30 @@ window.emUse = {
 }
 if(['calendar','calendar-toast'].includes(query.get('view')??'')&&window.parent!==window){
  const owner=window.parent as Window;const source=owner.emUse!;
- window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),respondCalendar:(epoch,key,choice)=>source.respondCalendar!(epoch,key,choice),refreshCalendar:()=>source.refreshCalendar!(),openCalendar:()=>source.openCalendar!(),openDongdong:()=>source.openDongdong!(),hide:async()=>{owner.postMessage({type:'calendar-close',toast:query.get('view')==='calendar-toast'},location.origin)}}
+ window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),respondCalendar:(epoch,key,choice)=>source.respondCalendar!(epoch,key,choice),refreshCalendar:()=>source.refreshCalendar!(),openCalendar:()=>source.openCalendar!(),openDongdong:target=>source.openDongdong!(target),hide:async()=>{owner.postMessage({type:'calendar-close',toast:query.get('view')==='calendar-toast'},location.origin)}}
 }
 window.addEventListener('message',e=>{if(e.origin!==location.origin)return;if(e.data?.type==='calendar-close'){if(e.source===calendarToast?.contentWindow)hideCalendarToast();if(e.source===calendarFrame?.contentWindow)closeCalendarFrame()}})
 if((query.get('view')==='messages'  && window.opener?.emUse)||(query.get('view')==='message-toast' && window.parent!==window)) {
   const owner=(query.get('view')==='message-toast'?window.parent:window.opener) as Window
   const source=owner.emUse!
-  window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),ackMessages:(epoch,keys)=>source.ackMessages!(epoch,keys),openDongdong:()=>source.openDongdong!(),openMessagePanel:async()=>{await source.openMessagePanel!();await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-panel-opened'))},hide:async()=>{if(query.get('view')==='message-toast'){await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-toast-closed'))}else window.close()}}
+  window.emUse={...window.emUse,getState:()=>source.getState(),onState:fn=>source.onState(fn),ackMessages:(epoch,keys)=>source.ackMessages!(epoch,keys),clearMessages:(epoch,keys)=>source.clearMessages!(epoch,keys),openDongdong:target=>source.openDongdong!(target),openMessagePanel:async()=>{await source.openMessagePanel!();await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-panel-opened'))},hide:async()=>{if(query.get('view')==='message-toast'){await source.hideMessageToast!();owner.dispatchEvent(new CustomEvent('message-toast-closed'))}else window.close()}}
   if(query.get('view')==='messages')window.addEventListener('pagehide',()=>owner.dispatchEvent(new CustomEvent('message-panel-closed')))
+}
+if(query.has('reader')) {
+  const canvas=document.createElement('canvas');canvas.width=600;canvas.height=280
+  const ctx=canvas.getContext('2d')!;ctx.fillStyle='#d5e8e5';ctx.fillRect(0,0,600,280)
+  ctx.fillStyle='#315e62';ctx.font='28px sans-serif';ctx.fillText('图文消息 · 图片预览',45,80)
+  ctx.fillStyle='#e2a55a';ctx.beginPath();ctx.ellipse(260,160,90,45,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(345,160);ctx.lineTo(400,115);ctx.lineTo(400,205);ctx.fill()
+  const image=canvas.toDataURL('image/png'),read=new Set<string>()
+  const demo: import('../../src/shared/types').ReadableMessage[]=[
+    {key:'rich',at:Date.now(),sender:'测试同事',own:false,complete:true,withdrawn:false,readState:'unread',parts:[{kind:'text',text:'这张图是本次设计稿，请看图片下方的说明。\n',image:null},{kind:'image',text:'设计稿',image:0},{kind:'text',text:'图片和文字都看完后，才会同步这条消息的已读状态。',image:null}]},
+    {key:'text',at:Date.now()-60000,sender:'测试同事',own:false,complete:true,withdrawn:false,readState:'unread',parts:[{kind:'text',text:'完整正文不会再截成 500 字。\n'+ '这是一段用于检查长消息滚动阅读的文字，阅读过的部分会保留。'.repeat(30),image:null}]},
+    {key:'file',at:Date.now()-120000,sender:'测试同事',own:false,complete:false,withdrawn:false,readState:'unread',parts:[{kind:'unsupported',text:'文件消息，请在咚咚打开附件',image:null}]}
+  ]
+  window.emUse.messageConversations=async epoch=>({epoch,items:[{key:'chat-1',title:'测试同事',body:'[图文消息]',at:Date.now()}]})
+  window.emUse.messageHistory=async(epoch,conversation,before)=>{if(query.has('readerFail'))throw '消息加载失败，请重试';return{epoch,hasMore:!before,items:(before?[{...demo[2],key:'older'}]:demo).map(m=>({...structuredClone(m),readState:read.has(m.key)?'server':m.readState}))}}
+  window.emUse.messageImage=async(epoch)=>{if(query.has('readerImageFail'))throw '图片加载失败，请重试';return{epoch,url:image}}
+  window.emUse.readMessages=async(epoch,keys)=>{keys.forEach(k=>read.add(k));document.body.dataset.readerRead=JSON.stringify([...read]);return{epoch,states:keys.map(key=>({key,state:'server' as const}))}}
 }
 await import('../../src/main')
 if(query.get('qa')==='calendar')await import('./calendar-qa')

@@ -20,6 +20,8 @@ pub struct Item {
     pub mentioned: bool,
     #[serde(skip)]
     source_id: String,
+    #[serde(skip)]
+    source_chat: String,
 }
 pub struct Hub {
     pub epoch: String,
@@ -48,6 +50,9 @@ impl Default for Hub {
     }
 }
 impl Hub {
+    pub(crate) fn is_source(&self, fingerprint: &str) -> bool {
+        self.source == fingerprint
+    }
     pub fn bind(&mut self, source: &str, account: Value) {
         if self.source != source {
             self.epoch = uuid::Uuid::new_v4().to_string();
@@ -66,14 +71,8 @@ impl Hub {
     fn ingest(&mut self, rows: Vec<Record>, gone: Vec<String>, respect_mute: bool, allow: bool) {
         self.items.retain(|i| !gone.contains(&i.source_id));
         for r in rows {
-            if !self.seen.insert(r.id.clone()) {
+            if !self.remember(&r.id) {
                 continue;
-            }
-            self.order.push_back(r.id.clone());
-            while self.order.len() > 4096 {
-                if let Some(x) = self.order.pop_front() {
-                    self.seen.remove(&x);
-                }
             }
             if !allow || !r.eligible || (respect_mute && r.muted) {
                 continue;
@@ -96,6 +95,7 @@ impl Hub {
                 fresh: true,
                 mentioned: r.mentioned,
                 source_id: r.id,
+                source_chat: r.chat,
             });
             self.items.truncate(100);
         }
@@ -116,6 +116,54 @@ impl Hub {
             })
             .collect();
         json!({"epoch":self.epoch,"status":self.status,"message":self.message,"account":self.account,"items":items,"revision":self.revision,"pausedUntil":paused_until,"newCount":self.items.iter().filter(|i|i.fresh).count()})
+    }
+    pub fn clear(&mut self, epoch: &str, keys: &[String]) -> Result<(), String> {
+        if epoch != self.epoch {
+            return Err("消息账户已切换，请重新打开提醒".into());
+        }
+        let before = self.items.len();
+        // Retain the source-ID dedupe history so cleared reminders cannot be replayed.
+        self.items.retain(|i| !keys.contains(&i.key));
+        if self.items.len() != before {
+            self.revision += 1;
+        }
+        Ok(())
+    }
+    pub fn chat_for(&self, conversation: &str) -> Option<String> {
+        self.items
+            .iter()
+            .find(|i| i.conversation == conversation)
+            .map(|i| i.source_chat.clone())
+    }
+    fn remember(&mut self, id: &str) -> bool {
+        if !self.seen.insert(id.to_owned()) {
+            return false;
+        }
+        self.order.push_back(id.to_owned());
+        while self.order.len() > 4096 {
+            if let Some(old) = self.order.pop_front() {
+                self.seen.remove(&old);
+            }
+        }
+        true
+    }
+    pub fn seen_ids(&mut self, epoch: &str, ids: &[String]) -> bool {
+        if self.epoch != epoch {
+            return false;
+        }
+        // A detail read may finish before the polling thread ingests its reminder.
+        // Remember those IDs too, so a delayed poll cannot turn them fresh again.
+        for id in ids {
+            self.remember(id);
+        }
+        let mut changed = false;
+        for i in &mut self.items {
+            if i.fresh && ids.contains(&i.source_id) {
+                i.fresh = false;
+                changed = true;
+            }
+        }
+        changed
     }
     pub fn seen(&mut self, epoch: &str, keys: &[String]) -> Result<(), String> {
         if epoch != self.epoch {
@@ -164,7 +212,13 @@ fn watch_source(app: tauri::AppHandle) {
                 &s.fingerprint,
                 json!({"name":if s.name.is_empty(){"本机咚咚用户"}else{&s.name},"id":s.badge}),
             );
+            let epoch = sh.messages.lock().unwrap().epoch.clone();
+            sh.auto_reply.lock().unwrap().bind(&epoch);
+            if paused {
+                sh.auto_reply.lock().unwrap().stop();
+            }
             if !enabled {
+                sh.auto_reply.lock().unwrap().stop();
                 reader = None;
                 source.clear();
                 reader_retry = 0;
@@ -181,6 +235,8 @@ fn watch_source(app: tauri::AppHandle) {
                     let result = (|| -> message_source::Result<()> {
                         if reader.is_none() {
                             reader = Some(Reader::open(s)?);
+                            sh.auto_reply.lock().unwrap().contacts =
+                                reader.as_ref().unwrap().contacts(&epoch)?;
                         }
                         let r = reader.as_mut().unwrap();
                         if r.changed()? {
@@ -193,8 +249,19 @@ fn watch_source(app: tauri::AppHandle) {
                                 .map(|i| i.source_id.clone())
                                 .collect::<Vec<_>>();
                             let (rows, gone) = r.poll(&ids)?;
+                            let read_ids = ids
+                                .iter()
+                                .filter(|id| r.is_read(id).unwrap_or(false))
+                                .cloned()
+                                .collect::<Vec<_>>();
+                            sh.messages.lock().unwrap().seen_ids(&epoch, &read_ids);
                             if before != message_source::stamp() {
                                 return Err("咚咚账户正在切换");
+                            }
+                            {
+                                let mut auto = sh.auto_reply.lock().unwrap();
+                                auto.contacts = r.contacts(&epoch)?;
+                                auto.ingest(&rows, now());
                             }
                             sh.messages.lock().unwrap().ingest(
                                 rows,
@@ -216,6 +283,7 @@ fn watch_source(app: tauri::AppHandle) {
                             },
                         ),
                         Err(e) => {
+                            sh.auto_reply.lock().unwrap().stop();
                             reader = None;
                             reader_retry = now() + 5000;
                             h.items.clear();
@@ -228,6 +296,37 @@ fn watch_source(app: tauri::AppHandle) {
                                 e,
                             );
                         }
+                    }
+                }
+            }
+            if let Some(r) = &reader {
+                let due = sh.auto_reply.lock().unwrap().due(now());
+                for pending in due {
+                    let live_settings = sh.inner.lock().unwrap().state["settings"].clone();
+                    if live_settings["messageEnabled"] != true
+                        || live_settings["messagePausedUntil"].as_i64().unwrap_or(0) > now()
+                    {
+                        sh.auto_reply.lock().unwrap().stop();
+                        break;
+                    }
+                    if before != message_source::stamp()
+                        || !message_source::running()
+                        || !r.can_reply(&pending).unwrap_or(false)
+                    {
+                        continue;
+                    }
+                    let text = sh.auto_reply.lock().unwrap().reserve(&pending, now());
+                    if let Some(text) = text {
+                        let result = tauri::async_runtime::block_on(dongdong::send_private_text(
+                            &sh.http,
+                            s,
+                            &pending.peer,
+                            &text,
+                        ));
+                        sh.auto_reply
+                            .lock()
+                            .unwrap()
+                            .finish(&epoch, &pending.peer, result);
                     }
                 }
             }
@@ -256,10 +355,26 @@ fn watch_source(app: tauri::AppHandle) {
             h.bind("", Value::Null);
             h.transition("waiting", "咚咚账户正在切换");
         }
-        let current = sh.messages.lock().unwrap().view(
+        let epoch = sh.messages.lock().unwrap().epoch.clone();
+        sh.auto_reply.lock().unwrap().bind(&epoch);
+        {
+            let mut reading = sh.reading.lock().unwrap();
+            reading.bind(&epoch);
+            if !enabled || settings["messagePreview"] != true {
+                reading.clear();
+            }
+        }
+        let message_view = sh.messages.lock().unwrap().view(
             settings["messagePreview"] != false,
             settings["messagePausedUntil"].as_i64().unwrap_or(0),
         );
+        let current = json!([
+            message_view,
+            sh.auto_reply
+                .lock()
+                .unwrap()
+                .view(settings["messagePreview"] != false)
+        ]);
         if current != last_view {
             last_view = current;
             publish(&app);
@@ -281,10 +396,43 @@ pub fn acknowledge(app: &tauri::AppHandle, p: &Value) -> Result<(), String> {
     publish(app);
     Ok(())
 }
-pub fn open_dongdong(_app: &tauri::AppHandle) -> Result<(), String> {
-    launch_dongdong()
+pub fn clear_reminders(app: &tauri::AppHandle, p: &Value) -> Result<(), String> {
+    let epoch = p["epoch"].as_str().ok_or("Missing message epoch")?;
+    let keys: Vec<String> =
+        serde_json::from_value(p["keys"].clone()).map_err(|_| "Invalid message keys")?;
+    if keys.len() > 100 {
+        return Err("Too many message keys".into());
+    }
+    let sh = shared(app);
+    let toast = sh.message_toast.lock().unwrap().clone();
+    let hide_toast = {
+        let mut hub = sh.messages.lock().unwrap();
+        hub.clear(epoch, &keys)?;
+        toast.as_ref().is_some_and(|t| {
+            !hub.items.iter().any(|i| {
+                if let Some(conversation) = t["conversation"].as_str() {
+                    i.conversation == conversation
+                } else {
+                    Some(i.key.as_str()) == t["key"].as_str()
+                }
+            })
+        })
+    };
+    if hide_toast {
+        windows::hide_message_toast(app, true);
+    }
+    publish(app);
+    Ok(())
 }
-fn launch_dongdong() -> Result<(), String> {
+pub fn open_dongdong(app: &tauri::AppHandle, p: &Value) -> Result<(), String> {
+    let uri = if p.get("conversation").is_some() {
+        Some(crate::message_reading::conversation_uri(app, p)?)
+    } else {
+        None
+    };
+    launch_dongdong(uri.as_deref())
+}
+fn launch_dongdong(uri: Option<&str>) -> Result<(), String> {
     // Prefer the actual running installation, including custom installation paths.
     let processes = message_source::running_processes();
     #[cfg(target_os = "macos")]
@@ -303,11 +451,12 @@ fn launch_dongdong() -> Result<(), String> {
             })
             .ok_or("未找到本机咚咚，请先安装或启动咚咚。")?;
         // Launch Services activates an existing instance and restores its window.
-        let status = std::process::Command::new("/usr/bin/open")
-            .arg("-a")
-            .arg(path)
-            .status()
-            .map_err(|_| "系统未能唤起咚咚，请重试。")?;
+        let mut command = std::process::Command::new("/usr/bin/open");
+        command.arg("-a").arg(path);
+        if let Some(uri) = uri {
+            command.arg(uri);
+        }
+        let status = command.status().map_err(|_| "系统未能唤起咚咚，请重试。")?;
         if status.success() {
             Ok(())
         } else {
@@ -331,6 +480,9 @@ fn launch_dongdong() -> Result<(), String> {
             // DongDong's single-instance handler restores/focuses the existing main window.
             // Execute the installed client directly, without file associations or a shell.
             let mut command = std::process::Command::new(&path);
+            if let Some(uri) = uri {
+                command.arg(uri);
+            }
             if let Some(parent) = path.parent() {
                 command.current_dir(parent);
             }
@@ -353,7 +505,7 @@ fn launch_dongdong() -> Result<(), String> {
     }
     #[cfg(not(any(target_os = "macos", windows)))]
     {
-        let _ = processes;
+        let _ = (processes, uri);
         Err("当前系统暂不支持打开咚咚".into())
     }
 }
@@ -363,6 +515,8 @@ mod tests {
     use super::*;
     fn row(id: &str) -> Record {
         Record {
+            private_peer: Some("sender".into()),
+            own: false,
             id: id.into(),
             chat: "chat".into(),
             sender: "A".into(),
@@ -393,6 +547,75 @@ mod tests {
         assert!(h.account.is_null());
     }
     #[test]
+    fn viewed_message_cannot_arrive_later_as_a_fresh_reminder() {
+        let mut h = Hub::default();
+        let epoch = h.epoch.clone();
+        h.seen_ids(&epoch, &["read-before-poll".into()]);
+        h.ingest(
+            vec![row("read-before-poll"), row("new")],
+            vec![],
+            true,
+            true,
+        );
+        assert_eq!(h.view(true, 0)["newCount"], 1);
+        assert_eq!(h.items[0].source_id, "new");
+        h.seen_ids(&epoch, &["new".into()]);
+        assert_eq!(h.view(true, 0)["newCount"], 0);
+        h.ingest(vec![row("actually-new")], vec![], true, true);
+        assert_eq!(h.view(true, 0)["newCount"], 1);
+    }
+    #[test]
+    fn viewed_messages_are_account_scoped_and_bounded() {
+        let mut h = Hub::default();
+        let old = h.epoch.clone();
+        h.seen_ids(&old, &["same-id".into()]);
+        h.bind("other-account", Value::Null);
+        h.seen_ids(&old, &["late-old-read".into()]);
+        h.ingest(
+            vec![row("same-id"), row("late-old-read")],
+            vec![],
+            true,
+            true,
+        );
+        assert_eq!(h.view(true, 0)["newCount"], 2);
+        let epoch = h.epoch.clone();
+        h.seen_ids(
+            &epoch,
+            &(0..5000).map(|i| format!("read-{i}")).collect::<Vec<_>>(),
+        );
+        assert_eq!(h.seen.len(), 4096);
+        assert_eq!(h.order.len(), 4096);
+    }
+    #[test]
+    fn clear_reminders_preserves_new_arrivals_other_chats_and_dedupe() {
+        let mut h = Hub::default();
+        let mut other = row("other");
+        other.chat = "other-chat".into();
+        h.ingest(vec![row("1"), row("2"), other], vec![], true, true);
+        let epoch = h.epoch.clone();
+        let keys: Vec<_> = h
+            .items
+            .iter()
+            .filter(|i| i.source_id != "other")
+            .map(|i| i.key.clone())
+            .collect();
+        h.ingest(vec![row("arriving")], vec![], true, true);
+        assert!(h.clear("stale-account", &keys).is_err());
+        assert_eq!(h.items.len(), 4);
+        h.clear(&epoch, &keys).unwrap();
+        assert_eq!(h.items.len(), 2);
+        assert_eq!(h.view(true, 0)["newCount"], 2);
+        h.clear(&epoch, &keys).unwrap(); // repeated clicks are harmless
+        h.ingest(vec![row("1"), row("2")], vec![], true, true);
+        assert_eq!(h.items.len(), 2); // cleared source messages cannot reappear
+        let remaining: Vec<_> = h.items.iter().map(|i| i.key.clone()).collect();
+        h.clear(&epoch, &remaining).unwrap();
+        assert!(h.items.is_empty());
+        assert_eq!(h.view(true, 0)["newCount"], 0);
+        h.ingest(vec![row("later")], vec![], true, true);
+        assert_eq!(h.view(true, 0)["newCount"], 1);
+    }
+    #[test]
     fn dedupe_mute_pause_privacy_and_local_seen() {
         let mut h = Hub::default();
         let mut muted = row("2");
@@ -419,5 +642,11 @@ mod tests {
             .unwrap();
         let mut reader = Reader::open(&s).unwrap();
         assert!(!reader.changed().unwrap());
+        let _contacts = reader.contacts("read-only-smoke").unwrap();
+        let (rows, _) = reader.poll(&[]).unwrap();
+        assert!(
+            rows.is_empty(),
+            "Reader must baseline history, not replay it"
+        );
     }
 }

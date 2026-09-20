@@ -423,7 +423,7 @@ fn install_message_panel_focus(window: &WebviewWindow) {
 }
 
 #[cfg(windows)]
-fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
+pub(crate) fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
     let hwnd = window.hwnd().map_err(|_| ())?;
     // Tauri's Windows is_focused also tracks keyboard focus, which can belong
     // to a WebView2 child. Compare the top-level foreground window instead.
@@ -436,12 +436,12 @@ fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
 }
 
 #[cfg(not(windows))]
-fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
+pub(crate) fn message_panel_is_focused(window: &WebviewWindow) -> Result<bool, ()> {
     window.is_focused().map_err(|_| ())
 }
 
 fn message_panel_bounds(pet: Bounds, screen: Bounds, count: usize) -> Bounds {
-    message_popup_bounds(pet, screen, 350., if count <= 1 { 240. } else { 360. }, 24.)
+    message_popup_bounds(pet, screen, 390., if count <= 1 { 440. } else { 500. }, 24.)
 }
 fn message_popup_bounds(
     pet: Bounds,
@@ -772,7 +772,7 @@ mod message_panel_tests {
             width: 190.,
             height: 190.,
         };
-        assert_eq!(message_panel_bounds(pet, screen, 1).height, 240.);
-        assert_eq!(message_panel_bounds(pet, screen, 3).height, 360.);
+        assert_eq!(message_panel_bounds(pet, screen, 1).height, 440.);
+        assert_eq!(message_panel_bounds(pet, screen, 3).height, 500.);
     }
 }

@@ -1047,13 +1047,14 @@ checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
 name = "em-use-rust"
-version = "0.4.8"
+version = "0.4.9"
 dependencies = [
  "aes",
  "base64 0.22.1",
  "cbc",
  "chrono",
  "keyring",
+ "md5",
  "pbkdf2",
  "regex",
  "reqwest 0.12.28",
@@ -2544,6 +2545,12 @@ dependencies = [
  "tendril",
  "web_atoms",
 ]
+
+[[package]]
+name = "md5"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
 
 [[package]]
 name = "memchr"

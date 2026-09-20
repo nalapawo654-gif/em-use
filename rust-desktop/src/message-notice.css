@@ -132,3 +132,11 @@
 .message-bubble-total{flex-shrink:0;margin-left:auto;font-size:10px;font-weight:500;color:var(--msg-color,#357f8e);background:color-mix(in srgb,var(--msg-color,#357f8e) 9%,var(--msg-paper));padding:0 5px;border-radius:5px}
 .night .message-inbox-header{background:transparent}
 @container(max-width:320px){.pet-message-notice>.message-inbox .message-conversation-header{padding:4px 10px 9px}.pet-message-notice>.message-inbox .message-footer-source{display:none}}
+
+.message-clear-button{flex-shrink:0;border:1px solid var(--msg-line);border-radius:6px;background:transparent;color:var(--msg-muted);padding:4px 6px;font:inherit;font-size:10px;line-height:1.5;cursor:pointer}
+.message-clear-button:hover{color:var(--msg-color,#357f8e);background:color-mix(in srgb,var(--msg-color,#357f8e) 8%,var(--msg-paper))}
+.message-clear-button:focus-visible{outline:2px solid var(--msg-color,#357f8e);outline-offset:2px}
+.message-clear-button:disabled{opacity:.5;cursor:wait}
+.message-clear-conversation{max-width:none;white-space:nowrap}
+
+.message-inbox:has(.message-reader){position:relative}

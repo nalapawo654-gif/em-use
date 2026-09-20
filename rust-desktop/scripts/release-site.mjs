@@ -3,9 +3,10 @@ import { resolve, join, basename } from 'node:path'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { validateVersion } from './version.mjs'
+import { readReleaseNotes } from './release-notes.mjs'
 import { renderDownloadPage, pets } from './download-page.mjs'
 export const platforms=['windows-x86_64','darwin-aarch64','darwin-x86_64']
-export function buildSite(input,output,version,base='http://172.27.12.77:5500/') {
+export function buildSite(input,output,version,base='http://172.27.12.77:5500/',notes=readReleaseNotes(version)) {
   validateVersion(version)
   const baseURL=new URL(base);if(!['http:','https:'].includes(baseURL.protocol)||baseURL.username||baseURL.password)throw new Error('Invalid static server URL')
   const root=resolve(output,'em-use'),release=join(root,'releases',version);if(existsSync(release))throw new Error('Output version already exists; use an empty staging directory')
@@ -22,7 +23,7 @@ export function buildSite(input,output,version,base='http://172.27.12.77:5500/')
     return {dir,data,names}
   })
   mkdirSync(release,{recursive:true});mkdirSync(join(root,'stable'),{recursive:true})
-  const latest={version,notes:`EM Use ${version} · Rust 桌面版`,pub_date:new Date().toISOString(),platforms:{}}
+  const latest={version,notes,pub_date:new Date().toISOString(),platforms:{}}
   const sums=[],downloads=[]
   for(const {dir,data,names}of records){for(const name of names){const bytes=readFileSync(join(dir,name));copyFileSync(join(dir,name),join(release,name));sums.push(`${createHash('sha256').update(bytes).digest('hex')}  ${name}`)}
     if(data.update)latest.platforms[data.platform]={signature:data.update.signature,url:new URL(`em-use/releases/${version}/${encodeURIComponent(data.update.file)}`,baseURL).href}
