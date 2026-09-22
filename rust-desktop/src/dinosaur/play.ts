@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 import { DINOSAUR_MOTIONS, type DinosaurMotion } from './ambient'
 export type DinosaurLevel = 'full' | 'tea' | 'tired' | 'low' | 'empty' | 'unknown'
 export type DinosaurAction = 'idle' | 'pet' | 'tea' | 'cookie' | 'pillow' | 'work' | 'cheer' | 'rest' | DinosaurMotion
@@ -22,8 +22,8 @@ export const DINOSAUR_ACTIONS = [
   { id: 'rest', label: '盖毯打个盹', hint: '裹好小毯子，梦里再努力', speech: '别催了，我在梦里上班…', frame: 7, duration: null, icon: 'moon' },
 ] as const
 export function dinosaurLevel(percent: number | null): DinosaurLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 80 ? 'full' : percent > 60 ? 'tea' : percent > 20 ? 'tired' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 5)
+  return index === null ? 'unknown' : (['full', 'tea', 'tired', 'low', 'empty'] as const)[index]!
 }
 export function dinosaurIdle(): DinosaurPlay { return { action: 'idle', startedAt: 0 } }
 export function beginDinosaur(action: DinosaurAction, now: number): DinosaurPlay { return action === 'idle' ? dinosaurIdle() : { action, startedAt: now } }

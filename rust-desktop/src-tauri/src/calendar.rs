@@ -426,6 +426,8 @@ async fn watch(app: tauri::AppHandle) {
                     | "fox"
                     | "luckycat"
                     | "skadi"
+                    | "piranha"
+                    | "potato"
             )
         );
         let can_toast = visible

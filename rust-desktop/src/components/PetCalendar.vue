@@ -4,6 +4,8 @@ import { api, appState as state } from '../bridge'
 import { calendarTime, nextCalendarEvent } from '../shared/calendar'
 import BuddyCalendarArt from './BuddyCalendarArt.vue'
 import AquariumCalendarArt from './AquariumCalendarArt.vue'
+import PotatoCalendarArt from './PotatoCalendarArt.vue'
+import PiranhaCalendarArt from './PiranhaCalendarArt.vue'
 import SceneCalendarArt from './SceneCalendarArt.vue'
 import { CALENDAR_PROPS,type CalendarPropScene } from '../shared/calendarProps'
 import type { Scene } from '../shared/types'
@@ -28,7 +30,7 @@ onUnmounted(()=>{clearInterval(timer);window.removeEventListener('calendar-panel
 </script>
 <template>
  <div v-if="state.settings.calendarEnabled" v-show="!blocked" class="pet-calendar" :style="propStyle" :class="[`${appearance}-calendar`, {'calendar-gentle':state.settings.reducedMotion}]" data-pet-gesture @pointerdown.stop @click.stop @dblclick.stop @wheel.stop @contextmenu.stop.prevent>
-  <button ref="trigger" class="pet-calendar-launcher" :class="`${appearance}-calendar-launcher`" :aria-label="`今日日程，${propSpec?propSpec.name+'，':''}${label}`" :aria-expanded="open" :disabled="opening" @click="show"><component :is="propSpec?SceneCalendarArt:appearance==='aquarium'?AquariumCalendarArt:BuddyCalendarArt" :scene="appearance" :time="next?calendarTime(next.start):'今日'" :alert="alert&&!deferred" :gentle="state.settings.reducedMotion"/><span class="calendar-launcher-tooltip">{{label}}</span><span v-if="state.calendar?.status==='stale'||state.calendar?.status==='expired'" class="calendar-sync-dot" aria-label="日程待同步"/></button>
+  <button ref="trigger" class="pet-calendar-launcher" :class="`${appearance}-calendar-launcher`" :aria-label="`今日日程，${propSpec?propSpec.name+'，':''}${label}`" :aria-expanded="open" :disabled="opening" @click="show"><component :is="appearance==='potato'?PotatoCalendarArt:appearance==='piranha'?PiranhaCalendarArt:propSpec?SceneCalendarArt:appearance==='aquarium'?AquariumCalendarArt:BuddyCalendarArt" :scene="appearance" :time="next?calendarTime(next.start):'今日'" :alert="alert&&!deferred" :gentle="state.settings.reducedMotion"/><span class="calendar-launcher-tooltip">{{label}}</span><span v-if="state.calendar?.status==='stale'||state.calendar?.status==='expired'" class="calendar-sync-dot" aria-label="日程待同步"/></button>
   <div v-if="open&&!api.openCalendar" class="calendar-preview-panel"><CalendarCard closeable @close="close"/></div>
   <p v-if="error" class="calendar-prop-error" role="alert">{{error}}<button @click="show">重试</button></p>
  </div>

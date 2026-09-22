@@ -6,7 +6,7 @@ import { validateSettings } from '../src/shared/settings'
 import { DEFAULT_SETTINGS } from '../src/shared/types'
 test('quota boundaries preserve unknown, zero, and each tier', () => {
   for (const value of [null, NaN, Infinity]) assert.equal(luckycatLevel(value), 'unknown')
-  for (const [value, level] of [[100,'full'],[61,'full'],[60,'medium'],[21,'medium'],[20,'low'],[16,'low'],[0,'empty'],[-1,'empty']] as const) assert.equal(luckycatLevel(value),level)
+  for (const [value, level] of [[100,'full'],[76,'full'],[75,'medium'],[51,'medium'],[50,'low'],[26,'low'],[25,'empty'],[-1,'empty']] as const) assert.equal(luckycatLevel(value),level)
   assert.equal(luckycatFrame(null),1)
 })
 test('short actions return to the latest quota and persistent box requires cancellation', () => {

@@ -1,18 +1,17 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type BeaverAction = 'idle' | 'groom' | 'feed' | 'drink' | 'wood' | 'pet' | 'ball' | 'leaves' | 'bird' | 'celebrate' | 'rest'
 export interface BeaverPlay { mode: BeaverAction; since: number; strokes: number; collected: number[] }
 export const BEAVER_STATES = [
-  { percent: 100, label: '元气满满', hint: '今天也要好好创造' },
-  { percent: 75, label: '状态良好', hint: '还够啃一会儿！' },
-  { percent: 50, label: '继续加油', hint: '一口一口，慢慢来' },
-  { percent: 25, label: '有点累了', hint: '留一点力气给自己' },
-  { percent: 20, label: '快撑不住', hint: '再啃一口，快坚持不住了' },
-  { percent: 15, label: '休息时间', hint: '树倒了，今天收工啦' },
+  { percent: 100 * (6 - 0) / 6, label: '元气满满', hint: '今天也要好好创造' },
+  { percent: 100 * (6 - 1) / 6, label: '状态良好', hint: '还够啃一会儿！' },
+  { percent: 100 * (6 - 2) / 6, label: '继续加油', hint: '一口一口，慢慢来' },
+  { percent: 100 * (6 - 3) / 6, label: '有点累了', hint: '留一点力气给自己' },
+  { percent: 100 * (6 - 4) / 6, label: '快撑不住', hint: '再啃一口，快坚持不住了' },
+  { percent: 100 * (6 - 5) / 6, label: '休息时间', hint: '树倒了，今天收工啦' },
 ] as const
 export const BEAVER_MOTTOS = { gentle: '少一点请求，多一点创意', create: '一口一口，啃出好点子', rest: '认真工作，也要认真休息' } as const
 export function beaverLevel(percent: number | null) {
-  if (percent === null || !Number.isFinite(percent)) return 0
-  return percent > 75 ? 0 : percent > 50 ? 1 : percent > 25 ? 2 : percent > 20 ? 3 : percent > FINAL_FORM_PERCENT ? 4 : 5
+  return (petQuotaIndex(percent, 6) ?? 0) as 0 | 1 | 2 | 3 | 4 | 5
 }
 export const beaverIdle = (): BeaverPlay => ({ mode: 'idle', since: 0, strokes: 0, collected: [] })
 export const beginBeaver = (mode: BeaverAction, now: number): BeaverPlay => ({ mode, since: now, strokes: 0, collected: [] })

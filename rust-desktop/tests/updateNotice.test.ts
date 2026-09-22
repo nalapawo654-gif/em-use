@@ -5,8 +5,8 @@ import { SCENE_LABELS } from '../src/shared/types'
 
 test('every selectable companion has its own delivery object and motion', () => {
   assert.deepEqual(Object.keys(UPDATE_PERSONAS).sort(), Object.keys(SCENE_LABELS).sort())
-  assert.equal(new Set(Object.values(UPDATE_PERSONAS).map(p => p.object)).size, 11)
-  assert.equal(new Set(Object.values(UPDATE_PERSONAS).map(p => p.motion)).size, 11)
+  assert.equal(new Set(Object.values(UPDATE_PERSONAS).map(p => p.object)).size, Object.keys(SCENE_LABELS).length)
+  assert.equal(new Set(Object.values(UPDATE_PERSONAS).map(p => p.motion)).size, Object.keys(SCENE_LABELS).length)
 })
 test('only actionable version states become pet mail, never background failures or quota states', () => {
   assert.equal(updateNoticeVisible(undefined), false)

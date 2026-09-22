@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type SkadiLevel = 'full' | 'medium' | 'low' | 'empty' | 'unknown'
 export type SkadiAction = 'idle' | 'pet' | 'sing' | 'blade' | 'work' | 'sleep' | 'cat' | 'walk' | 'sit' | 'wave' | 'drink' | 'summon' | 'fish' | 'feed' | 'dance' | 'fly' | 'turn'
 export interface SkadiPlay { action: SkadiAction; startedAt: number }
@@ -28,8 +28,8 @@ export const SKADI_ACTIONS = [
   { id: 'turn', label: '回眸看看', hint: '侧过身，看看你还在不在', speech: '嗯，你还在。', duration: 3400, icon: 'look' },
 ] as const
 export function skadiLevel(percent: number | null): SkadiLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 60 ? 'full' : percent > 20 ? 'medium' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 4)
+  return index === null ? 'unknown' : (['full', 'medium', 'low', 'empty'] as const)[index]!
 }
 export function skadiIdle(): SkadiPlay { return { action: 'idle', startedAt: 0 } }
 export function beginSkadi(action: SkadiAction, now: number): SkadiPlay { return action === 'idle' ? skadiIdle() : { action, startedAt: now } }

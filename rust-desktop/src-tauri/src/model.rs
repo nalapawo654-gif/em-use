@@ -179,6 +179,20 @@ mod tests {
             ),
             json!({"scene":"battery","windowWidth":800})
         );
+        assert_eq!(
+            validate(&json!({"scene":"piranha","piranhaSkin":"christmas"})),
+            json!({"scene":"piranha","piranhaSkin":"christmas"})
+        );
+        assert_eq!(validate(&json!({"piranhaSkin":"invalid"})), json!({}));
+        assert_eq!(contract()["defaults"]["piranhaSkin"], "classic");
+        let settings_contract = contract();
+        let skins = settings_contract["enums"]["potatoSkin"].as_array().unwrap();
+        assert_eq!(skins.len(), 20);
+        for skin in skins {
+            assert_eq!(validate(&json!({"scene":"potato","potatoSkin":skin})), json!({"scene":"potato","potatoSkin":skin}));
+        }
+        assert_eq!(validate(&json!({"potatoSkin":"invalid"})), json!({}));
+        assert_eq!(contract()["defaults"]["potatoSkin"], "gundam");
     }
     #[test]
     fn quota_money_and_midnight() {

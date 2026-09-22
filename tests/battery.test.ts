@@ -7,7 +7,7 @@ import { DEFAULT_SETTINGS, BATTERY_SKINS } from '../src/shared/types.ts'
 import { validateSettings } from '../src/shared/settings.ts'
 
 test('battery quota boundaries include six energy states and a distinct unknown', () => {
-  assert.deepEqual([100,76,75,51,50,26,25,21,20,16,0,-1,null,NaN,Infinity].map(batteryLevel), ['full','full','bright','bright','steady','steady','tired','tired','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([100,84,500/6,67,400/6,51,50,34,200/6,17,100/6,-1,null,NaN,Infinity].map(batteryLevel), ['full','full','bright','bright','steady','steady','tired','tired','low','low','empty','empty','unknown','unknown','unknown'])
 })
 test('six complete lifts require distinct presses; waiting and repeated input cannot finish the set', () => {
   let play = beginBattery('lift', 0, 100)
@@ -47,7 +47,7 @@ test('actions recover automatically, rest persists, replacement discards trainin
 test('full battery varies workouts; low and empty have reduced effort and deterministic gentle poses', () => {
   const idle = batteryIdle()
   assert.deepEqual([0,7000,14000].map(t => batteryPose(100,idle,t).exercise), ['jump','run','knees'])
-  const efforts = [100,75,50,25,20,15].map(p => batteryPose(p,idle,100).effort)
+  const efforts = [100,500/6,400/6,50,200/6,100/6].map(p => batteryPose(p,idle,100).effort)
   for (let i=1;i<efforts.length;i++) assert.ok(efforts[i]<efforts[i-1])
   assert.equal(batteryPose(0,idle,100).exercise,'lie')
   assert.equal(batteryPose(null,idle,100).exercise,'wait')

@@ -6,8 +6,8 @@ import { validateSettings } from '../src/shared/settings.ts'
 import { FEIDUDU_CROPS, feiduduMatte } from '../src/feidudu/sprites.ts'
 
 test('Feidudu includes exact five quota boundaries and distinct unknown states', () => {
-  assert.deepEqual([101, 100, 80.1, 80, 70, 60, 50, 20, 20, 16, 0, -1, null, NaN, Infinity].map(feiduduLevel), ['full','full','full','tea','tea','tired','tired','low','low','low','empty','empty','unknown','unknown','unknown'])
-  assert.deepEqual([100,70,50,20,15,null].map(value => feiduduFrame(value)), [0,1,2,3,4,0])
+  assert.deepEqual([101, 100, 80.1, 80, 70, 60, 40.01, 40, 30, 20.01, 20, -1, null, NaN, Infinity].map(feiduduLevel), ['full','full','full','tea','tea','tired','tired','low','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([100,80,60,40,20,null].map(value => feiduduFrame(value)), [0,1,2,3,4,0])
 })
 test('all short interactions expire; work and rest persist with explicit cancellation', () => {
   for (const item of FEIDUDU_ACTIONS) {

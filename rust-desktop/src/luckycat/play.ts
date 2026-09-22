@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type LuckyCatLevel = 'full' | 'medium' | 'low' | 'empty' | 'unknown'
 export type LuckyCatAction = 'idle' | 'fortune' | 'fish' | 'coffee' | 'work' | 'box' | 'gift' | 'blink' | 'stretch' | 'toss' | 'groom' | 'listen' | 'doze'
 export interface LuckyCatPlay { action: LuckyCatAction; startedAt: number }
@@ -24,8 +24,8 @@ export const LUCKYCAT_ACTIONS = [
   { id: 'doze', label: '打个小盹', hint: '慢慢合眼，点点脑袋', speech: '就眯一小会儿…', duration: 5400, icon: 'moon' },
 ] as const
 export function luckycatLevel(percent: number | null): LuckyCatLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 60 ? 'full' : percent > 20 ? 'medium' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 4)
+  return index === null ? 'unknown' : (['full', 'medium', 'low', 'empty'] as const)[index]!
 }
 export function luckycatIdle(): LuckyCatPlay { return { action: 'idle', startedAt: 0 } }
 export function beginLuckyCat(action: LuckyCatAction, now: number): LuckyCatPlay { return action === 'idle' ? luckycatIdle() : { action, startedAt: now } }

@@ -19,6 +19,8 @@
     "notifications": true,
     "outfit": "classic",
     "scene": "aquarium",
+    "potatoSkin": "gundam",
+    "piranhaSkin": "classic",
     "skadiSkin": "classic",
     "skadiAdultSkin": "classic",
     "skadiForm": "chibi",
@@ -58,6 +60,8 @@
       "ribbon"
     ],
     "scene": [
+      "potato",
+      "piranha",
       "skadi",
       "dinosaur",
       "luckycat",
@@ -70,19 +74,48 @@
       "cultivation",
       "battery"
     ],
+    "potatoSkin": [
+      "gundam",
+      "iron",
+      "captain",
+      "batman",
+      "eva",
+      "zaku",
+      "star",
+      "thor",
+      "space",
+      "redhorn",
+      "freedom",
+      "mark85",
+      "captainclassic",
+      "darkknight",
+      "unicorn",
+      "pink",
+      "gold",
+      "purple",
+      "greenholiday",
+      "santa"
+    ],
+    "piranhaSkin": [
+      "classic",
+      "sakura",
+      "cactus",
+      "halloween",
+      "christmas"
+    ],
     "skadiSkin": [
       "classic",
+      "sakura",
       "moonlight",
       "gothic",
-      "sakura",
       "azure",
       "pajamas"
     ],
     "skadiAdultSkin": [
       "classic",
+      "sakura",
       "moonlight",
       "gothic",
-      "sakura",
       "azure",
       "pajamas"
     ],
@@ -193,6 +226,8 @@
     ]
   },
   "labels": {
+    "potato": "土豆战神",
+    "piranha": "食人花 · 捕需求草",
     "skadi": "斯卡蒂 · 月汐",
     "dinosaur": "摸鱼小恐龙",
     "luckycat": "破产招财猫",

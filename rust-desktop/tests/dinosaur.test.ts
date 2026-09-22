@@ -7,8 +7,8 @@ import { dinosaurMatte, DINOSAUR_CROPS } from '../src/dinosaur/sprites.ts'
 import { tintDinosaurPixels } from '../src/dinosaur/skins.ts'
 
 test('dinosaur quota boundaries distinguish exhausted from unknown', () => {
-  assert.deepEqual([100,80.01,80,60.01,60,20.01,20,16,0,-1,null,NaN,Infinity].map(dinosaurLevel), ['full','full','tea','tea','tired','tired','low','low','empty','empty','unknown','unknown','unknown'])
-  assert.deepEqual([100,70,50,20,15,null].map(p => dinosaurFrame(p)), [0,1,2,3,4,0])
+  assert.deepEqual([100,80.01,80,60.01,60,40.01,40,20.01,20,-1,null,NaN,Infinity].map(dinosaurLevel), ['full','full','tea','tea','tired','tired','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([100,80,60,40,20,null].map(p => dinosaurFrame(p)), [0,1,2,3,4,0])
 })
 test('short dinosaur actions expire exactly, sustained poses cancel, replacement owns its clock', () => {
   for (const item of DINOSAUR_ACTIONS) {
@@ -22,7 +22,7 @@ test('short dinosaur actions expire exactly, sustained poses cancel, replacement
   }
   const next = beginDinosaur('cookie',3000)
   assert.equal(advanceDinosaur(next,5000),next)
-  assert.equal(dinosaurFrame(20,advanceDinosaur(next,7000).action),3)
+  assert.equal(dinosaurFrame(40,advanceDinosaur(next,7000).action),3)
   assert.equal(dinosaurFrame(null,advanceDinosaur(next,7000).action),0)
 })
 test('dinosaur preferences migrate independently and reject invalid values', () => {

@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type CultivationAction = 'idle' | 'greet' | 'tea' | 'woodfish' | 'talisman' | 'comb' | 'incense' | 'peach'
 export type CultivationLevel = 'full' | 'settling' | 'low' | 'empty' | 'unknown'
 export const CULTIVATION_LEVELS = {
@@ -18,8 +18,8 @@ export const CULTIVATION_ACTIONS = [
 ] as const
 export interface CultivationPlay { action: CultivationAction; since: number; progress: number; completedAt: number | null }
 export function cultivationLevel(percent: number | null): CultivationLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 60 ? 'full' : percent > 20 ? 'settling' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 4)
+  return index === null ? 'unknown' : (['full', 'settling', 'low', 'empty'] as const)[index]!
 }
 export function cultivationIdle(): CultivationPlay { return { action: 'idle', since: 0, progress: 0, completedAt: null } }
 export function beginCultivation(action: CultivationAction, now: number): CultivationPlay { return { action, since: now, progress: 0, completedAt: null } }

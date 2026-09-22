@@ -17,6 +17,8 @@ import SkadiExperience from './components/SkadiExperience.vue'
 import FoxExperience from './components/FoxExperience.vue'
 import DinosaurExperience from './components/DinosaurExperience.vue'
 import FeiduduExperience from './components/FeiduduExperience.vue'
+import PotatoExperience from './components/PotatoExperience.vue'
+import PiranhaExperience from './components/PiranhaExperience.vue'
 import BatteryExperience from './components/BatteryExperience.vue'
 import HamsterExperience from './components/HamsterExperience.vue'
 import { SCENE_LABELS } from './shared/types'
@@ -67,14 +69,16 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'calendar-view': view === 'calendar', 'calendar-toast-view': view === 'calendar-toast', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null" :class="['app', { native: isDesktop, night, 'potato-app': state.settings.scene === 'potato', 'piranha-app': state.settings.scene === 'piranha', 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'calendar-view': view === 'calendar', 'calendar-toast-view': view === 'calendar-toast', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <CalendarWindow v-else-if="view === 'calendar' || view === 'calendar-toast'" :toast="view === 'calendar-toast'"/>
     <MessageToast v-else-if="view === 'message-toast'"/>
     <MessagePanel v-else-if="view === 'messages'"/>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
-      <BuddyExperience v-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <PotatoExperience v-if="state.settings.scene === 'potato'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <PiranhaExperience v-else-if="state.settings.scene === 'piranha'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <BuddyExperience v-else-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BeaverExperience v-else-if="state.settings.scene === 'beaver'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <LuckyCatExperience v-else-if="state.settings.scene === 'luckycat'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <SkadiExperience v-else-if="state.settings.scene === 'skadi'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
@@ -115,7 +119,7 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
           <h1>让每一份额度，<br/>都有一点<span>可爱。</span></h1>
           <p class="intro">看一眼水位，就知道还剩多少灵感。<br/>一方小小鱼缸，陪你度过专注的一天。</p>
           <div class="daily-summary"><div class="summary-label"><span>今日剩余</span><span class="mood-tag" :class="mood">{{ moodLabel }}</span></div><div class="summary-amount"><small>¥</small>{{ state.quota ? money(state.quota.remaining) : '—' }}<span>/ {{ state.quota ? money(state.quota.limit) : '—' }}</span></div><div class="quota-meter"><span :style="{ width: `${percent ?? 0}%` }"></span></div><div class="summary-meta"><span>每日 00:00 重置</span><span>北京时间</span></div></div>
-          <div class="preview-controls"><div><b>看看小鱼的不同状态</b><small>仅用于外观预览 · 演示数据</small></div><div class="state-buttons"><button v-for="s in [{ value: 88, label: '充足', key: 'abundant' }, { value: 48, label: '正常', key: 'normal' }, { value: 22, label: '告警', key: 'warning' }, { value: 5, label: '危险', key: 'danger' }]" :key="s.value" :class="[s.key, { selected: mood === s.key }]" @click="previewQuota(s.value)"><i></i>{{ s.label }}</button></div></div>
+          <div class="preview-controls"><div><b>看看小鱼的不同状态</b><small>仅用于外观预览 · 演示数据</small></div><div class="state-buttons"><button v-for="s in [{ value: 100, label: '充足', key: 'abundant' }, { value: 75, label: '正常', key: 'normal' }, { value: 50, label: '告警', key: 'warning' }, { value: 25, label: '危险', key: 'danger' }]" :key="s.value" :class="[s.key, { selected: mood === s.key }]" @click="previewQuota(s.value)"><i></i>{{ s.label }}</button></div></div>
           <div class="preview-bottom"><button @click="api.settings({ theme: night ? 'day' : 'night' })"><PhSun v-if="night"/><PhMoon v-else/>{{ night ? '切换白天' : '看看夜晚' }}</button><span>换装、躲猫猫，擦擦玻璃<PhArrowRight/></span></div>
         </aside>
       </div>

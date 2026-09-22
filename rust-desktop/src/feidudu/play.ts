@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type FeiduduLevel = 'full' | 'tea' | 'tired' | 'low' | 'empty' | 'unknown'
 export type FeiduduAction = 'idle' | 'pet' | 'tea' | 'cookie' | 'belly' | 'work' | 'wiggle' | 'rest'
 export interface FeiduduPlay { action: FeiduduAction; startedAt: number }
@@ -20,8 +20,8 @@ export const FEIDUDU_ACTIONS = [
   { id: 'rest', label: '一起躺平', hint: '休息，也是一件正经事', speech: '先摸鱼，再说！', frame: 3, duration: null, icon: 'moon' },
 ] as const
 export function feiduduLevel(percent: number | null): FeiduduLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 80 ? 'full' : percent > 60 ? 'tea' : percent > 20 ? 'tired' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 5)
+  return index === null ? 'unknown' : (['full', 'tea', 'tired', 'low', 'empty'] as const)[index]!
 }
 export function feiduduIdle(): FeiduduPlay { return { action: 'idle', startedAt: 0 } }
 export function beginFeidudu(action: FeiduduAction, now: number): FeiduduPlay { return action === 'idle' ? feiduduIdle() : { action, startedAt: now } }

@@ -55,5 +55,5 @@ test('header names are case insensitive; all three complete values required', ()
   assert.equal(captureHeaders({ ...auth!, 'X-Dong-Client': 'bad\r\nheader' }), null)
 })
 test('mood threshold boundaries are exhaustive', () => {
-  assert.deepEqual([100, 60, 30, 10, 0].map(moodFor), ['abundant', 'normal', 'warning', 'danger', 'danger'])
+  assert.deepEqual([100, 75, 50, 25, 0].map(moodFor), ['abundant', 'normal', 'warning', 'danger', 'danger'])
 })

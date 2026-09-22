@@ -13,7 +13,7 @@ if (customWidth >= 180 && customWidth <= 800) { state.settings.windowWidth = cus
 // A wide QA canvas represents the neighbouring native notification window, not a larger pet.
 if(query.has('canvas')) {
  const style=document.createElement('style')
- style.textContent=['feidudu','fox','luckycat','dinosaur','skadi'].map(scene=>`.${scene}-native,.${scene}-native .${scene}-widget{width:var(--fixture-width)!important;height:var(--fixture-width)!important}`).join('')
+ style.textContent=['feidudu','fox','luckycat','dinosaur','skadi','piranha','potato'].map(scene=>`.${scene}-native,.${scene}-native .${scene}-widget{width:var(--fixture-width)!important;height:var(--fixture-width)!important}`).join('')
  document.head.append(style);document.documentElement.style.setProperty('--fixture-width',`${state.settings.windowWidth}px`)
 }
 // Separate notification windows use their own viewport, not the pet fixture width.

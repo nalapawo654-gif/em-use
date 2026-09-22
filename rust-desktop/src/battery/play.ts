@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type BatteryLevel = 'full' | 'bright' | 'steady' | 'tired' | 'low' | 'empty' | 'unknown'
 export type BatteryAction = 'idle' | 'lift' | 'rope' | 'charge' | 'towel' | 'cheer' | 'rest' | 'taichi' | 'aerobics' | 'yoga'
 export interface BatteryPlay { action: BatteryAction; since: number; reps: number; lastRep: number; completedAt: number | null }
@@ -14,8 +14,8 @@ export const BATTERY_LEVELS: Record<BatteryLevel, { label: string; speech: strin
   unknown: { label: '等待电量信号', speech: '热身准备好，等一个信号。', color: '#82908a' },
 }
 export function batteryLevel(percent: number | null): BatteryLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 75 ? 'full' : percent > 50 ? 'bright' : percent > 25 ? 'steady' : percent > 20 ? 'tired' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 6)
+  return index === null ? 'unknown' : (['full', 'bright', 'steady', 'tired', 'low', 'empty'] as const)[index]!
 }
 export const BATTERY_EXERCISES: readonly BatteryAction[] = ['lift', 'rope', 'taichi', 'aerobics', 'yoga']
 export function isBatteryExercise(action: BatteryAction) { return BATTERY_EXERCISES.includes(action) }

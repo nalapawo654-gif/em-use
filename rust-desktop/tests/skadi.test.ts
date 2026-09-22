@@ -6,7 +6,7 @@ import { validateSettings } from '../src/shared/settings'
 import { skadiMatte } from '../src/skadi/sprites'
 
 test('unknown quota never becomes exhausted or full; every threshold is covered', () => {
-  assert.deepEqual([100,61,60,21,20,16,0,-1,null,NaN,Infinity].map(skadiLevel), ['full','full','medium','medium','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([100,76,75,51,50,26,25,-1,null,NaN,Infinity].map(skadiLevel), ['full','full','medium','medium','low','low','empty','empty','unknown','unknown','unknown'])
 })
 test('temporary actions expire at their boundary; work and sleep require explicit exit', () => {
   for (const action of SKADI_ACTIONS) {

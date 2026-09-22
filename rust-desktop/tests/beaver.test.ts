@@ -7,7 +7,7 @@ import { validateSettings } from '../src/shared/settings.ts'
 import { DEFAULT_SETTINGS, SCENE_LABELS } from '../src/shared/types.ts'
 
 test('beaver distinguishes all six quota ranges and unknown has a neutral visual', () => {
-  assert.deepEqual([100, 76, 75, 51, 50, 26, 25, 21, 20, 16, 0].map(beaverLevel), [0,0,1,1,2,2,3,3,4,4,5])
+  assert.deepEqual([100, 84, 500/6, 67, 400/6, 51, 50, 34, 200/6, 17, 100/6].map(beaverLevel), [0,0,1,1,2,2,3,3,4,4,5])
   assert.equal(beaverLevel(null), 0); assert.equal(beaverLevel(NaN), 0)
 })
 test('grooming requires real movement and invalid or stationary input cannot complete it', () => {
@@ -50,7 +50,7 @@ test('new scene settings validate and old scene preferences retain their indepen
   assert.equal(SCENE_LABELS[next.scene], '林间海狸鼠')
   assert.deepEqual(validateSettings({ beaverSkin:'storm', beaverCamp:1, beaverMotto:'invalid' }), {})
 })
-test('idle gnaws continuously at every positive quota and rests only at zero', () => {
+test('idle gnaws in the first five forms and rests in the last form', () => {
   for (const level of [0,1,2,3,4]) {
     const a=sampleBeaverMotion('idle',0,1000,level),b=sampleBeaverMotion('idle',0,1200,level)
     assert.notEqual(a.jaw,b.jaw);assert.notEqual(a.head,b.head)
@@ -88,8 +88,8 @@ test('reduced motion holds a meaningful interaction pose without repetitive moti
 })
 
 test('quota controls six distinct paired expressions and tree damage states', () => {
-  assert.equal(BEAVER_APPEARANCES[beaverLevel(50)].removed,.5)
-  assert.deepEqual([100,75,50,25,20,15].map(p=>BEAVER_APPEARANCES[beaverLevel(p)].removed),[0,.25,.5,.75,.9,1])
+  assert.equal(BEAVER_APPEARANCES[beaverLevel(400/6)].removed,.5)
+  assert.deepEqual([100,500/6,400/6,50,200/6,100/6].map(p=>BEAVER_APPEARANCES[beaverLevel(p)].removed),[0,.25,.5,.75,.9,1])
   assert.equal(new Set(BEAVER_APPEARANCES.map(p=>p.expression)).size,6)
   assert.equal(new Set(BEAVER_APPEARANCES.map(p=>p.tree)).size,6)
   let previous=sampleBeaverMotion('idle',0,1000,0)
@@ -108,7 +108,7 @@ test('interactions and their recovery retain the live quota expression', () => {
       const recovered=advanceBeaver(state,BEAVER_DURATIONS[action])
       assert.equal(recovered.mode,'idle')
       const motion=sampleBeaverMotion(recovered.mode,0,6000,level)
-      assert.equal(motion.level,level);assert.equal(motion.resting,percent<=15)
+      assert.equal(motion.level,level);assert.equal(motion.resting,percent<=100/6)
     }
   }
 })

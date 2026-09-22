@@ -1,4 +1,4 @@
-import { FINAL_FORM_PERCENT } from '../shared/petQuota'
+import { petQuotaIndex } from '../shared/petQuota'
 export type FoxLevel = 'full' | 'medium' | 'low' | 'empty' | 'unknown'
 export type FoxAction = 'idle' | 'tail' | 'paper' | 'butterfly' | 'bloom' | 'rest'
 export interface FoxPlay { action: FoxAction; startedAt: number }
@@ -17,8 +17,8 @@ export const FOX_ACTIONS = [
   { id: 'rest', label: '留白一会', hint: '缩成墨团，安静陪你', speech: '留一点墨，留一点自己。', duration: null, icon: 'moon' },
 ] as const
 export function foxLevel(percent: number | null): FoxLevel {
-  if (percent === null || !Number.isFinite(percent)) return 'unknown'
-  return percent > 60 ? 'full' : percent > 20 ? 'medium' : percent > FINAL_FORM_PERCENT ? 'low' : 'empty'
+  const index = petQuotaIndex(percent, 4)
+  return index === null ? 'unknown' : (['full', 'medium', 'low', 'empty'] as const)[index]!
 }
 export function foxIdle(): FoxPlay { return { action: 'idle', startedAt: 0 } }
 export function beginFox(action: FoxAction, now: number): FoxPlay { return action === 'idle' ? foxIdle() : { action, startedAt: now } }

@@ -6,7 +6,7 @@ import { validateSettings } from '../src/shared/settings.ts'
 import { foxMatte, tintFoxPixels } from '../src/fox/sprites.ts'
 
 test('fox quota boundaries keep unknown separate from zero, including nonfinite inputs', () => {
-  assert.deepEqual([101,100,60.01,60,50,20.01,20,20,16,0,-1,null,NaN,Infinity].map(foxLevel), ['full','full','full','medium','medium','medium','low','low','low','empty','empty','unknown','unknown','unknown'])
+  assert.deepEqual([101,100,75.01,75,60,50.01,50,40,25.01,25,-1,null,NaN,Infinity].map(foxLevel), ['full','full','full','medium','medium','medium','low','low','low','empty','empty','unknown','unknown','unknown'])
 })
 test('fox short actions expire precisely and persistent rest has explicit restoration', () => {
   for (const action of FOX_ACTIONS) {
@@ -29,7 +29,7 @@ test('new fox actions replace old timers and current quota owns the restored pos
   assert.equal(advanceFox(paper, 4500).action, 'idle')
   assert.equal(advanceFox(tail, 4500).action, 'tail')
   assert.equal(foxPose(0, advanceFox(tail, 6800).action), 'empty')
-  assert.equal(foxPose(50, advanceFox(tail, 6800).action), 'medium')
+  assert.equal(foxPose(50, advanceFox(tail, 6800).action), 'low')
   assert.equal(foxPose(null, advanceFox(tail, 6800).action), 'unknown')
 })
 test('fox settings migrate independently and reject invalid colors without resetting other pets', () => {

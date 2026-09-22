@@ -32,3 +32,6 @@ import './update-notice.css'
 import './message-notice.css'
 
 import './calendar.css'
+
+import './piranha.css'
+import './potato.css'

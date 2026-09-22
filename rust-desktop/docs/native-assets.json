@@ -432,6 +432,78 @@
       "bytes": 2284360,
       "encoding": "PNG with green chroma; shared calendarArt runtime decode",
       "source": "Built-in image_gen; docs/design/nine-calendar-v1/asset-production.md"
+    },
+    {
+      "path": "piranha/character-atlas.png",
+      "sha256": "24d983c7ecbf092ccdacc04878f744a2d53de40fb6259dcb37a16fb408aec263",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1647377,
+      "encoding": "PNG with original alpha; explicit atlas bounds, no chroma key",
+      "source": "Built-in image_gen; prompts in docs/piranha-image-prompts.md"
+    },
+    {
+      "path": "piranha/costume-atlas.png",
+      "sha256": "29c6ec33e5f7adc3cd2e294b1d894f5628ffffb6aa1a0717a10a0d477f4bfef1",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1810155,
+      "encoding": "PNG with original alpha; explicit atlas bounds, no chroma key",
+      "source": "Built-in image_gen; prompts in docs/piranha-image-prompts.md"
+    },
+    {
+      "path": "potato/armor-1-atlas.png",
+      "sha256": "31cec6962c328ae17a62de143a402770714c86b61dfc43fcdad79a33084b1a5a",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2483496,
+      "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
+      "source": "Built-in imagegen; docs/potato-image-prompts.md"
+    },
+    {
+      "path": "potato/armor-2-atlas.png",
+      "sha256": "eee2bdf01fb80cee444d31b67e402f939621709c125bc75e7d72144c2634be70",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2574723,
+      "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
+      "source": "Built-in imagegen; docs/potato-image-prompts.md"
+    },
+    {
+      "path": "potato/armor-3-atlas.png",
+      "sha256": "0220bb8b14d32fae5775d624a382f1f86363163169c21426d693be3bbcd7a187",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2551899,
+      "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
+      "source": "Built-in imagegen; docs/potato-image-prompts.md"
+    },
+    {
+      "path": "potato/armor-4-atlas.png",
+      "sha256": "6c63ac1d7b4c8136ae23bd91797e093f3a9c60bc8cd9c4778bafeeed20dee2cb",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2396983,
+      "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
+      "source": "Built-in imagegen; docs/potato-image-prompts.md"
+    },
+    {
+      "path": "potato/armor-5-atlas.png",
+      "sha256": "c48e8292b39ad2542ec5bffc5c99710676d93288c77c013d135853b1866eac80",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2691885,
+      "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
+      "source": "Built-in imagegen; docs/potato-image-prompts.md"
+    },
+    {
+      "path": "potato/props-atlas.png",
+      "sha256": "f19e1708896d58429f72cc378189dff845a17ebe385d7f7e9d633d7a23cfc330",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1993249,
+      "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
+      "source": "Built-in imagegen; docs/potato-image-prompts.md"
     }
   ]
 }
