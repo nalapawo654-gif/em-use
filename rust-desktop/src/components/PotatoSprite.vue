@@ -9,11 +9,12 @@ watch(() => [props.atlas, props.frame, potatoRetryVersion.value, canvas.value], 
   let cancelled = false; cleanup(() => { cancelled = true }); ready.value = false; failed.value = false
   if (!canvas.value) return
   try {
-    const source = await loadPotatoAtlas(props.atlas)
+    const isFlag = props.atlas === 'props' && props.frame === 5
+    const source = await loadPotatoAtlas(isFlag ? 'china-flag' : props.atlas)
     if (cancelled || !canvas.value) return
     const col = props.frame % 4, row = Math.floor(props.frame / 4)
     // Authored cell boundaries preserve whole silhouettes in the generated uneven gutters.
-    const bounds = (crops as Record<string, number[][]>)[props.atlas]?.[props.frame]
+    const bounds = isFlag ? [0, 0, source.width, source.height] : (crops as Record<string, number[][]>)[props.atlas]?.[props.frame]
     const [sx, sy, sw, sh] = bounds ?? [col * source.width / 4, row * source.height / 4, source.width / 4, source.height / 4]
     const scale = Math.min(512 / sw, 512 / sh), width = sw * scale, height = sh * scale
     const context = canvas.value.getContext('2d')!

@@ -43,6 +43,8 @@
 
 ## 素材来源
 
+2026-09-22 修正加油旗为五星红旗：运行时以独立透明物料 `china-flag.png` 替换道具第 5 帧，保留旗杆、布料质感与原有互动；[生成提示](potato-flag-prompt.md)。
+
 内置 imagegen，透明 PNG 保留原始 alpha；未对角色使用抠色或程序绘制替代。生成提示见 [potato-image-prompts.md](potato-image-prompts.md)，原始图集放在 `public/assets/potato/`。加载失败显示重试；图集共享缓存，异步切换丢弃旧请求的绘制结果。
 
 ## 验证

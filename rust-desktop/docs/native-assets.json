@@ -504,6 +504,15 @@
       "bytes": 1993249,
       "encoding": "PNG with original alpha; authored cell bounds, no chroma key",
       "source": "Built-in imagegen; docs/potato-image-prompts.md"
+    },
+    {
+      "path": "potato/china-flag.png",
+      "sha256": "973220f60b4a9fb1cf9cfda4c0f411f8e80aa82d5bdea223ae2e5ab3a2780ef2",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1076432,
+      "encoding": "PNG with original alpha; standalone replacement for props frame 5",
+      "source": "Built-in imagegen edit; docs/potato-flag-prompt.md"
     }
   ]
 }
