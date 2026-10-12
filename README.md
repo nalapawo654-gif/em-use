@@ -54,7 +54,7 @@ npm run build
 
 ## GitHub 构建
 
-当前统一运行 **Build Rust desktop apps**，从 `rust-desktop/` 构建 Windows x64、macOS ARM64 和 Intel 安装包；不再生成 Electron 分发包。版本标签发布会额外生成供手动上传静态服务器的完整目录 ZIP。密钥配置、版本命令和上传步骤见 [Rust 发布说明](rust-desktop/README.md)。
+当前统一运行 **Build Rust desktop apps**，从 `rust-desktop/` 构建 Windows x64 和 macOS ARM64 安装包；不再生成 Electron 分发包。版本标签发布会额外生成供手动上传静态服务器的完整目录 ZIP。密钥配置、版本命令和上传步骤见 [Rust 发布说明](rust-desktop/README.md)。
 
 ## 验收边界
 

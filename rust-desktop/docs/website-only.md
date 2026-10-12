@@ -2,13 +2,13 @@
 
 说明页源码在 `website/`，桌宠目录在 `scripts/download-page.mjs`；数量和切换序号从目录生成。新增桌宠时同时补齐目录介绍和 `website/assets/<id>.webp` 实景图。
 
-已有安装包时，无需重新运行 GitHub Actions。准备 JSON，填写线上版本及三个安装包的 `platform`、`file`、`bytes`，然后在 `rust-desktop/` 执行：
+已有安装包时，无需重新运行 GitHub Actions。准备 JSON，填写线上版本及两个安装包的 `platform`、`file`、`bytes`，然后在 `rust-desktop/` 执行：
 
 ```sh
 node scripts/website-only.mjs downloads.json output/website-only/site
 ```
 
-输入结构为 `{ "version": "0.4.3", "downloads": [{ "platform": "windows-x86_64", "file": "EM-Use-0.4.3-windows-x86_64.exe", "bytes": 137929675 }, ...] }`。另外两个平台是 `darwin-aarch64` 与 `darwin-x86_64`，使用 `.dmg` 安装包。文件名和大小应从实际已发布文件核实。输出目录必须不存在。
+输入结构为 `{ "version": "0.4.3", "downloads": [{ "platform": "windows-x86_64", "file": "EM-Use-0.4.3-windows-x86_64.exe", "bytes": 137929675 }, ...] }`。另一个平台是 `darwin-aarch64`，使用 `.dmg` 安装包。文件名和大小应从实际已发布文件核实。输出目录必须不存在。
 
 先上传输出中的 `em-use/site-assets/<version>/`，再覆盖根目录与 `em-use/` 下的两个 `index.html`，按同名目录合并。保留服务器已有 `releases/` 和 `stable/latest.json`；网页替换包不包含也不改写它们。上传后强制刷新浏览器。
 

@@ -30,7 +30,7 @@ npm run version:set -- 0.4.8
 
 该命令同步 `package.json`、`package-lock.json`、`Cargo.toml`、`Cargo.lock`、`tauri.conf.json`。CI 检查这些版本一致，稳定发布的标签必须是对应的 `v0.4.8`。提交版本变更后推送标签，即可触发完整发布。
 
-普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64 和 Intel（仅 `.dmg` 手动安装包）。本机不生成分发安装包。
+普通 main / PR / 手动工作流构建用于验证；推送 `v*` 标签生成静态站点发布包。平台分别在原生 Runner 编译：Windows x64（NSIS `.exe`）、macOS ARM64（仅 `.dmg` 手动安装包）。本机不生成分发安装包。Intel Mac 已停止打包。
 
 本仓库已于 2026-09-11 配置下列 GitHub Actions 更新签名项；公钥同时固定在应用配置中，构建时会拒绝不一致的公钥，避免误换密钥：
 
@@ -64,7 +64,6 @@ npm run version:set -- 0.4.8
         ├── EM-Use-0.4.8-windows-x86_64.exe
         ├── EM-Use-0.4.8-windows-x86_64.exe.sig
         ├── EM-Use-0.4.8-darwin-aarch64.dmg
-        ├── EM-Use-0.4.8-darwin-x86_64.dmg
         ├── SHA256SUMS.txt
         └── version.json
 ```

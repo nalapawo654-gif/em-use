@@ -2,7 +2,7 @@ import { readdirSync, mkdirSync, copyFileSync, writeFileSync, readFileSync } fro
 import { resolve, join } from 'node:path'
 import { checkVersion } from './version.mjs'
 const [target,bundle,output]=process.argv.slice(2)
-const platforms={'x86_64-pc-windows-msvc':'windows-x86_64','aarch64-apple-darwin':'darwin-aarch64','x86_64-apple-darwin':'darwin-x86_64'}
+const platforms={'x86_64-pc-windows-msvc':'windows-x86_64','aarch64-apple-darwin':'darwin-aarch64'}
 const platform=platforms[target];if(!platform||!bundle||!output)throw new Error('Expected target bundle-dir output-dir')
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)])}
 const version=checkVersion(),files=walk(resolve(bundle)),dest=resolve(output,platform);mkdirSync(dest,{recursive:true})

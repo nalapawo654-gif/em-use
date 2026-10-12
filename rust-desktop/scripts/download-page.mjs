@@ -20,7 +20,7 @@ const macIcon='<svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"
 export function renderDownloadPage(version,downloads,prefix='/em-use/'){
   const assets=`${prefix}site-assets/${version}/`, release=`${prefix}releases/${version}/`
   const buttons=pets.map(p=>`<button type="button" data-pet="${p.id}" aria-pressed="${p.id==='hamster'}">${p.name}</button>`).join('')
-  const specs=[['windows-x86_64','Windows','64 位 · x64','.exe',windowsIcon,'下载安装程序'],['darwin-aarch64','Mac · Apple 芯片','Apple M 系列 · macOS 12+','.dmg',macIcon,'下载 Apple 芯片版'],['darwin-x86_64','Mac · Intel 芯片','Intel 处理器 · macOS 12+','.dmg',macIcon,'下载 Intel 芯片版']]
+  const specs=[['windows-x86_64','Windows','64 位 · x64','.exe',windowsIcon,'下载安装程序'],['darwin-aarch64','Mac · Apple 芯片','Apple M 系列 · macOS 12+','.dmg',macIcon,'下载 Apple 芯片版']]
   const cards=specs.map(([platform,title,subtitle,extension,icon,label])=>{
     const item=downloads.find(d=>d.platform===platform && d.file.endsWith(extension));if(!item)throw new Error(`Missing user installer for ${platform}`)
     return `<article class="download-card">${icon}<h3>${title}</h3><p class="architecture">${subtitle}</p><a class="download-button" href="${escape(release+encodeURIComponent(item.file))}" download aria-label="${label}"><span>${label}</span><span aria-hidden="true">↓</span></a><div class="file-info"><span>${extension.slice(1).toUpperCase()} 安装包</span><span>${item.bytes==null?'大小以发布包为准':(item.bytes/1e6).toFixed(1)+' MB'}</span></div></article>`

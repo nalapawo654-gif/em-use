@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { validateVersion } from './version.mjs'
 import { readReleaseNotes } from './release-notes.mjs'
 import { renderDownloadPage, pets } from './download-page.mjs'
-export const platforms=['windows-x86_64','darwin-aarch64','darwin-x86_64']
+export const platforms=['windows-x86_64','darwin-aarch64']
 export function buildSite(input,output,version,base='http://172.27.12.77:5500/',notes=readReleaseNotes(version)) {
   validateVersion(version)
   const baseURL=new URL(base);if(!['http:','https:'].includes(baseURL.protocol)||baseURL.username||baseURL.password)throw new Error('Invalid static server URL')
