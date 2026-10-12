@@ -9,12 +9,14 @@ export async function installNativeBridge() {
   await listen<AppState>('state:changed', event => callbacks.forEach(fn => fn(event.payload)))
   await listen('settings:updates', () => window.dispatchEvent(new CustomEvent('open-updates')))
   await listen('settings:messages', () => window.dispatchEvent(new CustomEvent('open-messages')))
+  await listen('settings:world', () => window.dispatchEvent(new CustomEvent('open-world')))
   await listen('messages:closed', () => window.dispatchEvent(new CustomEvent('message-panel-closed')))
   await listen('messages:toast-closed', () => window.dispatchEvent(new CustomEvent('message-toast-closed')))
   await listen('messages:opened', () => window.dispatchEvent(new CustomEvent('message-panel-opened')))
   await listen('calendar:opened', () => window.dispatchEvent(new CustomEvent('calendar-panel-opened')))
   await listen('calendar:closed', () => window.dispatchEvent(new CustomEvent('calendar-panel-closed')))
   const api: DesktopAPI = {
+    worldFeed: () => call('worldFeed'), worldRetry: () => call('worldRetry'),
     openCalendar: () => call('openCalendar'), refreshCalendar: () => call('refreshCalendar'),
     calendarUi: blocked => call('calendarUi', {blocked}),
     respondCalendar: (epoch, key, choice) => call('respondCalendar', {epoch, key, choice}),

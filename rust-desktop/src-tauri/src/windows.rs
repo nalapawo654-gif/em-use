@@ -149,6 +149,7 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     let _guard = shared_state.settings_gate.lock().await;
     end_gesture(app, None)?;
     let valid = model::validate(&patch);
+    desktop_world::validate_platform(&valid)?;
     let mut settings = snapshot(app)["settings"].clone();
     let previous_scene = settings["scene"].clone();
     model::merge(&mut settings, &valid);
@@ -187,6 +188,13 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     storage::write(app, "preferences.json", &settings)?;
     let scene_changed = settings["scene"] != previous_scene;
     shared(app).inner.lock().unwrap().state["settings"] = settings;
+    if valid.get("worldEnabled").is_some()
+        || valid.get("worldPaused").is_some()
+        || valid.get("reducedMotion").is_some()
+    {
+        shared(app).inner.lock().unwrap().state["desktopWorldNotice"] = Value::Null;
+        desktop_world::settings_changed(app);
+    }
     if scene_changed {
         if let Some(panel) = app.get_webview_window("calendar") {
             let _ = panel.close();
@@ -544,6 +552,67 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
             .map_err(|e| e.to_string())?;
     }
     menu.append(&scenes).map_err(|e| e.to_string())?;
+    #[cfg(windows)]
+    {
+        let world = Submenu::new(app, "桌面世界 · 河床", true).map_err(|e| e.to_string())?;
+        world
+            .append(
+                &CheckMenuItem::with_id(
+                    app,
+                    "world:enabled",
+                    "开启河床壁纸",
+                    true,
+                    s["settings"]["worldEnabled"] == true,
+                    None::<&str>,
+                )
+                .map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
+        world
+            .append(
+                &CheckMenuItem::with_id(
+                    app,
+                    "world:paused",
+                    "暂停河床",
+                    s["settings"]["worldEnabled"] == true && s["settings"]["reducedMotion"] != true,
+                    s["settings"]["worldPaused"] == true || s["settings"]["reducedMotion"] == true,
+                    None::<&str>,
+                )
+                .map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
+        world
+            .append(
+                &MenuItem::with_id(
+                    app,
+                    "world:feed",
+                    "投喂鱼食",
+                    s["desktopWorld"]["status"] == "running",
+                    None::<&str>,
+                )
+                .map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
+        world
+            .append(
+                &MenuItem::with_id(
+                    app,
+                    "world:retry",
+                    "重新加载河床",
+                    s["settings"]["worldEnabled"] == true && s["desktopWorld"]["status"] == "error",
+                    None::<&str>,
+                )
+                .map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
+        world
+            .append(
+                &MenuItem::with_id(app, "world:settings", "桌面世界设置", true, None::<&str>)
+                    .map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
+        menu.append(&world).map_err(|e| e.to_string())?;
+    }
     add("refresh", "刷新额度")?;
     add("settings", "设置")?;
     add("messages", "咚咚消息")?;
@@ -627,6 +696,33 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         .on_menu_event(|app, e| {
             let id = e.id.as_ref();
             let result = match id {
+                "world:settings" => settings_window(app, "world"),
+                "world:enabled" | "world:paused" => {
+                    let key = if id == "world:enabled" {
+                        "worldEnabled"
+                    } else {
+                        "worldPaused"
+                    };
+                    schedule_settings(app, json!({key:snapshot(app)["settings"][key]!=true}));
+                    Ok(())
+                }
+                "world:feed" | "world:retry" => {
+                    let app = app.clone();
+                    let action = if id == "world:feed" {
+                        "worldFeed"
+                    } else {
+                        "worldRetry"
+                    };
+                    tauri::async_runtime::spawn(async move {
+                        if let Err(error) = desktop_world::command(&app, action).await {
+                            shared(&app).inner.lock().unwrap().state["desktopWorldNotice"] =
+                                json!(error);
+                            publish(&app);
+                            let _ = settings_window(&app, "world");
+                        }
+                    });
+                    Ok(())
+                }
                 "show" => {
                     show(app);
                     Ok(())
@@ -706,9 +802,18 @@ pub fn maintain(app: &tauri::AppHandle) {
 fn schedule_settings(app: &tauri::AppHandle, patch: Value) {
     let app = app.clone();
     tauri::async_runtime::spawn(async move {
-        if apply_settings(&app, patch).await.is_err() {
-            shared(&app).inner.lock().unwrap().state["message"] = json!("设置未能保存，请重试");
+        let world = patch.get("worldEnabled").is_some() || patch.get("worldPaused").is_some();
+        if let Err(error) = apply_settings(&app, patch).await {
+            let field = if world {
+                "desktopWorldNotice"
+            } else {
+                "message"
+            };
+            shared(&app).inner.lock().unwrap().state[field] = json!(error);
             publish(&app);
+            if world {
+                let _ = settings_window(&app, "world");
+            }
         }
     });
 }

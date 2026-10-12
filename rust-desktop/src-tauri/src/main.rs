@@ -2,6 +2,7 @@
 mod account;
 mod auto_reply;
 mod calendar;
+mod desktop_world;
 mod dongdong;
 mod message_panel_focus;
 mod message_reading;
@@ -150,6 +151,12 @@ async fn desktop(
     }
     let p = payload.unwrap_or(Value::Null);
     match action.as_str() {
+        "worldFeed" | "worldRetry" => {
+            if !matches!(window.label(), "widget" | "settings") {
+                return Err("请在设置中操作桌面世界".into());
+            }
+            desktop_world::command(&app, &action).await?;
+        }
         "getState" => return Ok(snapshot(&app)),
         "searchReplyUsers" => {
             if window.label() != "settings" {
@@ -272,6 +279,8 @@ async fn desktop(
 }
 fn main() {
     let state = json!({"status":"signed-out","quota":null,"message":"登录后，让小伙伴陪你看额度","syncing":false,"settings":model::contract()["defaults"],"version":env!("CARGO_PKG_VERSION"),"persistentLogin":false,"loginOpen":false,"updateMode":if cfg!(target_os = "macos") { "manual" } else { "automatic" },"update":{"status":"idle","message":"尚未检查更新"}});
+    let mut state = state;
+    state["desktopWorld"] = desktop_world::initial_state();
     let builder = tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             windows::show(app)
@@ -315,6 +324,7 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             desktop,
+            desktop_world::world_event,
             account::auth_candidate,
             updates::check_update,
             updates::install_update,
@@ -340,6 +350,7 @@ fn main() {
             updates::restore_notice(&handle);
             account::restore(&handle);
             windows::setup(app)?;
+            desktop_world::start(&handle);
             messages::start(handle.clone());
             calendar::start(handle.clone());
             #[cfg(not(target_os = "macos"))]

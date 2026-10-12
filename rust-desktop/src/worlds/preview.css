@@ -1,0 +1,2 @@
+.world-preview{position:fixed;z-index:5;left:20px;bottom:20px;display:flex;align-items:center;gap:12px;padding:12px 16px;background:#10251feb;color:#eef5e9;border:1px solid #9db79b66;border-radius:12px;font:13px/1.6 system-ui,sans-serif;max-width:calc(100% - 40px);flex-wrap:wrap}
+.world-preview button{border:1px solid #95b09b88;background:#304f40;color:inherit;padding:7px 13px;border-radius:7px;cursor:pointer;font:inherit}.world-preview button:disabled{opacity:.5;cursor:not-allowed}.world-preview button:focus-visible{outline:2px solid #dfedb8;outline-offset:3px}

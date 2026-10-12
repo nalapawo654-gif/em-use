@@ -136,6 +136,7 @@ export interface MessageState { epoch: string; status: 'waiting' | 'ready' | 'pa
 export interface CalendarEvent { key: string; title: string; start: number; end: number; rooms: string[]; allDay: boolean }
 export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
 export interface Settings {
+  worldEnabled: boolean; worldPaused: boolean;
   calendarEnabled: boolean; calendarPreview: boolean; calendarAtStart: boolean; calendarSystemNotifications: boolean; calendarLeadMinutes: number;
   messageEnabled: boolean; messagePreview: boolean; messageRespectMute: boolean; messagePausedUntil: number;
   alwaysOnTop: boolean; clickThrough: boolean; launchAtLogin: boolean;
@@ -145,6 +146,8 @@ export interface Settings {
   scene: Scene; potatoSkin: PotatoSkin; piranhaSkin: PiranhaSkin; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  desktopWorldNotice?: string | null;
+  desktopWorld?: { supported: boolean; status: 'unsupported' | 'off' | 'loading' | 'running' | 'paused' | 'error'; message: string };
   calendar?: CalendarState;
   messageToast?: { epoch: string; key: string; conversation?: string; side: string } | null;
   messages?: MessageState;
@@ -158,6 +161,7 @@ export interface AppState {
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }
 export interface DesktopAPI {
+  worldFeed?(): Promise<void>; worldRetry?(): Promise<void>;
   searchReplyUsers?(epoch: string, keyword: string, page: number): Promise<{epoch: string; items: ReplyContact[]; hasMore: boolean}>;
   configureAutoReply?(config: AutoReplyConfig): Promise<void>;
   openCalendar?(): Promise<void>;
@@ -187,6 +191,7 @@ export interface DesktopAPI {
   onState(callback: (state: AppState) => void): () => void;
 }
 export const DEFAULT_SETTINGS: Settings = {
+  worldEnabled: false, worldPaused: false,
   calendarEnabled: true, calendarPreview: true, calendarAtStart: false, calendarSystemNotifications: false, calendarLeadMinutes: 5,
   messageEnabled: true, messagePreview: true, messageRespectMute: true, messagePausedUntil: 0,
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',

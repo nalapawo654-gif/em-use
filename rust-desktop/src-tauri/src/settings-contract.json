@@ -1,5 +1,7 @@
 {
   "defaults": {
+    "worldEnabled": false,
+    "worldPaused": false,
     "calendarEnabled": true,
     "calendarPreview": true,
     "calendarAtStart": false,

@@ -1,0 +1,6 @@
+{
+  "identifier": "desktop-world",
+  "description": "The bundled riverbed can report its lifecycle and feeding acknowledgements only.",
+  "windows": ["world-riverbed-*"],
+  "permissions": ["allow-world-event"]
+}
