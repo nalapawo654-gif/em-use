@@ -9,6 +9,7 @@ mod message_reading;
 mod message_source;
 mod messages;
 mod model;
+mod startup;
 mod storage;
 mod updates;
 mod windows;
@@ -232,6 +233,7 @@ async fn desktop(
             } else if window.label() == "messages" {
                 window.close().map_err(|e| e.to_string())?;
             } else {
+                startup::cancel(&app);
                 windows::hide_message_toast(&app, true);
                 calendar::dismiss(&app);
                 if let Some(w) = app.get_webview_window("calendar") {
@@ -285,13 +287,18 @@ fn main() {
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             windows::show(app)
         }))
-        .plugin(tauri_plugin_autostart::Builder::new().build())
+        .plugin(
+            tauri_plugin_autostart::Builder::new()
+                .args(["--autostart"])
+                .build(),
+        )
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init());
     #[cfg(not(target_os = "macos"))]
     let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
     builder
+        .manage(startup::State::default())
         .manage(Shared {
             inner: Mutex::new(Runtime {
                 state,
@@ -325,6 +332,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             desktop,
             desktop_world::world_event,
+            startup::startup_event,
             account::auth_candidate,
             updates::check_update,
             updates::install_update,
@@ -350,6 +358,7 @@ fn main() {
             updates::restore_notice(&handle);
             account::restore(&handle);
             windows::setup(app)?;
+            startup::start(&handle);
             desktop_world::start(&handle);
             messages::start(handle.clone());
             calendar::start(handle.clone());
@@ -381,6 +390,7 @@ fn main() {
             match event {
                 tauri::WindowEvent::CloseRequested { api, .. } if w.label() == "widget" => {
                     api.prevent_close();
+                    startup::cancel(app);
                     let _ = windows::end_gesture(app, None);
                     windows::hide_message_toast(app, true);
                     calendar::dismiss(app);
@@ -391,6 +401,9 @@ fn main() {
                 }
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {
                     let _ = windows::end_gesture(app, None);
+                }
+                tauri::WindowEvent::Destroyed if w.label() == "startup" => {
+                    startup::finish(app);
                 }
                 tauri::WindowEvent::Destroyed if w.label() == "calendar" => {
                     let _ = app.emit_to("widget", "calendar:closed", ());

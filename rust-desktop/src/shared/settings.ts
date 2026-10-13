@@ -28,7 +28,7 @@ export const SETTINGS_ENUMS = {
 export function validateSettings(input: unknown): Partial<Settings> {
   if (!input || typeof input !== 'object') return {}
   const data = input as Record<string, unknown>, out: Record<string, unknown> = {}
-  for (const key of ['worldEnabled', 'worldPaused', 'calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
+  for (const key of ['startupAnimation', 'worldEnabled', 'worldPaused', 'calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
 

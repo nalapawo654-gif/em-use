@@ -1,5 +1,6 @@
 {
   "defaults": {
+    "startupAnimation": true,
     "worldEnabled": false,
     "worldPaused": false,
     "calendarEnabled": true,

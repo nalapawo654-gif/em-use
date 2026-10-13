@@ -206,6 +206,7 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     Ok(())
 }
 pub fn show(app: &tauri::AppHandle) {
+    startup::cancel(app);
     if let Ok(w) = widget(app) {
         let _ = w.show();
         let _ = w.set_focus();
@@ -676,7 +677,11 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     );
     set_bounds(&w, b)?;
     persist(&handle)?;
-    w.show()?;
+    // Keep the pet hidden until the intro handoff (or native watchdog).
+    // Refresh existing autostart registrations with the silent-launch argument.
+    if s["settings"]["launchAtLogin"] == true {
+        let _ = app.autolaunch().enable();
+    }
     tauri::tray::TrayIconBuilder::with_id("main")
         .icon(app.default_window_icon().unwrap().clone())
         .tooltip("EM Use · 桌面小伙伴")

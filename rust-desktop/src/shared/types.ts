@@ -136,6 +136,7 @@ export interface MessageState { epoch: string; status: 'waiting' | 'ready' | 'pa
 export interface CalendarEvent { key: string; title: string; start: number; end: number; rooms: string[]; allDay: boolean }
 export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
 export interface Settings {
+  startupAnimation: boolean;
   worldEnabled: boolean; worldPaused: boolean;
   calendarEnabled: boolean; calendarPreview: boolean; calendarAtStart: boolean; calendarSystemNotifications: boolean; calendarLeadMinutes: number;
   messageEnabled: boolean; messagePreview: boolean; messageRespectMute: boolean; messagePausedUntil: number;
@@ -191,6 +192,7 @@ export interface DesktopAPI {
   onState(callback: (state: AppState) => void): () => void;
 }
 export const DEFAULT_SETTINGS: Settings = {
+  startupAnimation: true,
   worldEnabled: false, worldPaused: false,
   calendarEnabled: true, calendarPreview: true, calendarAtStart: false, calendarSystemNotifications: false, calendarLeadMinutes: 5,
   messageEnabled: true, messagePreview: true, messageRespectMute: true, messagePausedUntil: 0,

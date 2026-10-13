@@ -1,0 +1,6 @@
+{
+  "identifier": "startup-intro",
+  "description": "A local, temporary intro can report playback and completion only.",
+  "windows": ["startup"],
+  "permissions": ["allow-startup-event"]
+}
