@@ -181,6 +181,55 @@ pub fn config_path() -> Result<PathBuf, Failure> {
     root.map(|p| p.join("emc").join(CONFIG))
         .ok_or_else(|| failure("当前系统暂不支持连接咚咚，可使用手动登录"))
 }
+fn is_client_executable(path: &Path) -> bool {
+    matches!(
+        path.file_name()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .to_lowercase()
+            .as_str(),
+        "咚咚" | "咚咚.exe" | "emc.exe" | "dongdong.exe" | "emdongdong.exe"
+    )
+}
+/// Shared by session discovery, message process checks and explicit client activation.
+pub(crate) fn running_processes() -> Vec<(u32, PathBuf)> {
+    use sysinfo::{ProcessRefreshKind, ProcessesToUpdate, System, UpdateKind};
+    let mut system = System::new();
+    system.refresh_processes_specifics(
+        ProcessesToUpdate::All,
+        true,
+        ProcessRefreshKind::nothing().with_exe(UpdateKind::Always),
+    );
+    let mut processes: Vec<_> = system
+        .processes()
+        .iter()
+        .filter_map(|(pid, process)| {
+            process
+                .exe()
+                .filter(|path| is_client_executable(path))
+                .map(|path| (pid.as_u32(), path.to_owned()))
+        })
+        .collect();
+    processes.sort_by(|a, b| a.1.cmp(&b.1).then(a.0.cmp(&b.0)));
+    processes
+}
+#[cfg(any(windows, test))]
+fn archives_from_processes(processes: &[(u32, PathBuf)], out: &mut Vec<PathBuf>) {
+    let mut roots = std::collections::HashSet::new();
+    for (_, executable) in processes {
+        // Never infer a root from cwd or a bare process name. A custom drive, spaces and
+        // Unicode need no special treatment when using the OS-reported executable path.
+        if !executable.is_absolute() || !is_client_executable(executable) {
+            continue;
+        }
+        if let Some(root) = executable
+            .parent()
+            .filter(|root| roots.insert(root.to_path_buf()))
+        {
+            archives_in(root, out);
+        }
+    }
+}
 #[cfg(any(windows, test))]
 fn archives_in(root: &Path, out: &mut Vec<PathBuf>) {
     out.push(root.join("resources/app.asar"));
@@ -219,6 +268,9 @@ pub(crate) fn archive_candidates() -> Vec<PathBuf> {
     #[cfg(target_os = "windows")]
     {
         use winreg::{enums::*, RegKey};
+        // Prefer the installation that is actually running, before possibly stale
+        // uninstall records and default C-drive locations. No whole-disk search.
+        archives_from_processes(&running_processes(), &mut out);
         // Read only matching uninstall entries, including custom installation locations.
         for hive in [HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE] {
             for view in [KEY_WOW64_64KEY, KEY_WOW64_32KEY] {
@@ -262,6 +314,8 @@ pub(crate) fn archive_candidates() -> Vec<PathBuf> {
             }
         }
     }
+    let mut seen = std::collections::HashSet::new();
+    out.retain(|path| seen.insert(path.clone()));
     out
 }
 fn parse_session(plain: &[u8], version: String) -> Result<Session, Failure> {
@@ -303,11 +357,14 @@ pub fn read_session() -> Result<Session, Failure> {
         ));
     }
     let bytes = bounded_read(&path)?;
+    session_from_archives(&bytes, archive_candidates())
+}
+fn session_from_archives(bytes: &[u8], archives: Vec<PathBuf>) -> Result<Session, Failure> {
     let mut found = false;
-    for archive in archive_candidates().into_iter().filter(|p| p.is_file()) {
+    for archive in archives.into_iter().filter(|p| p.is_file()) {
         found = true;
         if let Ok((key, version)) = installed_key(&archive) {
-            if let Ok(plain) = decrypt(&bytes, &key) {
+            if let Ok(plain) = decrypt(bytes, &key) {
                 return parse_session(&plain, version);
             }
         }
@@ -522,6 +579,58 @@ mod tests {
         archives_in(&root, &mut paths);
         assert!(paths[2].ends_with("app-3.10.0/resources/app.asar"));
         fs::remove_dir_all(root).unwrap();
+    }
+    #[test]
+    fn running_custom_installation_resolves_session_without_registry_or_default_paths() {
+        let root = std::env::temp_dir().join(format!("em-use-path-test-{}", uuid::Uuid::new_v4()));
+        let install = root.join("自定义 软件/咚咚/app-3.4.0");
+        fs::create_dir_all(install.join("resources")).unwrap();
+        let fixture = fixture();
+        let decode = |field: &str| {
+            base64::engine::general_purpose::STANDARD
+                .decode(fixture[field].as_str().unwrap())
+                .unwrap()
+        };
+        fs::write(install.join("resources/app.asar"), decode("asar")).unwrap();
+        let executable = install.join("EmDongDong.EXE");
+        let mut paths = Vec::new();
+        archives_from_processes(&[(1, executable.clone()), (2, executable)], &mut paths);
+        assert_eq!(paths[0], install.join("resources/app.asar"));
+        assert_eq!(
+            paths.len(),
+            2,
+            "Electron child processes must not duplicate archive reads"
+        );
+        // An obsolete default installation must come after the active installation.
+        archives_in(&root.join("old-installation"), &mut paths);
+        let session = session_from_archives(&decode("encrypted"), paths).unwrap();
+        assert_eq!(session.badge, "fixture-user");
+        fs::remove_dir_all(root).unwrap();
+    }
+    #[test]
+    fn process_discovery_ignores_relative_paths_and_unrelated_executables() {
+        let mut paths = Vec::new();
+        archives_from_processes(
+            &[
+                (1, PathBuf::from("emc.exe")),
+                (2, std::env::temp_dir().join("not-dongdong.exe")),
+            ],
+            &mut paths,
+        );
+        assert!(paths.is_empty());
+        assert!(is_client_executable(Path::new("DongDong.EXE")));
+        assert!(is_client_executable(Path::new("咚咚.exe")));
+        assert!(!is_client_executable(Path::new("DongDong Helper.exe")));
+    }
+    #[cfg(windows)]
+    #[test]
+    fn windows_installations_on_d_and_e_drives_preserve_the_actual_root() {
+        for root in [r"D:\软件\咚咚", r"E:\Work Apps\DongDong\app-3.4.0"] {
+            let root = Path::new(root);
+            let mut paths = Vec::new();
+            archives_from_processes(&[(1, root.join("咚咚.exe"))], &mut paths);
+            assert_eq!(paths[0], root.join("resources/app.asar"));
+        }
     }
     #[test]
     fn empty_session_and_header_injection_are_rejected() {

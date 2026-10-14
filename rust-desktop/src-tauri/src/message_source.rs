@@ -43,31 +43,7 @@ pub fn running() -> bool {
     !running_processes().is_empty()
 }
 pub fn running_processes() -> Vec<(u32, PathBuf)> {
-    use sysinfo::{ProcessRefreshKind, ProcessesToUpdate, System, UpdateKind};
-    let mut system = System::new();
-    system.refresh_processes_specifics(
-        ProcessesToUpdate::All,
-        true,
-        ProcessRefreshKind::nothing().with_exe(UpdateKind::Always),
-    );
-    system
-        .processes()
-        .iter()
-        .filter_map(|(pid, process)| {
-            process.exe().and_then(|p| {
-                let name = p
-                    .file_name()
-                    .unwrap_or_default()
-                    .to_string_lossy()
-                    .to_lowercase();
-                matches!(
-                    name.as_str(),
-                    "咚咚" | "咚咚.exe" | "emc.exe" | "dongdong.exe" | "emdongdong.exe"
-                )
-                .then(|| (pid.as_u32(), p.to_owned()))
-            })
-        })
-        .collect()
+    dongdong::running_processes()
 }
 pub fn stamp() -> String {
     use sha2::{Digest, Sha256};

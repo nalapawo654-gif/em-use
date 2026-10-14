@@ -190,6 +190,7 @@ fn watch_source(app: tauri::AppHandle) {
     let mut cached_session = None;
     let mut session_stamp = String::new();
     let mut session_retry = 0;
+    let mut session_error: Option<String> = None;
     let mut reader_retry = 0;
     loop {
         let sh = shared(&app);
@@ -202,8 +203,19 @@ fn watch_source(app: tauri::AppHandle) {
         if !message_source::running() {
             cached_session = None;
             session_stamp.clear();
+            session_error = None;
         } else if session_stamp != before || (cached_session.is_none() && now() >= session_retry) {
-            cached_session = dongdong::read_session().ok();
+            match dongdong::read_session() {
+                Ok(session) => {
+                    cached_session = Some(session);
+                    session_error = None;
+                }
+                Err((_, message)) => {
+                    cached_session = None;
+                    // Only the fixed, user-facing failure text; no session material or paths.
+                    session_error = Some(message);
+                }
+            }
             session_stamp = before.clone();
             session_retry = now() + 5000;
         }
@@ -339,7 +351,7 @@ fn watch_source(app: tauri::AppHandle) {
             h.transition(
                 if enabled { "waiting" } else { "disabled" },
                 if enabled {
-                    "等待本机咚咚登录并运行"
+                    session_error.as_deref().unwrap_or("等待本机咚咚登录并运行")
                 } else {
                     "咚咚消息提醒已关闭"
                 },

@@ -5,6 +5,7 @@ mod calendar;
 mod desktop_world;
 mod dongdong;
 mod message_panel_focus;
+mod message_popup;
 mod message_reading;
 mod message_source;
 mod messages;
@@ -196,11 +197,9 @@ async fn desktop(
                 let _ = w.close();
             }
             calendar::dismiss(&app);
-            windows::message_panel(&app)?;
-            windows::hide_message_toast(&app, true);
-            let _ = app.emit_to("widget", "messages:opened", ());
+            windows::message_panel(&app).await?;
         }
-        "showMessageToast" => windows::message_toast(&app, &p)?,
+        "showMessageToast" => windows::message_toast(&app, &p).await?,
         "hideMessageToast" => windows::hide_message_toast(&app, false),
         "openMessages" => windows::open_messages(&app)?,
         "openDongdong" => messages::open_dongdong(&app, &p)?,
@@ -232,6 +231,8 @@ async fn desktop(
                 windows::hide_message_toast(&app, true);
             } else if window.label() == "messages" {
                 window.close().map_err(|e| e.to_string())?;
+            } else if window.label() == "widget" {
+                windows::on_ui_thread(&app, windows::hide_widget).await?;
             } else {
                 startup::cancel(&app);
                 windows::hide_message_toast(&app, true);
@@ -299,6 +300,7 @@ fn main() {
     let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
     builder
         .manage(startup::State::default())
+        .manage(message_popup::MessagePopupGate::default())
         .manage(Shared {
             inner: Mutex::new(Runtime {
                 state,
@@ -390,14 +392,7 @@ fn main() {
             match event {
                 tauri::WindowEvent::CloseRequested { api, .. } if w.label() == "widget" => {
                     api.prevent_close();
-                    startup::cancel(app);
-                    let _ = windows::end_gesture(app, None);
-                    windows::hide_message_toast(app, true);
-                    calendar::dismiss(app);
-                    if let Some(w) = app.get_webview_window("calendar") {
-                        let _ = w.close();
-                    }
-                    let _ = w.hide();
+                    let _ = windows::hide_widget(app);
                 }
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {
                     let _ = windows::end_gesture(app, None);

@@ -212,6 +212,45 @@ pub fn show(app: &tauri::AppHandle) {
         let _ = w.set_focus();
     }
 }
+// Serialize only the final native visibility changes, never WebView construction:
+// creating WebView2 from a main-thread callback can deadlock on Windows.
+pub async fn on_ui_thread(
+    app: &tauri::AppHandle,
+    action: impl FnOnce(&tauri::AppHandle) -> Result<(), String> + Send + 'static,
+) -> Result<(), String> {
+    let handle = app.clone();
+    let (send, receive) = tokio::sync::oneshot::channel();
+    app.run_on_main_thread(move || {
+        let _ = send.send(action(&handle));
+    })
+    .map_err(|e| e.to_string())?;
+    receive.await.map_err(|_| "窗口操作已取消".to_owned())?
+}
+fn message_popup_allowed(app: &tauri::AppHandle, ticket: u64) -> bool {
+    let visible = widget(app)
+        .map_err(|_| ())
+        .and_then(|pet| pet.is_visible().map_err(|_| ()));
+    app.state::<message_popup::MessagePopupGate>()
+        .allows(ticket, visible)
+}
+// Called on the UI thread by both the pet's hide action and native CloseRequested.
+pub fn hide_widget(app: &tauri::AppHandle) -> Result<(), String> {
+    app.state::<message_popup::MessagePopupGate>().hide();
+    startup::cancel(app);
+    let result = widget(app)?.hide().map_err(|e| e.to_string());
+    let _ = end_gesture(app, None);
+    hide_message_toast(app, true);
+    if let Some(panel) = app.get_webview_window("messages") {
+        let _ = panel.hide();
+        let _ = panel.close();
+    }
+    calendar::dismiss(app);
+    if let Some(panel) = app.get_webview_window("calendar") {
+        let _ = panel.hide();
+        let _ = panel.close();
+    }
+    result
+}
 pub fn open_settings(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window(app, "")
 }
@@ -223,7 +262,11 @@ pub fn open_messages(app: &tauri::AppHandle) -> Result<(), String> {
 }
 // A separate card stays readable even with a 180px pet; prefer the free side of the pet.
 // Keep the transient bubble outside the pet window without activating it.
-pub fn message_toast(app: &tauri::AppHandle, selection: &Value) -> Result<(), String> {
+pub async fn message_toast(app: &tauri::AppHandle, selection: &Value) -> Result<(), String> {
+    let ticket = app.state::<message_popup::MessagePopupGate>().ticket();
+    if !message_popup_allowed(app, ticket) {
+        return Ok(());
+    }
     if calendar_panel_open(app) || !shared(app).calendar.lock().unwrap().active.is_empty() {
         return Ok(());
     }
@@ -278,11 +321,16 @@ pub fn message_toast(app: &tauri::AppHandle, selection: &Value) -> Result<(), St
         .find(|i| i["key"] == selection["key"])
         .unwrap()["conversation"]
         .clone();
-    *shared(app).message_toast.lock().unwrap() = Some(
-        json!({"epoch": selection["epoch"], "key": selection["key"], "conversation": conversation, "side": side}),
-    );
-    publish(app);
-    w.show().map_err(|e| e.to_string())
+    let payload = json!({"epoch": selection["epoch"], "key": selection["key"], "conversation": conversation, "side": side});
+    on_ui_thread(app, move |app| {
+        if !message_popup_allowed(app, ticket) {
+            return Ok(());
+        }
+        *shared(app).message_toast.lock().unwrap() = Some(payload);
+        publish(app);
+        w.show().map_err(|e| e.to_string())
+    })
+    .await
 }
 pub fn hide_message_toast(app: &tauri::AppHandle, notify: bool) {
     *shared(app).message_toast.lock().unwrap() = None;
@@ -294,7 +342,11 @@ pub fn hide_message_toast(app: &tauri::AppHandle, notify: bool) {
         let _ = app.emit_to("widget", "messages:toast-closed", ());
     }
 }
-pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
+pub async fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
+    let ticket = app.state::<message_popup::MessagePopupGate>().ticket();
+    if !message_popup_allowed(app, ticket) {
+        return Err("桌宠已收起，请先显示桌宠或从设置查看消息".into());
+    }
     let pet = widget(app)?;
     let b = bounds(&pet)?;
     let a = area(&pet, false)?;
@@ -326,8 +378,17 @@ pub fn message_panel(app: &tauri::AppHandle) -> Result<(), String> {
         w
     };
     set_bounds(&w, card).map_err(|e| format!("定位消息窗口失败：{e}"))?;
-    w.show().map_err(|e| format!("显示消息窗口失败：{e}"))?;
-    w.set_focus().map_err(|e| format!("激活消息窗口失败：{e}"))
+    on_ui_thread(app, move |app| {
+        if !message_popup_allowed(app, ticket) {
+            return Err("桌宠已收起，请先显示桌宠或从设置查看消息".into());
+        }
+        w.show().map_err(|e| format!("显示消息窗口失败：{e}"))?;
+        w.set_focus().map_err(|e| format!("激活消息窗口失败：{e}"))?;
+        hide_message_toast(app, true);
+        let _ = app.emit_to("widget", "messages:opened", ());
+        Ok(())
+    })
+    .await
 }
 
 // Calendar shares the same screen-edge placement and native focus lifecycle as messages.
