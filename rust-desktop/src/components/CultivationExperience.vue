@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetArcToolbar from './PetArcToolbar.vue'
 import PetEvolution from './PetEvolution.vue'
 import { evolution } from '../evolution/controller'
 import QuotaDetails from './QuotaDetails.vue'
@@ -103,45 +104,47 @@ onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventL
 <template>
   <div class="cultivation-experience" :class="{ 'cultivation-native': isDesktop }">
     <div class="cultivation-hero">
-      <section ref="widget" tabindex="-1" class="cultivation-widget" :class="['realm-' + realm, 'level-' + level, 'action-' + play.action, 'training-' + training.practice, event ? 'event-'+event.kind+' event-'+encounterPhase(event) : '', { 'is-training': trainingActive, 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-encounter': !!event, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible || !!panel || moving }]" :style="encounterStyle" aria-label="修仙渡劫事务所场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+      <section ref="widget" tabindex="-1" class="cultivation-widget pet-arc-host" :class="['realm-' + realm, 'level-' + level, 'action-' + play.action, 'training-' + training.practice, event ? 'event-'+event.kind+' event-'+encounterPhase(event) : '', { 'is-training': trainingActive, 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-encounter': !!event, 'has-notice': notice, 'is-moving': moving, 'is-paused': !visible || !!panel || moving }]" :style="encounterStyle" aria-label="修仙渡劫事务所场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
         <PetEvolution :blocked="!!panel || active || moving || !!event || !!notice || calendarOpen || updateLetterOpen"/><PetNotices :blocked="!!panel || active || moving || !!event || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active || !!event" @open-change="updateLetterOpen = $event" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" />
         <PetCalendar appearance="cultivation" :blocked="!!panel || moving || !!notice || updateLetterOpen || active || !!event" @open-change="calendarOpen = $event"/>
-        <div class="cultivation-aura" aria-hidden="true"><div class="cultivation-ring"><i v-for="(rune,i) in ['乾','坤','震','巽','坎','离','艮','兑']" :key="rune" :style="{ transform: `rotate(${i*45}deg) translateY(-23cqw) rotate(${-i*45}deg)` }">{{ rune }}</i></div><span>✧</span></div>
-        <Transition name="realm-dissolve">
-          <div :key="realm" class="cultivation-realm-layer" :class="'scenery-'+realm" aria-hidden="true">
-            <div class="cultivation-weather" :class="'weather-'+realm"><i v-for="i in 14" :key="i" :style="{ left: `${12+i*5.5}%`, top: `${8+(i%4)*11}%`, animationDelay: `${-i*.37}s` }"></i></div>
-            <CultivationMaterial class="cultivation-island" atlas="islands" :index="islandForRealm(realm)"/>
-            <CultivationProp v-if="realm === 'rain'" class="cultivation-umbrella" :index="8"/>
+        <div class="pet-arc-art-stage">
+          <div class="cultivation-aura" aria-hidden="true"><div class="cultivation-ring"><i v-for="(rune,i) in ['乾','坤','震','巽','坎','离','艮','兑']" :key="rune" :style="{ transform: `rotate(${i*45}deg) translateY(-23cqw) rotate(${-i*45}deg)` }">{{ rune }}</i></div><span>✧</span></div>
+          <Transition name="realm-dissolve">
+            <div :key="realm" class="cultivation-realm-layer" :class="'scenery-'+realm" aria-hidden="true">
+              <div class="cultivation-weather" :class="'weather-'+realm"><i v-for="i in 14" :key="i" :style="{ left: `${12+i*5.5}%`, top: `${8+(i%4)*11}%`, animationDelay: `${-i*.37}s` }"></i></div>
+              <CultivationMaterial class="cultivation-island" atlas="islands" :index="islandForRealm(realm)"/>
+              <CultivationProp v-if="realm === 'rain'" class="cultivation-umbrella" :index="8"/>
+            </div>
+          </Transition>
+          <div class="cultivation-contact-shadow" aria-hidden="true"></div>
+          <div class="cultivation-ground-mist" aria-hidden="true"></div>
+          <div class="cultivation-actor" :class="'pose-'+actorFrame">
+            <div v-if="event?.kind==='furnace-pop'" class="cultivation-soot" aria-hidden="true"><i></i><i></i><i></i></div>
+            <CultivatorMotion :frame="actorFrame" :skin="state.settings.cultivationSkin" :running="motionRunning" :gentle="gentle"/>
+            <CultivationMaterial v-if="accessory!==null" class="cultivation-worn-accessory" :class="'accessory-'+state.settings.cultivationAccessory" :index="accessory"/>
+            <CultivationMaterial v-if="treasure!==null" class="cultivation-worn-treasure" :index="treasure"/>
+            <CultivationProp v-if="current && ['tea','comb','peach'].includes(play.action)" :key="play.action" class="cultivation-held-prop" :class="'held-'+play.action" :index="current.prop"/>
+            <div v-if="play.action==='tea'" class="cultivation-tea-steam" aria-hidden="true"><i></i><i></i></div>
+            <button class="cultivation-pet-hit scene-hit" aria-label="轻点小仙人问安" @click="act('greet')"></button>
+            <div v-if="play.action === 'comb' && play.completedAt === null" class="cultivation-hair-hit" data-pet-gesture aria-label="拖动梳头区域" @pointerdown="startComb" @pointermove="dragComb" @pointerup="releaseStroke" @pointercancel="releaseStroke" @lostpointercapture="releaseStroke"><span>轻轻拖动梳头</span></div>
           </div>
-        </Transition>
-        <div class="cultivation-contact-shadow" aria-hidden="true"></div>
-        <div class="cultivation-ground-mist" aria-hidden="true"></div>
-        <div class="cultivation-actor" :class="'pose-'+actorFrame">
-          <div v-if="event?.kind==='furnace-pop'" class="cultivation-soot" aria-hidden="true"><i></i><i></i><i></i></div>
-          <CultivatorMotion :frame="actorFrame" :skin="state.settings.cultivationSkin" :running="motionRunning" :gentle="gentle"/>
-          <CultivationMaterial v-if="accessory!==null" class="cultivation-worn-accessory" :class="'accessory-'+state.settings.cultivationAccessory" :index="accessory"/>
-          <CultivationMaterial v-if="treasure!==null" class="cultivation-worn-treasure" :index="treasure"/>
-          <CultivationProp v-if="current && ['tea','comb','peach'].includes(play.action)" :key="play.action" class="cultivation-held-prop" :class="'held-'+play.action" :index="current.prop"/>
-          <div v-if="play.action==='tea'" class="cultivation-tea-steam" aria-hidden="true"><i></i><i></i></div>
-          <button class="cultivation-pet-hit scene-hit" aria-label="轻点小仙人问安" @click="act('greet')"></button>
-          <div v-if="play.action === 'comb' && play.completedAt === null" class="cultivation-hair-hit" data-pet-gesture aria-label="拖动梳头区域" @pointerdown="startComb" @pointermove="dragComb" @pointerup="releaseStroke" @pointercancel="releaseStroke" @lostpointercapture="releaseStroke"><span>轻轻拖动梳头</span></div>
+          <Transition name="practice-dissolve" mode="out-in">
+            <CultivationTraining :key="training.practice" :class="{'training-suspended':!trainingActive && !trainingBackdrop,'training-background':trainingBackdrop}" :practice="training.practice" :level="level" :quiet="state.settings.reducedMotion"/>
+          </Transition>
+          <CultivationEncounter v-if="event" :key="training.encounterSequence" :event="event" :quiet="state.settings.reducedMotion" @dismiss="dismissEncounter"/>
+          <span class="cultivation-crane-shadow" :style="{opacity:Math.max(.05,.28+ambience.crane.y/130),transform:`translateX(${ambience.crane.x*Math.max(0,1+ambience.crane.y/6)}cqw)`}" aria-hidden="true"></span>
+          <button class="cultivation-crane scene-hit" :class="{'crane-airborne':ambience.crane.y < -6}" :style="{transform:`translate(${ambience.crane.x}cqw,${ambience.crane.y}cqw)`}" aria-label="向仙鹤问安" @click="act('greet')"><CultivationCrane :pose="ambience.crane"/></button>
+          <button class="cultivation-burner scene-hit" :class="{'burner-hidden':!incenseVisible}" :disabled="!incenseVisible" aria-label="点一炉清香" @click="act('incense')"><CultivationIncense :lit="play.action==='incense'"/></button>
+          <CultivationProp v-if="current && !['tea','comb','peach','incense'].includes(play.action)" :key="play.action" class="cultivation-action-prop" :class="'prop-' + play.action" :index="current.prop"/>
+          <PhHeart v-if="play.action === 'greet' || play.action === 'peach'" class="cultivation-heart" weight="fill"/>
+          <div v-if="play.action==='woodfish'" class="cultivation-sound-rings" aria-hidden="true"><i></i><i></i><span>静</span></div>
+          <div v-if="play.action==='talisman'" class="cultivation-world-seals" aria-hidden="true"><span v-for="(rune,i) in ['天','地','人']" :key="rune" :class="{lit:play.progress>i}">{{rune}}</span></div>
+          <p v-if="!active && !event" class="cultivation-speech">{{ level === 'full' || level === 'settling' ? practice.hint : speech }}</p>
         </div>
-        <Transition name="practice-dissolve" mode="out-in">
-          <CultivationTraining :key="training.practice" :class="{'training-suspended':!trainingActive && !trainingBackdrop,'training-background':trainingBackdrop}" :practice="training.practice" :level="level" :quiet="state.settings.reducedMotion"/>
-        </Transition>
-        <CultivationEncounter v-if="event" :key="training.encounterSequence" :event="event" :quiet="state.settings.reducedMotion" @dismiss="dismissEncounter"/>
-        <span class="cultivation-crane-shadow" :style="{opacity:Math.max(.05,.28+ambience.crane.y/130),transform:`translateX(${ambience.crane.x*Math.max(0,1+ambience.crane.y/6)}cqw)`}" aria-hidden="true"></span>
-        <button class="cultivation-crane scene-hit" :class="{'crane-airborne':ambience.crane.y < -6}" :style="{transform:`translate(${ambience.crane.x}cqw,${ambience.crane.y}cqw)`}" aria-label="向仙鹤问安" @click="act('greet')"><CultivationCrane :pose="ambience.crane"/></button>
-        <button class="cultivation-burner scene-hit" :class="{'burner-hidden':!incenseVisible}" :disabled="!incenseVisible" aria-label="点一炉清香" @click="act('incense')"><CultivationIncense :lit="play.action==='incense'"/></button>
-        <CultivationProp v-if="current && !['tea','comb','peach','incense'].includes(play.action)" :key="play.action" class="cultivation-action-prop" :class="'prop-' + play.action" :index="current.prop"/>
-        <PhHeart v-if="play.action === 'greet' || play.action === 'peach'" class="cultivation-heart" weight="fill"/>
-        <div v-if="play.action==='woodfish'" class="cultivation-sound-rings" aria-hidden="true"><i></i><i></i><span>静</span></div>
-        <div v-if="play.action==='talisman'" class="cultivation-world-seals" aria-hidden="true"><span v-for="(rune,i) in ['天','地','人']" :key="rune" :class="{lit:play.progress>i}">{{rune}}</span></div>
-        <p v-if="!active && !event" class="cultivation-speech">{{ level === 'full' || level === 'settling' ? practice.hint : speech }}</p>
         <button class="cultivation-quota" :aria-expanded="panel === 'details'" :aria-label="'剩余额度 ' + (percent === null ? '未知' : Math.round(percent) + '%')" @click="togglePanel('details')"><span>{{ quotaDisplay.label }}</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><span class="cultivation-meter"><i :style="{ width: `${Math.max(0,Math.min(100,percent ?? 0))}%` }"></i></span><small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small><em v-if="state.status === 'stale'">数据待更新</em></button>
         <span class="cultivation-motto" aria-hidden="true">修为有限<br/>热爱无边<span>仙</span></span>
-        <header class="cultivation-header cultivation-chrome"><b><PhSparkle/>修仙渡劫事务所</b><div><button aria-label="更多修仙互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="切换修仙仙境" :aria-expanded="panel === 'realm'" @click="togglePanel('realm')"><PhMountains/></button><button aria-label="修仙百宝衣橱" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="修仙设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仙人到托盘" @click="hide"><PhMinus/></button></div></header>
-        <nav class="cultivation-tools cultivation-chrome" aria-label="陪仙人玩"><button v-for="item in actions" :key="item.id" :aria-label="item.label" @click="act(item.id)"><CultivationProp :index="item.prop"/><span>{{ item.label }}</span></button></nav>
+        <PetArcToolbar scene="cultivation" label="修仙渡劫事务所" :blocked="updateLetterOpen"><template #controls><button aria-label="更多修仙互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="切换修仙仙境" :aria-expanded="panel === 'realm'" @click="togglePanel('realm')"><PhMountains/></button><button aria-label="修仙百宝衣橱" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="修仙设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仙人到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in actions.slice(0, 4)" :key="item.id" :aria-label="item.label" @click="act(item.id)"><CultivationProp :index="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
+
         <footer class="cultivation-footer cultivation-chrome"><button :disabled="active" aria-label="换一段修炼机缘" @click="shuffle"><PhShuffle/><span>{{practice.label}}</span></button><button @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新修仙额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="safe(() => api.refresh(), '刷新失败，请稍后重试')"><PhArrowsClockwise :class="{spin:state.syncing}"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>
         <div v-if="active" class="cultivation-hud" aria-live="polite"><div><b>{{ play.completedAt !== null ? '修行小事，圆满完成' : current?.label ?? '道友，见面好' }}</b><small>{{ speech }}</small><template v-if="play.action === 'comb'"><progress :value="play.progress" max="1.2" aria-label="梳发进度"></progress><button v-if="play.completedAt === null" @click="keyboardComb">梳一下</button></template><div v-if="play.action === 'talisman'" class="cultivation-seals"><button v-for="(rune,i) in ['天','地','人']" :key="rune" :aria-label="'点亮' + rune + '印'" :aria-pressed="play.progress > i" :disabled="play.completedAt !== null" @click="seal(i)">{{ rune }}<span>{{ play.progress > i ? '✓' : i+1 }}</span></button></div></div><button aria-label="结束修仙互动" @click="cancel">结束<PhX/></button></div>
         <section v-if="panel" class="cultivation-panel" role="dialog" :aria-label="panel === 'play' ? '修仙玩法' : panel === 'realm' ? '修仙仙境' : panel === 'wardrobe' ? '修仙百宝衣橱' : '修仙额度详情'"><header><b>{{ panel === 'play' ? '忙里偷闲，也算修行' : panel === 'realm' ? '今日，在哪一方仙境？' : panel === 'wardrobe' ? '仙衣百宝，随心装扮' : '额度账簿' }}</b><button aria-label="关闭修仙面板" @click="closePanel"><PhX/></button></header><template v-if="panel === 'play'"><div class="cultivation-play-grid"><button v-for="item in actions" :key="item.id" @click="act(item.id)"><CultivationProp :index="item.prop"/><b>{{ item.label }}</b><small>{{ item.hint }}</small></button><button @click="act('greet')"><PhHeart/><b>向道友问安</b></button></div><p>互动仅是本地陪伴，不消耗或恢复真实额度。</p></template><template v-else-if="panel === 'realm'"><CultivationRealmPicker :current-realm="realm" can-shuffle @shuffle="shuffle"/><p>随机只改变仙境和功法，衣装与额度各自保留。</p></template><template v-else-if="panel === 'wardrobe'"><CultivationWardrobe/></template><template v-else><QuotaDetails/></template></section>

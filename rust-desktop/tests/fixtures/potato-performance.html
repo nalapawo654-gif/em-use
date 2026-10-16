@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><base href="/"><title>土豆衣橱切换性能</title></head><body><button id="run">运行两次衣橱挂载</button><button id="preview">预览衣橱</button><pre id="result">等待开始</pre><div id="app"></div><script type="module">
+import {createApp,h,ref,nextTick} from 'vue'
+import PotatoWardrobe from '/src/components/PotatoWardrobe.vue'
+import {appState} from '/src/bridge.ts'
+import {evolution} from '/src/evolution/controller.ts'
+import '/src/potato.css'
+appState.settings.codexEnabled=true;evolution.awake=true
+const show=ref(false);createApp({render:()=>show.value?h(PotatoWardrobe):h('p','已切走')}).mount('#app')
+document.querySelector('#preview').onclick=()=>{show.value=!show.value}
+const result=document.querySelector('#result'),run=document.querySelector('#run')
+run.onclick=async()=>{
+ run.disabled=true;const samples=[]
+ const original=HTMLCanvasElement.prototype.toDataURL
+ for(let round=0;round<2;round++){
+  let encodes=0,encodeMs=0,maxGap=0,previous=performance.now(),raf=0
+  HTMLCanvasElement.prototype.toDataURL=function(...args){const start=performance.now();const value=original.apply(this,args);encodeMs+=performance.now()-start;encodes++;return value}
+  const tick=now=>{maxGap=Math.max(maxGap,now-previous);previous=now;raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)
+  show.value=true;await nextTick();await new Promise(resolve=>setTimeout(resolve,4000))
+  const start=performance.now();show.value=false;await nextTick();await new Promise(requestAnimationFrame)
+  samples.push({round:round+1,encodes,encodeMs:Math.round(encodeMs),maxFrameGapMs:Math.round(maxGap),unmountMs:Math.round(performance.now()-start)})
+  cancelAnimationFrame(raf);result.textContent=JSON.stringify(samples,null,2);await new Promise(resolve=>setTimeout(resolve,100))
+ }
+ HTMLCanvasElement.prototype.toDataURL=original;run.disabled=false
+}
+</script></body></html>

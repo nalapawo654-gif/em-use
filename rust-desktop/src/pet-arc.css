@@ -1,0 +1,97 @@
+/* Shared structure; each pet keeps its own material and actions. */
+.pet-arc-host { container-type: inline-size; }
+.pet-arc {
+  --arc-paper: #fffaf0; --arc-line: #dfceb4; --arc-ink: #67482f; --arc-hover: #f8e6ce;
+  position: absolute; inset: 0; z-index: 12;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .2s, visibility .2s;
+}
+.pet-arc-host:is(:hover,:has(:focus-visible),.has-panel,.has-details) > .pet-arc { opacity: 1; visibility: visible; }
+.pet-arc-full,.pet-arc-mini { position:absolute; inset:0; pointer-events:none; }
+.pet-arc-mini { display:none; }
+.pet-arc .pet-arc-track { position:absolute; background:var(--arc-line); pointer-events:none; }
+.pet-arc .pet-arc-name { position:absolute; top:3%; left:5%; max-width:34%; color:var(--arc-ink); font-size:clamp(11px,2.7cqw,18px); font-weight:600; line-height:1.4; pointer-events:none; }
+.pet-arc .pet-arc-button {
+  position:absolute; display:block; margin:0; padding:0; min-width:0; min-height:0;
+  border:0; border-radius:0; background:var(--arc-paper); color:var(--arc-ink);
+  box-shadow:none; transform:none; cursor:pointer; pointer-events:none;
+  font-family:inherit; transition:background .15s, color .15s; overflow:visible;
+}
+.pet-arc-host:is(:hover,:has(:focus-visible),.has-panel,.has-details) > .pet-arc .pet-arc-button { pointer-events:auto; }
+.pet-arc .pet-arc-content { position:absolute; left:var(--content-x); top:var(--content-y); transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.7cqw; width:max-content; max-width:14cqw; pointer-events:none; }
+.pet-arc .pet-arc-content > svg { width:clamp(15px,4cqw,27px); height:clamp(15px,4cqw,27px); flex-shrink:0; }
+.pet-arc .pet-arc-content > :is(canvas,.buddy-sprite,.beaver-sprite,.hamster-prop,.cultivation-prop,.battery-prop) { display:block; width:5.4cqw; height:5.4cqw; max-width:none; object-fit:contain; }
+.pet-arc .pet-arc-content > span:not([class]) { display:block; font-size:clamp(10px,2.45cqw,17px); line-height:1.15; white-space:nowrap; }
+.pet-arc .pet-arc-button:is(:hover,[aria-expanded="true"]) { background:var(--arc-hover); }
+.pet-arc .pet-arc-button:focus-visible { outline:0; background:var(--arc-hover); }
+.pet-arc .pet-arc-button:focus-visible .pet-arc-content { outline:2px solid currentColor; outline-offset:3px; border-radius:4px; }
+.pet-arc .pet-arc-button:disabled { opacity:.45; cursor:wait; }
+.pet-arc[data-scene="aquarium"] { --arc-paper:#f0faff; --arc-line:#bdd8e4; --arc-ink:#305f75; --arc-hover:#d6edf5; }
+.pet-arc[data-scene="buddy"] { --arc-paper:#f4f9f7; --arc-line:#c9d9db; --arc-ink:#406474; --arc-hover:#deeced; }
+.pet-arc[data-scene="beaver"] { --arc-paper:#fbfaee; --arc-line:#d4d7bb; --arc-ink:#596947; --arc-hover:#e6edd5; }
+.pet-arc[data-scene="hamster"] { --arc-paper:#fff6e7; --arc-line:#dec9a6; --arc-ink:#795631; --arc-hover:#f5e2c3; }
+.pet-arc[data-scene="cultivation"] { --arc-paper:#f4f6e9; --arc-line:#c7d1b8; --arc-ink:#526b53; --arc-hover:#e0e8cf; }
+.pet-arc[data-scene="battery"] { --arc-paper:#f1f8ed; --arc-line:#c3d6bd; --arc-ink:#426743; --arc-hover:#dcebcf; }
+.pet-arc[data-scene="fox"] { --arc-paper:#f6f4eb; --arc-line:#d6d2c5; --arc-ink:#535c52; --arc-hover:#ebe5d6; }
+.pet-arc[data-scene="luckycat"] { --arc-paper:#fff8e8; --arc-line:#d9cba8; --arc-ink:#5d6440; --arc-hover:#f2e5c5; }
+.pet-arc[data-scene="dinosaur"] { --arc-paper:#f7f7e9; --arc-line:#d1d6b7; --arc-ink:#5c6c42; --arc-hover:#e9edcf; }
+.pet-arc[data-scene="skadi"] { --arc-paper:#f4f6fd; --arc-line:#cdd3e5; --arc-ink:#596987; --arc-hover:#e3e8f7; }
+.pet-arc[data-scene="piranha"] { --arc-paper:#f6f8e8; --arc-line:#cad4a9; --arc-ink:#516d3a; --arc-hover:#e2ebca; }
+.pet-arc[data-scene="potato"] { --arc-paper:#f3f1e6; --arc-line:#c8c7b2; --arc-ink:#62694a; --arc-hover:#e2e4cf; }
+.night .pet-arc { --arc-paper:#29332f; --arc-line:#576356; --arc-ink:#e4e6cf; --arc-hover:#414e3e; }
+.night .pet-arc:is([data-scene="aquarium"],[data-scene="buddy"],[data-scene="skadi"]) { --arc-paper:#273544; --arc-line:#50657b; --arc-ink:#dfebf7; --arc-hover:#3c5065; }
+.night .pet-arc:is([data-scene="feidudu"],[data-scene="hamster"]) { --arc-paper:#3b3028; --arc-line:#6c5944; --arc-ink:#f2dfc2; --arc-hover:#544332; }
+/* Whole-container hover is retained; open notices/calendars and capture take priority. */
+.pet-arc-host:is(.calendar-is-open,.is-capturing) > .pet-arc,
+.pet-arc-host > .pet-arc.is-blocked { opacity:0; visibility:hidden; }
+.pet-arc-host:is(.calendar-is-open,.is-capturing) > .pet-arc .pet-arc-button,
+.pet-arc-host > .pet-arc.is-blocked .pet-arc-button { pointer-events:none; }
+@container (max-width: 360px) {
+  .pet-arc .pet-arc-content { gap:.4cqw; }
+  .pet-arc .pet-arc-content > svg { width:4.5cqw; height:4.5cqw; }
+  .pet-arc .pet-arc-content > span:not([class]) { font-size:10px; }
+}
+@container (max-width: 279px) {
+  .pet-arc-full,.pet-arc .pet-arc-name { display:none; }
+  .pet-arc-mini { display:block; }
+  .pet-arc .pet-arc-content > svg { width:16px; height:16px; }
+}
+.reduced-motion .pet-arc,.reduced-motion .pet-arc .pet-arc-button { transition:none; }
+@media (prefers-reduced-motion:reduce) { .pet-arc,.pet-arc .pet-arc-button { transition:none; } }
+/* Silhouette clearance for the two tall-eared characters. The body hit regions
+   move with the art, so a tap still reaches the visible character. */
+.feidudu-widget.pet-arc-host .feidudu-character { left:5%; top:14%; width:78%; height:66%; }
+.feidudu-widget.pet-arc-host .feidudu-body-hit { left:21%; top:24%; width:49%; height:46%; }
+.feidudu-widget.pet-arc-host .feidudu-body-hit.lying { left:11%; top:43%; width:66%; height:27%; }
+.feidudu-widget.pet-arc-host .feidudu-speech { max-width:45%; top:12%; font-size:2.7cqw; }
+.dinosaur-widget.pet-arc-host .dinosaur-character { left:0; top:14%; width:78%; height:66%; }
+.dinosaur-widget.pet-arc-host .dinosaur-body-hit { left:16%; top:24%; width:49%; height:46%; }
+.dinosaur-widget.pet-arc-host .dinosaur-body-hit.lying { left:6%; top:43%; width:66%; height:27%; }
+.dinosaur-widget.pet-arc-host .dinosaur-speech { max-width:45%; top:12%; font-size:2.7cqw; }
+/* Room-sized pets keep their own scene coordinate system in a smaller stage. */
+.experience .pet-arc-host .aquarium-wrap { inset:12% auto auto 0; width:83%; height:83%; }
+.buddy-widget.pet-arc-host .buddy-scene { transform:scale(.83); transform-origin:8% 80%; }
+.beaver-widget.pet-arc-host .beaver-scene { transform:scale(.79); transform-origin:0 85%; }
+.pet-arc-art-stage { position:absolute; inset:0; transform:scale(.84); transform-origin:0 65%; }
+.hamster-widget .pet-arc-art-stage > .hamster-visual { inset:auto; z-index:1; }
+.hamster-widget .pet-arc-art-stage:has(>.hamster-visual:is([data-pose="3"],[data-pose="5"])) .hamster-pet-hit { left:39%;top:47%;width:39%;height:29%; }
+.hamster-widget .pet-arc-art-stage .hamster-speech { left:3%;right:auto;top:6%;max-width:54%; }
+.cultivation-widget .pet-arc-art-stage .cultivation-speech { left:4%;right:auto;top:10%;max-width:49%; }
+.battery-widget.pet-arc-host .battery-quota { left:3%; top:20%; width:28%; }
+.battery-widget.pet-arc-host .battery-speech { left:4%; top:11%; max-width:44%; }
+.skadi-widget.pet-arc-host .skadi-speech { left:3%; right:auto; top:12%; max-width:43%; }
+.piranha-widget.pet-arc-host .piranha-speech,.potato-widget.pet-arc-host .potato-speech { max-width:45%; }
+/* Panels and action feedback always sit above the arc. */
+.pet-arc-host > :is(.buddy-panel,.beaver-panel,.hamster-panel,.cultivation-panel,.battery-panel,.feidudu-panel,.fox-panel,.luckycat-panel,.dinosaur-panel,.skadi-panel,.piranha-panel,.potato-panel,.play-popover,.detail-popover) { z-index:30; }
+.pet-arc-host :is(.buddy-hud,.beaver-hud,.hamster-hud,.cultivation-hud,.battery-hud,.feidudu-hud,.fox-hud,.luckycat-hud,.dinosaur-hud,.skadi-hud,.piranha-hud,.potato-hud,.play-hud) { z-index:31; }
+@container (min-width:280px) and (max-width:360px) {
+  /* Horizontal labels cannot fit a narrow curved sector without tiny text. */
+  .pet-arc .pet-arc-quick .pet-arc-content > span:not([class]) { display:none; }
+  .pet-arc .pet-arc-quick .pet-arc-content > svg { width:18px; height:18px; }
+  .pet-arc .pet-arc-quick .pet-arc-content > :is(canvas,.buddy-sprite,.beaver-sprite,.hamster-prop,.cultivation-prop,.battery-prop) { width:22px; height:22px; }
+}
+/* Flying hit targets use the same dimensions as the resized dinosaur art. */
+.dinosaur-widget.pet-arc-host .dinosaur-body-hit { --dino-art-width:78; --dino-art-height:66; }
+@container (max-width:220px) {
+  .dinosaur-widget.pet-arc-host.has-action .dinosaur-body-hit { --dino-art-height:60; }
+}

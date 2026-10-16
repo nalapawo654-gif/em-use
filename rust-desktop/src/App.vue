@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetArcToolbar from './components/PetArcToolbar.vue'
 import { useEvolutionController } from './evolution/controller'
 import PetEvolution from './components/PetEvolution.vue'
 import QuotaDetails from './components/QuotaDetails.vue'
@@ -93,11 +94,22 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
       <HamsterExperience v-else-if="state.settings.scene === 'hamster'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <CultivationExperience v-else-if="state.settings.scene === 'cultivation'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <div v-else :class="['experience', { 'is-native': isDesktop }, isDesktop ? effectiveSize : 'standard']">
-        <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" class="widget" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving, 'calendar-is-open': aquariumCalendarOpen }" aria-label="额度小鱼缸">
+        <section @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" tabindex="-1" @keydown.esc.stop.prevent="playPanel = null; details = false; aquarium?.cancel()" class="widget pet-arc-host" :class="{ 'has-details': details, 'has-panel': !!playPanel, 'is-moving': moving, 'calendar-is-open': aquariumCalendarOpen }" aria-label="额度小鱼缸">
           <PetCalendar appearance="aquarium" :blocked="!!playPanel || details || moving || aquariumNoticeOpen" :deferred="!!aquarium?.updateBlocked" @open-change="aquariumCalendarOpen=$event"/>
           <PetEvolution :blocked="!!playPanel || details || moving || aquariumCalendarOpen || aquariumNoticeOpen || !!aquarium?.updateBlocked"/><PetNotices :blocked="!!playPanel || details || moving || !!aquarium?.updateBlocked" :external-blocked="aquariumCalendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="aquariumNoticeOpen=$event"/>
           <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="resize-handle" :class="corner" :aria-label="`缩放鱼缸 ${corner}`" title="拖动调整大小 · Ctrl/⌘ + 滚轮也可以" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><span></span></button>
-          <header class="widget-header"><div class="widget-title"><PhFish weight="duotone"/><span>额度小鱼缸</span><small v-if="!isDesktop">让监控变得有温度</small></div><div class="window-actions"><button class="icon-button mini-play-button" aria-label="玩耍" title="玩耍" @click="togglePanel('play')"><PhGameController/></button><button class="icon-button" title="设置" aria-label="设置" @click="openSettings"><PhGearSix/></button><button class="icon-button" title="收起到托盘" aria-label="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
+          <PetArcToolbar scene="aquarium" label="额度小鱼缸" :blocked="aquariumNoticeOpen">
+            <template #controls>
+              <button aria-label="玩耍" :aria-expanded="playPanel === 'play'" @click="togglePanel('play')"><PhGameController/></button>
+              <button aria-label="换装" :aria-expanded="playPanel === 'outfit'" @click="togglePanel('outfit')"><PhPlant/></button>
+              <button aria-label="设置" @click="openSettings"><PhGearSix/></button>
+              <button aria-label="收起到托盘" @click="api.hide()"><PhMinus/></button>
+            </template>
+            <button aria-label="喂食" @click="aquarium?.feed()"><PhFish weight="duotone"/><span>喂食</span></button>
+            <button aria-label="清洁" @click="aquarium?.clean()"><PhDrop weight="duotone"/><span>清洁</span></button>
+            <button aria-label="打开宝箱" @click="playGame('treasure')"><PhTreasureChest weight="duotone"/><span>开宝箱</span></button>
+            <button aria-label="躲猫猫" @click="playGame('hide')"><PhEye weight="duotone"/><span>躲猫猫</span></button>
+          </PetArcToolbar>
           <div class="widget-body">
             <div class="floating-note"><PhSparkle weight="fill"/><span>{{ state.settings.quotaSource === 'codex' ? quotaDisplay.label : state.status === 'resetting' ? '新的一天，正在同步额度' : '每日额度，以平台同步结果为准' }}</span></div>
             <div class="aquarium-wrap">
@@ -105,7 +117,7 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
                 <div v-if="usable" class="inside-amount">{{ quotaDisplay.subtitle }}</div>
               </Aquarium>
             </div>
-            <div class="interaction-tools"><button title="喂食" aria-label="喂食" @click="aquarium?.feed()"><PhFish weight="duotone"/><span>喂食</span></button><button title="清洁" aria-label="清洁" @click="aquarium?.clean()"><PhDrop weight="duotone"/><span>清洁</span></button><button title="换装" aria-label="换装" :aria-expanded="playPanel === 'outfit'" @click="togglePanel('outfit')"><PhPlant weight="duotone"/><span>换装</span></button><button title="玩耍" aria-label="玩耍" :aria-expanded="playPanel === 'play'" @click="togglePanel('play')"><PhGameController weight="duotone"/><span>玩耍</span></button></div>
+
             <button v-if="!connected" class="login-pill" :disabled="state.loginOpen" @click="login">{{ state.settings.quotaSource === 'codex' ? '连接本机 Codex' : state.loginOpen ? '请在官方窗口完成登录' : state.status === 'expired' ? '重新登录，接上小鱼的信号' : '登录 AI 云平台' }}<PhArrowRight v-if="!state.loginOpen"/></button>
             <p class="fish-message">{{ greeting }} <PhHeart/></p>
           </div>

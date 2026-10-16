@@ -1,0 +1,697 @@
+{
+  "geometry": [
+    {
+      "pet": "额度小鱼缸",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "充气牛马",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "林间海狸鼠",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "buttons": 9,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "健身电池人",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "肥嘟嘟",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "水墨小狐",
+      "buttons": 7,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "破产招财猫",
+      "buttons": 7,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "小恐龙",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "月汐",
+      "buttons": 8,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "捕需求草",
+      "buttons": 7,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "土豆战神",
+      "buttons": 7,
+      "issues": [],
+      "width": 440
+    },
+    {
+      "pet": "额度小鱼缸",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "充气牛马",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "林间海狸鼠",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "buttons": 9,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "健身电池人",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "肥嘟嘟",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "水墨小狐",
+      "buttons": 7,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "破产招财猫",
+      "buttons": 7,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "小恐龙",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "月汐",
+      "buttons": 8,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "捕需求草",
+      "buttons": 7,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "土豆战神",
+      "buttons": 7,
+      "issues": [],
+      "width": 300
+    },
+    {
+      "pet": "额度小鱼缸",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "充气牛马",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "林间海狸鼠",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "buttons": 5,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "健身电池人",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "肥嘟嘟",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "水墨小狐",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "破产招财猫",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "小恐龙",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "月汐",
+      "buttons": 5,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "捕需求草",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "土豆战神",
+      "buttons": 4,
+      "issues": [],
+      "width": 190
+    },
+    {
+      "pet": "额度小鱼缸",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "充气牛马",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "林间海狸鼠",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "buttons": 5,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "健身电池人",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "肥嘟嘟",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "水墨小狐",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "破产招财猫",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "小恐龙",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "月汐",
+      "buttons": 5,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "捕需求草",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "土豆战神",
+      "buttons": 4,
+      "issues": [],
+      "width": 180
+    },
+    {
+      "pet": "额度小鱼缸",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "充气牛马",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "林间海狸鼠",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "buttons": 9,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "健身电池人",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "肥嘟嘟",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "水墨小狐",
+      "buttons": 7,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "破产招财猫",
+      "buttons": 7,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "小恐龙",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "月汐",
+      "buttons": 8,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "捕需求草",
+      "buttons": 7,
+      "issues": [],
+      "width": 800
+    },
+    {
+      "pet": "土豆战神",
+      "buttons": 7,
+      "issues": [],
+      "width": 800
+    }
+  ],
+  "panels": [
+    {
+      "pet": "额度小鱼缸",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "充气牛马",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "林间海狸鼠",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "健身电池人",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "肥嘟嘟",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "水墨小狐",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "破产招财猫",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "小恐龙",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "月汐",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "捕需求草",
+      "opened": 1,
+      "closed": true
+    },
+    {
+      "pet": "土豆战神",
+      "opened": 1,
+      "closed": true
+    }
+  ],
+  "initialUnknownQuotaActions": [
+    {
+      "pet": "额度小鱼缸",
+      "action": false,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "充气牛马",
+      "action": false,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "林间海狸鼠",
+      "action": false,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "健身电池人",
+      "action": false,
+      "dragStarted": null,
+      "feedback": false
+    },
+    {
+      "pet": "肥嘟嘟",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "水墨小狐",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "破产招财猫",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "小恐龙",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "月汐",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "捕需求草",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    },
+    {
+      "pet": "土豆战神",
+      "action": true,
+      "dragStarted": null,
+      "feedback": true
+    }
+  ],
+  "batteryUnknown": "正确提示电量还没同步，先陪它休息一下。",
+  "batteryKnown": "陪练举铁 0 / 6，举一次与结束入口可用",
+  "actionExitButtons": [
+    {
+      "pet": "额度小鱼缸",
+      "buttons": [
+        {
+          "label": "结束互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "充气牛马",
+      "buttons": [
+        {
+          "label": "结束牛马互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "林间海狸鼠",
+      "buttons": [
+        {
+          "label": "结束海狸鼠互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "仓鼠动力机房",
+      "buttons": [
+        {
+          "label": "结束仓鼠互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "修仙渡劫事务所",
+      "buttons": [
+        {
+          "label": "结束修仙互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "健身电池人",
+      "buttons": [
+        {
+          "label": "举一次",
+          "reachable": true
+        },
+        {
+          "label": "结束电池人互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "肥嘟嘟",
+      "buttons": [
+        {
+          "label": "结束肥嘟嘟互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "水墨小狐",
+      "buttons": [
+        {
+          "label": "结束小狐狸互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "破产招财猫",
+      "buttons": [
+        {
+          "label": "结束招财猫互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "小恐龙",
+      "buttons": [
+        {
+          "label": "结束小恐龙互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "月汐",
+      "buttons": [
+        {
+          "label": "结束月汐互动",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "捕需求草",
+      "buttons": [
+        {
+          "label": "结束",
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "pet": "土豆战神",
+      "buttons": [
+        {
+          "label": "结束",
+          "reachable": true
+        }
+      ]
+    }
+  ],
+  "extraPanels": [
+    {
+      "pet": "修仙渡劫事务所",
+      "panel": "修仙仙境"
+    },
+    {
+      "pet": "月汐",
+      "panel": "月汐武器库"
+    }
+  ],
+  "hover": [
+    {
+      "state": "initial",
+      "visible": false
+    },
+    {
+      "state": "hover",
+      "visible": true
+    },
+    {
+      "state": "panel-outside",
+      "visible": true,
+      "panel": true
+    },
+    {
+      "state": "closed-outside",
+      "visible": false
+    }
+  ],
+  "keyboardVisible": true,
+  "persistentActionExit": true
+}

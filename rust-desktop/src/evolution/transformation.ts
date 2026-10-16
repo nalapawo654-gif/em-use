@@ -1,3 +1,4 @@
+import { LruCache } from '../shared/lruCache'
 import { skadiFrame } from '../skadi/play'
 import { energyFrame } from './atlas'
 import { clearEdgeSpecks } from './atlas'
@@ -15,13 +16,13 @@ export function transformationTime(elapsed:number,duration:number,reverse=false)
   const progress=clamp(elapsed/Math.max(1,duration)),t=reverse?1-progress:progress
   return {t,progress,beat:t<.1875?'gather':t<.5?'grow':t<.8125?'reveal':'settle',done:progress>=1}
 }
-const sheets=new Map<string,Promise<HTMLImageElement>>(),cache=new Map<string,Promise<HTMLCanvasElement[]>>()
+const sheets=new LruCache<string,Promise<HTMLImageElement>>(2),cache=new LruCache<string,Promise<HTMLCanvasElement[]>>(4)
 export function loadTransformation(scene:Scene,skin:string,form='chibi'){
   const key=transformationKey(scene,skin,form),spec=TRANSFORMATION_ATLASES[key]
   if(!spec)return Promise.reject(new Error(`Missing transformation: ${key}`))
   const old=cache.get(key);if(old)return old
   let sheet=sheets.get(spec.file)
-  if(!sheet){sheet=new Promise<HTMLImageElement>((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error('变身分镜未加载'));image.src=`./assets/evolution/v3/${spec.file}`});sheets.set(spec.file,sheet);void sheet.catch(()=>sheets.delete(spec.file))}
+  if(!sheet){sheet=new Promise<HTMLImageElement>((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error('变身分镜未加载'));image.src=`./assets/evolution/v3/${spec.file}`});sheets.set(spec.file,sheet);void sheet.catch(()=>{if(sheets.get(spec.file)===sheet)sheets.delete(spec.file)})}
   const pending=sheet.then(image=>{
     const scale=Math.min(430/Math.max(...spec.rects.map(r=>r[2]!)),442/Math.max(...spec.rects.map(r=>r[3]!)))
     return spec.rects.map(([x,y,w,h],index)=>{
@@ -33,7 +34,7 @@ export function loadTransformation(scene:Scene,skin:string,form='chibi'){
       const c=document.createElement('canvas');c.width=c.height=512;c.getContext('2d')!.drawImage(crop,(512-w!*scale)/2,480-h!*scale,w!*scale,h!*scale);return c
     })
   })
-  cache.set(key,pending);if(cache.size>12)cache.delete(cache.keys().next().value!);void pending.catch(()=>{if(cache.get(key)===pending)cache.delete(key)});return pending
+  cache.set(key,pending);void pending.catch(()=>{if(cache.get(key)===pending)cache.delete(key)});return pending
 }
 const keys=[0,.1875,.34,.5,.67,.8125,1]
 export function createTransformationRenderer(scene:Scene,skin:string,poses:HTMLCanvasElement[]){

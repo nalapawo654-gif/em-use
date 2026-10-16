@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PetArcToolbar from './PetArcToolbar.vue'
 import PetEvolution from './PetEvolution.vue'
 import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
@@ -63,27 +64,29 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
 <template>
   <div class="hamster-experience" :class="{ 'hamster-native': isDesktop }">
     <div class="hamster-hero">
-      <section ref="widget" tabindex="-1" class="hamster-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" aria-label="仓鼠动力机房场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
+      <section ref="widget" tabindex="-1" class="hamster-widget pet-arc-host" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" aria-label="仓鼠动力机房场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
         <PetEvolution :blocked="!!panel || active || moving || !!notice || calendarOpen || noticeOpen"/><PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
         <PetCalendar appearance="hamster" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
-        <HamsterVisual message :style="place('visual')" :skin="state.settings.hamsterSkin" :level="level" :action="play.action" :reduced-motion="state.settings.reducedMotion" :active="visible"/>
-        <button class="hamster-scene-prop hamster-cat scene-hit" :style="place('cat')" aria-label="看看监工猫的小动作" title="点击切换：哈欠、睡觉、偷吃" @click="catAction"><HamsterCat :action="play.action" :since="play.since" :night="night" :reduced-motion="state.settings.reducedMotion" :active="visible"/></button>
-        <button class="hamster-scene-prop hamster-cup scene-hit" :style="place('cup')" aria-label="从瓜子杯喂仓鼠" @click="act('feed')"><HamsterProp :index="1"/></button>
-        <HamsterProp class="hamster-generator" :style="place('generator')" :index="2"/>
-        <HamsterProp class="hamster-seeds" :index="8"/>
-        <HamsterProp class="hamster-cable" :index="11"/>
-        <HamsterProp v-if="state.settings.hamsterSkin === 'summer'" class="hamster-fan" :index="3"/>
-        <HamsterProp v-if="active && actionProp !== undefined && play.action !== 'sleep' && play.action !== 'feed'" :key="play.action" class="hamster-action-prop" :class="'prop-' + play.action" :index="actionProp"/>
-        <button class="hamster-wheel-hit scene-hit" aria-label="轻点跑轮，陪仓鼠转一圈" @click="turnWheel"></button>
-        <button class="hamster-pet-hit scene-hit" :aria-label="play.action === 'sleep' ? '唤醒仓鼠' : '摸摸仓鼠'" @click="pet"></button>
-        <p v-if="!active" class="hamster-speech" :class="{ 'is-active': active }" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet'" weight="fill"/></p>
+        <div class="pet-arc-art-stage">
+          <HamsterVisual message :style="place('visual')" :skin="state.settings.hamsterSkin" :level="level" :action="play.action" :reduced-motion="state.settings.reducedMotion" :active="visible"/>
+          <button class="hamster-scene-prop hamster-cat scene-hit" :style="place('cat')" aria-label="看看监工猫的小动作" title="点击切换：哈欠、睡觉、偷吃" @click="catAction"><HamsterCat :action="play.action" :since="play.since" :night="night" :reduced-motion="state.settings.reducedMotion" :active="visible"/></button>
+          <button class="hamster-scene-prop hamster-cup scene-hit" :style="place('cup')" aria-label="从瓜子杯喂仓鼠" @click="act('feed')"><HamsterProp :index="1"/></button>
+          <HamsterProp class="hamster-generator" :style="place('generator')" :index="2"/>
+          <HamsterProp class="hamster-seeds" :index="8"/>
+          <HamsterProp class="hamster-cable" :index="11"/>
+          <HamsterProp v-if="state.settings.hamsterSkin === 'summer'" class="hamster-fan" :index="3"/>
+          <HamsterProp v-if="active && actionProp !== undefined && play.action !== 'sleep' && play.action !== 'feed'" :key="play.action" class="hamster-action-prop" :class="'prop-' + play.action" :index="actionProp"/>
+          <button class="hamster-wheel-hit scene-hit" aria-label="轻点跑轮，陪仓鼠转一圈" @click="turnWheel"></button>
+          <button class="hamster-pet-hit scene-hit" :aria-label="play.action === 'sleep' ? '唤醒仓鼠' : '摸摸仓鼠'" @click="pet"></button>
+          <p v-if="!active" class="hamster-speech" :class="{ 'is-active': active }" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet'" weight="fill"/></p>
+        </div>
         <button class="hamster-quota" :style="place('quota')" @click="togglePanel('details')" :class="'quota-' + level" type="button" :aria-label="percent === null ? '额度未知，' + statusLabel : '剩余额度 ' + Math.round(percent) + '%'">
           <span class="hamster-quota-label"><PhLightning weight="fill"/>{{ quotaDisplay.label }}<span v-if="state.status === 'stale'"> · 数据待更新</span></span>
           <div><span class="hamster-meter" :class="{ unknown: percent === null }"><i :style="{ width: `${percent === null ? 0 : Math.max(0, Math.min(100, percent))}%` }"></i></span><strong>{{ percent === null ? '—' : Math.round(percent) + '%' }}</strong></div>
           <small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small>
         </button>
-        <header class="hamster-header hamster-chrome"><span><PhLightning weight="fill"/><b>仓鼠动力机房</b></span><div><button aria-label="更多仓鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="仓鼠换装" title="换装" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="仓鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仓鼠到托盘" title="收起到托盘" @click="hide"><PhMinus/></button></div></header>
-        <nav class="hamster-tools hamster-chrome" aria-label="陪仓鼠玩"><button v-for="item in interactions" :key="item.action" :aria-label="'仓鼠' + item.label" :title="item.label" @click="act(item.action)"><HamsterProp :index="item.prop"/><span>{{ item.label }}</span></button></nav>
+        <PetArcToolbar scene="hamster" label="仓鼠动力机房" :blocked="noticeOpen"><template #controls><button aria-label="更多仓鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="仓鼠换装" title="换装" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="仓鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仓鼠到托盘" title="收起到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in interactions.slice(0, 4)" :key="item.action" :aria-label="'仓鼠' + item.label" :title="item.label" @click="act(item.action)"><HamsterProp :index="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
+
         <footer class="hamster-footer hamster-chrome"><button :aria-expanded="panel === 'details'" @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新仓鼠额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>
         <div v-if="active" class="hamster-hud" :style="place('actionDock')" aria-live="polite">
           <div class="hamster-action-copy"><b>{{ play.action === 'wheel' ? (play.completedAt !== null ? '跑轮挑战完成！' : `跑轮 ${play.turns} / ${WHEEL_TARGET} 圈`) : actionLabel }}</b><small v-if="play.action === 'wheel'">{{ play.turns }} / {{ WHEEL_TARGET }} 圈</small><small v-else>{{ speech }}</small></div>

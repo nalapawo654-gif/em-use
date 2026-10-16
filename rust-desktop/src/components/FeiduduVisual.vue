@@ -28,7 +28,7 @@ let freeHands: { canvas: HTMLCanvasElement; render: ReturnType<typeof createFeid
 let timeout: ReturnType<typeof setTimeout> | undefined, raf = 0, previous: FeiduduMotion | null = null
 function draw() {
   const ctx = canvas.value?.getContext('2d')
-  if (ctx && source) { ctx.clearRect(0, 0, 512, 512); ctx.drawImage(source, 0, 0); if(carrying.value){if(awakened.value)mail!.paint(ctx,{x:320,y:365,width:100,height:80},'propped');else renderFeiduduMail(ctx,source,index.value,mail!.paint)};if(awakened.value)paintInteraction(ctx,interactionArt.value,props.action==='rest'?'idle':props.action) }
+  if (ctx && source) { ctx.clearRect(0, 0, 512, 512); ctx.drawImage(source, 0, 0); if(carrying.value){if(awakened.value)mail!.paint(ctx,{x:320,y:305,width:100,height:140},'propped',undefined,'contain');else renderFeiduduMail(ctx,source,index.value,mail!.paint)};if(awakened.value)paintInteraction(ctx,interactionArt.value,props.action==='rest'?'idle':props.action) }
 }
 function prepare() {
   const pose=props.action==='rest'?4:props.action==='belly'?2:props.action==='idle'?energyFrame(props.percent,5):props.action==='tea'?1:0
@@ -85,7 +85,7 @@ function schedule(first = false) {
           alternate.render(alternate.canvas.getContext('2d')!, chosen!, progress, variation)
           ctx!.clearRect(0, 0, 512, 512); ctx!.save(); ctx!.globalAlpha = 1 - motionEnvelope(progress); ctx!.drawImage(source!, 0, 0); ctx!.globalAlpha = motionEnvelope(progress); ctx!.drawImage(alternate.canvas, 0, 0); ctx!.restore()
         } else renderMotion!(ctx!, chosen!, progress, variation)
-        if(carrying.value){if(awakened.value)mail!.paint(ctx!,{x:320,y:365,width:100,height:80},'propped');else renderFeiduduMail(ctx!,source!,index.value,mail!.paint)}
+        if(carrying.value){if(awakened.value)mail!.paint(ctx!,{x:320,y:305,width:100,height:140},'propped',undefined,'contain');else renderFeiduduMail(ctx!,source!,index.value,mail!.paint)}
         last = now
       }
       raf = requestAnimationFrame(tick)

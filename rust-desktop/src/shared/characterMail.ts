@@ -1,9 +1,10 @@
 import { computed, inject, onUnmounted, provide, ref, shallowRef, type InjectionKey } from 'vue'
 import { loadImage } from '../aquarium/sprites'
 import type { Scene } from './types'
+import { containMailRect } from './mailGeometry'
 export type MailPose = 'held' | 'lap' | 'cup' | 'ground' | 'propped'
 export interface MailRect { x:number; y:number; width:number; height:number }
-export type MailPainter = (ctx:CanvasRenderingContext2D, rect:MailRect, pose:MailPose, variant?:'tag')=>void
+export type MailPainter = (ctx:CanvasRenderingContext2D, rect:MailRect, pose:MailPose, variant?:'tag', fit?:'contain')=>void
 const cache = new Map<string,Promise<HTMLCanvasElement>>()
 export function loadCharacterMail(scene:Scene, variant?:'tag') {
  const path=`./assets/${scene}/message-${variant ?? 'prop'}.png`
@@ -46,9 +47,10 @@ function makeMail(scene:Scene){
   raf=requestAnimationFrame(track)
  }
  raf=requestAnimationFrame(track)
- const paint:MailPainter=(ctx,rect,p,variant)=>{
+ const paint:MailPainter=(ctx,rect,p,variant,fit)=>{
   if(!active.value)return
   const image=variant==='tag'?tag.value:art.value;if(!image)return
+  if(fit==='contain')rect=containMailRect(image.width,image.height,rect)
   ctx.save();ctx.shadowColor='#422b192e';ctx.shadowBlur=p==='ground'?5:2;ctx.shadowOffsetY=p==='ground'?3:1
   ctx.drawImage(image,rect.x,rect.y,rect.width,rect.height);ctx.restore()
   const matrix=ctx.getTransform(),points=[[rect.x,rect.y],[rect.x+rect.width,rect.y],[rect.x,rect.y+rect.height],[rect.x+rect.width,rect.y+rect.height]].map(([x,y])=>new DOMPoint(x,y).matrixTransform(matrix))

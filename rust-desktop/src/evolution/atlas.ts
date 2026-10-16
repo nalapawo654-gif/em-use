@@ -1,3 +1,5 @@
+import { LruCache } from '../shared/lruCache'
+import { lazyFrameUrls } from './frameUrls'
 import { petQuotaIndex } from '../shared/petQuota'
 import manifest from './atlas-manifest.json'
 import type { Scene } from '../shared/types'
@@ -37,8 +39,8 @@ export function clearEdgeSpecks(canvas: HTMLCanvasElement, maxFraction = .025) {
 }
 
 export interface AwakenedArt { cinematic?: boolean; frames: HTMLCanvasElement[]; urls: string[]; trimmed: HTMLCanvasElement[]; packed: string }
-const sheets = new Map<string, Promise<HTMLImageElement>>()
-const cache = new Map<string, Promise<AwakenedArt>>()
+const sheets = new LruCache<string, Promise<HTMLImageElement>>(4)
+const cache = new LruCache<string, Promise<AwakenedArt>>(12)
 export function loadAwakenedArt(scene: Scene, skin: string, form = 'chibi'): Promise<AwakenedArt> {
   const key = `${scene}/${skin}/${form}`, spec = awakeningAtlas(scene, skin, form)
   if (!spec) return Promise.reject(new Error(`No awakening art: ${key}`))
@@ -49,7 +51,7 @@ export function loadAwakenedArt(scene: Scene, skin: string, form = 'chibi'): Pro
       const img = new Image(); img.onload = () => resolve(img); img.onerror = () => reject(new Error(`Awakening atlas failed: ${spec.file}`))
       img.src = `./assets/evolution/v2/${spec.file}`
     }); sheets.set(spec.file, sheet)
-    void sheet.catch(() => sheets.delete(spec.file))
+    void sheet.catch(() => { if (sheets.get(spec.file) === sheet) sheets.delete(spec.file) })
   }
   const pending = sheet.then(image => {
     // One scale per costume, with a shared ground line. Lying poses stay short.
@@ -67,11 +69,10 @@ export function loadAwakenedArt(scene: Scene, skin: string, form = 'chibi'): Pro
       const atlas=document.createElement('canvas');atlas.width=1536;atlas.height=1024
       frames.forEach((c,i)=>atlas.getContext('2d')!.drawImage(c,i%3*512,Math.floor(i/3)*512));packed=atlas.toDataURL()
     }
-    return {frames,trimmed,urls:frames.map(c=>c.toDataURL()),packed}
+    return {frames,trimmed:scene==='aquarium'?trimmed:[],urls:lazyFrameUrls(frames),packed}
   })
   cache.set(key,pending)
   // Bound decoded per-costume buffers during wardrobe browsing.
-  if(cache.size>12)cache.delete(cache.keys().next().value!)
   void pending.catch(()=>{if(cache.get(key)===pending)cache.delete(key)})
   return pending
 }

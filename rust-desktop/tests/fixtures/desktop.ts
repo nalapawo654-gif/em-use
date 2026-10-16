@@ -2,6 +2,12 @@
 // window dimensions while keeping Electron authentication and OS APIs out of scope.
 import { DEFAULT_SETTINGS, HAMSTER_SKINS, SCENE_LABELS, type AppState, type Settings, type MessageState } from '../../src/shared/types'
 const query = new URLSearchParams(location.search)
+// Design-gallery-only forced hover state. Normal fixture/native behavior is unchanged.
+if (query.get('arcPreview') === 'on') {
+  const style = document.createElement('style')
+  style.textContent = '.pet-arc-host > .pet-arc:not(.is-blocked){opacity:1;visibility:visible}.pet-arc-host > .pet-arc:not(.is-blocked) .pet-arc-button{pointer-events:auto}'
+  document.head.append(style)
+}
 const size = (query.get('size') ?? 'standard') as Settings['size']
 document.body.style.width = `${({ standard: 440, compact: 300, mini: 190 })[size]}px`
 const state: AppState = { status: 'ready', quota: { limit: 300, used: 96, remaining: 204, percent: 68, exceeded: false, estimatedAt: '2026-09-09T18:00:00', serverAt: '2026-09-09T18:00:00', receivedAt: Date.now(), day: '2026-09-09' }, message: '仅用于组件测试 · 演示额度', syncing: false, persistentLogin: false, loginOpen: false, settings: { ...DEFAULT_SETTINGS, size, windowWidth: ({ standard: 440, compact: 300, mini: 190 })[size], theme: query.get('theme') === 'night' ? 'night' : 'day', outfit: 'sailor', scene: query.get('scene') === 'cultivation' ? 'cultivation' : query.get('scene') === 'hamster' ? 'hamster' : query.get('scene') === 'beaver' ? 'beaver' : query.get('scene') === 'buddy' ? 'buddy' : 'aquarium', reducedMotion: query.get('motion') === 'off' }, version: '0.3.0-visual-test' }
