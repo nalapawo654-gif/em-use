@@ -1,3 +1,4 @@
+import { equipmentPart, paintEquipment, type EvolutionEquipment } from '../evolution/paint'
 import type { MailPainter } from '../shared/characterMail'
 import { dinosaurMatte } from './sprites'
 import { tintDinosaurPixels } from './skins'
@@ -42,7 +43,7 @@ export function loadDinosaurParts(): Promise<DinosaurParts> {
     image.src='./assets/dinosaur/motion-rig.png'
   })
 }
-export function createDinosaurMotionRenderer(original: DinosaurParts, skin: DinosaurSkin) {
+export function createDinosaurMotionRenderer(original: DinosaurParts, skin: DinosaurSkin, awakened?:HTMLCanvasElement) {
   const parts={} as DinosaurParts
   for(const [name,source] of Object.entries(original)){
     const copy=document.createElement('canvas');copy.width=source.width;copy.height=source.height
@@ -85,7 +86,7 @@ export function createDinosaurMotionRenderer(original: DinosaurParts, skin: Dino
   function part(ctx:CanvasRenderingContext2D,name:keyof DinosaurParts,x:number,y:number,w:number,h:number,angle=0,px=.5,py=.5,sx=1,sy=1){
     ctx.save();ctx.translate(x+w*px,y+h*py);ctx.rotate(angle);ctx.scale(sx,sy);ctx.drawImage(parts[name],-w*px,-h*py,w,h);ctx.restore()
   }
-  return (ctx:CanvasRenderingContext2D,motion:DinosaurMotion,p:number,mail?:MailPainter) => {
+  return (ctx:CanvasRenderingContext2D,motion:DinosaurMotion,p:number,mail?:MailPainter,equipment?:EvolutionEquipment) => {
     ctx.clearRect(0,0,512,512)
     const e=envelope(p),flight=dinosaurFlight(p),phone=dinosaurPhone(p)
     const fly=motion==='fly',mobile=motion==='phone',stretch=motion==='stretch',yawn=motion==='yawn',look=motion==='look'
@@ -100,13 +101,20 @@ export function createDinosaurMotionRenderer(original: DinosaurParts, skin: Dino
       part(ctx,'leftWing',15,193,202,211,-.18-flap*.42, .88,.85,spread*(.77+.23*Math.cos(p*Math.PI*30)),spread)
       part(ctx,'rightWing',298,186,196,211,.18+flap*.42,.12,.85,spread*(.77+.23*Math.cos(p*Math.PI*30+.3)),spread)
     }
-    part(ctx,'body',83,203,327,272,0,.5,1,1,stretch?1+.045*e:1)
     const armLift=mobile?-12*phone.hold:0
     const leftAngle=stretch?-2.55*e:mobile?-.32*phone.hold:fly?.12*Math.sin(p*Math.PI*24)*e:look?.08*Math.sin(p*Math.PI*3)*e:0
     const rightAngle=stretch?2.55*e:mobile?.30*phone.hold+phone.swipe*.13:fly?-.12*Math.sin(p*Math.PI*24)*e:0
+    if(awakened){
+      ctx.save();ctx.translate(256,480+headLift);ctx.rotate(headAngle*.2);ctx.drawImage(awakened,-256,-480,512,512);ctx.restore()
+    } else {
+    paintEquipment(ctx,equipment,'dinosaur',[0])
+    part(ctx,'body',83,203,327,272,0,.5,1,1,stretch?1+.045*e:1)
+    equipmentPart(ctx,equipment,2,255,362,170,157)
+    paintEquipment(ctx,equipment,'dinosaur',[3])
     // Head pivots inside the neck; lower jaw always overlaps the attachment.
     ctx.save();ctx.translate(271,304);ctx.rotate(headAngle);ctx.translate(-271,-304+headLift)
-    ctx.drawImage(face(blink,yawn?Math.sin(Math.PI*p)**2*e:0),115,41,306,291);ctx.restore()
+    ctx.drawImage(face(blink,yawn?Math.sin(Math.PI*p)**2*e:0),115,41,306,291);equipmentPart(ctx,equipment,1,265,63,200,95);ctx.restore()
+    }
     if(mobile&&mail)mail(ctx,{x:240,y:335+(1-phone.hold)*35,width:76,height:129},phone.hold>.2?'held':'lap')
     if(mobile&&!mail&&phone.hold>.001){
       ctx.save();ctx.globalAlpha=phone.hold
@@ -118,8 +126,8 @@ export function createDinosaurMotionRenderer(original: DinosaurParts, skin: Dino
       if(stretch)mail(ctx,{x:423,y:374,width:49,height:91},'ground')
       else mail(ctx,{x:209,y:347,width:64,height:117},'held')
     }
-    part(ctx,'leftArm',150+(mobile?26*phone.hold:0),299+armLift,77,93,leftAngle,.28,.2)
-    part(ctx,'rightArm',328-(mobile?37*phone.hold:0),293+armLift-(mobile?phone.swipe*8:0),74,94,rightAngle,.72,.2)
+    if(!awakened)part(ctx,'leftArm',150+(mobile?26*phone.hold:0),299+armLift,77,93,leftAngle,.28,.2)
+    if(!awakened)part(ctx,'rightArm',328-(mobile?37*phone.hold:0),293+armLift-(mobile?phone.swipe*8:0),74,94,rightAngle,.72,.2)
     ctx.restore()
     // A few warm glints accompany the wing reveal, and fade before landing.
     if(fly){ctx.save();ctx.globalAlpha=flight.wings*ease((.95-p)/.12)*.6;ctx.strokeStyle='#deb869';ctx.lineWidth=2

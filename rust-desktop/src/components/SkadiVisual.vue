@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useAwakenedArt } from '../evolution/useAwakenedArt'
+import AwakenedSprite from './AwakenedSprite.vue'
+import { vEvolutionMaterial } from '../evolution/material'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { SkadiForm, SkadiSkin, SkadiWeapon as WeaponId } from '../shared/types'
 import { skadiFrame, type SkadiAction } from '../skadi/play'
@@ -7,6 +10,7 @@ import { loadSkadi, loadSkadiProps } from '../skadi/sprites'
 import SkadiEffects from './SkadiEffects.vue'
 import SkadiFigure from './SkadiFigure.vue'
 const props = withDefaults(defineProps<{ percent?: number | null; action?: SkadiAction; skin?: SkadiSkin; form?: SkadiForm; weapon?: WeaponId; showWeapon?: boolean; ambient?: boolean; gentle?: boolean; paused?: boolean; sampleFrame?: number; fishing?: 'waiting'|'bite'|'missed'|'caught' }>(), { percent: null, action: 'idle', skin: 'classic', form: 'chibi', weapon:'sword',showWeapon:true,ambient:false, gentle: false, paused: false, fishing:'waiting' })
+const { art: awakened } = useAwakenedArt('skadi', () => props.skin, () => props.form)
 const frames = ref<string[]>([]), propFrames=ref<string[]>([]), error = ref(false), clock=ref(0)
 let disposed = false, version = 0, timer: ReturnType<typeof setInterval> | undefined
 const ambientAction=computed(()=>props.ambient&&props.action==='idle'&&skadiFrame('idle',props.percent)===0&&!props.gentle&&!props.paused?skadiAmbientAt(clock.value):'idle')
@@ -23,7 +27,7 @@ onUnmounted(() => { disposed = true; clearInterval(timer) })
 </script>
 <template>
 <div class="skadi-visual" :class="[`skadi-action-${effectiveAction}`,`skadi-form-${form}`,{gentle,paused,'skadi-has-weapon':showWeapon}]" :data-loaded="!!frames.length" :data-frame="frame" :data-skin="skin" :data-form="form" :data-motion="effectiveAction" :data-weapon="weapon" :data-power="skadiWeaponPower(action)" :data-grip-mode="showWeapon?'held':'none'" aria-hidden="true">
-  <div v-if="frames.length" class="skadi-motion"><img v-if="!showWeapon&&(gentle||paused)" :src="frames[frame]" alt="" draggable="false"/><SkadiFigure v-else :src="frames[frame]" :action="effectiveAction" :gentle="gentle" :paused="paused" :form="form" :skin="skin" :frame="frame" :weapon="weapon" :show-weapon="showWeapon"/></div>
+  <div v-if="frames.length" class="skadi-motion evolution-equipped" :data-awakened="!!awakened" v-evolution-material="{ scene: 'skadi', skin, pose: action, percent, paused }"><img v-if="awakened?.cinematic || (!showWeapon&&(gentle||paused))" :src="(awakened?.urls ?? frames)[frame]" alt="" draggable="false"/><SkadiFigure v-else :src="(awakened?.urls ?? frames)[frame]" :action="effectiveAction" :gentle="gentle" :paused="paused" :form="form" :skin="skin" :frame="frame" :weapon="weapon" :show-weapon="showWeapon"/></div>
   <span v-else class="skadi-load">{{error?'月汐的素材暂未加载，请切换场景重试。':'月汐正向你走来…'}}</span>
   <SkadiEffects :weapon="weapon" :action="effectiveAction" :gentle="gentle" :paused="paused"/>
   <div v-if="action==='pet'||action==='feed'" class="skadi-hearts"><span>♡</span><span>♡</span><span>♡</span></div>

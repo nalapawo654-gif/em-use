@@ -1,6 +1,6 @@
 [package]
 name = "em-use-rust"
-version = "0.5.2"
+version = "0.5.3"
 edition = "2021"
 rust-version = "1.91"
 
@@ -19,7 +19,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 semver = "1"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
-tokio = { version = "1", features = ["time", "sync"] }
+tokio = { version = "1", features = ["time", "sync", "process", "io-util"] }
 chrono = "0.4"
 keyring = { version = "3", features = ["apple-native", "windows-native"] }
 base64 = "0.22"

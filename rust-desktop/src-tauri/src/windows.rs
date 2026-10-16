@@ -152,6 +152,11 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     desktop_world::validate_platform(&valid)?;
     let mut settings = snapshot(app)["settings"].clone();
     let previous_scene = settings["scene"].clone();
+    let previous_codex = [
+        settings["codexEnabled"].clone(),
+        settings["codexHome"].clone(),
+        settings["codexExecutable"].clone(),
+    ];
     model::merge(&mut settings, &valid);
     let w = widget(app)?;
     if valid.get("launchAtLogin").is_some() {
@@ -187,6 +192,12 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     }
     storage::write(app, "preferences.json", &settings)?;
     let scene_changed = settings["scene"] != previous_scene;
+    let codex_changed = previous_codex
+        != [
+            settings["codexEnabled"].clone(),
+            settings["codexHome"].clone(),
+            settings["codexExecutable"].clone(),
+        ];
     shared(app).inner.lock().unwrap().state["settings"] = settings;
     if valid.get("worldEnabled").is_some()
         || valid.get("worldPaused").is_some()
@@ -194,6 +205,10 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     {
         shared(app).inner.lock().unwrap().state["desktopWorldNotice"] = Value::Null;
         desktop_world::settings_changed(app);
+    }
+    if codex_changed {
+        crate::codex::invalidate(app);
+        tauri::async_runtime::spawn(crate::codex::refresh(app.clone(), true));
     }
     if scene_changed {
         if let Some(panel) = app.get_webview_window("calendar") {
@@ -537,6 +552,9 @@ fn message_popup_bounds(
     }
 }
 
+pub fn open_accounts(app: &tauri::AppHandle) -> Result<(), String> {
+    settings_window(app, "account")
+}
 fn settings_window(app: &tauri::AppHandle, tab: &str) -> Result<(), String> {
     if let Some(w) = app.get_webview_window("settings") {
         if !tab.is_empty() {
@@ -550,7 +568,9 @@ fn settings_window(app: &tauri::AppHandle, tab: &str) -> Result<(), String> {
         app,
         "settings",
         WebviewUrl::App(
-            if tab == "updates" {
+            if tab == "account" {
+                "index.html?view=settings&tab=account"
+            } else if tab == "updates" {
                 "index.html?view=settings&tab=updates"
             } else if tab == "messages" {
                 "index.html?view=settings&tab=messages"
@@ -675,7 +695,25 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
             .map_err(|e| e.to_string())?;
         menu.append(&world).map_err(|e| e.to_string())?;
     }
-    add("refresh", "刷新额度")?;
+    let sources = Submenu::new(app, "桌宠额度来源", true).map_err(|e| e.to_string())?;
+    for (id, label) in [("eastmoney", "AI 云平台"), ("codex", "Codex")] {
+        sources
+            .append(
+                &CheckMenuItem::with_id(
+                    app,
+                    format!("quota:{id}"),
+                    label,
+                    true,
+                    s["settings"]["quotaSource"] == id,
+                    None::<&str>,
+                )
+                .map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
+    }
+    menu.append(&sources).map_err(|e| e.to_string())?;
+    add("quota-settings", "账户与额度设置")?;
+    add("refresh", "刷新当前来源额度")?;
     add("settings", "设置")?;
     add("messages", "咚咚消息")?;
     add("calendar", "今日日程")?;
@@ -695,9 +733,9 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
         )
         .map_err(|e| e.to_string())?;
     }
-    add("dongdong-login", "额度：使用咚咚账户")?;
-    add("login", "额度：手动登录 / 切换账户")?;
-    add("logout", "退出额度账户（消息不受影响）")?;
+    add("dongdong-login", "AI 云平台：使用咚咚账户")?;
+    add("login", "AI 云平台：手动登录 / 切换账户")?;
+    add("logout", "退出 AI 云平台账户（消息不受影响）")?;
     menu.append(&PredefinedMenuItem::separator(app).map_err(|e| e.to_string())?)
         .map_err(|e| e.to_string())?;
     add("quit", "退出 EM Use")?;
@@ -794,6 +832,11 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                     Ok(())
                 }
                 "settings" => open_settings(app),
+                "quota-settings" => open_accounts(app),
+                "quota:eastmoney" | "quota:codex" => {
+                    schedule_settings(app, json!({"quotaSource":id.trim_start_matches("quota:")}));
+                    Ok(())
+                }
                 "messages" => open_messages(app),
                 "calendar" => calendar_popup(app, true),
                 "login" => account::open_login(app),
@@ -810,7 +853,7 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                     Ok(())
                 }
                 "refresh" => {
-                    tauri::async_runtime::spawn(account::refresh(app.clone(), true));
+                    tauri::async_runtime::spawn(crate::refresh_selected(app.clone()));
                     Ok(())
                 }
                 "update" => {

@@ -38,7 +38,7 @@ test('download page explains the product and links to installers from both entry
   for(const [platform,ext] of [['windows-x86_64','exe'],['darwin-aarch64','dmg']])assert.ok(page.includes(`href="/em-use/releases/0.4.0/EM-Use-0.4.0-${platform}.${ext}"`))
   assert.doesNotMatch(page,/darwin-x86_64|Intel 芯片/)
   assert.doesNotMatch(page,/href="[^"]+\.app\.tar\.gz"/)
-  for(const {id:pet} of pets)assert.ok(readFileSync(join(root,`out/em-use/site-assets/0.4.0/${pet}.webp`)).length>0)
+  for(const {id:pet} of pets)for(const suffix of ['', '-awakened'])assert.ok(readFileSync(join(root,`out/em-use/site-assets/0.4.0/${pet}${suffix}.webp`)).length>0)
 }))
 
 test('macOS release configuration never requests updater keys or archives',()=>{

@@ -11,3 +11,5 @@
 
 @container(max-width:249px){.battery-quota strong{font-size:18px;letter-spacing:-.7px}.battery-quota strong small{font-size:9px;margin-left:.5px}}
 .battery-fictional-mark{display:block;font:750 19px/1.5 "PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:2px;margin:3px 0 8px}.battery-panel .battery-fictional-mark{font-size:max(11px,3.5cqw);margin:1cqw 0}.battery-preview-wardrobe .battery-skins{grid-template-columns:repeat(6,minmax(0,1fr))}.battery-preview-play>div{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.battery-preview-wardrobe .battery-skins{grid-template-columns:repeat(3,minmax(0,1fr))}.battery-preview-play>div{grid-template-columns:1fr 1fr}}
+/* Real quota window names can be longer than the original daily label. */
+.battery-quota>span{white-space:normal;overflow-wrap:anywhere;line-height:1.4}.battery-quota>span svg{flex-shrink:0}

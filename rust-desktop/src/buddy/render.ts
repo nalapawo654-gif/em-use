@@ -1,3 +1,4 @@
+import { equipmentPart, paintEquipment, type EvolutionEquipment } from '../evolution/paint'
 import type { BuddySkin } from '../shared/types'
 import { durations, type BuddyAction } from './play'
 import type { BuddyMotion } from './motion'
@@ -52,7 +53,7 @@ function facial(ctx: CanvasRenderingContext2D, skin: BuddySkin, m: BuddyMotion) 
   } else line(ctx,[x-8,y-2,x,y+7,x+9,y-3], '#9c5d3c',1.8)
 }
 
-export function renderBuddy(ctx: CanvasRenderingContext2D, rig: BuddyRig, skin: BuddySkin, action: BuddyAction, elapsed: number, m: BuddyMotion, deflation: number) {
+export function renderBuddy(ctx: CanvasRenderingContext2D, rig: BuddyRig, skin: BuddySkin, action: BuddyAction, elapsed: number, m: BuddyMotion, deflation: number, equipment?: EvolutionEquipment, awakened?: HTMLCanvasElement) {
   ctx.clearRect(0,0,512,512)
   const air=Math.min(3,Math.max(0,deflation)), lower=Math.floor(air), heights=[0,.07,.28,.48]
   const flatten=heights[lower]+((heights[Math.min(3,lower+1)]-heights[lower])*(air-lower))
@@ -63,7 +64,12 @@ export function renderBuddy(ctx: CanvasRenderingContext2D, rig: BuddyRig, skin: 
   const headX=65+(skin==='classic'?0:20)+m.headX, headY=48+low+m.headY+neckOffset
   const pivotX=230+(skin==='classic'?0:20)+m.headX, pivotY=282+low+m.headY+neckOffset
   const tailX=402, tailY=bodyY+bodyH*.36
+  if(awakened){
+    ctx.save();ctx.translate(256,480+m.bodyY);ctx.rotate(m.headAngle*.12);ctx.scale(1,m.bodyScale);ctx.drawImage(awakened,-256,-480,512,512);ctx.restore()
+  } else {
   ctx.save();ctx.translate(tailX,tailY);ctx.rotate(m.tailAngle);ctx.drawImage(rig.tail,-6,-90,94,105);ctx.restore()
+  const outfit=(parts: (0|2)[])=>{ctx.save();ctx.translate(0,484+m.bodyY);ctx.scale(1,m.bodyScale*(1-flatten));ctx.translate(0,-484);paintEquipment(ctx,equipment,'buddy',parts);ctx.restore()}
+  outfit([0])
   ctx.save();ctx.translate(0,484);ctx.scale(1,m.bodyScale);ctx.translate(0,-484)
   // Front leg bends independently for the kick; the rest of the body stays planted.
   if (m.foot > .001) {
@@ -77,8 +83,10 @@ export function renderBuddy(ctx: CanvasRenderingContext2D, rig: BuddyRig, skin: 
     }
   } else ctx.drawImage(rig.body,140,bodyY,300,bodyH)
   ctx.restore()
+  outfit([2])
   const headTransform=()=>{ctx.translate(pivotX,pivotY);ctx.rotate(m.headAngle);ctx.translate(headX-pivotX,headY-pivotY)}
-  ctx.save();headTransform();ctx.drawImage(rig.head,0,0,260,254);facial(ctx,skin,m);ctx.restore()
+  ctx.save();headTransform();ctx.drawImage(rig.head,0,0,260,254);facial(ctx,skin,m);equipmentPart(ctx,equipment,1,104,39,174,112);ctx.restore()
+  }
   // Mouth world coordinates are derived from the same head transform as the art.
   const localX=(skin==='classic'?.265:.26)*260+headX-pivotX, localY=(skin==='classic'?.88:.86)*254+headY-pivotY
   const mouthX=pivotX+Math.cos(m.headAngle)*localX-Math.sin(m.headAngle)*localY

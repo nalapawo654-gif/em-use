@@ -513,6 +513,402 @@
       "bytes": 1076432,
       "encoding": "PNG with original alpha; standalone replacement for props frame 5",
       "source": "Built-in imagegen edit; docs/potato-flag-prompt.md"
+    },
+    {
+      "path": "evolution/aquarium.png",
+      "sha256": "5d0dcc63c2ae346da58145b669c457b0ed934d544204bdeef77c6e64c927cdda",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1031264,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/garden.png",
+      "sha256": "6b1bf20e8867e4b98d5c641f463483b6bc9881dd1e57c1c5a1d0156964cab80d",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1680004,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/spirit.png",
+      "sha256": "687ea52769feea4894d8ed89dadccacaab76f743348177b1dd3701f046e8fa08",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 2112823,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/tech.png",
+      "sha256": "89d404b66af5d15d4bd4ec0ff68f42c25f373de9c036977af6821165075ea609",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1549386,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/aquarium.png",
+      "sha256": "21fac3f479f1ce772e4fb1f05f0b251eff0fdc3c9dcc87a4fce69a1a2617787e",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2234893,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/battery.png",
+      "sha256": "07bcc8e76fbdc90185ca7b50c7898f21efb04a2025c888744d7c7fe9190ba550",
+      "width": 1261,
+      "height": 1247,
+      "bytes": 2294926,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/beaver-alpha.png",
+      "sha256": "9f6244e5beef2eda88980a5363e4abc2a7e0b01d5f40d74c1b0f512628368c7b",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2746957,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/buddy-extra.png",
+      "sha256": "1a76aa33dadc711ea2198cbcf4df857fa1ee453fedba6a389f149c0327d616d8",
+      "width": 1774,
+      "height": 887,
+      "bytes": 1792428,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/buddy.png",
+      "sha256": "3a8cff4c129d28d08695ed990448c168636b9a151115442952bdcad317db949f",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2310582,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/cultivation.png",
+      "sha256": "a2746755e5ec3ac28ffcd36d24b391b3ae776f08a8b1699f3e981687c21aa98a",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3251419,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/dinosaur.png",
+      "sha256": "8290a64855d08c33e6d2d15e537c1b2eaec5c25503d9bca5b8d2c6c7a80b22f9",
+      "width": 1402,
+      "height": 1122,
+      "bytes": 2008123,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/feidudu.png",
+      "sha256": "666f3d3aaa02a972dbad7e770b5abc3e40ac315712fed1e8d4160b67657b0fdc",
+      "width": 1247,
+      "height": 1261,
+      "bytes": 1576852,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/fox.png",
+      "sha256": "ad0508fcd07cac2d42185d5c6ca5bcc2eff628782bc34955175b80b67100a333",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 2799950,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/hamster.png",
+      "sha256": "7f5e969305d397a1e2c61170bc04d3620400211f04b24a8d52cef7ea0b1fbeec",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2868054,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/interaction-props.png",
+      "sha256": "3f9b5af7d7330e4c79da67231f03b2e0962fca8f8fba2a91fc696e7a951fec6a",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1971225,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/luckycat.png",
+      "sha256": "94e768677fbdad6552acd4248a2babfc6344cd90a034fbe71a9608373e01e3e3",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 2284676,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/piranha.png",
+      "sha256": "ddcbaa84417fbc75b389aace558332b06f0cd9437f355b0f97e30cc256c4c363",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 2602520,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/potato-armor-1.png",
+      "sha256": "1b4193be29ddb8d7ca5c91673b4d1ec60a169364c2f487f71a9f29084f23671c",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 3216800,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/potato-armor-2.png",
+      "sha256": "e43ca6d23be4c0cbaa99f42e3fd1a7427d4021a5bd93a680c36645c6922dc808",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 3066696,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/potato-armor-3.png",
+      "sha256": "d751f117d82653305f670202eed030bdc62d0ffce541ce14b5c6b6cd5003f12a",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 3235470,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/potato-armor-4.png",
+      "sha256": "7be5956708f9955007e53b70b1e9be9c87280f233cd79fcddcadfe68defaac4a",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 3353511,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/potato-armor-5.png",
+      "sha256": "5ab724fed1250582358fc9d33d1b3a6fbc84eb5b4fdf05dc8a92d0b6c58f4a55",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 3196299,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/skadi-adult.png",
+      "sha256": "ed5defc75bac42b533e4e62b83edb190feb45d21a8e02414a6f034e3df6f5694",
+      "width": 1222,
+      "height": 1287,
+      "bytes": 3434661,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v2/skadi-chibi.png",
+      "sha256": "e21ae62ab035e3899e8f299f12035f918761f82cfdc200bfe9027e645cd16ea6",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3226751,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/aquarium-transformation.png",
+      "sha256": "53b16246d6f61b026f19acfe4ba875a887c738e13c29a9bbd66ef539505dbacf",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2517627,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/battery-transformation.png",
+      "sha256": "af759a52128300a065fe95e87e94606d175e4cd6e236890e509f9b1a1e6199b1",
+      "width": 1261,
+      "height": 1247,
+      "bytes": 2140064,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/beaver-alpha-transformation.png",
+      "sha256": "263f0a7413e1f63c25f4a0dc241cddd9fa7f10a63046fde0346217732a4c58c4",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2831348,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/buddy-extra-transformation.png",
+      "sha256": "a270db1f9fc25ffad1e91c3680aeaca565b6391eb6a663e550436b5d9fc73b21",
+      "width": 2172,
+      "height": 724,
+      "bytes": 2014867,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/buddy-transformation.png",
+      "sha256": "acd6bf273420a612120e0e9de640decbc6b817c3d5ba5d9743c7f790da3e6652",
+      "width": 1774,
+      "height": 887,
+      "bytes": 2332446,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/cultivation-transformation.png",
+      "sha256": "995496fd97729e96ae209569fce71c4ae17a1b2cf7070e63a33a07abc70f9507",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3390462,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/dinosaur-transformation.png",
+      "sha256": "bd1801a904cfeff43d4abefc9106dc36ad6251c4d647de5d702974403379b2d8",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2438877,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/feidudu-transformation.png",
+      "sha256": "2121ad4b01895d9061de1dbe60484dabb0dde4e62a8738951ec959cd25b293dd",
+      "width": 1312,
+      "height": 1199,
+      "bytes": 1985526,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/fox-transformation.png",
+      "sha256": "ac7b9c54f9ce703172eb3686fbe90f1e73ad87abec0f5df967b7207946123cd7",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3067278,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/hamster-transformation.png",
+      "sha256": "063acfdf41b57e78b28b78864f0fffe3ab9f4d49c11ffae8a907a9310d9bc335",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 2912561,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/luckycat-transformation.png",
+      "sha256": "99f9a6dedfaf9653fe312221890597aca53b9894c25ba2fc5e140151c847d4d2",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3031023,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/piranha-transformation.png",
+      "sha256": "8656065539836482ea1fe5b198eab66036bbcb01728184f9c47cdbd8f8254bce",
+      "width": 1374,
+      "height": 1145,
+      "bytes": 2661457,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/potato-armor-1-transformation.png",
+      "sha256": "4a8637ca3f6cd74bd55037579ca24ce315f8f31c676a25f9f73a4af9a5906ba0",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3191026,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/potato-armor-2-transformation.png",
+      "sha256": "8ade1b4b9f1473628a72832e1e2c96c64701f8275930086846e24ff5cb343e03",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3160261,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/potato-armor-3-transformation.png",
+      "sha256": "7b51901de2f43143fa0f428766ef2c54df428e6466b3f5787f5bca005c3d286a",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3074962,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/potato-armor-4-transformation.png",
+      "sha256": "2ddf4c1b046623adac7a0a25dbd94f1e872f46ac511f3cecc2aa3427f59bee76",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3316890,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/potato-armor-5-transformation.png",
+      "sha256": "ee0ff8dfcb4aa34430fb175784788a7c9d37a9c0af3156df982e01405440414f",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3094297,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/skadi-adult-transformation.png",
+      "sha256": "2af39b0e1c75d6a60d44bd71b9201f5e08e6c7fb9e48ff59f6726472808b4cea",
+      "width": 1222,
+      "height": 1287,
+      "bytes": 3474361,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/v3/skadi-chibi-transformation.png",
+      "sha256": "c7bad9d66064e9a314ae43b42b034e2f0d99252c236e49c766a5a16276e33f55",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3275333,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "evolution/woodland.png",
+      "sha256": "77f8ddaf70be9cbc044f22f5fe54a0e9b2270c5e0948646ecdf8b924ad76b5d7",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1607900,
+      "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
+      "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
     }
   ]
 }

@@ -1,0 +1,31 @@
+/* Only the painted actor animates. Toolbars, quota and hit areas stay put. */
+.evolution-material {
+  filter: saturate(var(--awakening-saturation,1))
+    drop-shadow(0 0 var(--awakening-rim,0px) var(--awakening-light))
+    drop-shadow(0 0 var(--awakening-radius,0px) var(--awakening-edge));
+  transition: filter .25s ease-out;
+}
+.evolution-actor[data-awakening-motion="full"][data-awakening-phase="gather"],
+.evolution-actor[data-awakening-motion="full"][data-awakening-phase="return"] { animation: evolution-body-gather .3s ease-in both!important; }
+.evolution-actor[data-awakening-motion="full"][data-awakening-phase="unfold"] { animation: evolution-body-unfold .5s cubic-bezier(.16,1,.3,1) both!important; }
+.evolution-actor[data-awakening-motion="full"][data-awakening-phase="reveal"] { animation: evolution-body-reveal .3s ease-out both!important; }
+.evolution-actor[data-awakening-motion="full"][data-awakening-direction="return"][data-awakening-phase="reveal"] { animation: evolution-body-restore .3s ease-out both!important; }
+.evolution-actor[data-awakening-motion="light"]:not([data-awakening-phase="idle"]) { animation: evolution-body-light .2s ease-out both!important; }
+.evolution-actor[data-awakening-motion="off"] { animation: none; transition: none; }
+@keyframes evolution-body-gather {
+  from { opacity:1; }
+  to { opacity:.18; filter: saturate(.6) blur(2px) drop-shadow(0 0 6px var(--awakening-light)); }
+}
+@keyframes evolution-body-unfold {
+  from { opacity:.18; clip-path:inset(65% 0 0); filter:blur(2px) drop-shadow(0 0 7px var(--awakening-edge)); }
+  to { opacity:1; clip-path:inset(0); }
+}
+@keyframes evolution-body-reveal { from { filter:drop-shadow(0 0 5px var(--awakening-edge)); } }
+@keyframes evolution-body-restore { from { opacity:.18; } to { opacity:1; } }
+@keyframes evolution-body-light { from { opacity:.45; } to { opacity:1; } }
+@media (prefers-reduced-motion: reduce) {
+  .evolution-actor:not([data-awakening-phase="idle"]):not([data-awakening-motion="off"]) { animation:evolution-body-light .2s ease-out both!important; }
+  .evolution-material { transition:none; }
+}
+
+.evolution-actor[data-cinematic="true"]{animation:none!important;filter:none!important}

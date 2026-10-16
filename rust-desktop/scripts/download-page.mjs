@@ -13,6 +13,8 @@ export const pets=[
   {id:'luckycat',name:'破产招财猫',tag:'招一点财，也招一点开心',description:'会招手、伸懒腰的招财猫，把额度变化藏进日常姿态。十二种互动、自动小动作与四套服装，陪你认真工作，也陪你歇一歇。'},
   {id:'dinosaur',name:'摸鱼小恐龙',tag:'工作有节奏，摸鱼有搭子',description:'一只会拍翼飞行、刷手机的小恐龙，带着十二种角色互动和四种配色来到桌面。额度渐少，它也慢慢进入休息状态。'},
   {id:'skadi',name:'斯卡蒂 · 月汐',tag:'月色落在桌角，夜影陪在身旁',description:'御姐与萝莉双形态，各有六套衣装。六件武器、专属技能与十六种互动，加上夜影黑猫，让月汐陪你度过白天与夜晚。'},
+  {id:'piranha',name:'食人花 · 捕需求草',tag:'吞掉虚构需求，开出一点好心情',description:'投喂一张需求纸条，夸夸开花、逗逗花冠，也能合苞小憩。五套装扮与独立互动，让桌边长出一株有性格的小伙伴。'},
+  {id:'potato',name:'土豆战神',tag:'小小土豆，装备认真',description:'二十套机甲装扮，配上咖啡、锅盖盾和加油旗。摸摸头盔、算算账、拧拧螺丝，让土豆战神陪你守住工作节奏。'},
 ]
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 const windowsIcon='<svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4.5 10.5 3.3V11H2Zm10-1.4L22 1.5V11H12ZM2 12.5h8.5v7.7L2 19Zm10 0h10V22L12 20.4Z"/></svg>'
@@ -25,5 +27,5 @@ export function renderDownloadPage(version,downloads,prefix='/em-use/'){
     const item=downloads.find(d=>d.platform===platform && d.file.endsWith(extension));if(!item)throw new Error(`Missing user installer for ${platform}`)
     return `<article class="download-card">${icon}<h3>${title}</h3><p class="architecture">${subtitle}</p><a class="download-button" href="${escape(release+encodeURIComponent(item.file))}" download aria-label="${label}"><span>${label}</span><span aria-hidden="true">↓</span></a><div class="file-info"><span>${extension.slice(1).toUpperCase()} 安装包</span><span>${item.bytes==null?'大小以发布包为准':(item.bytes/1e6).toFixed(1)+' MB'}</span></div></article>`
   }).join('')
-  return readFileSync(website+'page.html','utf8').replace('/*STYLE*/',readFileSync(website+'style.css','utf8')).replace('/*SCRIPT*/',readFileSync(website+'page.js','utf8').replace('/*PETS*/',JSON.stringify(pets.map(p=>({...p,image:assets+p.id+'.webp'}))))).replace('<!--PET_BUTTONS-->',buttons).replace('<!--DOWNLOAD_CARDS-->',cards).replaceAll('{{PET_COUNT}}',String(pets.length)).replaceAll('{{PET_TOTAL}}',String(pets.length).padStart(2,'0')).replaceAll('{{VERSION}}',escape(version)).replaceAll('{{ASSETS}}',escape(assets)).replaceAll('{{CHECKSUM}}',escape(release+'SHA256SUMS.txt'))
+  return readFileSync(website+'page.html','utf8').replace('/*STYLE*/',readFileSync(website+'style.css','utf8')).replace('/*SCRIPT*/',readFileSync(website+'page.js','utf8').replace('/*PETS*/',JSON.stringify(pets.map(p=>({...p,image:assets+p.id+'.webp',awakenedImage:assets+p.id+'-awakened.webp'}))))).replace('<!--PET_BUTTONS-->',buttons).replace('<!--DOWNLOAD_CARDS-->',cards).replaceAll('{{PET_COUNT}}',String(pets.length)).replaceAll('{{PET_TOTAL}}',String(pets.length).padStart(2,'0')).replaceAll('{{VERSION}}',escape(version)).replaceAll('{{ASSETS}}',escape(assets)).replaceAll('{{CHECKSUM}}',escape(release+'SHA256SUMS.txt'))
 }

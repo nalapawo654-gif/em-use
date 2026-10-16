@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import PetEvolution from './PetEvolution.vue'
+import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
 import PetCalendar from './PetCalendar.vue'
 import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { PhLightning, PhGearSix, PhMinus, PhGameController, PhX, PhInfo, PhArrowsClockwise, PhMoon, PhSun, PhHandHeart, PhGrains, PhCircleDashed, PhArrowUpLeft, PhHeart, PhArrowRight, PhTShirt, PhBell, PhCoffee, PhCat, PhPaintBrush } from '@phosphor-icons/vue'
-import { api, appState as state, isDesktop, previewQuota } from '../bridge'
+import { api, quotaState as state, quotaDisplay, isDesktop, previewQuota } from '../bridge'
 import { useWindowGestures } from '../windowGestures'
 import type { Corner } from '../shared/windowGeometry'
 import type { Settings } from '../shared/types'
@@ -24,7 +26,7 @@ const play = ref(hamsterIdle()), visible = ref(!document.hidden)
 const { moving, down, move, end, click, wheel } = useWindowGestures()
 const corners: Corner[] = ['nw', 'ne', 'sw', 'se']
 const level = computed(() => hamsterLevel(props.percent)), active = computed(() => play.value.action !== 'idle')
-const statusLabel = computed(() => ({ ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '同步今日额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限', 'signed-out': '等待连接', connecting: '等待登录' }[state.status]))
+const statusLabel = computed(() => ({ ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '正在同步额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限', 'signed-out': '等待连接', connecting: '等待登录' }[state.status]))
 const speech = computed(() => ({ idle: HAMSTER_LEVELS[level.value].speech, feed: '咔嚓咔嚓，快乐就是一颗瓜子。', wheel: play.value.completedAt !== null ? '六圈完成！和你一起真开心。' : '再转一圈，陪鼠鼠跑起来！', sleep: '嘘…鼠鼠先睡一小会儿。', pet: '收到你的小心意啦！', groom:'梳梳毛，今天也要蓬蓬松松。', bell:'叮铃！鼠鼠精神了一点。', tease:'监工也忍不住来玩啦。', coffee:'闻到香气，打起精神！','cat-yawn':'监工也会犯困，哈——欠。','cat-nap':'嘘，小监工正趴在纸箱上补觉。','cat-snack':'鼠鼠忙着跑，它偷偷嗑上了。' }[play.value.action]))
 const interactions = [
  {action:'feed' as const,label:'喂瓜子',icon:PhGrains,prop:8,hint:'快乐就是咔嚓一口'},
@@ -62,7 +64,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
   <div class="hamster-experience" :class="{ 'hamster-native': isDesktop }">
     <div class="hamster-hero">
       <section ref="widget" tabindex="-1" class="hamster-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'has-action': active, 'has-notice': notice, 'is-moving': moving }" aria-label="仓鼠动力机房场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="togglePanel('play')" @keydown.esc.stop.prevent="escape">
-        <PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetEvolution :blocked="!!panel || active || moving || !!notice || calendarOpen || noticeOpen"/><PetNotices :blocked="!!panel || active || moving || !!notice" :message-blocked="!!panel || moving || !!notice" :message-deferred="active" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
         <PetCalendar appearance="hamster" :blocked="!!panel || moving || !!notice || noticeOpen || active" @open-change="calendarOpen = $event"/>
         <HamsterVisual message :style="place('visual')" :skin="state.settings.hamsterSkin" :level="level" :action="play.action" :reduced-motion="state.settings.reducedMotion" :active="visible"/>
         <button class="hamster-scene-prop hamster-cat scene-hit" :style="place('cat')" aria-label="看看监工猫的小动作" title="点击切换：哈欠、睡觉、偷吃" @click="catAction"><HamsterCat :action="play.action" :since="play.since" :night="night" :reduced-motion="state.settings.reducedMotion" :active="visible"/></button>
@@ -75,24 +77,24 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
         <button class="hamster-wheel-hit scene-hit" aria-label="轻点跑轮，陪仓鼠转一圈" @click="turnWheel"></button>
         <button class="hamster-pet-hit scene-hit" :aria-label="play.action === 'sleep' ? '唤醒仓鼠' : '摸摸仓鼠'" @click="pet"></button>
         <p v-if="!active" class="hamster-speech" :class="{ 'is-active': active }" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet'" weight="fill"/></p>
-        <button class="hamster-quota" :style="place('quota')" @click="togglePanel('details')" :class="'quota-' + level" type="button" :aria-label="percent === null ? '今日额度未知，' + statusLabel : '今日剩余额度 ' + Math.round(percent) + '%'">
-          <span class="hamster-quota-label"><PhLightning weight="fill"/>今日剩余<span v-if="state.status === 'stale'"> · 数据待更新</span></span>
+        <button class="hamster-quota" :style="place('quota')" @click="togglePanel('details')" :class="'quota-' + level" type="button" :aria-label="percent === null ? '额度未知，' + statusLabel : '剩余额度 ' + Math.round(percent) + '%'">
+          <span class="hamster-quota-label"><PhLightning weight="fill"/>{{ quotaDisplay.label }}<span v-if="state.status === 'stale'"> · 数据待更新</span></span>
           <div><span class="hamster-meter" :class="{ unknown: percent === null }"><i :style="{ width: `${percent === null ? 0 : Math.max(0, Math.min(100, percent))}%` }"></i></span><strong>{{ percent === null ? '—' : Math.round(percent) + '%' }}</strong></div>
-          <small>{{ usable && state.quota ? `¥${state.quota.remaining.toFixed(2)} / ¥${state.quota.limit.toFixed(2)}` : statusLabel }}</small>
+          <small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small>
         </button>
         <header class="hamster-header hamster-chrome"><span><PhLightning weight="fill"/><b>仓鼠动力机房</b></span><div><button aria-label="更多仓鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="仓鼠换装" title="换装" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="仓鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仓鼠到托盘" title="收起到托盘" @click="hide"><PhMinus/></button></div></header>
         <nav class="hamster-tools hamster-chrome" aria-label="陪仓鼠玩"><button v-for="item in interactions" :key="item.action" :aria-label="'仓鼠' + item.label" :title="item.label" @click="act(item.action)"><HamsterProp :index="item.prop"/><span>{{ item.label }}</span></button></nav>
-        <footer class="hamster-footer hamster-chrome"><button :aria-expanded="panel === 'details'" @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新仓鼠额度" :disabled="state.syncing || !state.quota" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>
+        <footer class="hamster-footer hamster-chrome"><button :aria-expanded="panel === 'details'" @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新仓鼠额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>
         <div v-if="active" class="hamster-hud" :style="place('actionDock')" aria-live="polite">
           <div class="hamster-action-copy"><b>{{ play.action === 'wheel' ? (play.completedAt !== null ? '跑轮挑战完成！' : `跑轮 ${play.turns} / ${WHEEL_TARGET} 圈`) : actionLabel }}</b><small v-if="play.action === 'wheel'">{{ play.turns }} / {{ WHEEL_TARGET }} 圈</small><small v-else>{{ speech }}</small></div>
           <button v-if="play.action === 'wheel'" :disabled="play.completedAt !== null" @click="turnWheel">转一圈</button>
           <button :aria-label="play.action === 'sleep' ? '叫仓鼠醒来' : '结束仓鼠互动'" @click="cancel">{{ play.action === 'sleep' ? '醒来' : '结束' }}<PhX v-if="play.action !== 'sleep'"/></button>
         </div>
         <section v-if="panel" class="hamster-panel" role="dialog" :aria-label="panel === 'play' ? '仓鼠游乐场' : panel === 'wardrobe' ? '仓鼠衣橱' : '仓鼠额度详情'">
-          <header><b>{{ panel === 'play' ? '忙里偷闲，陪鼠鼠玩' : panel === 'wardrobe' ? '今天穿什么？' : '今日额度' }}</b><button aria-label="关闭仓鼠面板" @click="closePanel"><PhX/></button></header>
+          <header><b>{{ panel === 'play' ? '忙里偷闲，陪鼠鼠玩' : panel === 'wardrobe' ? '今天穿什么？' : '额度详情' }}</b><button aria-label="关闭仓鼠面板" @click="closePanel"><PhX/></button></header>
           <template v-if="panel === 'play'"><div class="hamster-play-grid"><button v-for="item in interactions" :key="item.action" @click="act(item.action)"><HamsterProp :index="item.prop"/><b>{{ item.label }}</b><small>{{ item.hint }}</small></button><button @click="act('wheel')"><PhCircleDashed/><b>逗跑轮</b><small>一起转满六圈</small></button><button @click="act('pet')"><PhHandHeart weight="duotone"/><b>摸摸它</b><small>把一点喜欢告诉它</small></button></div><div class="hamster-cat-controls"><b>监工猫的摸鱼时间</b><button @click="act('cat-yawn')">打个哈欠</button><button @click="act('cat-nap')">趴着补觉</button><button @click="act('cat-snack')">偷吃瓜子</button></div><p>互动只是陪伴，不会消耗或恢复平台额度。</p></template>
           <template v-else-if="panel === 'wardrobe'"><HamsterSkinPicker/><p>装扮会保存。盖被休息时暂时收好，醒来继续穿。</p></template>
-          <template v-else><p>{{ statusLabel }} · {{ state.message }}</p><dl v-if="state.quota"><div><dt>{{ usable ? '今日剩余' : '上次记录剩余' }}</dt><dd>¥{{ state.quota.remaining.toFixed(2) }}</dd></div><div><dt>每日额度</dt><dd>¥{{ state.quota.limit.toFixed(2) }}</dd></div><div><dt>费用日期</dt><dd>{{ state.quota.day }}</dd></div><div><dt>费用更新时间</dt><dd>{{ state.quota.estimatedAt.replace('T', ' ').slice(0, 19) }}</dd></div></dl><p>北京时间每日 00:00 重置，以平台同步结果为准。</p><button class="text-button" @click="api.openPortal()">在平台查看<PhArrowRight/></button></template>
+          <template v-else><QuotaDetails/></template>
         </section>
         <p v-if="notice" class="hamster-notice" role="status">{{ notice }}<button aria-label="关闭仓鼠提示" @click="notice = ''"><PhX/></button></p>
         <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="hamster-resize" :class="corner" :aria-label="`缩放仓鼠 ${corner}`" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="setting({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="setting({ windowWidth: state.settings.windowWidth - 10 })"><PhArrowUpLeft/></button>

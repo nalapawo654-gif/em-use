@@ -33,3 +33,5 @@
 
 .dinosaur-widget{--dino-art-width:88;--dino-art-height:72}
 @container(max-width:220px){.dinosaur-widget .dinosaur-body-hit{--dino-art-width:96;--dino-art-height:66}.dinosaur-widget.has-action .dinosaur-body-hit{--dino-art-height:60}}
+/* A failed cinematic's retry must stay above the transparent body hit target. */
+.dinosaur-character:has(.dinosaur-ceremony-error){z-index:8}

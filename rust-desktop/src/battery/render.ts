@@ -1,3 +1,4 @@
+import { energyFrame } from '../evolution/atlas'
 import { BATTERY_SKINS, type BatteryRealm, type BatterySkin } from '../shared/types'
 import { BATTERY_LEVELS, batteryLevel, type BatteryPlay } from './play'
 import { batteryPose, batteryGrounding, BATTERY_FLOOR, type Point } from './motion'
@@ -20,7 +21,7 @@ function curve(ctx: CanvasRenderingContext2D, start: Point, bend: Point, end: Po
 function ellipse(ctx: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, color: string) {
   ctx.fillStyle = color; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill()
 }
-export function renderBattery(ctx: CanvasRenderingContext2D, atlas: BatteryAtlas, opts: { percent: number | null; play: BatteryPlay; time: number; skin: BatterySkin; realm: BatteryRealm; gentle: boolean; night: boolean; scenery: boolean }) {
+export function renderBattery(ctx: CanvasRenderingContext2D, atlas: BatteryAtlas, opts: { percent: number | null; play: BatteryPlay; time: number; skin: BatterySkin; realm: BatteryRealm; gentle: boolean; night: boolean; scenery: boolean; awakened?: HTMLCanvasElement[]; evolution?: { parts: HTMLImageElement[]; glow: number } }) {
   const { percent, play, time, gentle, night, scenery, realm } = opts
   const level = batteryLevel(percent), p = batteryPose(percent, play, time, gentle), skin = BATTERY_SKINS.findIndex(s => s.id === opts.skin), t = gentle ? 0 : time / 1000
   const ground = batteryGrounding(p), charging = p.exercise === 'charge', yoga = p.exercise === 'yoga'
@@ -57,7 +58,20 @@ export function renderBattery(ctx: CanvasRenderingContext2D, atlas: BatteryAtlas
     for (let i=0;i<4;i++) { const q=point(gentle ? .2+i*.19 : (t*.55+i*.24)%1); ellipse(ctx,...q,3,3,'#cef488') }
     ctx.fillStyle = '#bedb92';ctx.beginPath();ctx.roundRect(finish[0]-10,finish[1]-8,20,15,4);ctx.fill()
   }
-  ctx.save(); ctx.translate(ground.x, ground.y); ctx.rotate(p.angle)
+  ctx.save(); ctx.translate(ground.x, ground.y); ctx.rotate(opts.awakened && p.exercise==='lie'?0:p.angle)
+  const equipment = (index: number, x: number, y: number, width: number, height: number) => {
+    const image = opts.evolution?.parts[index]; if (!image) return
+    const scale = Math.min(width / image.width, height / image.height)
+    ctx.save(); ctx.shadowColor = '#dfb65c'; ctx.shadowBlur = gentle ? 0 : 3 * opts.evolution!.glow
+    ctx.drawImage(image, x-image.width*scale/2, y-image.height*scale/2, image.width*scale, image.height*scale); ctx.restore()
+  }
+  const sleeping = p.exercise === 'lie'
+  if(opts.awakened){
+    const image=opts.awakened[sleeping?5:energyFrame(percent,6)]!
+    // The last authored pose already lies down; never rotate it a second time.
+    ctx.drawImage(image,-216,BATTERY_FLOOR-ground.y-p.air-405,432,432)
+  } else {
+  equipment(0, 0, -20, 245, 265)
   // Exactly two legs and two shoes, rendered behind the torso.
   for (const [side, foot] of [[-1, p.leftFoot], [1, p.rightFoot]] as const) {
     curve(ctx, [side * 35, 88], [side * 27, 125], [foot[0], foot[1] - 12], 13)
@@ -67,8 +81,10 @@ export function renderBattery(ctx: CanvasRenderingContext2D, atlas: BatteryAtlas
     curve(ctx, [side * 57, -53], [side * 90, hand[1] > 0 ? 12 : -12], hand, 12)
   }
   sprite(ctx, atlas, BATTERY_SKINS[Math.max(0, skin)].body, 0, -25, 142, 244)
-  // Faces and exact live percentage stay separate from the immutable shell art.
-  const sleeping = p.exercise === 'lie', serene = ['yoga', 'taichi', 'charge'].includes(p.exercise), happy = ['full', 'bright'].includes(level) || play.action === 'cheer'
+  equipment(2, 0, 48, 218, 145)
+  equipment(3, 0, 97, 158, 58)
+  // Faces and exact live percentage stay above the equipment and shell art.
+  const serene = ['yoga', 'taichi', 'charge'].includes(p.exercise), happy = ['full', 'bright'].includes(level) || play.action === 'cheer'
   ctx.strokeStyle = '#22271f'; ctx.lineWidth = 5.5; ctx.lineCap = 'round'
   for (const side of [-1, 1]) {
     const x = side * 28
@@ -91,12 +107,17 @@ export function renderBattery(ctx: CanvasRenderingContext2D, atlas: BatteryAtlas
   ctx.font = (opts.skin === 'classic' ? '600 10px' : '700 17px') + ' "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillText(wordmark, 0, 20)
   if (opts.skin === 'byd') { ctx.fillStyle = '#b93d40'; ctx.beginPath(); ctx.roundRect(-41, 43, 82, 35, 5); ctx.fill() }
+  }
+  ctx.textAlign='center';ctx.textBaseline='middle'
+  // A horizontal sleeping face stays unobscured; its quota remains in the scene HUD.
+  if(!opts.awakened || !sleeping){
   ctx.fillStyle = '#fffdf0'; ctx.font = '800 29px sans-serif'; ctx.fillText(level === 'unknown' ? '—' : Math.round(Math.max(0, Math.min(100, percent!))) + '%', 0, 61)
   // Shared quota also has an independent color meter, so a brand color cannot imply charge.
   ctx.fillStyle = '#2228'; ctx.beginPath(); ctx.roundRect(-33, 84, 66, 5, 2); ctx.fill()
   if (level !== 'unknown' && percent! > 0) { ctx.fillStyle = BATTERY_LEVELS[level].color; ctx.beginPath(); ctx.roundRect(-33, 84, 66 * Math.min(100, percent!) / 100, 5, 2); ctx.fill() }
+  }
   for (const [side, hand] of [[-1, p.leftHand], [1, p.rightHand]] as const) {
-    sprite(ctx, atlas, side === -1 ? 4 : 5, hand[0], hand[1], 32, 35, side * -.2)
+    if(!opts.awakened)sprite(ctx, atlas, side === -1 ? 4 : 5, hand[0], hand[1], 32, 35, side * -.2)
     if (p.exercise === 'lift') sprite(ctx, atlas, 8, hand[0], hand[1] - 9, 64, 36)
   }
   if (p.exercise === 'rope') {

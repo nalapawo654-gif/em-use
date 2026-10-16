@@ -1,7 +1,10 @@
 import { POTATO_SKINS } from '../potato/catalog'
 import type { Settings } from './types.js'
 
+export const SETTINGS_STRINGS = { codexExecutable: 4096, codexHome: 4096, codexBucket: 128 }
 export const SETTINGS_ENUMS = {
+  quotaSource: ['eastmoney', 'codex'],
+  evolutionMotion: ['full', 'light', 'off'],
   size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
   outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['potato', 'piranha', 'skadi', 'dinosaur', 'luckycat', 'fox', 'feidudu', 'aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
   potatoSkin: POTATO_SKINS.map(skin => skin.id) as string[],
@@ -28,7 +31,7 @@ export const SETTINGS_ENUMS = {
 export function validateSettings(input: unknown): Partial<Settings> {
   if (!input || typeof input !== 'object') return {}
   const data = input as Record<string, unknown>, out: Record<string, unknown> = {}
-  for (const key of ['startupAnimation', 'worldEnabled', 'worldPaused', 'calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
+  for (const key of ['codexEnabled', 'startupAnimation', 'worldEnabled', 'worldPaused', 'calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
 
@@ -36,5 +39,9 @@ export function validateSettings(input: unknown): Partial<Settings> {
   if (typeof data.windowWidth === 'number' && Number.isFinite(data.windowWidth)) out.windowWidth = Math.round(Math.min(800, Math.max(180, data.windowWidth)))
   if (typeof data.messagePausedUntil === 'number' && Number.isFinite(data.messagePausedUntil)) out.messagePausedUntil = Math.round(Math.min(Date.now() + 86400_000, Math.max(0, data.messagePausedUntil)))
   if (typeof data.calendarLeadMinutes === 'number' && [1, 5, 10, 15].includes(data.calendarLeadMinutes)) out.calendarLeadMinutes = data.calendarLeadMinutes
+  for (const [key, max] of Object.entries(SETTINGS_STRINGS)) {
+    const value = data[key]
+    if (typeof value === 'string' && value.length <= max && !/[\x00-\x1f\x7f]/.test(value) && (key !== 'codexBucket' || value.trim())) out[key] = value.trim()
+  }
   return out as Partial<Settings>
 }

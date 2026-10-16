@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { useAwakenedArt } from '../evolution/useAwakenedArt'
+import AwakenedSprite from './AwakenedSprite.vue'
+import { vEvolutionMaterial } from '../evolution/material'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { CultivationSkin } from '../shared/types'
 import CultivatorSprite from './CultivatorSprite.vue'
 import { cultivatorVertex, cultivatorFrameOffset } from '../cultivation/motion'
 // Authored hand poses plus restrained joint rotation; no whole-body dilation.
 const props=defineProps<{frame:number;skin:CultivationSkin;running:boolean;gentle:boolean}>()
+const { art: awakened } = useAwakenedArt('cultivation', () => props.skin, ()=>'chibi', ()=>props.frame)
 const canvas=ref<HTMLCanvasElement>(), fallback=ref(false)
-const source=computed(()=>`./assets/cultivation/skins/${props.skin}.png`)
+const source=computed(()=>awakened.value?.packed ?? `./assets/cultivation/skins/${props.skin}.png`)
 let gl:WebGLRenderingContext|null=null, program:WebGLProgram|null=null, texture:WebGLTexture|null=null
 let vertices:WebGLBuffer|null=null, indices:WebGLBuffer|null=null, observer:ResizeObserver|undefined
 const points=new Float32Array(25*25*4)
@@ -38,7 +42,7 @@ function shader(type:number,source:string){
  return s
 }
 function draw(){
- if(!gl||!program||!loaded||disposed||fallback.value||!canvas.value)return
+ if(!gl||!program||!loaded||disposed||fallback.value||!canvas.value||awakened.value?.cinematic)return
  gl.viewport(0,0,canvas.value!.width,canvas.value!.height)
  gl.clear(gl.COLOR_BUFFER_BIT)
  const blend=props.running?Math.min(1,(time-frameChange)/200):1
@@ -52,8 +56,8 @@ function draw(){
  }
  gl.bindBuffer(gl.ARRAY_BUFFER,vertices);gl.bufferSubData(gl.ARRAY_BUFFER,0,points)
  gl.uniform1f(uniforms.frame!,props.frame);gl.uniform1f(uniforms.previous!,previousFrame)
- gl.uniform1f(uniforms.frameOffset!,cultivatorFrameOffset(props.skin,props.frame))
- gl.uniform1f(uniforms.previousOffset!,cultivatorFrameOffset(props.skin,previousFrame))
+ gl.uniform1f(uniforms.frameOffset!,(awakened.value?0:cultivatorFrameOffset(props.skin,props.frame)))
+ gl.uniform1f(uniforms.previousOffset!,(awakened.value?0:cultivatorFrameOffset(props.skin,previousFrame)))
  gl.uniform1f(uniforms.blend!,blend)
  gl.drawElements(gl.TRIANGLES,24*24*6,gl.UNSIGNED_SHORT,0)
 }
@@ -102,4 +106,4 @@ onMounted(()=>{
 function contextLost(event:Event){event.preventDefault();fallback.value=true;cancelAnimationFrame(raf)}
 onUnmounted(()=>{disposed=true;generation++;cancelAnimationFrame(raf);observer?.disconnect();if(gl){gl.deleteTexture(texture);gl.deleteBuffer(vertices);gl.deleteBuffer(indices);gl.deleteProgram(program)}})
 </script>
-<template><span class="cultivator-motion" :data-frame="frame" :data-skin="skin"><CultivatorSprite v-if="fallback" :frame="frame" :skin="skin"/><canvas v-else ref="canvas" aria-hidden="true" @webglcontextlost="contextLost"></canvas></span></template>
+<template><span class="cultivator-motion evolution-equipped" v-evolution-material="{ scene: 'cultivation', skin, pose: String(frame), paused: !running }" :data-frame="frame" :data-skin="skin"><AwakenedSprite v-if="awakened?.cinematic || (fallback && awakened)" :src="awakened!.urls[frame]!"/><CultivatorSprite v-else-if="fallback" :frame="frame" :skin="skin"/><canvas :data-awakened="!!awakened" v-if="!fallback" v-show="!awakened?.cinematic" ref="canvas" aria-hidden="true" @webglcontextlost="contextLost"></canvas></span></template>

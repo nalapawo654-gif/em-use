@@ -1047,7 +1047,7 @@ checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
 name = "em-use-rust"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "aes",
  "base64 0.22.1",
@@ -5021,6 +5021,7 @@ dependencies = [
  "libc",
  "mio",
  "pin-project-lite",
+ "signal-hook-registry",
  "socket2",
  "windows-sys 0.61.2",
 ]

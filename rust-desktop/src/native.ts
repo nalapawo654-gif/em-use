@@ -7,6 +7,7 @@ export async function installNativeBridge() {
   const call = <T = void>(action: string, payload?: unknown) => invoke<T>('desktop', { action, payload: payload ?? null })
   // Subscribe before mounting App, so an initial snapshot cannot leave a missed event.
   await listen<AppState>('state:changed', event => callbacks.forEach(fn => fn(event.payload)))
+  await listen('settings:account', () => window.dispatchEvent(new CustomEvent('open-account')))
   await listen('settings:updates', () => window.dispatchEvent(new CustomEvent('open-updates')))
   await listen('settings:messages', () => window.dispatchEvent(new CustomEvent('open-messages')))
   await listen('settings:world', () => window.dispatchEvent(new CustomEvent('open-world')))
@@ -16,6 +17,7 @@ export async function installNativeBridge() {
   await listen('calendar:opened', () => window.dispatchEvent(new CustomEvent('calendar-panel-opened')))
   await listen('calendar:closed', () => window.dispatchEvent(new CustomEvent('calendar-panel-closed')))
   const api: DesktopAPI = {
+    refreshCodex: () => call('refreshCodex'), openCloudPortal: () => call('openCloudPortal'),
     worldFeed: () => call('worldFeed'), worldRetry: () => call('worldRetry'),
     openCalendar: () => call('openCalendar'), refreshCalendar: () => call('refreshCalendar'),
     calendarUi: blocked => call('calendarUi', {blocked}),

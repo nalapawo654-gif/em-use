@@ -6,14 +6,18 @@ function fit(ctx:CanvasRenderingContext2D,img:HTMLCanvasElement,x:number,y:numbe
  const scale=Math.min(w/img.width,h/img.height),dw=img.width*scale,dh=img.height*scale
  ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh)
 }
-export function drawCat(ctx:CanvasRenderingContext2D,rig:CatRig,percent:number|null,motion:LuckyCatAction='idle',progress=0,options:{puppet?:boolean;time?:number}={}){
+export function drawCat(ctx:CanvasRenderingContext2D,rig:CatRig,percent:number|null,motion:LuckyCatAction='idle',progress=0,options:{puppet?:boolean;time?:number;awakened?:HTMLCanvasElement[]}={}){
  ctx.clearRect(0,0,512,512)
  const level=luckycatLevel(percent),a=rig.cells,props=rig.props
- if(motion==='idle'&&!options.puppet){fit(ctx,a[{full:0,medium:1,low:2,empty:3,unknown:1}[level]]!,28,40,456,436);return}
+ if(motion==='idle'&&!options.puppet){fit(ctx,(options.awakened ?? a)[{full:0,medium:1,low:2,empty:3,unknown:1}[level]]!,28,40,456,436);return}
  const p=catPose(motion,progress),e=envelope(progress),breath=motion==='idle'?Math.sin((options.time??0)/900)*1.3:0
  const sleepy=motion==='box';const headShift=sleepy?28:0
  const drawProp=(index:number,x:number,y:number,w:number,h:number,angle=0)=>{ctx.save();ctx.translate(x,y);ctx.rotate(rad(angle));fit(ctx,props[index]!, -w/2,-h/2,w,h);ctx.restore()}
  if(sleepy)drawProp(2,257,372,350,240)
+ if(options.awakened){
+  const pose=sleepy?3:{full:0,medium:1,low:2,empty:3,unknown:1}[level]
+  ctx.save();ctx.translate(256,480+breath-p.stretch*8);ctx.rotate(rad(p.headAngle*.2));ctx.drawImage(options.awakened[pose]!,-256,-480,512,512);ctx.restore()
+ } else {
  // One torso already contains exactly two hind feet and one tail. Forearms are separate.
  ctx.save();ctx.translate(0,-p.stretch*23+breath);ctx.drawImage(a[4]!,120,288,282,169+p.stretch*23);ctx.restore()
  if(motion==='idle'){
@@ -23,8 +27,9 @@ export function drawCat(ctx:CanvasRenderingContext2D,rig:CatRig,percent:number|n
  ctx.save();ctx.translate(256,288+p.headY+headShift+breath);ctx.rotate(rad(p.headAngle))
  const head=(index:number,alpha:number)=>{if(alpha<=0)return;ctx.globalAlpha=alpha;fit(ctx,a[index]!,-169,-230,338,265)}
  head(p.yawn>.45?7:p.closed>.55?6:5,1);ctx.restore()
+ }
  const arm=(index:number,x:number,y:number,angle:number,length:number)=>{
-  ctx.save();ctx.translate(x,y);ctx.rotate(rad(angle));ctx.drawImage(a[index]!, -31,-12,62,length);ctx.restore()
+  if(!options.awakened){ctx.save();ctx.translate(x,y);ctx.rotate(rad(angle));ctx.drawImage(a[index]!, -31,-12,62,length);ctx.restore()}
   return {x:x-Math.sin(rad(angle))*(length-24),y:y+Math.cos(rad(angle))*(length-24)}
  }
  const shoulderY=313-p.stretch*23+breath

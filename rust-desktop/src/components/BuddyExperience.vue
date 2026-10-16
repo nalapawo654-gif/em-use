@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import PetEvolution from './PetEvolution.vue'
+import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
 import BuddyCalendar from './BuddyCalendar.vue'
 import BuddyMessageParcel from './BuddyMessageParcel.vue'
 import '../buddy/message.css'
 import { computed, ref } from 'vue'
 import { PhGearSix, PhMinus, PhX, PhHeart, PhSun, PhMoon, PhArrowCounterClockwise, PhTShirt, PhInfo, PhArrowsClockwise, PhSignIn, PhHandTap, PhGameController } from '@phosphor-icons/vue'
-import { api, appState as state, isDesktop, previewQuota } from '../bridge'
+import { api, quotaState as state, quotaDisplay, isDesktop, previewQuota } from '../bridge'
 import { useWindowGestures } from '../windowGestures'
 import type { Corner } from '../shared/windowGeometry'
 import { BUDDY_STATES, buddyLevel, type BuddyAction } from '../buddy/play'
@@ -32,7 +34,7 @@ const extras: { action: BuddyAction; label: string; level: number; prop?: BuddyP
   { action: 'shake', label: '站立抖一抖', level: 0 }, { action: 'rest', label: '撑不住了', level: 3 },
   { action: 'inflate', label: '努力充气中', level: 1, prop: 'pump' },
 ]
-const statusLabel = computed(() => ({ ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '同步今日额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限', 'signed-out': '等待连接', connecting: '等待登录' }[state.status]))
+const statusLabel = computed(() => ({ ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '正在同步额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限', 'signed-out': '等待连接', connecting: '等待登录' }[state.status]))
 function act(action: BuddyAction) { wardrobe.value = false; details.value = false; moreActions.value = false; scene.value?.act(action) }
 function chooseState(percent: number) { previewQuota(percent); scene.value?.cancel() }
 </script>
@@ -42,15 +44,15 @@ function chooseState(percent: number) { previewQuota(percent); scene.value?.canc
     <div class="buddy-main-column">
       <section class="buddy-widget" :class="{ 'is-moving': moving, 'has-panel': wardrobe || details || moreActions, 'calendar-is-open': calendarOpen, 'has-mail': state.settings.messageEnabled && (!!state.messages?.items.length || state.messages?.status === 'paused') }" aria-label="充气牛马场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="moreActions = !moreActions; wardrobe = false; details = false" @keydown.esc="wardrobe = false; details = false; moreActions = false">
         <BuddyCalendar :blocked="wardrobe || details || moreActions || moving || noticeOpen" :deferred="!!scene?.updateBlocked" @open-change="calendarOpen=$event"/>
-        <PetNotices :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen=$event" :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked" :message-blocked="wardrobe || details || moreActions || moving" :message-deferred="!!scene?.updateBlocked"><template #parcel><BuddyMessageParcel/></template></PetNotices>
-        <BuddyScene ref="scene" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.buddySkin" :night="night" :reduced-motion="state.settings.reducedMotion" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
+        <PetEvolution :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked || calendarOpen || noticeOpen"/><PetNotices :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen=$event" :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked" :message-blocked="wardrobe || details || moreActions || moving" :message-deferred="!!scene?.updateBlocked"><template #parcel><BuddyMessageParcel/></template></PetNotices>
+        <BuddyScene ref="scene" :quota-label="quotaDisplay.label" :quota-subtitle="quotaDisplay.subtitle" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.buddySkin" :night="night" :reduced-motion="state.settings.reducedMotion" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
         <header class="buddy-header"><div class="buddy-title"><BuddySprite/><div><h1>充气牛马</h1><p>努力工作 · 快速回血</p></div></div><div class="buddy-window-actions"><button aria-label="更多牛马动作" title="更多牛马动作" @click="moreActions = !moreActions; wardrobe = false; details = false"><PhGameController/></button><button aria-label="牛马换装" title="牛马换装" @click="wardrobe = !wardrobe; details = false; moreActions = false"><PhTShirt/></button><button aria-label="设置" title="设置" @click="emit('settings')"><PhGearSix/></button><span></span><button aria-label="收起到托盘" title="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
         <nav class="buddy-tools" aria-label="照顾牛马"><button v-for="item in interactions" :key="item.action" :aria-label="item.label" @click="act(item.action)"><BuddySprite :prop="item.prop"/><span>{{ item.label }}</span></button></nav>
         <button v-if="!usable" class="buddy-login" @click="api.login()"><PhSignIn/>{{ state.status === 'signed-out' ? '连接账户' : statusLabel }}</button>
         <button class="buddy-status" @click="details = !details; wardrobe = false"><PhInfo/>{{ statusLabel }}</button>
         <section v-if="wardrobe" class="buddy-panel" role="dialog" aria-label="牛马衣橱"><header><b>今天，想做哪只牛马？</b><button aria-label="关闭牛马衣橱" @click="wardrobe = false"><PhX/></button></header><BuddySkinPicker/></section>
         <section v-if="moreActions" class="buddy-panel" role="dialog" aria-label="牛马游乐场"><header><b>忙里偷闲，陪牛马玩一会儿</b><button aria-label="关闭牛马游乐场" @click="moreActions = false"><PhX/></button></header><div class="buddy-extras"><button v-for="item in extras" :key="item.action" @click="act(item.action)"><div class="buddy-mini-scene"><BuddySprite :skin="state.settings.buddySkin" :level="item.level"/><BuddySprite v-if="item.prop" :prop="item.prop" class="mini-prop"/></div><b>{{ item.label }}</b></button></div><p class="buddy-play-note">双击牛马可切换站立 / 趴下；互动不会改变平台额度。</p></section>
-        <section v-if="details" class="buddy-panel buddy-details" role="dialog" aria-label="牛马额度详情"><header><b>今日额度</b><button aria-label="关闭额度详情" @click="details = false"><PhX/></button></header><p>{{ state.message }}</p><small>互动陪伴不会改变平台额度，每日 00:00 重置。</small><button class="text-button" :disabled="state.syncing || !state.quota" @click="api.refresh()"><PhArrowsClockwise :class="{ spin: state.syncing }"/>刷新额度</button></section>
+        <section v-if="details" class="buddy-panel buddy-details" role="dialog" aria-label="牛马额度详情"><header><b>额度详情</b><button aria-label="关闭额度详情" @click="details = false"><PhX/></button></header><QuotaDetails/></section>
         <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="buddy-resize" :class="corner" :aria-label="`缩放牛马 ${corner}`" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><PhArrowCounterClockwise/></button>
       </section>
       <section v-if="!isDesktop" class="buddy-card buddy-extra-card"><header><h2>更多有趣的动作</h2><span>忙里偷闲，也很可爱</span></header><div class="buddy-extras"><button v-for="item in extras" :key="item.action" @click="act(item.action)"><div class="buddy-mini-scene" :class="'mini-' + item.action"><BuddySprite :skin="state.settings.buddySkin" :level="item.level"/><BuddySprite v-if="item.prop" :prop="item.prop" class="mini-prop"/><PhMoon v-if="item.action === 'sleep'" class="mini-effect"/><PhHeart v-if="item.action === 'wag'" class="mini-effect"/></div><b>{{ item.label }}</b></button></div></section>

@@ -1,3 +1,4 @@
+import { equipmentPart, paintEquipment, type EvolutionEquipment } from '../evolution/paint'
 import type { BeaverRig } from './sprites'
 import type { BeaverAction } from './play'
 import type { BeaverSkin } from '../shared/types'
@@ -16,21 +17,26 @@ function arm(ctx: CanvasRenderingContext2D, art: Art, x: number, y: number, hand
   const width=distance+30,height=width*art.height/art.width*.76
   ctx.drawImage(art,-width*.12,-height*.56,width,height);ctx.restore()
 }
-export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin: BeaverSkin, action: BeaverAction, clock: number, m: BeaverMotion, mail?:MailPainter) {
+export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin: BeaverSkin, action: BeaverAction, clock: number, m: BeaverMotion, mail?:MailPainter, equipment?: EvolutionEquipment, awakened?: HTMLCanvasElement) {
   ctx.setTransform(1,0,0,1,64,0); ctx.clearRect(-64,0,640,512)
   const fit = BEAVER_WARDROBE[skin]
   if (m.resting) {
-    ctx.save(); ctx.translate(0,470); ctx.scale(1,1+m.breathe); ctx.drawImage(rig.sleeping,0,-470,512,512); ctx.restore()
+    ctx.save(); ctx.translate(0,470); ctx.scale(1,1+m.breathe); ctx.drawImage(awakened ?? rig.sleeping,0,-470,512,512); ctx.restore()
+    paintEquipment(ctx,equipment,'beaver',[0,1,2,3],5)
     mail?.(ctx,{x:190,y:428,width:100,height:83},'ground')
     return
   }
   ctx.save(); ctx.translate(m.x,m.y)
   const mouth = beaverMouth(m), a = m.amount
   const ball={x:425+Math.sin(m.time/430)*36,y:409-Math.abs(Math.sin(m.time/430))*26}
+  if(awakened){ctx.save();ctx.translate(256,480);ctx.scale(1,1+m.breathe);ctx.drawImage(awakened,-256,-480,512,512);ctx.restore()} else {
+  equipmentPart(ctx,equipment,0,200,285,240,300)
   part(ctx,rig.tail,203,414,193,m.tail,1,.55)
+  ctx.save();ctx.translate(203,414);ctx.rotate(m.tail);equipmentPart(ctx,equipment,3,-96,0,175,105,-.17);ctx.restore()
   // Feet stay on the ground: breathing scales from the seated pelvis.
-  ctx.save(); ctx.translate(285,475); ctx.scale(1,(1+m.breathe)*m.bodyScale); part(ctx,rig.body,0,0,280,0,.5,1)
+  ctx.save(); ctx.translate(285,475); ctx.scale(1,(1+m.breathe)*m.bodyScale); part(ctx,rig.body,0,0,280,0,.5,1);equipmentPart(ctx,equipment,2,0,-110,210,180)
   ctx.restore()
+  }
   const carrying=!!mail&&['idle','pet','groom','celebrate'].includes(action)
   const holding = action === 'feed' || action === 'drink' || action === 'wood'
   let hand = {x:440*(1-a)+(holding?mouth.x-7:355)*a,y:(292+m.headY)*(1-a)+(holding?mouth.y+52:340+m.paw)*a}
@@ -38,13 +44,15 @@ export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin
   if (action === 'leaves') hand={x:440*(1-a)+400*a,y:(292+m.headY)*(1-a)+(250+m.paw)*a}
   if (action === 'bird') hand={x:440*(1-a)+465*a,y:(292+m.headY)*(1-a)+226*a}
   if(carrying)hand={x:385,y:341+m.paw}
+  if(!awakened){
   arm(ctx,rig.arm,329,298+m.headY*.7,hand.x+9,hand.y-22,true)
   ctx.save(); ctx.translate(334+m.headX,210+m.headY); ctx.rotate(m.head)
   const head=rig.heads[m.level] ?? rig.heads[0]
   // Hat, contact shadows and fur belong to the same head texture and transform.
   // A fixed atlas frame preserves face scale across expressions (no per-frame trim).
-  ctx.drawImage(head,fit.x,fit.y,fit.width,fit.width+m.jaw*.35)
+  ctx.drawImage(head,fit.x,fit.y,fit.width,fit.width+m.jaw*.35);equipmentPart(ctx,equipment,1,0,-65,154,92)
   ctx.restore()
+  }
   if (a > 0) {
     ctx.save(); ctx.globalAlpha=a
     if(action==='feed') {
@@ -64,7 +72,7 @@ export function renderBeaver(ctx: CanvasRenderingContext2D, rig: BeaverRig, skin
     if(carrying)mail(ctx,{x:hand.x-60,y:hand.y-53,width:115,height:96},'held')
     else mail(ctx,{x:193,y:368,width:96,height:80},'propped')
   }
-  arm(ctx,rig.arm,292,310+m.headY*.7,hand.x,hand.y)
+  if(!awakened)arm(ctx,rig.arm,292,310+m.headY*.7,hand.x,hand.y)
   if(m.chips) for(let i=0;i<5;i++) {
     const t=((clock/(550+i*45)+i*.23)%1)
     ctx.save();ctx.globalAlpha=(1-t)*.85

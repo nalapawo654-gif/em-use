@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useAwakenedArt } from '../evolution/useAwakenedArt'
+import AwakenedSprite from './AwakenedSprite.vue'
+import { vEvolutionMaterial } from '../evolution/material'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { FoxSkin } from '../shared/types'
 import { foxPose, type FoxAction } from '../fox/play'
@@ -6,6 +9,7 @@ import { loadFox } from '../fox/sprites'
 import type { FoxMotion } from '../fox/ambient'
 import FoxAmbient from './FoxAmbient.vue'
 const props = withDefaults(defineProps<{ percent?: number | null; action?: FoxAction; skin?: FoxSkin; gentle?: boolean; paused?: boolean; ambient?: boolean; ambientAllowed?: boolean; sample?: { motion: FoxMotion; progress: number } }>(), { percent: null, action: 'idle', skin: 'classic', gentle: false, paused: false, ambient: false, ambientAllowed: true })
+const { art: awakened } = useAwakenedArt('fox', () => props.skin)
 const frames = ref<string[]>([]), error = ref(false), idleMotion = ref<FoxMotion | null>(null), tailFlourish = ref(0)
 const pose = computed(() => foxPose(props.percent, props.action))
 let disposed = false, loadVersion = 0
@@ -15,14 +19,16 @@ onMounted(load); onUnmounted(() => { disposed = true })
 </script>
 <template>
   <div class="fox-visual" :class="[`fox-${pose}`, `fox-skin-${skin}`, `fox-action-${action}`, { gentle, paused, 'has-ambient': ambient && action === 'idle' }]" :data-loaded="!!frames.length" :data-pose="pose" :data-motion="idleMotion" :style="{ '--fox-tail-flourish': `${tailFlourish}deg` }" aria-hidden="true">
-    <div v-if="frames.length" class="fox-motion">
-      <template v-if="pose === 'full' || pose === 'unknown'">
+    <div v-if="frames.length" class="fox-motion evolution-equipped" v-evolution-material="{ scene: 'fox', skin, pose: action, percent, paused }">
+      <AwakenedSprite v-if="awakened" class="fox-whole" :src="awakened.urls[{full:0,unknown:1,medium:1,low:2,empty:3}[pose]]!"/>
+      <template v-else-if="pose === 'full' || pose === 'unknown'">
         <img class="fox-tail" :src="frames[0]" alt="" draggable="false"/>
         <FoxAmbient v-if="ambient && action === 'idle'" class="fox-body" :level="pose" :skin="skin" :allowed="ambientAllowed" :gentle="gentle" :paused="paused" :sample="sample" @motion="idleMotion = $event" @tail="tailFlourish = $event"/>
         <div v-else class="fox-body"><img class="fox-eyes-open" :src="frames[1]" alt="" draggable="false"/><img class="fox-eyes-closed" :src="frames[2]" alt="" draggable="false"/></div>
       </template>
       <FoxAmbient v-else-if="ambient && action === 'idle'" class="fox-whole" :level="pose" :skin="skin" :allowed="ambientAllowed" :gentle="gentle" :paused="paused" :sample="sample" @motion="idleMotion = $event" @tail="tailFlourish = $event"/>
       <img v-else class="fox-whole" :src="frames[pose === 'medium' ? 3 : pose === 'low' ? 4 : 5]" alt="" draggable="false"/>
+
     </div>
     <span v-if="!frames.length" class="fox-load">{{ error ? '小狐狸素材未能加载，请切换场景重试。' : '小狐狸正从墨里走来…' }}</span>
     <span v-if="action === 'tail'" class="fox-seal fox-read">阅</span>

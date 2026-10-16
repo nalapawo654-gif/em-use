@@ -1,3 +1,4 @@
+import { paintEquipment, type EvolutionEquipment } from '../evolution/paint'
 import { foregroundPaw, type MailPainter } from '../shared/characterMail'
 import type { HamsterSkin } from '../shared/types'
 import type { HamsterRig } from './sprites'
@@ -13,14 +14,23 @@ export function hamsterFrame(level: HamsterLevel, action: HamsterAction) {
 export function hamsterRunning(level:HamsterLevel,action:HamsterAction){
   return action==='wheel'||((action==='idle'||action.startsWith('cat-'))&&(level==='full'||level==='working'))
 }
-export function renderHamster(ctx:CanvasRenderingContext2D,rig:HamsterRig,level:HamsterLevel,action:HamsterAction,time:number,motion:boolean,skin:HamsterSkin='classic',mail?:MailPainter){
+export function renderHamster(ctx:CanvasRenderingContext2D,rig:HamsterRig,level:HamsterLevel,action:HamsterAction,time:number,motion:boolean,skin:HamsterSkin='classic',mail?:MailPainter,equipment?:EvolutionEquipment, awakened?:HTMLCanvasElement[]){
   ctx.clearRect(0,0,512,512)
   const running=hamsterRunning(level,action), frame=hamsterFrame(level,action), resting=frame===3||frame===5
+  paintEquipment(ctx,equipment,'hamster',[0],frame)
   ctx.drawImage(rig.base[7],65,354,382,130)
   ctx.save();ctx.translate(256,226)
   if(running&&motion)ctx.rotate(time/(action==='wheel'?1600:level==='working'?3000:2300))
   ctx.drawImage(rig.base[6],-201,-201,402,402);ctx.restore()
-  if(resting){ctx.drawImage(rig.base[frame],45,174,380,380);mail?.(ctx,{x:127,y:410,width:103,height:75},'ground');return -1}
+  if(awakened){
+    const pose=frame===5?3:frame===3?2:level==='working'?1:0
+    ctx.save();const bounce=running&&motion?Math.sin(time/90)*3:0
+    ctx.translate(256,resting?490:416);ctx.rotate(action==='pet'&&motion?Math.sin(time/190)*.018:0)
+    ctx.drawImage(awakened[pose]!,-170,-320+bounce,340,340);ctx.restore()
+    mail?.(ctx,{x:256,y:resting?415:320,width:105,height:77},resting?'ground':'propped')
+    return running?hamsterRunFrame(time,level==='working',!motion): -1
+  }
+  if(resting){ctx.drawImage(rig.base[frame],45,174,380,380);paintEquipment(ctx,equipment,'hamster',[1,2,3],frame);mail?.(ctx,{x:127,y:410,width:103,height:75},'ground');return -1}
   const sequence=rig.skins[skin]
   if(!sequence)return -1
   const tired=level==='working'&&action!=='wheel', clock=action==='wheel'?time*1.25:time
@@ -31,6 +41,7 @@ export function renderHamster(ctx:CanvasRenderingContext2D,rig:HamsterRig,level:
   const breathe=motion&&action==='feed'?Math.sin(time/120)*.7:0
   if(action==='feed')ctx.drawImage(sequence[step],139,-47+breathe,236,472)
   else ctx.drawImage(sequence[step],118,-122+breathe,276,552)
+  paintEquipment(ctx,equipment,'hamster',[1,2,3],frame)
   if(mail){
     if(action==='feed')mail(ctx,{x:150,y:354,width:96,height:70},'propped')
     else {

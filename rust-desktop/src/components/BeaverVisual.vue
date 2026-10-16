@@ -9,6 +9,6 @@ defineProps<{message?:boolean;level:number;skin:BeaverSkin;action:BeaverAction;s
 <template>
   <div class="beaver-visual" :class="'beaver-level-'+level" :data-expression="beaverAppearance(level).expression" :data-tree-state="beaverAppearance(level).tree">
     <BeaverSprite tree :level="level" class="beaver-tree"/>
-    <div class="beaver-actor-art"><BeaverActor :message="message" :level="level" :skin="skin" :action="action" :since="since" :reduced-motion="reducedMotion"/></div>
+    <div class="beaver-actor-art evolution-equipped"><BeaverActor :message="message" :level="level" :skin="skin" :action="action" :since="since" :reduced-motion="reducedMotion"/></div>
   </div>
 </template>

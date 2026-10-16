@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { vEvolutionMaterial } from '../evolution/material'
+import { useAwakenedArt } from '../evolution/useAwakenedArt'
+import { energyFrame } from '../evolution/atlas'
+import { evolution, evolutionGlow } from '../evolution/controller'
+import { awakeningStyle, awakeningEnergy } from '../evolution/wardrobe'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { PhHeart, PhSparkle, PhX } from '@phosphor-icons/vue'
 import type { Outfit } from '../shared/types'
@@ -6,7 +11,8 @@ import { loadImage, loadSprites, type Sprites, type SpriteName } from '../aquari
 import { advancePlay, cleanCells, idlePlay, startPlay, waterTop, wipeAt, type PlayMode } from '../aquarium/play'
 import { prepareDayGlass } from '../aquarium/glass'
 import { createSwimmer, swimStep, type Point, type Swimmer } from '../aquarium/swim'
-const props = defineProps<{ percent: number | null; outfit?: Outfit; reducedMotion?: boolean; night?: boolean; compact?: boolean; muted?: boolean }>()
+const props = defineProps<{ percent: number | null; quotaLabel?: string; outfit?: Outfit; reducedMotion?: boolean; night?: boolean; compact?: boolean; muted?: boolean }>()
+const { art: awakened } = useAwakenedArt('aquarium',()=>props.outfit ?? 'classic')
 const emit = defineEmits<{ interact: [kind: string] }>()
 const canvas = ref<HTMLCanvasElement | null>(null), host = ref<HTMLElement | null>(null)
 const play = ref(idlePlay()), happy = ref(false), failed = ref(false), treasureVisible = ref(false)
@@ -76,19 +82,19 @@ function drawSprite(ctx: CanvasRenderingContext2D, name: SpriteName, x: number, 
 }
 function drawFish(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, fish: Swimmer, scale = 1) {
   if (!sprites) return
-  const phase = time * 7 + fish.phase, img = sprites.fish, height = width * img.height / img.width
+  const phase = time * 7 + fish.phase, img = awakened.value?.trimmed[energyFrame(props.percent,4)] ?? sprites.fish, height = width * img.height / img.width
   const tilt = props.reducedMotion ? 0 : Math.max(-.22, Math.min(.22, fish.vy * 3)) * fish.heading + Math.sin(phase * .35) * .025
-  ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(fish.facing * scale, scale)
+  ctx.save(); if (evolution.awake && evolutionGlow.value > .25 && !props.reducedMotion) { ctx.shadowColor = awakeningStyle('aquarium', props.outfit ?? 'classic')!.edge; ctx.shadowBlur = width * .025 * awakeningEnergy(props.percent) } ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(fish.facing * scale, scale)
   // Bend the tail around its root while the body and attached outfit stay stable.
   const tail = .28, root = (tail - .5) * width
   ctx.save(); ctx.translate(root, 0)
-  if (!props.reducedMotion) { ctx.rotate(Math.sin(phase) * .12); ctx.scale(1 + Math.sin(phase) * .09, 1) }
+  if (!props.reducedMotion && !awakened.value?.cinematic) { ctx.rotate(Math.sin(phase) * .12); ctx.scale(1 + Math.sin(phase) * .09, 1) }
   ctx.drawImage(img, 0, 0, img.width * tail, img.height, -width * tail, -height / 2, width * tail + .5, height); ctx.restore()
   ctx.drawImage(img, img.width * tail, 0, img.width * (1 - tail), img.height, root, -height / 2, width * (1 - tail), height)
   const outfit = props.outfit ?? 'classic'
   const dressTime = Math.max(0, lastFrame - outfitSince)
   const pop = props.reducedMotion ? 1 : Math.min(1, dressTime / 180) * (1 + Math.sin(Math.PI * Math.min(1, dressTime / 500)) * .16)
-  if (outfit !== 'classic') drawSprite(ctx, outfit, width * .08, width * (outfit === 'ribbon' ? .24 : -.32), width * (outfit === 'ribbon' ? .37 : .53) * pop)
+  if (!awakened.value && outfit !== 'classic') drawSprite(ctx, outfit, width * .08, width * (outfit === 'ribbon' ? .24 : -.32), width * (outfit === 'ribbon' ? .37 : .53) * pop)
   ctx.restore()
 }
 function drawBubbles(ctx: CanvasRenderingContext2D, w: number, dt: number, top: number) {
@@ -213,11 +219,11 @@ onUnmounted(() => { disposed = true; cancelAnimationFrame(animation); observer?.
 
 <template>
   <div ref="host" class="aquarium" :class="{ night, muted, compact, 'motion-off': reducedMotion, 'is-wiping': play.mode === 'clean', 'low-water': percent !== null && percent < 45 }" :data-play="play.mode" :data-treasure="treasureVisible ? 'revealed' : 'closed'" tabindex="0" aria-label="小鱼缸互动区域" @keydown="keyboard" @pointerdown="startWipe" @pointermove="follow" @pointerup="endWipe" @pointercancel="endWipe" @lostpointercapture="dragging = false" @pointerleave="target = undefined">
-    <canvas ref="canvas" class="bowl-canvas" aria-hidden="true" />
+    <canvas v-evolution-material="{ scene: 'aquarium', skin: outfit ?? 'classic', percent: null }" :data-awakened="!!awakened" ref="canvas" class="bowl-canvas" aria-hidden="true" />
     <template v-if="play.mode !== 'clean'"><button v-for="(fish, index) in fishHits" v-show="!hiding || index !== 0" :key="index" class="fish-hit" :aria-label="index === 0 ? '逗逗小鱼' : '逗逗小小鱼'" :style="{ left: `${(fish.x - fish.width / 2) * 100}%`, top: `${(fish.y - fish.width * .42) * 100}%`, width: `${fish.width * 100}%`, height: `${fish.width * .84 * 100}%` }" @click="love" /></template>
     <button v-if="!hiding && play.mode !== 'clean'" class="treasure-hit scene-hit" aria-label="打开宝箱" title="打开宝箱" @click="treasure" />
     <button v-if="hiding" class="cave-hit scene-hit" aria-label="找到小鱼" title="找到小鱼" @click="reveal" />
-    <div class="quota-overlay" :class="{ empty: percent === null }"><div class="quota-number">{{ percent === null ? '—' : Math.round(percent) }}<span v-if="percent !== null">%</span></div><div class="quota-caption">{{ percent === null ? '等你一起出发' : '今日剩余额度' }}</div><slot /></div>
+    <div class="quota-overlay" :class="{ empty: percent === null }"><div class="quota-number">{{ percent === null ? '—' : Math.round(percent) }}<span v-if="percent !== null">%</span></div><div class="quota-caption">{{ percent === null ? '等你一起出发' : (quotaLabel ?? '今日剩余额度') }}</div><slot /></div>
     <div v-if="hint" class="play-hud" @pointerdown.stop><span role="status">{{ hint }}</span><button v-if="play.mode === 'clean'" @click="automaticClean">自动擦拭</button><button class="finish-play" aria-label="结束互动" @click="cancel"><PhX/></button></div>
     <div v-if="failed" class="play-hud" role="alert">素材加载失败，请重新打开小鱼缸</div>
     <div v-if="happy || play.mode === 'reveal'" class="love-burst" aria-hidden="true"><PhHeart weight="fill"/><PhHeart weight="fill"/><PhHeart weight="fill"/></div>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import PetEvolution from './PetEvolution.vue'
+import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
 import PetCalendar from './PetCalendar.vue'
 import { provideCharacterMail } from '../shared/characterMail'
 import { computed, nextTick, ref, watch } from 'vue'
 import { PhTree, PhGearSix, PhMinus, PhGameController, PhTShirt, PhX, PhInfo, PhArrowsClockwise, PhCamera, PhHandHeart, PhChatCircleDots, PhTent, PhSignpost, PhShareNetwork, PhSun, PhMoon, PhArrowUpLeft } from '@phosphor-icons/vue'
-import { api, appState as state, isDesktop, previewQuota } from '../bridge'
+import { api, quotaState as state, quotaDisplay, isDesktop, previewQuota } from '../bridge'
 import { useWindowGestures } from '../windowGestures'
 import type { Corner } from '../shared/windowGeometry'
 import type { Settings } from '../shared/types'
@@ -34,7 +36,7 @@ const interactions: { action: BeaverAction; label: string; prop: BeaverProp; hin
 const extras: { action: BeaverAction; label: string; prop?: BeaverProp }[] = [
   { action: 'pet', label: '摸摸它' }, { action: 'ball', label: '丢球玩耍', prop: 'ball' }, { action: 'leaves', label: '收集树叶', prop: 'leaf' }, { action: 'bird', label: '小鸟来访', prop: 'bird' }, { action: 'rest', label: '歇一会儿' },
 ]
-const statusLabel = computed(() => ({ ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '同步今日额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限', 'signed-out': '等待连接', connecting: '等待登录' }[state.status]))
+const statusLabel = computed(() => ({ ready: '已同步', stale: '数据待更新', expired: '请重新登录', resetting: '正在同步额度', unavailable: '额度暂不可用', forbidden: '暂无访问权限', 'signed-out': '等待连接', connecting: '等待登录' }[state.status]))
 function toggle(value: NonNullable<typeof panel.value>) { panel.value = panel.value === value ? null : value; notice.value = '' }
 function act(action: BeaverAction) { panel.value = null; notice.value = ''; scene.value?.act(action); void nextTick(() => widget.value?.focus({ preventScroll: true })) }
 function escape() { panel.value = null; scene.value?.cancel(); notice.value = ''; void nextTick(() => widget.value?.focus({ preventScroll: true })) }
@@ -59,18 +61,18 @@ watch(panel, (value, previous) => { if (!value && previous) void nextTick(() => 
   <div class="beaver-experience" :class="{ 'beaver-native': isDesktop }">
     <div class="beaver-hero">
       <section ref="widget" tabindex="-1" class="beaver-widget" :class="{ 'calendar-is-open': calendarOpen, 'has-panel': panel, 'is-moving': moving, 'is-capturing': capturing }" aria-label="林间海狸鼠场景" @pointerdown.capture="down($event)" @pointermove.capture="move" @pointerup="end" @pointercancel="end" @click.capture="click" @wheel="wheel" @contextmenu.prevent="toggle('play')" @keydown.esc.stop="escape">
-        <PetNotices :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked" :message-blocked="!!panel || moving || capturing || !!notice" :message-deferred="!!scene?.updateBlocked" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
+        <PetEvolution :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked || calendarOpen || noticeOpen"/><PetNotices :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked" :message-blocked="!!panel || moving || capturing || !!notice" :message-deferred="!!scene?.updateBlocked" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
         <PetCalendar appearance="beaver" :blocked="!!panel || moving || !!notice || noticeOpen || capturing || !!scene?.updateBlocked" @open-change="calendarOpen = $event"/>
-        <BeaverScene ref="scene" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.beaverSkin" :night="night" :reduced-motion="state.settings.reducedMotion" :camp="state.settings.beaverCamp" :motto="state.settings.beaverMotto" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
+        <BeaverScene ref="scene" :quota-label="quotaDisplay.label" :quota-subtitle="quotaDisplay.subtitle" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.beaverSkin" :night="night" :reduced-motion="state.settings.reducedMotion" :camp="state.settings.beaverCamp" :motto="state.settings.beaverMotto" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
         <header class="beaver-header beaver-chrome"><span><PhTree weight="duotone"/><b>林间海狸鼠</b></span><div><button aria-label="更多海狸鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="toggle('play')"><PhGameController/></button><button aria-label="海狸鼠换装" title="天气换装" :aria-expanded="panel === 'wardrobe'" @click="toggle('wardrobe')"><PhTShirt/></button><button aria-label="海狸鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起海狸鼠到托盘" title="收起到托盘" @click="api.hide()"><PhMinus/></button></div></header>
         <nav class="beaver-tools beaver-chrome" aria-label="照顾海狸鼠"><button v-for="item in interactions" :key="item.action" :aria-label="`海狸鼠${item.label}`" :title="item.label" @click="act(item.action)"><BeaverSprite :prop="item.prop"/><span>{{ item.label }}</span></button><button aria-label="给海狸鼠拍照" title="拍照" :disabled="capturing" @click="photo()"><PhCamera/><span>拍照</span></button></nav>
-        <footer class="beaver-footer beaver-chrome"><button :aria-expanded="panel === 'details'" @click="toggle('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新海狸鼠额度" title="刷新额度" :disabled="state.syncing || !state.quota" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button></footer>
+        <footer class="beaver-footer beaver-chrome"><button :aria-expanded="panel === 'details'" @click="toggle('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新海狸鼠额度" title="刷新额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button></footer>
         <button v-if="!usable" class="beaver-login beaver-chrome" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '请在官方窗口完成登录' : '连接账户' }}</button>
         <section v-if="panel" class="beaver-panel" role="dialog" :aria-label="{ play: '海狸鼠游乐场', wardrobe: '海狸鼠衣橱', details: '海狸鼠额度详情', chat: '林间悄悄话', motto: '林间标语' }[panel]">
-          <header><b>{{ { play: '忙里偷闲，陪它玩一会儿', wardrobe: '今天是什么天气心情？', details: '今日额度', chat: '林间悄悄话', motto: '给今天留一句话' }[panel] }}</b><button aria-label="关闭海狸鼠面板" @click="panel = null"><PhX/></button></header>
+          <header><b>{{ { play: '忙里偷闲，陪它玩一会儿', wardrobe: '今天是什么天气心情？', details: '额度详情', chat: '林间悄悄话', motto: '给今天留一句话' }[panel] }}</b><button aria-label="关闭海狸鼠面板" @click="panel = null"><PhX/></button></header>
           <template v-if="panel === 'wardrobe'"><BeaverSkinPicker/><p class="beaver-panel-note">天气装扮随心选择，光线跟随公共昼夜设置。</p></template>
           <template v-else-if="panel === 'play'"><div class="beaver-extra-grid"><button v-for="item in interactions" :key="item.action" @click="act(item.action)"><BeaverSprite :prop="item.prop"/><span>{{ item.label }}</span></button><button v-for="item in extras" :key="item.action" @click="act(item.action)"><BeaverSprite v-if="item.prop" :prop="item.prop"/><PhHandHeart v-else-if="item.action === 'pet'"/><PhMoon v-else/><span>{{ item.label }}</span></button><button @click="panel = 'chat'"><PhChatCircleDots/><span>和它说话</span></button><button :aria-pressed="state.settings.beaverCamp" @click="setting({ beaverCamp: !state.settings.beaverCamp })"><PhTent/><span>{{ state.settings.beaverCamp ? '收起营地' : '布置营地' }}</span></button><button @click="panel = 'motto'"><PhSignpost/><span>更换标语</span></button><button :disabled="capturing" @click="photo(true)"><PhShareNetwork/><span>生成分享图</span></button></div><p class="beaver-panel-note">互动只是陪伴，不会消耗或恢复平台额度。</p></template>
-          <template v-else-if="panel === 'details'"><p>{{ state.message }}</p><dl v-if="state.quota"><div><dt>每日额度</dt><dd>¥{{ state.quota.limit.toFixed(2) }}</dd></div><div><dt>今日剩余</dt><dd>¥{{ state.quota.remaining.toFixed(2) }}</dd></div><div><dt>费用更新</dt><dd>{{ state.quota.estimatedAt.replace('T', ' ').slice(0,19) }}</dd></div></dl><p class="beaver-panel-note">北京时间每日 00:00 重置，以平台同步结果为准。</p><button class="text-button" @click="api.openPortal()">在平台查看</button></template>
+          <template v-else-if="panel === 'details'"><QuotaDetails/></template>
           <form v-else-if="panel === 'chat'" @submit.prevent="chat"><p class="beaver-reply" role="status">{{ reply }}</p><label>想说的话<input ref="chatInput" v-model="message" aria-label="给海狸鼠的话" maxlength="120" placeholder="今天有一点累……"/></label><button class="beaver-submit" :disabled="!message.trim()">说给它听</button><p class="beaver-panel-note">本机趣味对白，不发送消息到外部服务。</p></form>
           <div v-else class="beaver-motto-options"><button v-for="(text, key) in BEAVER_MOTTOS" :key="key" :aria-pressed="state.settings.beaverMotto === key" @click="setting({ beaverMotto: key }); panel = null">{{ text }}</button></div>
         </section>

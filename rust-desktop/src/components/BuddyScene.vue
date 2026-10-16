@@ -6,7 +6,7 @@ import { ACTION_LABELS, BUDDY_STATES, advanceBuddy, beginBuddy, buddyCleanCells,
 import BuddySprite from './BuddySprite.vue'
 import BuddyActor from './BuddyActor.vue'
 import { money } from '../shared/quota'
-const props = defineProps<{ percent: number | null; remaining?: number; limit?: number; skin: BuddySkin; night: boolean; reducedMotion: boolean; muted?: boolean }>()
+const props = defineProps<{ percent: number | null; quotaLabel?: string; quotaSubtitle?: string; remaining?: number; limit?: number; skin: BuddySkin; night: boolean; reducedMotion: boolean; muted?: boolean }>()
 const host = ref<HTMLElement | null>(null), play = ref(buddyIdle()), resting = ref(false), autoClean = ref(false)
 const brush = ref({ x: .64, y: .45 }), elapsed = ref(0)
 const level = computed(() => buddyLevel(props.percent))
@@ -61,7 +61,7 @@ onUnmounted(() => { clearInterval(timer); clearTimeout(clickTimer); dragging = f
   <div ref="host" class="buddy-scene" :class="[{ night, muted, 'motion-off': reducedMotion, 'is-wiping': play.mode === 'clean' }, 'level-' + level, 'action-' + play.mode]" :data-action="play.mode" :data-level="level" :data-pose="pose >= 2 ? 'lying' : 'standing'" :data-skin="skin" @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @lostpointercapture="dragging = false" @keydown.esc="cancel">
     <BuddySprite prop="ground" class="buddy-ground"/>
     <div class="buddy-speech">{{ speech }}<PhHeart weight="regular"/></div>
-    <div class="buddy-sign"><BuddySprite prop="sign"/><div class="buddy-sign-copy"><span>剩余额度</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><span v-if="percent !== null && remaining !== undefined && limit !== undefined">¥{{ money(remaining) }} / ¥{{ money(limit) }}</span><span v-else>等待连接</span></div></div>
+    <div class="buddy-sign"><BuddySprite prop="sign"/><div class="buddy-sign-copy"><span>{{ quotaLabel ?? '剩余额度' }}</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><span v-if="quotaSubtitle">{{ quotaSubtitle }}</span><span v-else-if="percent !== null && remaining !== undefined && limit !== undefined">¥{{ money(remaining) }} / ¥{{ money(limit) }}</span><span v-else>等待连接</span></div></div>
     <button class="buddy-actor scene-hit" aria-label="摸摸牛马，双击切换站立或趴下" @click="pet" @dblclick.prevent="togglePose" @keydown.enter.prevent="act('pet')" @keydown.space.prevent="act('pet')"><BuddyActor :skin="skin" :level="frame" :action="play.mode" :since="play.since" :reduced-motion="reducedMotion"/></button>
     <div class="buddy-fx" aria-hidden="true">
       <BuddySprite v-if="play.mode === 'clean'" prop="brush" class="action-prop prop-brush" :style="{ left: `${brush.x * 100}%`, top: `${brush.y * 100}%` }"/>

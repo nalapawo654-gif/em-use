@@ -1,57 +1,81 @@
 {
-  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png. BuddyExperience also adds the reviewed independent calendar prop; actor, motion, gesture and original artwork remain unchanged. Nine remaining Experience components add independent calendar entry and notice exclusivity; no original gesture, character, state machine, or animation modifications. v0.4.10 additionally reviews identical uniform-quota preview samples, rounding and selection in the legacy and native Battery, Beaver, Cultivation and Hamster Experience components; native notification/calendar integration remains unchanged.",
+  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png. BuddyExperience also adds the reviewed independent calendar prop; actor, motion, gesture and original artwork remain unchanged. Nine remaining Experience components add independent calendar entry and notice exclusivity; no original gesture, character, state machine, or animation modifications. v0.4.10 additionally reviews identical uniform-quota preview samples, rounding and selection in the legacy and native Battery, Beaver, Cultivation and Hamster Experience components; native notification/calendar integration remains unchanged. v0.5.3 reviews shared Codex quota display/details and awakened whole-character art/transformations for the six migrated pets, plus quota-label wrapping. Original interaction state machines, window gestures and source atlases remain unchanged. Regression coverage and native acceptance limits are recorded in docs/release-0.5.3.md.",
   "files": {
     "src/components/Aquarium.vue": {
       "baseline_sha256": "4c1316ff76ff36d83ad3913fcbf42d005ee1a3617d14526f28cfaacd96bea4cc",
-      "native_sha256": "2d422a18599188e54bd1d99ba021b3c5a2c68c4e37e91a8f64003d5e0e5d6e03"
+      "native_sha256": "2be3ca48cbb84d4766b9fd20f0aa3b72138d7ea4f074df3cdee86b3885d20973"
     },
     "src/components/BatteryExperience.vue": {
       "baseline_sha256": "466bd44bb375ac7bfc38ad3818cfbdf37c639be6c5939db69ffb9fb65b5d5a40",
-      "native_sha256": "5ac9deec2e8fe15d42e542ebb3d516a3e9d23f42ad87b694c018e1d2f3188cc8"
+      "native_sha256": "ef1a6a116ce443df0cbc1e1cbbad939cd9a165dea77865bb7a7ac1bff4804b8e"
     },
     "src/components/BeaverExperience.vue": {
       "baseline_sha256": "be632ca5cc92f21a704ce989f656d9ad845474b1689c23fca84b20bd3151413d",
-      "native_sha256": "d7ceee6c8126000ca5b1ea0127b207d1cccca6270b234dca88780efad40d9402"
+      "native_sha256": "e88ad2f000ec4a6ef618b9e1c63cd8640f0c21738c9e23f04f6c2f9f014cca39"
     },
     "src/components/BeaverScene.vue": {
       "baseline_sha256": "2572e657ef2e8e89cb8c8ddbf9b03f8a6d1a45887c6f49e48ab7da7286c3b765",
-      "native_sha256": "c1c96a16e492fa08c71ced7861a10550eb583f3384d090354f0a29a7797b55a0"
+      "native_sha256": "d09cb79c32751b94367da387492c60c3eb3e520f8ceacf5245a2afe6cc1f4485"
     },
     "src/components/BuddyExperience.vue": {
       "baseline_sha256": "02bba7b761c0364f11fa0a675b591eebeecaf232c127ba40fb5ea66fc34e5703",
-      "native_sha256": "9f1709c0feb0a52574e1d9e944ee6f98b01ccb094cc0957e3eb35f7bc1f73409"
+      "native_sha256": "afdb2a496d102de7ba037a4ce03f9c8078aec0af858ff5d3b148a19a1ed138dd"
     },
     "src/components/BuddyScene.vue": {
       "baseline_sha256": "3ac72fc0e94c08e7ebb485f8c95a2fc2d81cdb0eff733a41e163096fc5931cf2",
-      "native_sha256": "a37a41b183516d18eb9cec1e8ee725d21d22277f31a6e0cadd7407f9e47dfbff"
+      "native_sha256": "2694cb3b0019da53dbccaf1e1e76e4270f3f497a27d02829844adc8d3732b2b6"
     },
     "src/components/CultivationExperience.vue": {
       "baseline_sha256": "e98523ff17e0ac65ef8376602c832c9094eefa66335a9e6399f2c65d8a3e470c",
-      "native_sha256": "08520f8a1408564b6dd25ae7ae6532cc40535d90d3f5f3385e9c2d9c0c1e3a5c"
+      "native_sha256": "aafdc4b291f0505979049255b5914077c54b1efd2b5f33ac7d5802daf7376f49"
     },
     "src/components/HamsterExperience.vue": {
       "baseline_sha256": "8813d5442361b39ffb59d6403e1369dee09758e53711bb98bf93805b8df68f86",
-      "native_sha256": "484cc4f413baf400edece37810af31ad5b79511e76fc7ab2051695f2aaec59e5"
+      "native_sha256": "06194f666724f23c8a2cb458f7624087c6b9c4c13eb0a6fadcd8b97cf3e9e15c"
     },
     "src/components/BeaverVisual.vue": {
       "baseline_sha256": "2c35a583536c80e675c2425b3aa62e1ddbead8ee7955e54bc92bb8cb57825b82",
-      "native_sha256": "9e2267fe5b613a1ea56fdc5068973d0c792ae344fcc9e51d41fa4ff0aef0edd6"
+      "native_sha256": "335e468ccb0c0ba2079824b24583a72a72f7ef8ae019ea92cb3b0ed17572ff3b"
     },
     "src/components/BeaverActor.vue": {
       "baseline_sha256": "56f70b48eb33f7deb323d01dee295b4b69fb930de7973776092c6255dfff01fd",
-      "native_sha256": "70d394023d47f6cfc479db7d95c6e9ce0eb6dff4ae6acdf2cc1813ecc66baeaa"
+      "native_sha256": "73b1ac7a525ade4947f7634fe44730ebcc1e0d4defb94927ec09e1e9d17e410a"
     },
     "src/beaver/render.ts": {
       "baseline_sha256": "037528b3befb4ae9a966b480ed5254dbdc1866b3832ad49a0fe412756c247e48",
-      "native_sha256": "44c565140264f07bc25e074d388777ef1631d475b65be12583908477b6f1de74"
+      "native_sha256": "2d896ad29996887baf9cc8d507ec9ab1276f91906ef4b85dfc5be441ccc9a7a5"
     },
     "src/components/HamsterVisual.vue": {
       "baseline_sha256": "78c9e9f526d3919043778671992a0ee791050decdf57add98d6bb9cea938a854",
-      "native_sha256": "3c9da0b57b4e717bdc68e4e87e0d2bf95bc0f630b923d37568117a5c0121cf41"
+      "native_sha256": "e4928a1a49447b148e9b46e6af86a5c97214d7ee07c836a2b30c172485a473f6"
     },
     "src/hamster/render.ts": {
       "baseline_sha256": "d7e72d00a5629d726d83a596260b0a1ae20cdeeb3f8973e391425be0d1db1074",
-      "native_sha256": "5a2b9a82b49e2814138d7b6de5b39e664675244e85a4035ef0be1c49cec60a87"
+      "native_sha256": "1aaadbaeac56a87901ad69326195a85e23596aa7e4468a72786e4ef3f2b236f7"
+    },
+    "src/battery/render.ts": {
+      "baseline_sha256": "4d1f43d1a74460fbea94d033623adce5670de54cb0acdb205f642ca3e95e4308",
+      "native_sha256": "ac90f51f16951a9d9bb0a33c9c3254294852f1332ce3f5e975a5311e493e3fd4"
+    },
+    "src/battery.css": {
+      "baseline_sha256": "0b31a78c995b4c04b09e87d8551262fc760272471ba204f6097813e6f4e1e1d5",
+      "native_sha256": "b9e503582c8103f03a2f960ee44ef91676b6cc5f577f73b06bd483cd92020227"
+    },
+    "src/buddy/render.ts": {
+      "baseline_sha256": "a5d8d2626ad9243f68fa5f52e97a90452c5c530a88391a5f644800c3b8ddd3f4",
+      "native_sha256": "b6bd5411c0828dd52a33740d19a14e6bc498fd9778aa13617df6055bb897fdfe"
+    },
+    "src/components/BatteryVisual.vue": {
+      "baseline_sha256": "88a4df9b2fca9980fd29c3c74e98c63d73ac2b63d5ccf583838ec2fcfe29a829",
+      "native_sha256": "915de0fc1480a0a06963580f803ae970ca0c34681e965bf7544051c5e84131f9"
+    },
+    "src/components/BuddyActor.vue": {
+      "baseline_sha256": "da4947e36a19d7057024662099cd2b7e28d40b976e0a3bb8490840aeee3ce6d5",
+      "native_sha256": "7b52f67527c4709a36f0012b33c43009c377feadf1dabebedd70406c92f7d6e0"
+    },
+    "src/components/CultivatorMotion.vue": {
+      "baseline_sha256": "f1a6cdde7fc6328d2fd6ebae310fe34db752f0e06b5533b4431cf23334fd5089",
+      "native_sha256": "dbd7a598bfe9eb914a2b64cd0405ebac632d12ffb6175d1e286dfa8cbdd617cb"
     }
   }
 }

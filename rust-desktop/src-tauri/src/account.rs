@@ -366,7 +366,8 @@ fn maybe_notify(app: &tauri::AppHandle) {
     let sh = shared(app);
     let mut r = sh.inner.lock().unwrap();
     let q = r.state["quota"].clone();
-    if r.state["status"] != "ready"
+    if r.state["settings"]["quotaSource"] == "codex"
+        || r.state["status"] != "ready"
         || r.state["settings"]["notifications"] != true
         || q["percent"].as_f64().unwrap_or(100.) > 30.
     {

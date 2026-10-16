@@ -1,4 +1,7 @@
 export type QuotaState = 'signed-out' | 'connecting' | 'ready' | 'stale' | 'expired' | 'resetting' | 'unavailable' | 'forbidden'
+export interface CodexWindow { id: string; remainingPercent: number | null; windowDurationMins: number | null; resetsAt: number | null }
+export interface CodexBucket { id: string; name: string; plan: string | null; windows: CodexWindow[] }
+export interface CodexState { status: QuotaState; message: string; syncing: boolean; account: { id: string; name: string; plan: string | null; workspace?: string | null } | null; buckets: CodexBucket[]; receivedAt: number | null }
 export type Mood = 'abundant' | 'normal' | 'warning' | 'danger'
 export interface Quota {
   limit: number; used: number; remaining: number; percent: number; exceeded: boolean;
@@ -136,6 +139,7 @@ export interface MessageState { epoch: string; status: 'waiting' | 'ready' | 'pa
 export interface CalendarEvent { key: string; title: string; start: number; end: number; rooms: string[]; allDay: boolean }
 export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
 export interface Settings {
+  evolutionMotion: 'full' | 'light' | 'off'; quotaSource: 'eastmoney' | 'codex'; codexEnabled: boolean; codexExecutable: string; codexHome: string; codexBucket: string;
   startupAnimation: boolean;
   worldEnabled: boolean; worldPaused: boolean;
   calendarEnabled: boolean; calendarPreview: boolean; calendarAtStart: boolean; calendarSystemNotifications: boolean; calendarLeadMinutes: number;
@@ -147,6 +151,7 @@ export interface Settings {
   scene: Scene; potatoSkin: PotatoSkin; piranhaSkin: PiranhaSkin; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  codex?: CodexState;
   desktopWorldNotice?: string | null;
   desktopWorld?: { supported: boolean; status: 'unsupported' | 'off' | 'loading' | 'running' | 'paused' | 'error'; message: string };
   calendar?: CalendarState;
@@ -162,6 +167,7 @@ export interface AppState {
   settings: Settings; version: string; persistentLogin: boolean; loginOpen: boolean;
 }
 export interface DesktopAPI {
+  refreshCodex?(): Promise<void>; openCloudPortal?(): Promise<void>;
   worldFeed?(): Promise<void>; worldRetry?(): Promise<void>;
   searchReplyUsers?(epoch: string, keyword: string, page: number): Promise<{epoch: string; items: ReplyContact[]; hasMore: boolean}>;
   configureAutoReply?(config: AutoReplyConfig): Promise<void>;
@@ -192,6 +198,7 @@ export interface DesktopAPI {
   onState(callback: (state: AppState) => void): () => void;
 }
 export const DEFAULT_SETTINGS: Settings = {
+  evolutionMotion: 'full', quotaSource: 'eastmoney', codexEnabled: false, codexExecutable: '', codexHome: '', codexBucket: 'codex',
   startupAnimation: true,
   worldEnabled: false, worldPaused: false,
   calendarEnabled: true, calendarPreview: true, calendarAtStart: false, calendarSystemNotifications: false, calendarLeadMinutes: 5,

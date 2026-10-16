@@ -1,5 +1,11 @@
 {
   "defaults": {
+    "evolutionMotion": "full",
+    "quotaSource": "eastmoney",
+    "codexEnabled": false,
+    "codexExecutable": "",
+    "codexHome": "",
+    "codexBucket": "codex",
     "startupAnimation": true,
     "worldEnabled": false,
     "worldPaused": false,
@@ -46,6 +52,15 @@
     "beaverMotto": "gentle"
   },
   "enums": {
+    "evolutionMotion": [
+      "full",
+      "light",
+      "off"
+    ],
+    "quotaSource": [
+      "eastmoney",
+      "codex"
+    ],
     "size": [
       "standard",
       "compact",
@@ -227,6 +242,11 @@
       "create",
       "rest"
     ]
+  },
+  "strings": {
+    "codexExecutable": 4096,
+    "codexHome": 4096,
+    "codexBucket": 128
   },
   "labels": {
     "potato": "土豆战神",

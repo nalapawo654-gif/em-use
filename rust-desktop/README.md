@@ -86,3 +86,7 @@ macOS 只在用户主动点击「检查更新」时读取同一清单的顶层 `
 参考：[Tauri 更新签名与静态清单](https://v2.tauri.app/plugin/updater/)、[WebviewWindow API](https://docs.rs/tauri/latest/tauri/webview/struct.WebviewWindow.html)、[项目桌宠基础交互规范](../docs/desktop-pet-interaction-standard.md)。
 
 每次发布必须维护 `release-notes/<版本>.md`，CI 先检查说明存在且非空，静态发布脚本写入同版本的 `latest.json` 与 `version.json`，客户端更新来信和设置页共用这份内容。
+
+## Codex 额度
+
+设置 → 账户与额度 → 连接本机 Codex，可将所有桌宠的展示来源切换为 Codex。支持 macOS / Windows 原生环境，保留 AI 云平台独立连接；WSL 暂不支持。各窗口百分比、重置时间和接入 / 验收边界见 [Codex 实时额度接入](docs/codex-quota.md)。

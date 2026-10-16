@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useAwakenedArt } from '../evolution/useAwakenedArt'
+import { vEvolutionMaterial } from '../evolution/material'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { beaverRig, type BeaverRig } from '../beaver/sprites'
 import { sampleBeaverMotion } from '../beaver/motion'
@@ -7,6 +9,7 @@ import { useCharacterMail } from '../shared/characterMail'
 import type { BeaverAction } from '../beaver/play'
 import type { BeaverSkin } from '../shared/types'
 const props = defineProps<{ message?:boolean; level: number; skin: BeaverSkin; action: BeaverAction; since: number; reducedMotion: boolean }>()
+const { art: awakened } = useAwakenedArt('beaver', () => props.skin)
 const mail=useCharacterMail()
 const canvas = ref<HTMLCanvasElement>(), failed = ref(false)
 let rig: BeaverRig | undefined, loadedSkin: BeaverSkin = props.skin, revision=0, animation=0, last=0, disposed=false
@@ -22,10 +25,10 @@ function draw(now: number) {
   if(!canvas.value||!rig||document.hidden||now-last<(props.reducedMotion?160:33)) return
   last=now
   const motion=sampleBeaverMotion(props.action,Math.max(0,now-props.since),now,props.level,props.reducedMotion)
-  renderBeaver(canvas.value.getContext('2d')!,rig,loadedSkin,props.action,now,motion,props.message&&mail?.active.value?mail.paint:undefined)
+  renderBeaver(canvas.value.getContext('2d')!,rig,loadedSkin,props.action,now,motion,props.message&&mail?.active.value?mail.paint:undefined,undefined,awakened.value?.frames[motion.resting?5:Math.min(5,props.level)])
 }
 onMounted(()=>{void load();animation=requestAnimationFrame(draw)})
 watch(()=>props.skin,load)
 onUnmounted(()=>{disposed=true;revision++;cancelAnimationFrame(animation)})
 </script>
-<template><canvas ref="canvas" width="640" height="512" aria-hidden="true"/><span v-if="failed" role="alert" class="beaver-asset-error">海狸鼠素材未加载<button @click.stop="load">重试</button></span></template>
+<template><canvas :data-awakened="!!awakened" v-evolution-material="{ scene: 'beaver', skin, pose: action }" ref="canvas" width="640" height="512" aria-hidden="true"/><span v-if="failed" role="alert" class="beaver-asset-error">海狸鼠素材未加载<button @click.stop="load">重试</button></span></template>

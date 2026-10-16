@@ -2,6 +2,7 @@
 mod account;
 mod auto_reply;
 mod calendar;
+mod codex;
 mod desktop_world;
 mod dongdong;
 mod message_panel_focus;
@@ -37,6 +38,7 @@ struct Runtime {
     notified: HashSet<String>,
 }
 struct Shared {
+    codex: Mutex<codex::Hub>,
     inner: Mutex<Runtime>,
     settings_gate: tokio::sync::Mutex<()>,
     http: reqwest::Client,
@@ -54,6 +56,7 @@ fn shared(app: &tauri::AppHandle) -> tauri::State<'_, Shared> {
 }
 fn snapshot(app: &tauri::AppHandle) -> Value {
     let mut state = shared(app).inner.lock().unwrap().state.clone();
+    state["codex"] = codex::view(&shared(app).codex.lock().unwrap());
     state["calendar"] = shared(app)
         .calendar
         .lock()
@@ -186,8 +189,15 @@ async fn desktop(
                 .request_permission()
                 .map_err(|_| "无法申请通知权限")?;
         }
-        "login" => account::login(&app, p.as_str()).await?,
-        "refresh" => account::refresh(app.clone(), true).await,
+        "login" => {
+            if p.is_null() && snapshot(&app)["settings"]["quotaSource"] == "codex" {
+                windows::open_accounts(&app)?;
+            } else {
+                account::login(&app, p.as_str()).await?;
+            }
+        }
+        "refresh" => refresh_selected(app.clone()).await,
+        "refreshCodex" => codex::refresh(app.clone(), true).await,
         "logout" => account::logout(&app)?,
         "settings" => windows::apply_settings(&app, p).await?,
         "openSettings" => windows::open_settings(&app)?,
@@ -244,7 +254,14 @@ async fn desktop(
             }
         }
         "quit" => app.exit(0),
-        "openPortal" => account::open_login(&app)?,
+        "openPortal" => {
+            if snapshot(&app)["settings"]["quotaSource"] == "codex" {
+                windows::open_accounts(&app)?;
+            } else {
+                account::open_login(&app)?;
+            }
+        }
+        "openCloudPortal" => account::open_login(&app)?,
         "openReleases" => app
             .opener()
             .open_url(RELEASES, None::<&str>)
@@ -280,6 +297,13 @@ async fn desktop(
     }
     Ok(Value::Null)
 }
+async fn refresh_selected(app: tauri::AppHandle) {
+    if snapshot(&app)["settings"]["quotaSource"] == "codex" {
+        codex::refresh(app, true).await;
+    } else {
+        account::refresh(app, true).await;
+    }
+}
 fn main() {
     let state = json!({"status":"signed-out","quota":null,"message":"登录后，让小伙伴陪你看额度","syncing":false,"settings":model::contract()["defaults"],"version":env!("CARGO_PKG_VERSION"),"persistentLogin":false,"loginOpen":false,"updateMode":if cfg!(target_os = "macos") { "manual" } else { "automatic" },"update":{"status":"idle","message":"尚未检查更新"}});
     let mut state = state;
@@ -302,6 +326,7 @@ fn main() {
         .manage(startup::State::default())
         .manage(message_popup::MessagePopupGate::default())
         .manage(Shared {
+            codex: Mutex::new(codex::Hub::default()),
             inner: Mutex::new(Runtime {
                 state,
                 auth: None,
@@ -359,6 +384,7 @@ fn main() {
             }
             updates::restore_notice(&handle);
             account::restore(&handle);
+            codex::start(handle.clone());
             windows::setup(app)?;
             startup::start(&handle);
             desktop_world::start(&handle);

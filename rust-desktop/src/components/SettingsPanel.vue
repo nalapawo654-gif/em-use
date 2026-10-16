@@ -3,6 +3,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { PhX, PhArrowSquareOut, PhSignOut, PhDesktop, PhSun, PhMoon, PhCircleHalf, PhFish, PhCheck, PhShieldCheck, PhDownloadSimple } from '@phosphor-icons/vue'
 import { api, appState as state, isDesktop } from '../bridge'
 import type { Settings } from '../shared/types'
+import CodexSettings from './CodexSettings.vue'
 import MessageSettings from './MessageSettings.vue'
 import CalendarSettings from './CalendarSettings.vue'
 import DesktopWorldSettings from './DesktopWorldSettings.vue'
@@ -37,7 +38,10 @@ import HamsterVisual from './HamsterVisual.vue'
 import HamsterSkinPicker from './HamsterSkinPicker.vue'
 import { money } from '../shared/quota'
 const emit = defineEmits<{ close: [] }>()
-const tab = ref(['updates', 'messages', 'calendar', 'world'].includes(new URLSearchParams(location.search).get('tab') ?? '') ? new URLSearchParams(location.search).get('tab')! : 'appearance'), notice = ref('')
+const tab = ref(['account', 'updates', 'messages', 'calendar', 'world'].includes(new URLSearchParams(location.search).get('tab') ?? '') ? new URLSearchParams(location.search).get('tab')! : 'appearance'), notice = ref('')
+const openAccount = () => { tab.value = 'account' }
+onMounted(() => window.addEventListener('open-account', openAccount))
+onUnmounted(() => window.removeEventListener('open-account', openAccount))
 const openWorld = () => { tab.value = 'world' }
 onMounted(() => window.addEventListener('open-world', openWorld))
 onUnmounted(() => window.removeEventListener('open-world', openWorld))
@@ -97,11 +101,12 @@ async function disconnect() {
           <template v-else-if="state.settings.scene === 'feidudu'"><h2>肥嘟嘟的甜味衣橱</h2><p class="section-description">换一份圆圆的好心情。</p><FeiduduWardrobe/></template>
           <template v-else><h2>小鱼衣橱</h2><p class="section-description">戴上喜欢的小装饰，一起出发。</p><OutfitPicker/></template>
           <h2>光线与氛围</h2><div class="theme-options"><button v-for="item in [{ id: 'auto', title: '跟随昼夜', icon: PhCircleHalf }, { id: 'day', title: '晴朗白天', icon: PhSun }, { id: 'night', title: '安静夜晚', icon: PhMoon }]" :key="item.id" :class="{ selected: state.settings.theme === item.id }" @click="set('theme', item.id as Settings['theme'])"><component :is="item.icon"/>{{ item.title }}</button></div>
+          <label class="setting-row"><span><b>Codex 觉醒动效</b><small>切换来源、桌宠或皮肤时变身，关闭动效仍保留对应造型。轻柔模式使用短淡入。</small></span><select aria-label="Codex 觉醒动效" :value="state.settings.evolutionMotion" @change="set('evolutionMotion', ($event.target as HTMLSelectElement).value as Settings['evolutionMotion'])"><option value="full">完整动效</option><option value="light">轻量动效</option><option value="off">关闭动效</option></select></label>
           <label class="setting-row"><span><b>轻柔模式</b><small>减少动画，让小伙伴安静陪伴，也更省电。</small></span><input type="checkbox" role="switch" :checked="state.settings.reducedMotion" @change="set('reducedMotion', ($event.target as HTMLInputElement).checked)"/></label>
         </template>
         <template v-else-if="tab === 'desktop'">
           <h2>自在待在桌面上</h2><p class="section-description">按自己的习惯，安排小伙伴的位置。</p>
-          <label v-for="item in [{ key: 'startupAnimation', name: '启动片头', help: '手动启动时播放约 3 秒，可跳过；轻柔模式和开机自启时不播放。' }, { key: 'alwaysOnTop', name: '置顶显示', help: '切换其他应用时，也能看到小伙伴。' }, { key: 'clickThrough', name: '鼠标穿透', help: '点击会落到后方窗口；从系统托盘可随时关闭。' }, { key: 'launchAtLogin', name: '开机启动', help: '登录电脑后自动出现，安装版生效。' }, { key: 'notifications', name: '低额度提醒', help: '剩余低于 30% 和 10% 时，每日各提醒一次。' }]" :key="item.key" class="setting-row"><span><b>{{ item.name }}</b><small>{{ item.help }}</small></span><input type="checkbox" role="switch" :checked="state.settings[item.key as keyof Settings] === true" @change="set(item.key as keyof Settings, ($event.target as HTMLInputElement).checked)"/></label>
+          <label v-for="item in [{ key: 'startupAnimation', name: '启动片头', help: '手动启动时播放约 3 秒，可跳过；轻柔模式和开机自启时不播放。' }, { key: 'alwaysOnTop', name: '置顶显示', help: '切换其他应用时，也能看到小伙伴。' }, { key: 'clickThrough', name: '鼠标穿透', help: '点击会落到后方窗口；从系统托盘可随时关闭。' }, { key: 'launchAtLogin', name: '开机启动', help: '登录电脑后自动出现，安装版生效。' }, { key: 'notifications', name: '低额度提醒', help: '当前展示来源剩余不高于 30% 和 10% 时提醒；按账户和额度周期去重。' }]" :key="item.key" class="setting-row"><span><b>{{ item.name }}</b><small>{{ item.help }}</small></span><input type="checkbox" role="switch" :checked="state.settings[item.key as keyof Settings] === true" @change="set(item.key as keyof Settings, ($event.target as HTMLInputElement).checked)"/></label>
           <div class="soft-note">按住场景空白或宠物拖动，轻点仍可互动；玩法使用拖动时优先处理互动。拖动四角调整大小，移开鼠标后操作自动隐去。关闭悬浮窗后，从系统托盘恢复。</div>
         </template>
         <template v-else-if="tab === 'world'"><DesktopWorldSettings/></template>
@@ -115,6 +120,8 @@ async function disconnect() {
           <div class="account-actions"><button class="primary-button" :disabled="updateBusy" @click="checkUpdate">检查更新</button><button v-if="state.updateMode !== 'manual' && state.update?.status === 'available'" class="primary-button" @click="installUpdate">下载、安装并重启</button><button class="text-button" @click="api.openReleases()">{{ state.updateMode === 'manual' ? '前往下载' : '手动下载' }}<PhArrowSquareOut/></button></div>
         </template>
         <template v-else>
+          <h2>桌宠展示的额度来源</h2><p class="section-description">所有桌宠共用。切换展示不会退出账户，也不影响咚咚消息和日程。</p><div class="login-methods" aria-label="桌宠额度来源"><button :aria-pressed="state.settings.quotaSource === 'eastmoney'" @click="set('quotaSource', 'eastmoney')"><b>AI 云平台</b><span>人民币每日额度</span></button><button :aria-pressed="state.settings.quotaSource === 'codex'" @click="set('quotaSource', 'codex')"><b>Codex</b><span>各额度窗口的剩余百分比</span></button></div>
+          <CodexSettings/>
           <h2>额度账户 · AI 云平台</h2><p class="section-description">用于查询额度；咚咚消息始终跟随本机咚咚账户，可与此账户不同。</p>
           <div class="account-card"><PhShieldCheck weight="duotone"/><div><b>{{ accountTitle }}</b><p>{{ isDesktop ? loginDescription : '浏览器预览 · 未连接真实账户' }}</p><p v-if="state.account?.name && state.account?.id" class="account-id">账户 {{ state.account.id }}</p></div></div>
           <p class="account-status" role="status">{{ state.message }}</p>
@@ -124,7 +131,7 @@ async function disconnect() {
           </div>
           <div v-if="state.quota" class="account-quota"><span>今日已用<b>¥{{ money(state.quota.used) }}</b></span><span>每日额度<b>¥{{ money(state.quota.limit) }}</b></span><span>每日重置<b>00:00 <small>北京时间</small></b></span></div>
           <p class="privacy-note">登录凭据仅保存在此设备；费用可能延迟数分钟，以平台返回的数据为准。{{ connected && !state.persistentLogin && isDesktop ? '当前仅在本次运行中保留登录。' : '' }}</p>
-          <div class="account-actions"><button class="text-button" @click="api.openPortal()">前往平台<PhArrowSquareOut/></button><button v-if="state.loginMode !== 'signed-out' || connected" class="text-button danger-text" @click="disconnect"><PhSignOut/>{{ connected ? '退出额度账户' : '停止额度连接' }}</button></div>
+          <div class="account-actions"><button class="text-button" @click="api.openCloudPortal?.()">前往平台<PhArrowSquareOut/></button><button v-if="state.loginMode !== 'signed-out' || connected" class="text-button danger-text" @click="disconnect"><PhSignOut/>{{ connected ? '退出额度账户' : '停止额度连接' }}</button></div>
           <div class="version-note"><span>EM Use v{{ state.version }}</span><button class="text-button" @click="api.openReleases()">下载新版本<PhDownloadSimple/></button></div>
         </template>
         <p v-if="notice" class="inline-notice" role="status">{{ notice }}</p>

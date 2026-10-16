@@ -20,6 +20,14 @@ pub fn validate(input: &Value) -> Value {
             {
                 out[key] = value.clone();
             }
+            if let (Some(max), Some(text)) = (c["strings"][key].as_u64(), value.as_str()) {
+                if text.encode_utf16().count() <= max as usize
+                    && !text.chars().any(|c| c.is_ascii_control())
+                    && (key != "codexBucket" || !text.trim().is_empty())
+                {
+                    out[key] = json!(text.trim());
+                }
+            }
             if key == "calendarLeadMinutes"
                 && value.as_i64().is_some_and(|n| [1, 5, 10, 15].contains(&n))
             {
@@ -189,7 +197,10 @@ mod tests {
         let skins = settings_contract["enums"]["potatoSkin"].as_array().unwrap();
         assert_eq!(skins.len(), 20);
         for skin in skins {
-            assert_eq!(validate(&json!({"scene":"potato","potatoSkin":skin})), json!({"scene":"potato","potatoSkin":skin}));
+            assert_eq!(
+                validate(&json!({"scene":"potato","potatoSkin":skin})),
+                json!({"scene":"potato","potatoSkin":skin})
+            );
         }
         assert_eq!(validate(&json!({"potatoSkin":"invalid"})), json!({}));
         assert_eq!(contract()["defaults"]["potatoSkin"], "gundam");
