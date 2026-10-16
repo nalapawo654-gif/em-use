@@ -603,26 +603,44 @@ mod tests {
     #[cfg(unix)]
     fn subprocess_protocol_is_readonly_bounded_and_reaped() {
         use std::os::unix::fs::PermissionsExt;
+        struct FixtureDir(PathBuf);
+        impl Drop for FixtureDir {
+            fn drop(&mut self) {
+                let _ = std::fs::remove_dir_all(&self.0);
+            }
+        }
         let dir = std::env::temp_dir().join(format!("em-use-codex-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&dir).unwrap();
+        let _fixture = FixtureDir(dir.clone());
         let exe = dir.join("mock codex");
-        let script = r#"#!/usr/bin/python3
-import sys,json,os,time
-open('pid','w').write(str(os.getpid()))
-for line in sys.stdin:
- m=json.loads(line)
- method=m['method']
- with open('methods','a') as f: f.write(method+'\n')
- if method=='initialized': continue
- if os.path.exists('hang'): time.sleep(60)
- if method=='initialize': result={}
- elif method=='account/read':
-  email='second@example.invalid' if m['id']==4 and os.path.exists('switch') else 'first@example.invalid'
-  result={'account':{'type':'chatgpt','email':email,'planType':'plus'}}
- elif method=='account/rateLimits/read': result={'rateLimits':{'primary':{'usedPercent':72,'windowDurationMins':300,'resetsAt':1900000000}}}
- else: raise Exception('unexpected RPC')
- print(json.dumps({'method':'ignored/notification','params':{}}),flush=True)
- print(json.dumps({'id':m['id'],'result':result}),flush=True)
+        // Use only POSIX shell builtins: a cold system Python startup on macOS
+        // runners must not consume the protocol test's deadline.
+        let script = r#"#!/bin/sh
+[ "$1" = app-server ] && [ "$2" = --listen ] && [ "$3" = stdio:// ] || exit 90
+printf '%s' "$$" > pid
+while IFS= read -r line; do
+ case "$line" in
+  *'"method":"initialized"'*) printf 'initialized\n' >> methods; continue ;;
+  *'"method":"initialize"'*) method=initialize; id=1; result='{}' ;;
+  *'"method":"account/read"'*)
+   method=account/read; id=2; email=first@example.invalid
+   case "$line" in *'"id":4'*) id=4; [ ! -e switch ] || email=second@example.invalid ;; esac
+   result="{\"account\":{\"type\":\"chatgpt\",\"email\":\"$email\",\"planType\":\"plus\"}}" ;;
+  *'"method":"account/rateLimits/read"'*)
+   method=account/rateLimits/read; id=3
+   result='{"rateLimits":{"primary":{"usedPercent":72,"windowDurationMins":300,"resetsAt":1900000000}}}' ;;
+  *) exit 91 ;;
+ esac
+ printf '%s\n' "$method" >> methods
+ if [ "$method" = account/rateLimits/read ] && [ -e hang ]; then
+  # Block in this process, not a sleep grandchild. stdin stays open until killed.
+  printf 'ready' > hanging
+  while IFS= read -r ignored; do :; done
+  exit 0
+ fi
+ printf '%s\n' '{"method":"ignored/notification","params":{}}'
+ printf '{"id":%s,"result":%s}\n' "$id" "$result"
+done
 "#;
         std::fs::write(&exe, script).unwrap();
         std::fs::set_permissions(&exe, std::fs::Permissions::from_mode(0o700)).unwrap();
@@ -636,7 +654,7 @@ for line in sys.stdin:
             .block_on(fetch_with_timeout(
                 &config,
                 &mut observed,
-                Duration::from_secs(3),
+                Duration::from_secs(15),
             ))
             .unwrap();
         assert_eq!(result["buckets"][0]["windows"][0]["remainingPercent"], 28.);
@@ -656,19 +674,25 @@ for line in sys.stdin:
         let result = rt.block_on(fetch_with_timeout(
             &config,
             &mut observed,
-            Duration::from_secs(3),
+            Duration::from_secs(15),
         ));
         assert_eq!(result.unwrap_err().0, "connecting");
         assert!(observed.is_none());
         std::fs::write(dir.join("hang"), "").unwrap();
+        // Do not let an earlier successful run's PID satisfy the reaping check.
+        std::fs::remove_file(dir.join("pid")).unwrap();
         let start = std::time::Instant::now();
         let result = rt.block_on(fetch_with_timeout(
             &config,
             &mut observed,
-            Duration::from_millis(100),
+            Duration::from_secs(1),
         ));
         assert!(result.unwrap_err().1.contains("超时"));
-        assert!(start.elapsed() < Duration::from_secs(2));
+        assert!(start.elapsed() < Duration::from_secs(5));
+        assert!(
+            dir.join("hanging").exists(),
+            "mock must reach the blocked RPC before timing out"
+        );
         let pid = std::fs::read_to_string(dir.join("pid")).unwrap();
         assert!(!std::process::Command::new("/bin/kill")
             .args(["-0", pid.trim()])
@@ -676,6 +700,5 @@ for line in sys.stdin:
             .status()
             .unwrap()
             .success());
-        std::fs::remove_dir_all(dir).unwrap();
     }
 }
