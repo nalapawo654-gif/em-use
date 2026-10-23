@@ -45,4 +45,40 @@ test('disconnect hides even an in-flight cached Codex snapshot', () => {
   const s = state(); s.settings.codexEnabled = false
   const view = quotaPresentation(s, now)
   assert.equal(view.percent, null); assert.equal(view.canRefresh, false); assert.equal(view.status, 'signed-out')
+  assert.deepEqual(view.windows, [])
+})
+
+test('readout includes both returned windows and keeps shape tied to the lower percentage', () => {
+  const s = state()
+  const view = quotaPresentation(s, now)
+  assert.deepEqual(view.windows.map(w => [windowLabel(w), w.remainingPercent]), [['5 小时窗口', 62], ['周窗口', 28]])
+  assert.equal(view.percent, 28)
+  s.settings.codexBucket = 'other'
+  assert.deepEqual(quotaPresentation(s, now).windows.map(w => w.remainingPercent), [8])
+  s.settings.quotaSource = 'eastmoney'
+  assert.deepEqual(quotaPresentation(s, now).windows, [])
+})
+
+test('weekly-only accounts display only the returned window regardless of plan or window id', () => {
+  const s = state()
+  s.codex!.account = { id: 'test', name: 'Test', plan: 'pro' }
+  const weekly = s.codex!.buckets[0]!.windows[1]!
+  s.codex!.buckets[0]!.windows = [{ ...weekly, id: 'primary' }]
+  assert.deepEqual(quotaPresentation(s, now).windows.map(w => windowLabel(w)), ['周窗口'])
+  assert.equal(quotaPresentation(s, now).percent, 28)
+  s.codex!.buckets[0]!.windows.push({ ...weekly, id: 'secondary', windowDurationMins: 300, remainingPercent: 62 })
+  assert.equal(quotaPresentation(s, now).windows.length, 2)
+})
+
+test('readout distinguishes an unknown value from an absent window and hides unusable cached percentages', () => {
+  const s = state()
+  s.codex!.buckets[0]!.windows[0]!.remainingPercent = null
+  assert.deepEqual(quotaPresentation(s, now).windows.map(w => w.remainingPercent), [null, 28])
+  s.codex!.status = 'stale'
+  assert.deepEqual(quotaPresentation(s, now).windows.map(w => w.remainingPercent), [null, 28])
+  for (const status of ['expired', 'forbidden', 'signed-out', 'unavailable', 'connecting'] as const) {
+    s.codex!.status = status
+    assert.deepEqual(quotaPresentation(s, now).windows.map(w => w.remainingPercent), [null, null])
+  }
+  assert.equal(s.codex!.buckets[0]!.windows[1]!.remainingPercent, 28)
 })

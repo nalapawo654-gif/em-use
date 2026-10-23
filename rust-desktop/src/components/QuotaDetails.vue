@@ -20,7 +20,7 @@ async function connect() { try { await api.openPortal() } catch { error.value = 
         <b>{{ bucket.name }}{{ bucket.id === state.settings.codexBucket ? ' · 桌宠展示' : '' }}</b>
         <dl><div v-for="window in bucket.windows" :key="window.id"><dt>{{ windowLabel(window) }}</dt><dd>{{ window.remainingPercent === null ? '—' : `${Math.round(window.remainingPercent)}% 剩余` }}<small>{{ resetLabel(window.resetsAt) }}{{ window.resetsAt === null ? '' : ' 重置' }}</small></dd></div></dl>
       </section>
-      <p>桌宠跟随所选分组中剩余比例较低的有效窗口；各窗口分别计算。重置后以重新同步结果为准。</p>
+      <p>桌宠同时显示所选分组返回的各窗口额度；只有周窗口时仅显示周额度。角色形态跟随剩余比例较低的有效窗口。重置后以重新同步结果为准。</p>
     </template>
     <template v-else-if="state.quota">
       <dl><div><dt>{{ state.status === 'ready' ? '今日剩余' : '上次记录剩余' }}</dt><dd>¥{{ state.quota.remaining.toFixed(2) }}</dd></div><div><dt>每日额度</dt><dd>¥{{ state.quota.limit.toFixed(2) }}</dd></div><div><dt>费用日期</dt><dd>{{ state.quota.day }}</dd></div></dl>

@@ -15,7 +15,7 @@ export function quotaPresentation(state: AppState, now = Date.now()) {
     const usable = !!state.quota && ['ready', 'stale'].includes(state.status)
     return { canRefresh: !!state.quota, status: state.status, message: state.message, syncing: state.syncing, percent: usable ? state.quota!.percent : null,
       label: '今日剩余', subtitle: usable ? `¥${state.quota!.remaining.toFixed(2)} / ¥${state.quota!.limit.toFixed(2)}` : 'AI 云平台',
-      source: 'AI 云平台', receivedAt: state.quota?.receivedAt ?? null, bucket: null }
+      source: 'AI 云平台', receivedAt: state.quota?.receivedAt ?? null, bucket: null, windows: [] as CodexWindow[] }
   }
   const codex = state.settings.codexEnabled ? state.codex : undefined
   const bucket = codex?.buckets.find(b => b.id === state.settings.codexBucket) ?? null
@@ -31,5 +31,8 @@ export function quotaPresentation(state: AppState, now = Date.now()) {
   return { canRefresh: state.settings.codexEnabled, status, message, syncing: codex?.syncing ?? false, percent: usable ? limiting?.remainingPercent ?? null : null,
     label: limiting ? `Codex · ${windowLabel(limiting)}` : 'Codex 额度',
     subtitle: !limiting ? '等待额度同步' : `${status === 'stale' ? '上次记录 · ' : ''}${resetLabel(limiting.resetsAt)}${limiting.resetsAt === null ? '' : ' 重置'}`,
-    source: 'Codex', receivedAt: codex?.receivedAt ?? null, bucket }
+    source: 'Codex', receivedAt: codex?.receivedAt ?? null, bucket,
+    // Preserve returned windows (including unknown percentages), but never expose
+    // cached values after authentication fails or monitoring is disconnected.
+    windows: (bucket?.windows ?? []).map(w => ({ ...w, remainingPercent: usable ? w.remainingPercent : null })) }
 }

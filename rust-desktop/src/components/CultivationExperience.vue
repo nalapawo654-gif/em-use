@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CodexQuotaReadout from './CodexQuotaReadout.vue'
 import PetArcToolbar from './PetArcToolbar.vue'
 import PetEvolution from './PetEvolution.vue'
 import { evolution } from '../evolution/controller'
@@ -141,7 +142,7 @@ onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventL
           <div v-if="play.action==='talisman'" class="cultivation-world-seals" aria-hidden="true"><span v-for="(rune,i) in ['天','地','人']" :key="rune" :class="{lit:play.progress>i}">{{rune}}</span></div>
           <p v-if="!active && !event" class="cultivation-speech">{{ level === 'full' || level === 'settling' ? practice.hint : speech }}</p>
         </div>
-        <button class="cultivation-quota" :aria-expanded="panel === 'details'" :aria-label="'剩余额度 ' + (percent === null ? '未知' : Math.round(percent) + '%')" @click="togglePanel('details')"><span>{{ quotaDisplay.label }}</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><span class="cultivation-meter"><i :style="{ width: `${Math.max(0,Math.min(100,percent ?? 0))}%` }"></i></span><small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small><em v-if="state.status === 'stale'">数据待更新</em></button>
+        <button class="cultivation-quota" :aria-expanded="panel === 'details'" :aria-label="state.settings.quotaSource === 'codex' ? undefined : ('剩余额度 ' + (percent === null ? '未知' : Math.round(percent) + '%'))" @click="togglePanel('details')"><CodexQuotaReadout stacked><span>{{ quotaDisplay.label }}</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><span class="cultivation-meter"><i :style="{ width: `${Math.max(0,Math.min(100,percent ?? 0))}%` }"></i></span><small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small><em v-if="state.status === 'stale'">数据待更新</em></CodexQuotaReadout></button>
         <span class="cultivation-motto" aria-hidden="true">修为有限<br/>热爱无边<span>仙</span></span>
         <PetArcToolbar scene="cultivation" label="修仙渡劫事务所" :blocked="updateLetterOpen"><template #controls><button aria-label="更多修仙互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="切换修仙仙境" :aria-expanded="panel === 'realm'" @click="togglePanel('realm')"><PhMountains/></button><button aria-label="修仙百宝衣橱" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="修仙设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仙人到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in actions.slice(0, 4)" :key="item.id" :aria-label="item.label" @click="act(item.id)"><CultivationProp :index="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
 

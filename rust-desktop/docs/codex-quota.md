@@ -1,13 +1,13 @@
 # Codex 实时额度接入
 
-2026-10-15 · macOS / Windows 原生；不包含 WSL。
+2026-10-20 · macOS / Windows 原生；不包含 WSL。
 
 ## 使用
 
 1. 在本机 Codex 中使用 ChatGPT 账户登录。
 2. EM Use → 设置 → 账户与额度 → 连接本机 Codex。
 3. 将「桌宠展示的额度来源」切换为 Codex。设置、托盘、所有 13 种桌宠的额度详情都可切换来源。
-4. 默认使用 codex 额度分组；接口返回其他分组时可在设置中选择。桌宠显示所选分组内剩余百分比最低的有效窗口，详情保留各窗口。
+4. 默认使用 codex 额度分组；接口返回其他分组时可在设置中选择。桌宠同时显示所选分组实际返回的各窗口剩余百分比，例如「5 小时 62%」「周 28%」；仅返回周窗口的账户只显示周额度。以接口实际窗口为准，不按 Pro 等套餐名称隐藏窗口，不补造不存在的额度。返回窗口数值未知时显示 `—`。角色形态仍跟随剩余比例最低的有效窗口；各窗口重置时间保留在悬停提示与额度详情中。
 5. 自动发现失败时，在高级设置中指定原生可执行文件绝对路径及 Codex 数据目录。Windows 指定 codex.exe，不执行 .cmd / PowerShell 命令；数据目录默认为 CODEX_HOME 或用户目录的 .codex。
 
 两个来源可以同时连接，切换展示不退出账户，不影响咚咚消息和日程。断开 Codex 监控不会注销 Codex。升级默认保留原 AI 云平台来源，Codex 监控默认关闭。
@@ -44,3 +44,10 @@ cargo test --manifest-path src-tauri/Cargo.toml
 ```sh
 cargo test --manifest-path src-tauri/Cargo.toml codex::tests::live_codex_quota -- --ignored --nocapture
 ```
+
+## 2026-10-20 双额度显示验证
+
+- 13 只桌宠复用 `CodexQuotaReadout.vue` 与 `quotaPresentation().windows`。AI 云平台沿用原展示；Codex 同时展示实际返回的窗口，角色分档继续取较低的有效值。现有账户查询、提醒和设置服务未改变。
+- 源码 / 测试：217 项 TypeScript 测试及 12 项脚本测试通过；最终类型检查、契约生成和构建通过。构建仍提示现有主包超过 500 kB。
+- 浏览器模拟：`tests/fixtures/codex-quota-browser-qa.js` 的 55 项检查通过，覆盖 13 只桌宠、440 / 300 / 190 尺寸、双额度、仅周额度、来源切换、详情和过期状态。在同一 Playwright CLI 会话继续执行 `tests/fixtures/codex-quota-edge-browser-qa.js`，156 项检查通过，覆盖 440 / 300 / 190 / 180 尺寸、100% / 0%、未知值及夜间待更新状态，并检查文字边界。截图位于仓库根目录 `output/playwright/codex-dual-*`。
+- 本次未重新打包安装或验证 macOS / Windows 原生窗口、真实账户。上方真实账户记录属于既有接入验证，不代表本次双额度 UI 的实机验收。

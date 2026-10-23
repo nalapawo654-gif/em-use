@@ -1,13 +1,13 @@
 {
-  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png. BuddyExperience also adds the reviewed independent calendar prop; actor, motion, gesture and original artwork remain unchanged. Nine remaining Experience components add independent calendar entry and notice exclusivity; no original gesture, character, state machine, or animation modifications. v0.4.10 additionally reviews identical uniform-quota preview samples, rounding and selection in the legacy and native Battery, Beaver, Cultivation and Hamster Experience components; native notification/calendar integration remains unchanged. v0.5.3 reviews shared Codex quota display/details and awakened whole-character art/transformations for the six migrated pets, plus quota-label wrapping. Original interaction state machines, window gestures and source atlases remain unchanged. Regression coverage and native acceptance limits are recorded in docs/release-0.5.3.md. 2026-10-16 reviews the Tauri-only shared crescent toolbar migration: original handlers and full play menus retained, scene clearance adjusted, and Buddy container Esc/panel exclusivity fixed. See docs/design/pet-arc-toolbar/README.md and design-qa.md; OS and real-account verification are separate.",
+  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png. BuddyExperience also adds the reviewed independent calendar prop; actor, motion, gesture and original artwork remain unchanged. Nine remaining Experience components add independent calendar entry and notice exclusivity; no original gesture, character, state machine, or animation modifications. v0.4.10 additionally reviews identical uniform-quota preview samples, rounding and selection in the legacy and native Battery, Beaver, Cultivation and Hamster Experience components; native notification/calendar integration remains unchanged. v0.5.3 reviews shared Codex quota display/details and awakened whole-character art/transformations for the six migrated pets, plus quota-label wrapping. Original interaction state machines, window gestures and source atlases remain unchanged. Regression coverage and native acceptance limits are recorded in docs/release-0.5.3.md. 2026-10-16 reviews the Tauri-only shared crescent toolbar migration: original handlers and full play menus retained, scene clearance adjusted, and Buddy container Esc/panel exclusivity fixed. See docs/design/pet-arc-toolbar/README.md and design-qa.md; OS and real-account verification are separate. 2026-10-23 / v0.5.6 reviews shared Codex dual-window readout wrappers and accessible quota labels for the six migrated renderers. Cloud fallback markup, interaction state machines, gestures and artwork remain unchanged. Dual-window browser evidence and native verification limits are recorded in docs/codex-quota.md.",
   "files": {
     "src/components/Aquarium.vue": {
       "baseline_sha256": "4c1316ff76ff36d83ad3913fcbf42d005ee1a3617d14526f28cfaacd96bea4cc",
-      "native_sha256": "2be3ca48cbb84d4766b9fd20f0aa3b72138d7ea4f074df3cdee86b3885d20973"
+      "native_sha256": "602e8b9aa7bd814fe7e2b9c283185b5bfa74a3dfc65cd2f2210f8cf04ee62187"
     },
     "src/components/BatteryExperience.vue": {
       "baseline_sha256": "466bd44bb375ac7bfc38ad3818cfbdf37c639be6c5939db69ffb9fb65b5d5a40",
-      "native_sha256": "da1f74d07b30a90112b25e6cce9a2d93cd0f4bd9ce6fe81ae46bf8ecda3f0e2d"
+      "native_sha256": "cd4d5d67876e74edd506b1af1935d9811357153bc3c1bd426257e25111330be9"
     },
     "src/components/BeaverExperience.vue": {
       "baseline_sha256": "be632ca5cc92f21a704ce989f656d9ad845474b1689c23fca84b20bd3151413d",
@@ -15,7 +15,7 @@
     },
     "src/components/BeaverScene.vue": {
       "baseline_sha256": "2572e657ef2e8e89cb8c8ddbf9b03f8a6d1a45887c6f49e48ab7da7286c3b765",
-      "native_sha256": "d09cb79c32751b94367da387492c60c3eb3e520f8ceacf5245a2afe6cc1f4485"
+      "native_sha256": "e3051d1be124b2b0c43b5bacfdceb168d9de40d4cb06fe6699b8ee20e2f98321"
     },
     "src/components/BuddyExperience.vue": {
       "baseline_sha256": "02bba7b761c0364f11fa0a675b591eebeecaf232c127ba40fb5ea66fc34e5703",
@@ -23,15 +23,15 @@
     },
     "src/components/BuddyScene.vue": {
       "baseline_sha256": "3ac72fc0e94c08e7ebb485f8c95a2fc2d81cdb0eff733a41e163096fc5931cf2",
-      "native_sha256": "2694cb3b0019da53dbccaf1e1e76e4270f3f497a27d02829844adc8d3732b2b6"
+      "native_sha256": "92ec964935b1c5e7a497745c7f808d3dc1db089db0c5f57de38609e64f00194e"
     },
     "src/components/CultivationExperience.vue": {
       "baseline_sha256": "e98523ff17e0ac65ef8376602c832c9094eefa66335a9e6399f2c65d8a3e470c",
-      "native_sha256": "00edb02cc7ab3e8eff01424aad3952a4c36ffca39fb1fcb54679f8e2d062b47c"
+      "native_sha256": "6a177ec1f55e2339a6f3d3b5232025bc790cc54a6b44929c0bd7252e0a1b78bf"
     },
     "src/components/HamsterExperience.vue": {
       "baseline_sha256": "8813d5442361b39ffb59d6403e1369dee09758e53711bb98bf93805b8df68f86",
-      "native_sha256": "6d3e750d7a4e919845f05eba091fcc632b3e7adb4748477021d287ebfdef1780"
+      "native_sha256": "81b21b11b3538dd94cd91ee04d422f66cf4c172af7449b2e5a21acaa9d84e2b1"
     },
     "src/components/BeaverVisual.vue": {
       "baseline_sha256": "2c35a583536c80e675c2425b3aa62e1ddbead8ee7955e54bc92bb8cb57825b82",

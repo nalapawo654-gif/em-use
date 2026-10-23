@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CodexQuotaReadout from './CodexQuotaReadout.vue'
 import PetArcToolbar from './PetArcToolbar.vue'
 import PetEvolution from './PetEvolution.vue'
 import QuotaDetails from './QuotaDetails.vue'
@@ -80,11 +81,11 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
           <button class="hamster-pet-hit scene-hit" :aria-label="play.action === 'sleep' ? '唤醒仓鼠' : '摸摸仓鼠'" @click="pet"></button>
           <p v-if="!active" class="hamster-speech" :class="{ 'is-active': active }" aria-live="polite">{{ speech }}<PhHeart v-if="play.action === 'pet'" weight="fill"/></p>
         </div>
-        <button class="hamster-quota" :style="place('quota')" @click="togglePanel('details')" :class="'quota-' + level" type="button" :aria-label="percent === null ? '额度未知，' + statusLabel : '剩余额度 ' + Math.round(percent) + '%'">
+        <button class="hamster-quota" :style="place('quota')" @click="togglePanel('details')" :class="'quota-' + level" type="button" :aria-label="state.settings.quotaSource === 'codex' ? undefined : (percent === null ? '额度未知，' + statusLabel : '剩余额度 ' + Math.round(percent) + '%')"><CodexQuotaReadout>
           <span class="hamster-quota-label"><PhLightning weight="fill"/>{{ quotaDisplay.label }}<span v-if="state.status === 'stale'"> · 数据待更新</span></span>
           <div><span class="hamster-meter" :class="{ unknown: percent === null }"><i :style="{ width: `${percent === null ? 0 : Math.max(0, Math.min(100, percent))}%` }"></i></span><strong>{{ percent === null ? '—' : Math.round(percent) + '%' }}</strong></div>
           <small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small>
-        </button>
+        </CodexQuotaReadout></button>
         <PetArcToolbar scene="hamster" label="仓鼠动力机房" :blocked="noticeOpen"><template #controls><button aria-label="更多仓鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="仓鼠换装" title="换装" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="仓鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仓鼠到托盘" title="收起到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in interactions.slice(0, 4)" :key="item.action" :aria-label="'仓鼠' + item.label" :title="item.label" @click="act(item.action)"><HamsterProp :index="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
 
         <footer class="hamster-footer hamster-chrome"><button :aria-expanded="panel === 'details'" @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新仓鼠额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>

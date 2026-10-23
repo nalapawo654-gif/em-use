@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CodexQuotaReadout from './CodexQuotaReadout.vue'
 import { vEvolutionMaterial } from '../evolution/material'
 import { useAwakenedArt } from '../evolution/useAwakenedArt'
 import { energyFrame } from '../evolution/atlas'
@@ -223,7 +224,7 @@ onUnmounted(() => { disposed = true; cancelAnimationFrame(animation); observer?.
     <template v-if="play.mode !== 'clean'"><button v-for="(fish, index) in fishHits" v-show="!hiding || index !== 0" :key="index" class="fish-hit" :aria-label="index === 0 ? '逗逗小鱼' : '逗逗小小鱼'" :style="{ left: `${(fish.x - fish.width / 2) * 100}%`, top: `${(fish.y - fish.width * .42) * 100}%`, width: `${fish.width * 100}%`, height: `${fish.width * .84 * 100}%` }" @click="love" /></template>
     <button v-if="!hiding && play.mode !== 'clean'" class="treasure-hit scene-hit" aria-label="打开宝箱" title="打开宝箱" @click="treasure" />
     <button v-if="hiding" class="cave-hit scene-hit" aria-label="找到小鱼" title="找到小鱼" @click="reveal" />
-    <div class="quota-overlay" :class="{ empty: percent === null }"><div class="quota-number">{{ percent === null ? '—' : Math.round(percent) }}<span v-if="percent !== null">%</span></div><div class="quota-caption">{{ percent === null ? '等你一起出发' : (quotaLabel ?? '今日剩余额度') }}</div><slot /></div>
+    <div class="quota-overlay" :class="{ empty: percent === null }"><CodexQuotaReadout><div class="quota-number">{{ percent === null ? '—' : Math.round(percent) }}<span v-if="percent !== null">%</span></div><div class="quota-caption">{{ percent === null ? '等你一起出发' : (quotaLabel ?? '今日剩余额度') }}</div><slot /></CodexQuotaReadout></div>
     <div v-if="hint" class="play-hud" @pointerdown.stop><span role="status">{{ hint }}</span><button v-if="play.mode === 'clean'" @click="automaticClean">自动擦拭</button><button class="finish-play" aria-label="结束互动" @click="cancel"><PhX/></button></div>
     <div v-if="failed" class="play-hud" role="alert">素材加载失败，请重新打开小鱼缸</div>
     <div v-if="happy || play.mode === 'reveal'" class="love-burst" aria-hidden="true"><PhHeart weight="fill"/><PhHeart weight="fill"/><PhHeart weight="fill"/></div>

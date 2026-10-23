@@ -21,7 +21,7 @@ async (page) => {
     const widget = page.locator(scene === 'aquarium' ? '.widget' : `.${scene}-widget`);
     await widget.waitFor();
     const quota = page.locator(scene === 'aquarium' ? '.quota-overlay' : scene === 'buddy' ? '.buddy-sign-copy' : `.${scene}-quota`);
-    if (!(await quota.innerText()).includes('28') || !(await quota.innerText()).includes('Codex')) throw new Error(scene + ': missing selected Codex quota');
+    if (!(await quota.innerText()).includes('28%') || !(await quota.innerText()).includes('62%') || !(await quota.innerText()).includes('Codex')) throw new Error(scene + ': missing selected Codex quota');
     await widget.hover();
     const entry = scene === 'aquarium' ? '.status-pill' : scene === 'buddy' ? '.buddy-status' : scene === 'beaver' ? '.beaver-footer button:first-child' : `button.${scene}-quota`;
     await page.locator(entry).click();
@@ -43,6 +43,16 @@ async (page) => {
     for (const scene of scenes) {
       await page.evaluate(({scene,size}) => window.__quotaQa.settings({scene,windowWidth:size}), {scene,size});
       const widget = page.locator(scene === 'aquarium' ? '.widget' : `.${scene}-widget`);
+      const readout = widget.locator('.codex-readout');
+      if (!(await readout.innerText()).includes('62%') || !(await readout.innerText()).includes('28%')) throw new Error(`${scene} ${size}: both windows must be visible`);
+      const boundsCheck = await readout.evaluate(el => {
+        const host = el.parentElement.getBoundingClientRect();
+        return [...el.querySelectorAll('.codex-readout-label,.codex-readout-value,.codex-readout-heading')].every(child => {
+          const r = child.getBoundingClientRect();
+          return r.x >= -1 && r.y >= -1 && r.right <= innerWidth+1 && r.bottom <= innerHeight+1 && r.left >= host.left-2 && r.right <= host.right+2 && r.top >= host.top-2 && r.bottom <= host.bottom+2;
+        });
+      });
+      if (!boundsCheck) throw new Error(`${scene} ${size}: readout exceeds its container`);
       await widget.hover();
       const entry = scene === 'aquarium' ? '.status-pill' : scene === 'buddy' ? '.buddy-status' : scene === 'beaver' ? '.beaver-footer button:first-child' : `button.${scene}-quota`;
       await page.locator(entry).click();
@@ -52,15 +62,26 @@ async (page) => {
       const close = page.locator(scene === 'aquarium' ? '.detail-popover > button' : scene === 'buddy' ? '.buddy-details header button' : `.${scene}-panel header button`);
       const bounds = await close.boundingBox();
       if (!bounds || bounds.x < -1 || bounds.y < -1 || bounds.x+bounds.width > size+1 || bounds.y+bounds.height > size+1) throw new Error(`${scene} ${size}: close outside window`);
-      if (['potato','aquarium','buddy','beaver'].includes(scene)) await page.screenshot({path:`output/playwright/codex-${scene}-${size}.png`});
+      if (['potato','aquarium','buddy','beaver'].includes(scene)) await page.screenshot({path:`output/playwright/codex-dual-${scene}-${size}.png`});
       await close.click();
-      if (size === 190) await page.screenshot({path:`output/playwright/codex-${scene}-190-main.png`});
+      if (size === 190) await page.screenshot({path:`output/playwright/codex-dual-${scene}-190-main.png`});
       results.push(`${scene} ${size}: source selector and close reachable`);
     }
   }
+  // Weekly-only responses must not fabricate a five-hour window, even when
+  // the weekly window occupies the protocol's primary slot.
+  await page.evaluate(() => { const qa = window.__quotaQa; qa.state.codex.account.plan = 'pro'; qa.state.codex.buckets[0].windows = [{...qa.state.codex.buckets[0].windows[1], id:'primary'}]; qa.set({codex:qa.state.codex}); });
+  for (const scene of scenes) {
+    await page.evaluate(scene => window.__quotaQa.settings({scene}), scene);
+    const readout = page.locator('.codex-readout');
+    await readout.waitFor();
+    const text = await readout.innerText();
+    if ((await readout.locator('.codex-readout-window').count()) !== 1 || !text.includes('周') || !text.includes('28%') || text.includes('5小时')) throw new Error(scene + ': weekly-only readout is incorrect');
+  }
+  results.push('all 13 pets: weekly-only Pro response, no invented five-hour window');
   if (errors.length) throw new Error(errors.join('\n'));
   await page.evaluate(() => { const qa = window.__quotaQa; qa.set({codex: {...qa.state.codex, status:'stale', message:'上次同步 · 网络暂不可用'}}); });
-  if (!(await page.locator('.potato-quota').innerText()).includes('28') || !(await page.locator('.potato-quota').innerText()).includes('数据待更新')) throw new Error('stale value lost or unlabeled');
+  if (!(await page.locator('.potato-quota').innerText()).includes('28') || !(await page.locator('.potato-quota').innerText()).includes('待更新')) throw new Error('stale value lost or unlabeled');
   await page.evaluate(() => { const qa = window.__quotaQa; qa.set({codex: {...qa.state.codex, status:'signed-out', account:null, buckets:[], receivedAt:null}}); });
   if (!(await page.locator('.potato-quota').innerText()).includes('—')) throw new Error('signed-out must be unknown');
   await page.evaluate(() => window.__quotaQa.settings({quotaSource:'eastmoney'}));
