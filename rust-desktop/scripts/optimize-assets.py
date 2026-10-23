@@ -2,6 +2,7 @@
 import argparse, hashlib, json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+import xml.etree.ElementTree as ET
 from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT.parent / 'public/assets'
@@ -51,8 +52,13 @@ def verify():
     for row in NATIVE:
         path = DEST / row['path']
         assert digest(path) == row['sha256'], row['path']
-        with Image.open(path) as image:
-            assert image.size == (row['width'], row['height']), row['path']
+        if path.suffix == '.svg':
+            svg = ET.parse(path).getroot()
+            assert svg.tag == '{http://www.w3.org/2000/svg}svg', row['path']
+            assert [float(v) for v in svg.attrib['viewBox'].split()] == [0, 0, row['width'], row['height']], row['path']
+        else:
+            with Image.open(path) as image:
+                assert image.size == (row['width'], row['height']), row['path']
     assert {p.relative_to(DEST).as_posix() for p in DEST.rglob('*') if p.is_file()} == expected, 'Unexpected runtime assets'
     for row in report['images']:
         source, target = SOURCE / row['source'], DEST / row['target']

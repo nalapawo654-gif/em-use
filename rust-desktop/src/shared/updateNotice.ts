@@ -1,6 +1,7 @@
 import type { AppState, Scene } from './types'
 
 export const UPDATE_PERSONAS = {
+  basketball: { title: '球馆送来了新装备', tag: '球场补给站', object: '球鞋补给盒', body: '新装备到了，投完这局一起看看。', stamp: '23', motion: 'shoebox' },
   potato: { title: '机库送来了新装备', tag: '土豆整备站', object: '机甲补给箱', body: '新装备已到站。忙完这一阵，再一起拆箱吧。', stamp: '补', motion: 'crate' },
   piranha: { title: '花盆里冒出了新惊喜', tag: '花种补给站', object: '花种补给袋', body: '新的花种已经送到，歇一歇时一起看看吧。', stamp: '花', motion: 'bloom' },
   aquarium: { title: '小鱼捎来一封新消息', tag: '海底邮局', object: '漂流瓶', body: '打开这封漂流信，看看伙伴又学会了什么。', stamp: '海', motion: 'float' },

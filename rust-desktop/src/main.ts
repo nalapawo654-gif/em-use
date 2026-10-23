@@ -35,6 +35,7 @@ import './calendar.css'
 
 import './piranha.css'
 import './potato.css'
+import './basketball.css'
 
 // Vue is mounted, independent of login/quota completion. Hidden WebViews may suspend rAF.
 if (new URLSearchParams(location.search).get('view') === 'widget') {

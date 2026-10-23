@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-23",
+  "scope": "Basketball artwork refinement, layered SVG materials and wardrobe preview sizing",
+  "source": {
+    "build": "passed: shared contracts, vue-tsc, Vite",
+    "existingBasketballTests": {
+      "passed": 7,
+      "failed": 0
+    },
+    "physicsOrQuotaLogicChanged": false
+  },
+  "browser": [
+    {
+      "passed": 7,
+      "checks": [
+        "180px: distance 0, pointer swish, aim/day/night screenshots",
+        "300px: distance 1, pointer swish, aim/day/night screenshots",
+        "440px: distance 2, pointer swish, aim/day/night screenshots",
+        "800px: distance 3, pointer swish, aim/day/night screenshots",
+        "three ordinary / three Codex material palettes rendered",
+        "wardrobe: four simultaneous players, no SVG ID collision, three distinct paints",
+        "wooden calendar, enamel locker and shoe-box render in real notification components"
+      ],
+      "errors": [],
+      "scope": "browser with native bridge fixture plus formal browser preview; no OS/account verification"
+    },
+    {
+      "passed": 3,
+      "checks": [
+        "180px wardrobe scroll/select and accessible close",
+        "formal preview day/night screenshots refreshed",
+        "animated high-five and keyboard shot with revised layered assets"
+      ]
+    }
+  ],
+  "nativeMacOS": "not verified",
+  "nativeWindows": "not verified",
+  "realAccount": "not verified",
+  "package": "not built or published"
+}

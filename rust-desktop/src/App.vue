@@ -21,6 +21,7 @@ import SkadiExperience from './components/SkadiExperience.vue'
 import FoxExperience from './components/FoxExperience.vue'
 import DinosaurExperience from './components/DinosaurExperience.vue'
 import FeiduduExperience from './components/FeiduduExperience.vue'
+import BasketballExperience from './components/BasketballExperience.vue'
 import PotatoExperience from './components/PotatoExperience.vue'
 import PiranhaExperience from './components/PiranhaExperience.vue'
 import BatteryExperience from './components/BatteryExperience.vue'
@@ -74,14 +75,15 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
 </script>
 
 <template>
-  <main @keydown.esc="playPanel = null; details = false" :class="['app', { native: isDesktop, night, 'potato-app': state.settings.scene === 'potato', 'piranha-app': state.settings.scene === 'piranha', 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'calendar-view': view === 'calendar', 'calendar-toast-view': view === 'calendar-toast', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
+  <main @keydown.esc="playPanel = null; details = false" :class="['app', { native: isDesktop, night, 'basketball-app': state.settings.scene === 'basketball', 'potato-app': state.settings.scene === 'potato', 'piranha-app': state.settings.scene === 'piranha', 'buddy-app': state.settings.scene === 'buddy', 'beaver-app': state.settings.scene === 'beaver', 'luckycat-app': state.settings.scene === 'luckycat', 'skadi-app': state.settings.scene === 'skadi', 'fox-app': state.settings.scene === 'fox', 'dinosaur-app': state.settings.scene === 'dinosaur', 'feidudu-app': state.settings.scene === 'feidudu', 'battery-app': state.settings.scene === 'battery', 'hamster-app': state.settings.scene === 'hamster', 'cultivation-app': state.settings.scene === 'cultivation', 'calendar-view': view === 'calendar', 'calendar-toast-view': view === 'calendar-toast', 'settings-view': view === 'settings', 'messages-view': view === 'messages', 'message-toast-view': view === 'message-toast', 'reduced-motion': state.settings.reducedMotion }]">
     <template v-if="view === 'settings'"><SettingsPanel @close="api.hide()"/></template>
     <CalendarWindow v-else-if="view === 'calendar' || view === 'calendar-toast'" :toast="view === 'calendar-toast'"/>
     <MessageToast v-else-if="view === 'message-toast'"/>
     <MessagePanel v-else-if="view === 'messages'"/>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
-      <PotatoExperience v-if="state.settings.scene === 'potato'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <BasketballExperience v-if="state.settings.scene === 'basketball'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <PotatoExperience v-else-if="state.settings.scene === 'potato'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <PiranhaExperience v-else-if="state.settings.scene === 'piranha'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BuddyExperience v-else-if="state.settings.scene === 'buddy'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BeaverExperience v-else-if="state.settings.scene === 'beaver'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>

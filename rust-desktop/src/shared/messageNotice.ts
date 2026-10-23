@@ -6,6 +6,7 @@ export function messageWindowError(error: unknown): string {
 }
 
 export const MESSAGE_PERSONAS: Record<Scene, { object: string; color: string; motion: string }> = {
+  basketball: { object: '球场更衣柜来信', color: '#df7945', motion: 'bounce-pass' },
   potato: { object: '土豆通信信标', color: '#df8547', motion: 'beacon' },
   piranha: { object: '藤蔓来信', color: '#718747', motion: 'bloom' },
   aquarium: { object: '水泡来信', color: '#2586b2', motion: 'float' },

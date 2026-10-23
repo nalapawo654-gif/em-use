@@ -12,8 +12,10 @@ import type { PotatoSkin } from '../potato/catalog'
 export { POTATO_SKINS, type PotatoSkin } from '../potato/catalog'
 export type PiranhaSkin = 'classic' | 'sakura' | 'cactus' | 'halloween' | 'christmas'
 export const PIRANHA_SKINS: { id: PiranhaSkin; label: string }[] = [{ id: 'classic', label: '经典款' }, { id: 'sakura', label: '樱花款' }, { id: 'cactus', label: '仙人掌款' }, { id: 'halloween', label: '万圣节款' }, { id: 'christmas', label: '圣诞款' }]
-export type Scene = 'potato' | 'piranha' | 'skadi' | 'dinosaur' | 'luckycat' | 'fox' | 'feidudu' | 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation' | 'battery'
-export const SCENE_LABELS: Record<Scene, string> = { potato: '土豆战神', piranha: '食人花 · 捕需求草', skadi: '斯卡蒂 · 月汐', dinosaur: '摸鱼小恐龙', luckycat: '破产招财猫', fox: '水墨小狐', feidudu: '肥嘟嘟', aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所', battery: '健身电池人' }
+export type BasketballSkin = 'home' | 'away' | 'mint'
+export const BASKETBALL_SKINS: { id: BasketballSkin; label: string; hint: string }[] = [{ id: 'home', label: '主场橙', hint: '落日球场' }, { id: 'away', label: '客场蓝', hint: '海风远投' }, { id: 'mint', label: '薄荷绿', hint: '清爽开场' }]
+export type Scene = 'basketball' | 'potato' | 'piranha' | 'skadi' | 'dinosaur' | 'luckycat' | 'fox' | 'feidudu' | 'aquarium' | 'buddy' | 'beaver' | 'hamster' | 'cultivation' | 'battery'
+export const SCENE_LABELS: Record<Scene, string> = { basketball: '桌角神射手', potato: '土豆战神', piranha: '食人花 · 捕需求草', skadi: '斯卡蒂 · 月汐', dinosaur: '摸鱼小恐龙', luckycat: '破产招财猫', fox: '水墨小狐', feidudu: '肥嘟嘟', aquarium: '额度小鱼缸', buddy: '充气牛马', beaver: '林间海狸鼠', hamster: '仓鼠动力机房', cultivation: '修仙渡劫事务所', battery: '健身电池人' }
 export type SkadiForm = 'chibi' | 'adult'
 export type SkadiSkin = 'classic' | 'moonlight' | 'gothic' | 'sakura' | 'azure' | 'pajamas'
 export type SkadiWeapon = 'sword' | 'scythe' | 'staff' | 'twins' | 'bow' | 'butterfly'
@@ -148,7 +150,7 @@ export interface Settings {
   size: 'standard' | 'compact' | 'mini'; theme: 'auto' | 'day' | 'night';
   windowWidth: number;
   reducedMotion: boolean; notifications: boolean; outfit: Outfit;
-  scene: Scene; potatoSkin: PotatoSkin; piranhaSkin: PiranhaSkin; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
+  scene: Scene; basketballSkin: BasketballSkin; potatoSkin: PotatoSkin; piranhaSkin: PiranhaSkin; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
   codex?: CodexState;
@@ -205,5 +207,5 @@ export const DEFAULT_SETTINGS: Settings = {
   messageEnabled: true, messagePreview: true, messageRespectMute: true, messagePausedUntil: 0,
   alwaysOnTop: true, clickThrough: false, launchAtLogin: false, size: 'standard',
   windowWidth: 440, theme: 'auto', reducedMotion: false, notifications: true, outfit: 'classic',
-  scene: 'aquarium', potatoSkin: 'gundam', piranhaSkin: 'classic', skadiSkin: 'classic', skadiAdultSkin: 'classic', skadiForm: 'chibi', skadiWeapon: 'sword', dinosaurSkin: 'classic', luckycatSkin: 'classic', foxSkin: 'classic', feiduduSkin: 'classic', batterySkin: 'classic', batteryRealm: 'office', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
+  scene: 'aquarium', basketballSkin: 'home', potatoSkin: 'gundam', piranhaSkin: 'classic', skadiSkin: 'classic', skadiAdultSkin: 'classic', skadiForm: 'chibi', skadiWeapon: 'sword', dinosaurSkin: 'classic', luckycatSkin: 'classic', foxSkin: 'classic', feiduduSkin: 'classic', batterySkin: 'classic', batteryRealm: 'office', cultivationSkin: 'classic', cultivationAccessory: 'none', cultivationTreasure: 'none', cultivationRandom: true, cultivationRealm: 'sunny', hamsterSkin: 'classic', buddySkin: 'classic', beaverSkin: 'sunny', beaverCamp: false, beaverMotto: 'gentle',
 }

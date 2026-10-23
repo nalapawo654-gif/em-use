@@ -909,6 +909,13 @@
       "bytes": 1607900,
       "encoding": "PNG with transparency; decoded and sliced by shared evolution renderers",
       "source": "Built-in imagegen; wardrobe and transformation references documented in docs/codex-evolution.md"
+    },
+    {
+      "path": "basketball/calendar.svg",
+      "width": 100,
+      "height": 110,
+      "bytes": 2126,
+      "sha256": "6635eb2245d1f1b86447ac1764e0d17c56d13f61bc841ad318eba38ce3c724a9"
     }
   ]
 }

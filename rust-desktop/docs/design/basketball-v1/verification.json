@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-23",
+  "source": {
+    "typecheck": "passed",
+    "build": "passed",
+    "tests": {
+      "typescript": 229,
+      "scripts": 12,
+      "failures": 0
+    },
+    "basketballLogicTests": 7
+  },
+  "browserPlay": {
+    "passed": 9,
+    "checks": [
+      "mouse shots at four distances",
+      "keyboard aiming and Escape",
+      "ten-shot score and replay",
+      "quota changes preserve round distance",
+      "unknown practice and blur cancellation",
+      "wardrobe and retained panels",
+      "night mode"
+    ]
+  },
+  "browserFixtures": [
+    {
+      "passed": 8,
+      "checks": [
+        "440px: hidden toolbar, reachable panel close, successful shot, no window drag, day/night",
+        "300px: hidden toolbar, reachable panel close, successful shot, no window drag, day/night",
+        "190px: hidden toolbar, reachable panel close, successful shot, no window drag, day/night",
+        "180px: hidden toolbar, reachable panel close, successful shot, no window drag, day/night",
+        "body uses shared gesture and suppresses post-drag click",
+        "Codex dual-window display, lower-window distance, all sizes fit",
+        "weekly-only, stale and signed-out semantics",
+        "switching pets clears gameplay"
+      ],
+      "errors": [],
+      "scope": "browser with native bridge fixture; no actual OS/account verification"
+    },
+    {
+      "passed": 4,
+      "checks": [
+        "190px ten-shot result, 440px result, always-visible close, replay",
+        "visibility event pauses physics and resumes without catch-up",
+        "pointercancel and in-flight scene replacement clean up",
+        "dedicated calendar, locker-message and shoe-box update props render"
+      ],
+      "scope": "browser fixtures only"
+    },
+    {
+      "passed": 3,
+      "checks": [
+        "three jerseys and three vector Codex costumes",
+        "changing quota source ends the old challenge",
+        "jersey survives a fresh preview tab and reload"
+      ]
+    }
+  ],
+  "nativeMac": "not run",
+  "nativeWindows": "not run",
+  "realAccounts": "not connected",
+  "distributionBuild": "not produced",
+  "note": "Browser native fixtures do not establish OS window, tray, click-through, persistence or real quota behavior."
+}

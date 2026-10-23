@@ -28,6 +28,7 @@
     "notifications": true,
     "outfit": "classic",
     "scene": "aquarium",
+    "basketballSkin": "home",
     "potatoSkin": "gundam",
     "piranhaSkin": "classic",
     "skadiSkin": "classic",
@@ -78,6 +79,7 @@
       "ribbon"
     ],
     "scene": [
+      "basketball",
       "potato",
       "piranha",
       "skadi",
@@ -91,6 +93,11 @@
       "hamster",
       "cultivation",
       "battery"
+    ],
+    "basketballSkin": [
+      "home",
+      "away",
+      "mint"
     ],
     "potatoSkin": [
       "gundam",
@@ -249,6 +256,7 @@
     "codexBucket": 128
   },
   "labels": {
+    "basketball": "桌角神射手",
     "potato": "土豆战神",
     "piranha": "食人花 · 捕需求草",
     "skadi": "斯卡蒂 · 月汐",
