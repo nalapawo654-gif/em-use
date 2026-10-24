@@ -29,6 +29,9 @@
     "outfit": "classic",
     "scene": "aquarium",
     "basketballSkin": "home",
+    "hermitSkin": "box",
+    "hermitAccessory": "none",
+    "hermitProp": "none",
     "potatoSkin": "gundam",
     "piranhaSkin": "classic",
     "skadiSkin": "classic",
@@ -80,6 +83,7 @@
     ],
     "scene": [
       "basketball",
+      "hermit",
       "potato",
       "piranha",
       "skadi",
@@ -98,6 +102,23 @@
       "home",
       "away",
       "mint"
+    ],
+    "hermitSkin": [
+      "box",
+      "soda",
+      "castle"
+    ],
+    "hermitAccessory": [
+      "none",
+      "leaf",
+      "badge",
+      "bag"
+    ],
+    "hermitProp": [
+      "none",
+      "stool",
+      "sign",
+      "plant"
     ],
     "potatoSkin": [
       "gundam",
@@ -208,8 +229,8 @@
       "blossom"
     ],
     "cultivationTreasure": [
-      "jade",
       "none",
+      "jade",
       "gourd",
       "pouch"
     ],
@@ -257,6 +278,7 @@
   },
   "labels": {
     "basketball": "桌角神射手",
+    "hermit": "纸箱寄居蟹",
     "potato": "土豆战神",
     "piranha": "食人花 · 捕需求草",
     "skadi": "斯卡蒂 · 月汐",

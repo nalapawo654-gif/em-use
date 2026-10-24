@@ -43,3 +43,5 @@ if (new URLSearchParams(location.search).get('view') === 'widget') {
     if (isTauri()) void invoke('startup_event', { kind: 'widget-ready' }).catch(() => {})
   })
 }
+
+import './hermit.css'

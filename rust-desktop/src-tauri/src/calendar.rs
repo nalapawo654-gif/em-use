@@ -429,6 +429,7 @@ async fn watch(app: tauri::AppHandle) {
                     | "piranha"
                     | "potato"
                     | "basketball"
+                    | "hermit"
             )
         );
         let can_toast = visible

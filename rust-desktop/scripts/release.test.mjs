@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { buildSite as assembleSite, platforms } from './release-site.mjs'
 import { createCiConfig } from './ci-config.mjs'
-import { pets } from './download-page.mjs'
+import { pets, petImageFile } from './download-page.mjs'
 import { readReleaseNotes } from './release-notes.mjs'
 import { validateVersion, checkVersion } from './version.mjs'
 const releaseNotes='本次更新\n• 图文消息与提醒修复\n• Mac 手动更新，Windows 自动更新'
@@ -38,7 +38,7 @@ test('download page explains the product and links to installers from both entry
   for(const [platform,ext] of [['windows-x86_64','exe'],['darwin-aarch64','dmg']])assert.ok(page.includes(`href="/em-use/releases/0.4.0/EM-Use-0.4.0-${platform}.${ext}"`))
   assert.doesNotMatch(page,/darwin-x86_64|Intel 芯片/)
   assert.doesNotMatch(page,/href="[^"]+\.app\.tar\.gz"/)
-  for(const {id:pet} of pets)for(const suffix of ['', '-awakened'])assert.ok(readFileSync(join(root,`out/em-use/site-assets/0.4.0/${pet}${suffix}.webp`)).length>0)
+  for(const pet of pets)for(const suffix of ['', '-awakened'])assert.ok(readFileSync(join(root,`out/em-use/site-assets/0.4.0/${petImageFile(pet,suffix)}`)).length>0)
 }))
 
 test('macOS release configuration never requests updater keys or archives',()=>{

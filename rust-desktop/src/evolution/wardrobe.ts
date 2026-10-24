@@ -1,15 +1,16 @@
-import type { Settings, Scene, PotatoSkin, PiranhaSkin, SkadiSkin, DinosaurSkin, LuckyCatSkin, FoxSkin, FeiduduSkin, Outfit, BuddySkin, BeaverSkin, HamsterSkin, CultivationSkin, BatterySkin } from '../shared/types'
+import type { Settings, Scene, HermitSkin, PotatoSkin, PiranhaSkin, SkadiSkin, DinosaurSkin, LuckyCatSkin, FoxSkin, FeiduduSkin, Outfit, BuddySkin, BeaverSkin, HamsterSkin, CultivationSkin, BatterySkin } from '../shared/types'
 import { skadiSelectedSkin } from '../shared/types'
 
 export type Motif = 'core' | 'shield' | 'wing' | 'moon' | 'petal' | 'leaf' | 'snow' | 'star' | 'ripple' | 'ember'
 export interface AwakeningStyle { name: string; edge: string; light: string; motif: Motif }
-type Wardrobes = { basketball: 'home' | 'away' | 'mint'; potato: PotatoSkin; piranha: PiranhaSkin; skadi: SkadiSkin; dinosaur: DinosaurSkin; luckycat: LuckyCatSkin; fox: FoxSkin; feidudu: FeiduduSkin; aquarium: Outfit; buddy: BuddySkin; beaver: BeaverSkin; hamster: HamsterSkin; cultivation: CultivationSkin; battery: BatterySkin }
+type Wardrobes = { basketball: 'home' | 'away' | 'mint'; hermit: HermitSkin; potato: PotatoSkin; piranha: PiranhaSkin; skadi: SkadiSkin; dinosaur: DinosaurSkin; luckycat: LuckyCatSkin; fox: FoxSkin; feidudu: FeiduduSkin; aquarium: Outfit; buddy: BuddySkin; beaver: BeaverSkin; hamster: HamsterSkin; cultivation: CultivationSkin; battery: BatterySkin }
 const style = (name: string, edge: string, light: string, motif: Motif): AwakeningStyle => ({ name, edge, light, motif })
 
 // Palette metadata for optional rim effects. Whole costume art is mapped separately
 // in atlas-manifest.json; no generic equipment is placed over the original actor.
 export const AWAKENING_WARDROBES = {
   basketball: { home: style('主场 · 星场王牌', '#ffbc72', '#fff2be', 'star'), away: style('客场 · 星场王牌', '#8edbff', '#e8faff', 'star'), mint: style('薄荷 · 星场王牌', '#91ddbd', '#f3f9cf', 'star') },
+  hermit: { box: style('折纸工程师', '#a5d9bd', '#e6f4cd', 'leaf'), soda: style('汽泡航行员', '#85cec9', '#e2f7f1', 'ripple'), castle: style('星堡守护者', '#dfbb76', '#fff2c8', 'star') },
   potato: {
     gundam: style('白蓝 · 星核', '#73dfff', '#ffe3a1', 'core'),
     iron: style('红金 · 熔心', '#ffb358', '#ffead0', 'ember'),

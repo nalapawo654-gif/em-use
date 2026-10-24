@@ -619,6 +619,7 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
         "piranha",
         "potato",
         "basketball",
+        "hermit",
     ] {
         scenes
             .append(

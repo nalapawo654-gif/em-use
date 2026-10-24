@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import PotatoSprite from './PotatoSprite.vue'
+import HermitSprite from './HermitSprite.vue'
 import BasketballProps from './BasketballProps.vue'
 import type { Scene } from '../shared/types'
 defineProps<{ scene: Scene }>()
 </script>
 <template>
-  <PotatoSprite class="update-parcel" v-if="scene === 'potato'" atlas="props" :frame="2"/><BasketballProps class="update-parcel" v-else-if="scene === 'basketball'" kind="delivery"/><svg v-else class="update-parcel" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <HermitSprite class="update-parcel" v-if="scene === 'hermit'" prop :frame="10"/><PotatoSprite class="update-parcel" v-else-if="scene === 'potato'" atlas="props" :frame="2"/><BasketballProps class="update-parcel" v-else-if="scene === 'basketball'" kind="delivery"/><svg v-else class="update-parcel" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <g v-if="scene === 'piranha'" class="parcel-move"><path d="M22 28h36l5 39H17Z" fill="var(--letter)"/><path d="M22 28l3-9h30l3 9M40 53V32m0 9q-16-15-17-2 6 10 17 6m0-5q16-15 17-2-6 10-17 6" fill="var(--parcel-fill)"/><circle cx="40" cy="57" r="7" fill="var(--parcel-accent)"/></g>
     <g v-else-if="scene === 'aquarium'" class="parcel-move"><path d="M30 13h20v9l7 10v30a8 8 0 0 1-8 8H31a8 8 0 0 1-8-8V32l7-10Z" fill="var(--parcel-fill)"/><path d="M28 11h24v9H28Z" fill="var(--parcel-accent)"/><rect x="30" y="33" width="21" height="25" rx="3" fill="var(--letter)" transform="rotate(-9 40 45)"/><path d="m35 41 10-2m-9 8 8-2M25 59q13-6 29 0"/><circle cx="63" cy="22" r="4"/><circle cx="16" cy="40" r="2"/><path d="M8 71q9-5 18 0t18 0t18 0" opacity=".4"/></g>
     <g v-else-if="scene === 'buddy'"><path d="M15 67h29M23 34h15v31H23Z" fill="var(--parcel-fill)"/><g class="parcel-move"><path d="M30 17v19M19 15h22" stroke-width="5"/></g><path d="M38 59h6q8 0 8-12v-9"/><rect x="46" y="31" width="26" height="28" rx="5" fill="var(--letter)"/><path d="m48 34 11 10 11-10m-11-3v4"/><path d="m15 25-5-4m34 4 5-4" stroke="var(--parcel-accent)"/></g>

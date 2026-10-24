@@ -35,7 +35,7 @@ export function useTransformationArt(scene:Scene,skin:()=>string,form:()=>string
       const time=draw(output.getContext('2d')!,now-evolution.started,evolution.duration,target,evolution.kind==='source'&&evolution.source!=='codex')
       const ctx=trimmed.getContext('2d')!;ctx.clearRect(0,0,448,448);ctx.drawImage(output,32,32,448,448,0,0,448,448)
       // Canvas consumers share the buffer; DOM consumers receive one 30fps image.
-      const url=['fox','piranha','potato','skadi','cultivation'].includes(scene)?output.toDataURL():''
+      const url=['hermit','fox','piranha','potato','skadi','cultivation'].includes(scene)?output.toDataURL():''
       art.value={frames:Array.from({length:base.frames.length},()=>output),trimmed:Array.from({length:base.frames.length},()=>trimmed),urls:Array.from({length:base.frames.length},()=>url),packed:base.packed,cinematic:true}
       if(widget){widget.dataset.transformationScene=scene;widget.dataset.transformationBeat=time.beat;widget.dataset.transformationProgress=time.progress.toFixed(3)}
     }

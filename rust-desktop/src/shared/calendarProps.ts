@@ -12,5 +12,5 @@ export const CALENDAR_PROPS = {
  fox: {name:'水墨书签',asset:'./assets/fox/calendar-prop.png',x:79,y:15,width:20,height:12,ink:'#4f4c44'},
  luckycat: {name:'招福绘马',asset:'./assets/luckycat/calendar-prop.png',x:0,y:52,width:15,height:17,ink:'#95582e'},
  skadi: {name:'月汐手札',asset:'./assets/skadi/calendar-prop.png',x:0,y:58,width:21,height:21,ink:'#45576d'},
-} as const satisfies Record<Exclude<Scene,'buddy'|'aquarium'>,{name:string;asset:string;x:number;y:number;width:number;height:number;ink:string}>
+} as const satisfies Record<Exclude<Scene,'buddy'|'aquarium'|'hermit'>,{name:string;asset:string;x:number;y:number;width:number;height:number;ink:string}>
 export type CalendarPropScene=keyof typeof CALENDAR_PROPS

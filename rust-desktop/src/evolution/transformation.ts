@@ -9,7 +9,7 @@ import manifest from './transformation-manifest.json'
 export interface TransformationAtlas { file:string; name:string; size:number[]; rects:number[][]; clips?:Record<string,number[][]> }
 export const TRANSFORMATION_ATLASES:Record<string,TransformationAtlas>=manifest
 export const transformationKey=(scene:Scene,skin:string,form='chibi')=>`${scene}/${skin}${scene==='skadi'?'/'+form:''}`
-export function transformationEndFrame(scene:Scene,percent:number|null,count:number){return scene==='skadi'?skadiFrame('idle',percent):energyFrame(percent,scene==='cultivation'?4:count)}
+export function transformationEndFrame(scene:Scene,percent:number|null,count:number){return scene==='skadi'?skadiFrame('idle',percent):energyFrame(percent,scene==='cultivation'||scene==='hermit'?4:count)}
 const clamp=(v:number)=>Math.max(0,Math.min(1,v))
 const smooth=(v:number)=>{const t=clamp(v);return t*t*(3-2*t)}
 export function transformationTime(elapsed:number,duration:number,reverse=false){

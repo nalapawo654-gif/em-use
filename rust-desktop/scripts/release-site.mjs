@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { validateVersion } from './version.mjs'
 import { readReleaseNotes } from './release-notes.mjs'
-import { renderDownloadPage, pets } from './download-page.mjs'
+import { renderDownloadPage, pets, petImageFile } from './download-page.mjs'
 export const platforms=['windows-x86_64','darwin-aarch64']
 export function buildSite(input,output,version,base='http://172.27.12.77:5500/',notes=readReleaseNotes(version)) {
   validateVersion(version)
@@ -32,7 +32,7 @@ export function buildSite(input,output,version,base='http://172.27.12.77:5500/',
   writeFileSync(join(release,'SHA256SUMS.txt'),sums.join('\n')+'\n')
   writeFileSync(join(release,'version.json'),JSON.stringify(latest,null,2)+'\n')
   const siteAssets=join(root,'site-assets',version);mkdirSync(siteAssets,{recursive:true})
-  for(const pet of pets)for(const suffix of ['', '-awakened'])copyFileSync(fileURLToPath(new URL(`../../website/assets/${pet.id}${suffix}.webp`,import.meta.url)),join(siteAssets,`${pet.id}${suffix}.webp`))
+  for(const pet of pets)for(const suffix of ['', '-awakened'])copyFileSync(fileURLToPath(new URL(`../../website/assets/${petImageFile(pet,suffix)}`,import.meta.url)),join(siteAssets,`${petImageFile(pet,suffix)}`))
   const prefix=new URL('em-use/',baseURL).pathname
   const page=renderDownloadPage(version,downloads,prefix)
   writeFileSync(join(root,'index.html'),page)

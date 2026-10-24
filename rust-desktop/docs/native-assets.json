@@ -916,6 +916,30 @@
       "height": 110,
       "bytes": 2126,
       "sha256": "6635eb2245d1f1b86447ac1764e0d17c56d13f61bc841ad318eba38ce3c724a9"
+    },
+    {
+      "path": "hermit/normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "36033461be634e6586b9a41c5b7fa85202e2a5415c3f71c80b2ce07ab2c16fc6"
+    },
+    {
+      "path": "hermit/props.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "dc2c8994c247d7eb55565324b52fe0eccb50d90d19304ed537a41691b0e120e8"
+    },
+    {
+      "path": "evolution/v2/hermit.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "f0a483b818773b7c25996b1184cc8064fc9577aff6c724d1155b562070b3c93f"
+    },
+    {
+      "path": "evolution/v3/hermit-transformation.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "4064690e9e3c113c4a8c346ed887b2022403e7e0d148b5d5455ce2d98ea6d18a"
     }
   ]
 }

@@ -15,7 +15,10 @@ export const pets=[
   {id:'skadi',name:'斯卡蒂 · 月汐',tag:'月色落在桌角，夜影陪在身旁',description:'御姐与萝莉双形态，各有六套衣装。六件武器、专属技能与十六种互动，加上夜影黑猫，让月汐陪你度过白天与夜晚。'},
   {id:'piranha',name:'食人花 · 捕需求草',tag:'吞掉虚构需求，开出一点好心情',description:'投喂一张需求纸条，夸夸开花、逗逗花冠，也能合苞小憩。五套装扮与独立互动，让桌边长出一株有性格的小伙伴。'},
   {id:'potato',name:'土豆战神',tag:'小小土豆，装备认真',description:'二十套机甲装扮，配上咖啡、锅盖盾和加油旗。摸摸头盔、算算账、拧拧螺丝，让土豆战神陪你守住工作节奏。'},
+  {id:'basketball',imageFormat:'png',name:'桌角神射手',tag:'再远，也在射程之内',description:'额度越低，站位越远。拖球瞄准，来一局十球挑战；三套球衣与 Codex 星章造型，让桌角变成小球场。'},
+  {id:'hermit',imageFormat:'png',name:'纸箱寄居蟹',tag:'小家不大，装得下好心情',description:'纸箱、汽水罐、纸板城堡，都是它的小家。敲敲门，逗逗钳子，试住再搬家；三套觉醒造型和随身小配件，陪你慢慢工作。'},
 ]
+export const petImageFile=(pet,suffix='')=>`${pet.id}${suffix}.${pet.imageFormat??'webp'}`
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 const windowsIcon='<svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4.5 10.5 3.3V11H2Zm10-1.4L22 1.5V11H12ZM2 12.5h8.5v7.7L2 19Zm10 0h10V22L12 20.4Z"/></svg>'
 const macIcon='<svg class="platform-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" style="fill:none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M9 16v4m6-4v4M6 21h12M3 12h18"/></svg>'
@@ -27,5 +30,5 @@ export function renderDownloadPage(version,downloads,prefix='/em-use/'){
     const item=downloads.find(d=>d.platform===platform && d.file.endsWith(extension));if(!item)throw new Error(`Missing user installer for ${platform}`)
     return `<article class="download-card">${icon}<h3>${title}</h3><p class="architecture">${subtitle}</p><a class="download-button" href="${escape(release+encodeURIComponent(item.file))}" download aria-label="${label}"><span>${label}</span><span aria-hidden="true">↓</span></a><div class="file-info"><span>${extension.slice(1).toUpperCase()} 安装包</span><span>${item.bytes==null?'大小以发布包为准':(item.bytes/1e6).toFixed(1)+' MB'}</span></div></article>`
   }).join('')
-  return readFileSync(website+'page.html','utf8').replace('/*STYLE*/',readFileSync(website+'style.css','utf8')).replace('/*SCRIPT*/',readFileSync(website+'page.js','utf8').replace('/*PETS*/',JSON.stringify(pets.map(p=>({...p,image:assets+p.id+'.webp',awakenedImage:assets+p.id+'-awakened.webp'}))))).replace('<!--PET_BUTTONS-->',buttons).replace('<!--DOWNLOAD_CARDS-->',cards).replaceAll('{{PET_COUNT}}',String(pets.length)).replaceAll('{{PET_TOTAL}}',String(pets.length).padStart(2,'0')).replaceAll('{{VERSION}}',escape(version)).replaceAll('{{ASSETS}}',escape(assets)).replaceAll('{{CHECKSUM}}',escape(release+'SHA256SUMS.txt'))
+  return readFileSync(website+'page.html','utf8').replace('/*STYLE*/',readFileSync(website+'style.css','utf8')).replace('/*SCRIPT*/',readFileSync(website+'page.js','utf8').replace('/*PETS*/',JSON.stringify(pets.map(p=>({...p,image:assets+petImageFile(p),awakenedImage:assets+petImageFile(p,'-awakened')}))))).replace('<!--PET_BUTTONS-->',buttons).replace('<!--DOWNLOAD_CARDS-->',cards).replaceAll('{{PET_COUNT}}',String(pets.length)).replaceAll('{{PET_TOTAL}}',String(pets.length).padStart(2,'0')).replaceAll('{{VERSION}}',escape(version)).replaceAll('{{ASSETS}}',escape(assets)).replaceAll('{{CHECKSUM}}',escape(release+'SHA256SUMS.txt'))
 }
