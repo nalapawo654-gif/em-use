@@ -12,7 +12,7 @@ export type ShotKind = 'swish' | 'bank' | 'rim' | 'miss'
 export type Ball = Point & { vx: number; vy: number; elapsed: number; rim: boolean; board: boolean; scored: boolean; scoredAt: number | null; groundAt: number | null; done: boolean }
 export type Round = { level: number; practice: boolean; shots: number; score: number; hits: number; swishes: number; streak: number; best: number; results: ShotKind[] }
 export function station(percent: number | null) { return petQuotaIndex(percent, 4) }
-export function origin(level: number): Point { return { x: DISTANCES[level]!.x, y: 278 } }
+export function origin(level: number): Point { return { x: DISTANCES[level]!.x, y: 302 } }
 export function newRound(percent: number | null): Round {
   const level = station(percent)
   return { level: level ?? 1, practice: level === null, shots: 0, score: 0, hits: 0, swishes: 0, streak: 0, best: 0, results: [] }

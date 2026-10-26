@@ -21,9 +21,9 @@ async page => {
     assert(bounds.x>=0&&bounds.y>=0&&bounds.x+bounds.width<=size&&bounds.y+bounds.height<=size,`${size} close reachable`);
     await page.screenshot({path:`output/playwright/basketball-${size}-panel.png`});
     await close.click();await ball.click();
-    const r=await widget.boundingBox(),scale=r.width/440,x=r.x+184*scale,y=r.y+278*scale;
+    const r=await widget.boundingBox(),scale=r.width/440,x=r.x+184*scale,y=r.y+302*scale;
     await page.evaluate(()=>window.__hoopQa.gestures=[]);
-    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-17.14*scale,y+57.64*scale,{steps:10});
+    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-17.14*scale,y+60.27*scale,{steps:10});
     await page.screenshot({path:`output/playwright/basketball-${size}-aim.png`});
     await page.mouse.up();await page.waitForFunction(()=>document.querySelector('.hoop-widget').dataset.mode==='ready');
     assert((await page.evaluate(()=>window.__hoopQa.gestures)).length===0,`${size} shoot must not drag window`);

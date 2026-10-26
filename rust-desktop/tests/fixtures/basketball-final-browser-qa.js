@@ -3,8 +3,8 @@ async page => {
   const assert=(ok,m)=>{if(!ok)throw new Error(m)};
   await page.evaluate(()=>{const qa=window.__hoopQa;qa.settings({scene:'basketball',quotaSource:'eastmoney',windowWidth:190,theme:'day'});qa.set({quota:{...qa.state.quota,percent:75,remaining:225},status:'ready'})});
   await page.setViewportSize({width:190,height:190});await ball.click();
-  const x=184/440*190,y=278/440*190;
-  await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-17.14/440*190,y+57.64/440*190,{steps:10});
+  const x=184/440*190,y=302/440*190;
+  await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-17.14/440*190,y+60.27/440*190,{steps:10});
   await page.screenshot({path:'output/playwright/basketball-190-aim.png'});
   await page.mouse.up();await page.waitForFunction(()=>document.querySelector('.hoop-widget').dataset.mode==='ready');
   for(let i=1;i<10;i++){await ball.focus();await page.keyboard.press('Space');await page.waitForFunction(()=>['ready','finished'].includes(document.querySelector('.hoop-widget').dataset.mode));}

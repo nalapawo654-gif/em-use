@@ -9,7 +9,7 @@ const style = (name: string, edge: string, light: string, motif: Motif): Awakeni
 // Palette metadata for optional rim effects. Whole costume art is mapped separately
 // in atlas-manifest.json; no generic equipment is placed over the original actor.
 export const AWAKENING_WARDROBES = {
-  basketball: { home: style('主场 · 星场王牌', '#ffbc72', '#fff2be', 'star'), away: style('客场 · 星场王牌', '#8edbff', '#e8faff', 'star'), mint: style('薄荷 · 星场王牌', '#91ddbd', '#f3f9cf', 'star') },
+  basketball: { home: style('小鸡 · 经典背带', '#ffbc72', '#fff2be', 'star'), away: style('小鸡 · 经典背带', '#8edbff', '#e8faff', 'star'), mint: style('小鸡 · 经典背带', '#91ddbd', '#f3f9cf', 'star') },
   hermit: { box: style('折纸工程师', '#a5d9bd', '#e6f4cd', 'leaf'), soda: style('汽泡航行员', '#85cec9', '#e2f7f1', 'ripple'), castle: style('星堡守护者', '#dfbb76', '#fff2c8', 'star') },
   potato: {
     gundam: style('白蓝 · 星核', '#73dfff', '#ffe3a1', 'core'),

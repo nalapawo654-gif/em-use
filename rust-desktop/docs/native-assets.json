@@ -940,6 +940,15 @@
       "width": 1024,
       "height": 1536,
       "sha256": "4064690e9e3c113c4a8c346ed887b2022403e7e0d148b5d5455ce2d98ea6d18a"
+    },
+    {
+      "path": "basketball/jige/spritesheet.webp",
+      "sha256": "532797021da82bd43bcdb1ae4772ee6c1309d596dd7c78c8040049353c3a8830",
+      "width": 1536,
+      "height": 1872,
+      "bytes": 1517942,
+      "encoding": "Original transparent WebP; 8 columns × 9 rows, 192 × 208 cells",
+      "source": "https://codex-pets.net/#/pets/jige-cxk — jige by ikun, downloaded 2026-10-26"
     }
   ]
 }

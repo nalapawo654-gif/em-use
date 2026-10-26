@@ -15,7 +15,7 @@ export const pets=[
   {id:'skadi',name:'斯卡蒂 · 月汐',tag:'月色落在桌角，夜影陪在身旁',description:'御姐与萝莉双形态，各有六套衣装。六件武器、专属技能与十六种互动，加上夜影黑猫，让月汐陪你度过白天与夜晚。'},
   {id:'piranha',name:'食人花 · 捕需求草',tag:'吞掉虚构需求，开出一点好心情',description:'投喂一张需求纸条，夸夸开花、逗逗花冠，也能合苞小憩。五套装扮与独立互动，让桌边长出一株有性格的小伙伴。'},
   {id:'potato',name:'土豆战神',tag:'小小土豆，装备认真',description:'二十套机甲装扮，配上咖啡、锅盖盾和加油旗。摸摸头盔、算算账、拧拧螺丝，让土豆战神陪你守住工作节奏。'},
-  {id:'basketball',imageFormat:'png',name:'桌角神射手',tag:'再远，也在射程之内',description:'额度越低，站位越远。拖球瞄准，来一局十球挑战；三套球衣与 Codex 星章造型，让桌角变成小球场。'},
+  {id:'basketball',imageFormat:'jpg',name:'桌角神射手',tag:'再远，也在射程之内',description:'银灰中分、黑色背带装的小鸡陪你投篮。额度越低，站位越远；拖球或用键盘出手，来一局十球挑战。'},
   {id:'hermit',imageFormat:'png',name:'纸箱寄居蟹',tag:'小家不大，装得下好心情',description:'纸箱、汽水罐、纸板城堡，都是它的小家。敲敲门，逗逗钳子，试住再搬家；三套觉醒造型和随身小配件，陪你慢慢工作。'},
 ]
 export const petImageFile=(pet,suffix='')=>`${pet.id}${suffix}.${pet.imageFormat??'webp'}`

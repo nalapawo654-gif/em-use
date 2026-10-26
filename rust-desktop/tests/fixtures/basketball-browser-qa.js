@@ -59,10 +59,10 @@ async page => {
   assert(await widget.getAttribute('data-mode')==='ready','blur cancels pull');
   assert((await page.locator('.hoop-scoreboard').innerText()).includes('10'),'cancel keeps ten balls');
   await page.keyboard.press('Escape');checks.push('unknown practice and blur cancel without consuming shots');
-  await widget.hover();await page.getByRole('button',{name:'投篮球衣',exact:true}).click();
-  await page.getByRole('button',{name:'客场蓝 海风远投',exact:true}).click();
-  assert(await page.evaluate(()=>JSON.parse(localStorage.getItem('em-use-preview-settings')).basketballSkin)==='away','jersey stored by shared preview settings');
-  assert(await page.locator('.hoop-court .hoop-player').evaluate(el=>el.classList.contains('jersey-away')),'jersey changed');
+  await widget.hover();await page.getByRole('button',{name:'投篮小鸡装扮',exact:true}).click();
+  await page.getByRole('button',{name:'经典背带 银灰中分 · 原版小鸡',exact:true}).click();
+  assert(await page.evaluate(()=>JSON.parse(localStorage.getItem('em-use-preview-settings')).basketballSkin)==='home','jersey stored by shared preview settings');
+  assert(await page.locator('.hoop-court .hoop-player').evaluate(el=>el.classList.contains('hoop-chicken')),'original chicken rendered');
   await page.mouse.move(1250,950);assert(await page.locator('.hoop-panel').isVisible(),'panel retained off hover');
   await page.getByRole('button',{name:'关闭投篮面板'}).click();
   await page.getByRole('button',{name:'切换投篮昼夜'}).click();

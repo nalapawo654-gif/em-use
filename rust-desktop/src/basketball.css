@@ -1,4 +1,4 @@
-/* A small playground on the desktop: cream canvas, ink-blue steel, burnt-orange jersey. */
+/* A small playground with the original jige chicken and shared court materials. */
 .hoop-experience{--hoop-ink:#263e4a;--hoop-muted:#6f7d7b;--hoop-paper:#fffaf0;--hoop-orange:#df6b38;--hoop-line:#dcdccf;color:var(--hoop-ink);font-family:'Avenir Next','PingFang SC','Microsoft YaHei',sans-serif}
 .app.basketball-app:not(.native){background:#f3f1e8;background-image:radial-gradient(#c7ccbd66 .6px,transparent .6px);background-size:8px 8px}
 .hoop-hero{display:grid;grid-template-columns:minmax(360px,590px) minmax(300px,420px);align-items:center;gap:55px;max-width:1120px;margin:38px auto 60px;padding:0 30px}
@@ -6,16 +6,9 @@
 .hoop-widget button{font-family:inherit;cursor:pointer}.hoop-widget button:disabled{cursor:default}.hoop-widget button:focus-visible{outline:2px solid var(--hoop-orange);outline-offset:3px}
 .hoop-court{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .hoop-floor{stroke:#91a39e;opacity:.6}
-.hoop-player{--jersey:#dd7545;--jersey-light:#f4aa70;--jersey-dark:#a8442c;--headband:#476574;--headband-dark:#233d4b;overflow:visible}
-.hoop-player.jersey-away{--jersey:#3f7f9b;--jersey-light:#8ab7c1;--jersey-dark:#254d69;--headband:#efad70;--headband-dark:#be6b3c}
-.hoop-player.jersey-mint{--jersey:#598d76;--jersey-light:#a4c5a0;--jersey-dark:#305f50;--headband:#dcc088;--headband-dark:#9f7741}
-.hoop-player.player-awake{--jersey:#334e70;--jersey-light:#6383a2;--jersey-dark:#182d4b;--headband:#e9cb88;--headband-dark:#a47c3d}
-.player-kit-light{stop-color:var(--jersey-light)}.player-kit-main{stop-color:var(--jersey)}.player-kit-shade{stop-color:var(--jersey-dark)}.player-band-light{stop-color:var(--headband)}.player-band-shade{stop-color:var(--headband-dark)}
-.player-figure{transform-origin:51px 130px;animation:hoop-breathe 3s ease-in-out infinite}.player-head{transform-origin:51px 62px}.player-front-arm{transform-origin:73px 78px}.player-back-arm{transform-origin:28px 80px}.player-eyes{transform-origin:50px 47px;animation:hoop-blink 5s infinite}
-.pose-aim .player-figure{animation:none;transform:translateY(5px) scaleY(.95)}.pose-aim .player-front-arm{transform:rotate(-16deg)}.pose-shoot .player-front-arm{transform:rotate(-45deg)}.pose-shoot .player-head{transform:rotate(-8deg)}
-.pose-celebrate .player-figure{animation:hoop-celebrate .4s ease-in-out 2}.pose-celebrate .player-front-arm,.pose-wave .player-front-arm{transform:rotate(-60deg)}.pose-wave .player-front-arm{animation:hoop-wave .3s ease-in-out 4}.pose-miss .player-head{transform:rotate(10deg)}
-.player-gentle *{animation:none!important}.player-gentle .player-figure{transform:none}.hoop-ball-art.idle-dribble{animation:hoop-dribble 1.25s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.hoop-net{transform-origin:340px 176px}.net-score{animation:hoop-net .3s ease-out 2}
-@keyframes hoop-breathe{50%{transform:translateY(-1.5px) scaleY(1.01)}}@keyframes hoop-blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.1)}}@keyframes hoop-celebrate{50%{transform:translateY(-10px) rotate(-4deg)}}@keyframes hoop-wave{50%{transform:rotate(-82deg)}}@keyframes hoop-net{50%{transform:scaleY(1.2)}}@keyframes hoop-dribble{0%,100%{translate:0 0}50%{translate:0 6px}}
+.hoop-player{overflow:visible}
+.hoop-ball-art.idle-dribble{animation:hoop-dribble 1.25s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.hoop-net{transform-origin:340px 176px}.net-score{animation:hoop-net .3s ease-out 2}
+@keyframes hoop-net{50%{transform:scaleY(1.2)}}@keyframes hoop-dribble{0%,100%{translate:0 0}50%{translate:0 6px}}
 .hoop-player-hit{position:absolute;top:49%;width:18%;height:28%;background:transparent;border:0;border-radius:50%;z-index:3}.hoop-ball-hit{position:absolute;width:10%;height:10%;min-width:24px;min-height:24px;transform:translate(-50%,-50%);background:transparent;border:0;border-radius:50%;z-index:5;touch-action:none}.hoop-ball-hit:disabled{pointer-events:none}.hoop-ball-hit:not(:disabled):hover{box-shadow:0 0 0 1px #df6b3866;background:#e77a4b0d}.hoop-ball-hit:active{cursor:grabbing}
 .hoop-start-tag{position:absolute;top:110%;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--hoop-paper);border:1px solid #df6b3855;border-radius:20px;padding:4px 10px;font-size:clamp(10px,2.4cqw,14px);color:var(--hoop-orange);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,visibility .2s}
 .hoop-widget:is(:hover,:has(:focus-visible)) .hoop-start-tag{opacity:1;visibility:visible}.hoop-speech{position:absolute;left:7%;top:26%;max-width:49%;font-size:clamp(11px,2.8cqw,17px);line-height:1.8;letter-spacing:.06em;color:var(--hoop-muted);pointer-events:none}
@@ -37,7 +30,6 @@
 @media(prefers-reduced-motion:reduce){.hoop-experience *{animation:none!important;transition:none!important}}
 .hoop-widget .pet-message-notice:not(.has-message-panel){top:67%;right:6%;width:12%;height:13%}.hoop-widget .message-launcher{position:static;width:100%;height:100%;min-width:24px;min-height:24px}.message-motion-bounce-pass.has-message-bubble .hoop-mail{animation:hoop-mail-bounce .8s ease-out 1}.hoop-widget .motion-shoebox .update-parcel{animation:hoop-shoebox .8s ease-out 1}.hoop-widget .message-gentle .hoop-mail,.hoop-widget .is-gentle .update-parcel{animation:none}
 @keyframes hoop-mail-bounce{0%,100%{translate:0 0}35%{translate:0 -8px;rotate:5deg}65%{translate:0 2px;rotate:-8deg}}@keyframes hoop-shoebox{0%,100%{rotate:0deg}30%{rotate:-8deg}60%{rotate:5deg}}
-.hoop-player.jersey-away.player-awake{--jersey:#2b5c80;--jersey-light:#6494b6;--jersey-dark:#16374f;--headband:#c1e4e3;--headband-dark:#6e9fae}.hoop-player.jersey-mint.player-awake{--jersey:#2f6c5f;--jersey-light:#73a28c;--jersey-dark:#173e38;--headband:#d9e8b6;--headband-dark:#8ba778}.hoop-widget[data-evolution-phase=gather] .player-front-arm{transform:rotate(-25deg)}.hoop-widget[data-evolution-phase=unfold] .player-headband{animation:hoop-band .5s ease-out both;transform-origin:51px 30px}.hoop-widget[data-evolution-phase=reveal] .player-figure{animation:hoop-celebrate .4s ease-out both}.hoop-widget[data-evolution-phase=settle] .player-front-arm{transform:rotate(-35deg)}@keyframes hoop-band{0%{transform:scaleX(.5);opacity:.2}100%{transform:scaleX(1);opacity:1}}
 
 .hoop-widget .hoop-ball-hit,.hoop-widget .hoop-ball-hit:active:not(:disabled){transform:translate(-50%,-50%);transition:background .2s,box-shadow .2s}
 .hoop-result-dismiss{position:absolute;top:5px;right:5px;width:26px;height:26px;border:0;background:transparent;color:var(--hoop-muted);display:grid;place-items:center}.hoop-result-dismiss svg{width:16px;height:16px}

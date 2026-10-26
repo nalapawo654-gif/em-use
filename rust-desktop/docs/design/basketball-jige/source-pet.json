@@ -1,0 +1,7 @@
+{
+  "id": "jige-cxk",
+  "displayName": "jige",
+  "description": "3D toy-style Codex pet based closely on the provided yellow cartoon character reference.",
+  "spritesheetPath": "spritesheet.webp",
+  "kind": "person"
+}
