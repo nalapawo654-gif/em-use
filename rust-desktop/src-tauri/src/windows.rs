@@ -269,6 +269,18 @@ pub fn hide_widget(app: &tauri::AppHandle) -> Result<(), String> {
 pub fn open_settings(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window(app, "")
 }
+pub fn open_collaboration(app: &tauri::AppHandle) -> Result<(), String> {
+    if let Some(w) = app.get_webview_window("collaboration") {
+        w.show().map_err(|e| e.to_string())?;
+        return w.set_focus().map_err(|e| e.to_string());
+    }
+    WebviewWindowBuilder::new(app, "collaboration", WebviewUrl::App("collaboration.html".into()))
+        .title("项目协作 · EM Use")
+        .inner_size(1180., 780.)
+        .min_inner_size(760., 560.)
+        .build().map_err(|e| e.to_string())?;
+    Ok(())
+}
 pub fn open_updates(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window(app, "updates")
 }
@@ -620,6 +632,7 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
         "potato",
         "basketball",
         "hermit",
+        "modelmuse",
     ] {
         scenes
             .append(
@@ -719,6 +732,7 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
     add("settings", "设置")?;
     add("messages", "咚咚消息")?;
     add("calendar", "今日日程")?;
+    add("collaboration", "项目协作")?;
     let update_label = updates::tray_label(&s["update"]);
     add("update", &update_label)?;
     for (key, label) in [("alwaysOnTop", "置顶显示"), ("clickThrough", "鼠标穿透")] {
@@ -834,6 +848,7 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                     Ok(())
                 }
                 "settings" => open_settings(app),
+                "collaboration" => open_collaboration(app),
                 "quota-settings" => open_accounts(app),
                 "quota:eastmoney" | "quota:codex" => {
                     schedule_settings(app, json!({"quotaSource":id.trim_start_matches("quota:")}));

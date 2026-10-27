@@ -6,7 +6,7 @@ export const SETTINGS_ENUMS = {
   quotaSource: ['eastmoney', 'codex'],
   evolutionMotion: ['full', 'light', 'off'],
   size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
-  outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['basketball', 'hermit', 'potato', 'piranha', 'skadi', 'dinosaur', 'luckycat', 'fox', 'feidudu', 'aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
+  outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['modelmuse', 'basketball', 'hermit', 'potato', 'piranha', 'skadi', 'dinosaur', 'luckycat', 'fox', 'feidudu', 'aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
   hermitSkin: ['box', 'soda', 'castle'],
   hermitAccessory: ['none', 'leaf', 'badge', 'bag'],
   hermitProp: ['none', 'stool', 'sign', 'plant'],

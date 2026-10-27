@@ -1,6 +1,7 @@
 import type { AppState, Scene } from './types'
 
 export const UPDATE_PERSONAS = {
+  modelmuse: { title: '变装小人收到新来信', tag: '小小换装间', object: '变装来信', body: '新版本来啦，等你有空一起看看。', stamp: '新', motion: 'muse-unfold' },
   basketball: { title: '球馆送来了新装备', tag: '球场补给站', object: '球鞋补给盒', body: '新装备到了，投完这局一起看看。', stamp: '23', motion: 'shoebox' },
   hermit: { title: '搬家补给到了', tag: '小窝补给站', object: '搬家补给包', body: '新装备放在门口，歇一歇再一起拆开。', stamp: '家', motion: 'unpack' },
   potato: { title: '机库送来了新装备', tag: '土豆整备站', object: '机甲补给箱', body: '新装备已到站。忙完这一阵，再一起拆箱吧。', stamp: '补', motion: 'crate' },

@@ -1,5 +1,6 @@
 import type { Scene } from './types'
 export const CALENDAR_PROPS = {
+ modelmuse: {name:'灵感小日历',asset:'./assets/modelmuse/calendar.svg',x:3,y:67,width:16,height:17,ink:'#a55746'},
  basketball: {name:'教练战术板',asset:'./assets/basketball/calendar.svg',x:4,y:79,width:12,height:14,ink:'#34515c'},
  potato: {name:'机甲日程终端',asset:'./assets/potato/props-atlas.png',x:3,y:62,width:21,height:20,ink:'#283f50'},
  piranha: {name:'叶片翻页历',asset:'./assets/piranha/character-atlas.png',x:9,y:61,width:19,height:20,ink:'#665035'},

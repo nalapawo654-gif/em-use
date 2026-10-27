@@ -17,6 +17,7 @@ export function overlaps(event: CalendarEvent, items: CalendarEvent[]) {
 }
 
 const PERSONAS:Record<Scene,[string,string]>={
+ modelmuse:['先把思路收一收，下一项安排快到了。','到时间啦，我在桌边等你回来。'],
  basketball:['这一球投完，准备下一项安排。','时间到，球场等你回来。'],
  hermit:['先把小窝收拾好，给下一项安排留点时间。','到点啦，你去赴约，小家交给我。'],
  potato:['先给下一项安排留点空间，机甲待命。','到点啦，土豆战神陪你准时出发。'],

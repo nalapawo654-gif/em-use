@@ -8,6 +8,7 @@ verify_app() {
     return 1
   fi
   /usr/bin/codesign --verify --deep --strict --verbose=2 "$app"
+  node scripts/verify-collaboration-bundle.mjs "${EM_USE_MCP_TARGET:-aarch64-apple-darwin}" "$app/Contents/MacOS"
 }
 verify_app "$bundle_dir/macos/EM Use.app"
 shopt -s nullglob

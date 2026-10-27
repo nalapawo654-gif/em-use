@@ -82,6 +82,7 @@
       "ribbon"
     ],
     "scene": [
+      "modelmuse",
       "basketball",
       "hermit",
       "potato",
@@ -277,6 +278,7 @@
     "codexBucket": 128
   },
   "labels": {
+    "modelmuse": "额度变装小人",
     "basketball": "桌角神射手",
     "hermit": "纸箱寄居蟹",
     "potato": "土豆战神",

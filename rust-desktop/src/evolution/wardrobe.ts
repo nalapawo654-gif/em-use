@@ -116,15 +116,17 @@ export const AWAKENING_WARDROBES = {
     byd: style('银红 · 赤脉', '#eca6a5', '#f0d4ce', 'ember'),
     catl: style('银蓝 · 澄流', '#9fcce8', '#d5e5ef', 'ripple'),
   },
-} satisfies { [S in Scene]: Record<Wardrobes[S], AwakeningStyle> }
+} satisfies { [S in Exclude<Scene, 'modelmuse'>]: Record<Wardrobes[S], AwakeningStyle> }
 
 export function awakeningStyle(scene: Scene, skin: string): AwakeningStyle | undefined {
+  // Model Muse uses quota-specific artwork rather than a selectable skin atlas.
+  if (scene === 'modelmuse') return undefined
   // Unknown skins deliberately have no borrowed costume or default palette.
   return (AWAKENING_WARDROBES[scene] as Record<string, AwakeningStyle>)[skin]
 }
 export function selectedAwakeningSkin(settings: Settings): string {
   const scene = settings.scene
-  return scene === 'skadi' ? skadiSelectedSkin(settings) : scene === 'aquarium' ? settings.outfit : settings[`${scene}Skin`]
+  return scene === 'modelmuse' ? 'base' : scene === 'skadi' ? skadiSelectedSkin(settings) : scene === 'aquarium' ? settings.outfit : settings[`${scene}Skin`]
 }
 export function appearanceKey(settings: Settings): string {
   return `${settings.scene}/${selectedAwakeningSkin(settings)}/${settings.scene === 'skadi' ? settings.skadiForm : ''}`

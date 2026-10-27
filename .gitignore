@@ -9,3 +9,4 @@ release/
 test-results/
 .local-data/
 .npm-cache/
+output/**/.private/

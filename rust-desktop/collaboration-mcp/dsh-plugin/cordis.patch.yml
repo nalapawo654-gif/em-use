@@ -1,0 +1,19 @@
+# em-use-collab-dsh-plugin 组合包补丁
+#
+# 这是让这个 npm 包成为 DSH profile layer 的关键文件(package.json 里
+# dsh.bundle.patch 指向它)。通过「插件」页用本地目录安装这个包之后,DSH
+# 会把下面这一行插入到组合树里,启动一个 @deepseek-ai/dsh-mcp-client 插件
+# 实例,stdio 方式连接到 em-use-collab-mcp 这个真实的 MCP 服务二进制。
+#
+# 没有启用 HMR 的 profile 需要重启应用才会真正加载这个插件实例。
+- insert:
+    - id: em-use-collab-mcp
+      name: "@deepseek-ai/dsh-mcp-client"
+      config:
+        transport: stdio
+        serverName: em_use_collab
+        command: /Users/terriblewich/Documents/UI/emmmm/rust-desktop/collaboration-mcp/target/release/em-use-collab-mcp
+        env:
+          EM_USE_SERVER_URL: http://127.0.0.1:8787
+          EM_USE_STATE_FILE: /Users/terriblewich/.em-use/collab-agent.json
+        failOnStartupError: false

@@ -17,6 +17,7 @@ export const pets=[
   {id:'potato',name:'土豆战神',tag:'小小土豆，装备认真',description:'二十套机甲装扮，配上咖啡、锅盖盾和加油旗。摸摸头盔、算算账、拧拧螺丝，让土豆战神陪你守住工作节奏。'},
   {id:'basketball',imageFormat:'jpg',name:'桌角神射手',tag:'再远，也在射程之内',description:'银灰中分、黑色背带装的小鸡陪你投篮。额度越低，站位越远；拖球或用键盘出手，来一局十球挑战。'},
   {id:'hermit',imageFormat:'png',name:'纸箱寄居蟹',tag:'小家不大，装得下好心情',description:'纸箱、汽水罐、纸板城堡，都是它的小家。敲敲门，逗逗钳子，试住再搬家；三套觉醒造型和随身小配件，陪你慢慢工作。'},
+  {id:'modelmuse',imageFormat:'png',name:'额度变装小人',tag:'额度有变化，小人也变装',description:'Claude、GPT、Gemini 和豆包四种趣味形象随额度切换，支持打招呼、整理行头、抽状态签与 Codex 觉醒服装。角色名称仅是拟人设定，不改变真实模型和账户。'},
 ]
 export const petImageFile=(pet,suffix='')=>`${pet.id}${suffix}.${pet.imageFormat??'webp'}`
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))

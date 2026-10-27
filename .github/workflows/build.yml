@@ -52,6 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       RELEASE_BUILD: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      EM_USE_MCP_TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -67,6 +68,7 @@ jobs:
           workspaces: rust-desktop/src-tauri -> target
       - run: npm ci
       - run: npm run contract
+      - run: npm run mcp:prepare
       - run: cargo test --locked --manifest-path src-tauri/Cargo.toml
       - name: Configure platform release (Windows requires persistent updater keys)
         run: node scripts/ci-config.mjs ${{ matrix.target }}
@@ -81,6 +83,9 @@ jobs:
       - name: Verify macOS app and DMG signatures
         if: runner.os == 'macOS'
         run: bash scripts/verify-macos-bundle.sh 'src-tauri/target/${{ matrix.target }}/release/bundle'
+      - name: Verify Windows MCP binary prepared for externalBin
+        if: runner.os == 'Windows'
+        run: node scripts/verify-collaboration-bundle.mjs ${{ matrix.target }} src-tauri/target/${{ matrix.target }}/release
       - run: node scripts/collect-artifacts.mjs ${{ matrix.target }} src-tauri/target/${{ matrix.target }}/release/bundle installers
       - uses: actions/upload-artifact@v4
         with:

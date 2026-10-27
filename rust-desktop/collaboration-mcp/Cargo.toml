@@ -1,0 +1,40 @@
+[package]
+name = "em-use-collab-mcp"
+version = "0.1.0"
+edition = "2021"
+
+# 两个二进制共享同一个 `CollabClient`（src/client.rs）：MCP 和 CLI 是同一套
+# 鉴权与数据模型的两种封装，不另写一套权限逻辑（设计文档 6.1 节结尾）。
+[[bin]]
+name = "em-use-collab-mcp"
+path = "src/main.rs"
+
+[[bin]]
+name = "em-use-collab-cli"
+path = "src/bin/cli.rs"
+
+[dependencies]
+rmcp = { version = "0.3", features = ["server", "transport-io"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "io-std"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+
+fs2 = "0.4"
+sha2 = "0.10"
+hex = "0.4"
+tempfile = "3"
+
+[target.'cfg(any(target_os = "macos", target_os = "windows"))'.dependencies]
+keyring = { version = "3", features = ["apple-native", "windows-native"] }
+
+[dev-dependencies]
+# 端到端测试：把 MCP 二进制当真实子进程跑起来，用 rmcp 的客户端能力做一次真实
+# MCP 协议往返（initialize / list_tools / call_tool），而不是只测内部函数。
+rmcp = { version = "0.3", features = ["client", "transport-child-process"] }
+tokio = { version = "1", features = ["process", "net"] }
+axum = "0.7"
+sqlx = { version = "0.7", default-features = false, features = ["runtime-tokio-rustls", "postgres", "macros", "migrate", "uuid", "chrono", "json"] }
+em-use-collaboration-server = { path = "../collaboration-server" }

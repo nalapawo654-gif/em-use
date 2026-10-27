@@ -22,6 +22,7 @@ import FoxExperience from './components/FoxExperience.vue'
 import DinosaurExperience from './components/DinosaurExperience.vue'
 import FeiduduExperience from './components/FeiduduExperience.vue'
 import HermitExperience from './components/HermitExperience.vue'
+import ModelMuseExperience from './components/ModelMuseExperience.vue'
 import BasketballExperience from './components/BasketballExperience.vue'
 import PotatoExperience from './components/PotatoExperience.vue'
 import PiranhaExperience from './components/PiranhaExperience.vue'
@@ -83,7 +84,8 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
     <MessagePanel v-else-if="view === 'messages'"/>
     <template v-else>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
-      <BasketballExperience v-if="state.settings.scene === 'basketball'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <ModelMuseExperience v-if="state.settings.scene === 'modelmuse'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
+      <BasketballExperience v-else-if="state.settings.scene === 'basketball'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <HermitExperience v-else-if="state.settings.scene === 'hermit'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <PotatoExperience v-else-if="state.settings.scene === 'potato'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <PiranhaExperience v-else-if="state.settings.scene === 'piranha'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>

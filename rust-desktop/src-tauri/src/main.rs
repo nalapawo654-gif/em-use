@@ -3,6 +3,7 @@ mod account;
 mod auto_reply;
 mod calendar;
 mod codex;
+mod collaboration;
 mod desktop_world;
 mod dongdong;
 mod message_panel_focus;
@@ -201,6 +202,7 @@ async fn desktop(
         "logout" => account::logout(&app)?,
         "settings" => windows::apply_settings(&app, p).await?,
         "openSettings" => windows::open_settings(&app)?,
+        "openCollaboration" => windows::open_collaboration(&app)?,
         "openUpdates" => windows::open_updates(&app)?,
         "openMessagePanel" => {
             if let Some(w) = app.get_webview_window("calendar") {
@@ -356,8 +358,10 @@ fn main() {
             calendar: Mutex::new(calendar::Hub::default()),
             message_toast: Mutex::new(None),
         })
+        .manage(collaboration::Hub::default())
         .invoke_handler(tauri::generate_handler![
             desktop,
+            collaboration::collaboration,
             desktop_world::world_event,
             startup::startup_event,
             account::auth_candidate,

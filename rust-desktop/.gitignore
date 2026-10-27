@@ -7,6 +7,7 @@ output/
 *.key
 *.key.pub
 src-tauri/ci.conf.json
+src-tauri/binaries/
 installers/
 artifacts/
 EM-Use-*-static-site.zip

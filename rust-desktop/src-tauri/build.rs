@@ -1,6 +1,7 @@
 fn main() {
     let commands = &[
         "desktop",
+        "collaboration",
         "world_event",
         "startup_event",
         "auth_candidate",

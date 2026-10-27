@@ -1,0 +1,5 @@
+{
+  "identifier": "project-collaboration",
+  "windows": ["collaboration"],
+  "permissions": ["allow-collaboration"]
+}

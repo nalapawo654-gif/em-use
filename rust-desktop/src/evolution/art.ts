@@ -1,8 +1,9 @@
 import type { Scene } from '../shared/types'
-export type GearScene = Exclude<Scene, 'basketball' | 'aquarium' | 'hermit'>
+export type GearScene = Exclude<Scene, 'modelmuse' | 'basketball' | 'aquarium' | 'hermit'>
 export type GearPart = 0 | 1 | 2 | 3
 export type Placement = [number, number, number, number, number?]
 export const EVOLUTION_NAMES: Record<Scene, string> = {
+  modelmuse: '灵感变装',
   basketball: '星场王牌',
   hermit: '小窝觉醒', potato: '星核觉醒', fox: '玄金灵兽', skadi: '月冕战装', piranha: '日冕花王', dinosaur: '晶脊古龙',
   luckycat: '福运神使', feidudu: '星航队长', aquarium: '星海灵鱼', buddy: '曙光守卫',

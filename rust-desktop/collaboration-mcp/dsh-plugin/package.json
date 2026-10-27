@@ -1,0 +1,27 @@
+{
+  "name": "em-use-collab-dsh-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DeepSeek Harness 组合包：把 em-use-collab-mcp(EM Use 协作 MCP 服务)注册为一个 mcp-client 插件实例，让 DSH 本身成为协作房间里的一个真实 Agent。",
+  "license": "UNLICENSED",
+  "files": [
+    "cordis.patch.yml",
+    "package.json",
+    "README.md"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-mcp-client": "0.2.1-rc.3"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "engines": {
+      "dsh": ">=0.2.1-rc.3"
+    }
+  }
+}

@@ -949,6 +949,195 @@
       "bytes": 1517942,
       "encoding": "Original transparent WebP; 8 columns × 9 rows, 192 × 208 cells",
       "source": "https://codex-pets.net/#/pets/jige-cxk — jige by ikun, downloaded 2026-10-26"
+    },
+    {
+      "path": "modelmuse/calendar.svg",
+      "sha256": "c3e014841915d4d163b9c9adb31298b0997fc9fa1c5ebbec26cd5cd49bed06ac",
+      "width": 120,
+      "height": 120,
+      "bytes": 388,
+      "encoding": "SVG calendar prop.",
+      "source": "Original vector calendar prop"
+    },
+    {
+      "path": "modelmuse/claude-awake-tidy.png",
+      "sha256": "f7030a6d1dbf568f1fe0b17899cffe20561e27457b164464722d9f5f55d6da7a",
+      "width": 1296,
+      "height": 1213,
+      "bytes": 2113096,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/claude-awake.png",
+      "sha256": "a7dc1080b81099637aaa6fc35bd3e857ad9b2e14955b3042ba4090bc6c011704",
+      "width": 1296,
+      "height": 1213,
+      "bytes": 2141107,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/claude-tidy.png",
+      "sha256": "6014196fbef63a28818983163f281f53a49a9045c404c4b87636ffd5d3e69f32",
+      "width": 1296,
+      "height": 1213,
+      "bytes": 1892436,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/claude.png",
+      "sha256": "7d2e449df846dd7d746943faf3d90cfd36078ae7f6847d101e113115eef30c40",
+      "width": 1296,
+      "height": 1213,
+      "bytes": 1922767,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/doubao-awake-tidy.png",
+      "sha256": "d4bab5a480847029e49e75cf3c3ed6a9c5f33b86f43a4f974e3d6801d9b2fb63",
+      "width": 1145,
+      "height": 1374,
+      "bytes": 1508515,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/doubao-awake.png",
+      "sha256": "45fa7e048ddd7159ec7c1e3cc278e5fbe5d1b72946a1fd9ba893eabd687375e4",
+      "width": 1145,
+      "height": 1374,
+      "bytes": 1554354,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/doubao-tidy.png",
+      "sha256": "bb437d56f9d70433652694620340b538c8904ad3325f50fb39a334eb46332f94",
+      "width": 1145,
+      "height": 1374,
+      "bytes": 1489175,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/doubao.png",
+      "sha256": "9c2c9971ad7a253dc07600cde68f11f50b2c243951ab2a15279bbfe696257d69",
+      "width": 1145,
+      "height": 1374,
+      "bytes": 1479121,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gemini-awake-tidy.png",
+      "sha256": "6a5754f42ddfb5136c258c61e039b7d1eb25ab82da14768da05671ded9b59ee8",
+      "width": 1205,
+      "height": 1306,
+      "bytes": 2264537,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gemini-awake.png",
+      "sha256": "5e6a88227903fd45ca0ebb280ebe43df3c8d51dd9e62e6216786b9400e57f5b3",
+      "width": 1205,
+      "height": 1305,
+      "bytes": 2210120,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gemini-tidy.png",
+      "sha256": "660d288d7d2f06e8c21290507df8439968149a5a21dc54c0dbd24d37929a0b8c",
+      "width": 1205,
+      "height": 1305,
+      "bytes": 2212881,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gemini.png",
+      "sha256": "be86a9770bed3540accc23fc082633507ff6e20fa5d65310b12ad73334b86a75",
+      "width": 1206,
+      "height": 1305,
+      "bytes": 2165172,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gpt-awake-tidy.png",
+      "sha256": "5b8ed794f05b4a92839a6d05e2187330bed2f688df93a7f0c775d3d61860faaa",
+      "width": 1283,
+      "height": 1226,
+      "bytes": 2007918,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gpt-awake.png",
+      "sha256": "50a6b6777728112e886f0ccd7d1ba64168e035c1c8a0eb6ce89fa62b5383cabd",
+      "width": 1283,
+      "height": 1226,
+      "bytes": 2004962,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gpt-tidy.png",
+      "sha256": "8aadbea500057cc880796d7de0f8c276d6303904b837af50c42b9f1a877a807e",
+      "width": 1283,
+      "height": 1226,
+      "bytes": 1998289,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gpt.png",
+      "sha256": "acdead7bd9b2132645e6ddb39021ca36de782fb5ffc54a78f4552102ed617f77",
+      "width": 1283,
+      "height": 1226,
+      "bytes": 1903597,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/claude-awake-reveal.png",
+      "sha256": "830433a85472ff016838299217e3c55a8d3c704339ad280afaddc1a0f3a95eb7",
+      "width": 1296,
+      "height": 1213,
+      "bytes": 2228278,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/doubao-awake-reveal.png",
+      "sha256": "312f8c9c3d41339b5c445e7afb8dd42e696f00e391d607a4fa224801d4b66a5a",
+      "width": 1145,
+      "height": 1374,
+      "bytes": 1579990,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gemini-awake-reveal.png",
+      "sha256": "103ae10e1fdf9a6bf799e02548ddd4e7de6e887ef66728b790f30fde9b1ba8c2",
+      "width": 1205,
+      "height": 1306,
+      "bytes": 2266177,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
+    },
+    {
+      "path": "modelmuse/gpt-awake-reveal.png",
+      "sha256": "e0f80ed5f88c802d37b7acaf50d9a6f199f2329de40ec1f0d69504cc1b2479c4",
+      "width": 1283,
+      "height": 1226,
+      "bytes": 2038022,
+      "encoding": "Transparent RGBA PNG, built-in imagegen.",
+      "source": "Built-in imagegen based on user-approved concept"
     }
   ]
 }

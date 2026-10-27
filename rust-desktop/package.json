@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/nalapawo654-gif/em-use.git"
   },
-  "version": "0.5.9",
+  "version": "0.5.10",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "desktop": "tauri dev",
@@ -22,7 +22,8 @@
     "verify:parity": "node scripts/verify-parity.mjs",
     "version:set": "node scripts/version.mjs",
     "release:site": "node scripts/release-site.mjs",
-    "verify:assets": "python3 scripts/optimize-assets.py --check"
+    "verify:assets": "python3 scripts/optimize-assets.py --check",
+    "mcp:prepare": "node scripts/prepare-collaboration.mjs"
   },
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",
