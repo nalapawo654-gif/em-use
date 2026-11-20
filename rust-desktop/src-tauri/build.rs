@@ -1,9 +1,11 @@
+#[path = "codex-intro/build.rs"]
+mod codex_intro;
+
 fn main() {
+    codex_intro::prepare();
     let commands = &[
         "desktop",
-        "collaboration",
         "world_event",
-        "startup_event",
         "auth_candidate",
         "check_update",
         "install_update",

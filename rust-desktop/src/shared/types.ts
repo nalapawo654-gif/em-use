@@ -145,7 +145,8 @@ export interface CalendarEvent { key: string; title: string; start: number; end:
 export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
 export interface Settings {
   evolutionMotion: 'full' | 'light' | 'off'; quotaSource: 'eastmoney' | 'codex'; codexEnabled: boolean; codexExecutable: string; codexHome: string; codexBucket: string;
-  startupAnimation: boolean;
+  codexIntroEnabled: boolean;
+  codexIntroTheme: 'dragon' | 'emerald';
   worldEnabled: boolean; worldPaused: boolean;
   calendarEnabled: boolean; calendarPreview: boolean; calendarAtStart: boolean; calendarSystemNotifications: boolean; calendarLeadMinutes: number;
   messageEnabled: boolean; messagePreview: boolean; messageRespectMute: boolean; messagePausedUntil: number;
@@ -156,6 +157,7 @@ export interface Settings {
   scene: Scene; basketballSkin: BasketballSkin; hermitSkin: HermitSkin; hermitAccessory: HermitAccessory; hermitProp: HermitProp; potatoSkin: PotatoSkin; piranhaSkin: PiranhaSkin; skadiSkin: SkadiSkin; skadiAdultSkin: SkadiSkin; skadiForm: SkadiForm; skadiWeapon: SkadiWeapon; dinosaurSkin: DinosaurSkin; luckycatSkin: LuckyCatSkin; foxSkin: FoxSkin; feiduduSkin: FeiduduSkin; batterySkin: BatterySkin; batteryRealm: BatteryRealm; cultivationSkin: CultivationSkin; cultivationAccessory: CultivationAccessory; cultivationTreasure: CultivationTreasure; cultivationRandom: boolean; cultivationRealm: CultivationRealm; hamsterSkin: HamsterSkin; buddySkin: BuddySkin; beaverSkin: BeaverSkin; beaverCamp: boolean; beaverMotto: 'gentle' | 'create' | 'rest';
 }
 export interface AppState {
+  codexIntroNotice?: string | null;
   codex?: CodexState;
   desktopWorldNotice?: string | null;
   desktopWorld?: { supported: boolean; status: 'unsupported' | 'off' | 'loading' | 'running' | 'paused' | 'error'; message: string };
@@ -204,7 +206,8 @@ export interface DesktopAPI {
 }
 export const DEFAULT_SETTINGS: Settings = {
   evolutionMotion: 'full', quotaSource: 'eastmoney', codexEnabled: false, codexExecutable: '', codexHome: '', codexBucket: 'codex',
-  startupAnimation: true,
+  codexIntroEnabled: false,
+  codexIntroTheme: 'dragon',
   worldEnabled: false, worldPaused: false,
   calendarEnabled: true, calendarPreview: true, calendarAtStart: false, calendarSystemNotifications: false, calendarLeadMinutes: 5,
   messageEnabled: true, messagePreview: true, messageRespectMute: true, messagePausedUntil: 0,

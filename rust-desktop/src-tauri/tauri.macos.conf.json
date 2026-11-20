@@ -1,0 +1,12 @@
+{
+  "bundle": {
+    "externalBin": [
+      "binaries/em-use-codex-intro"
+    ],
+    "resources": [
+      "codex-intro/media/*.mp4",
+      "codex-intro/LICENSE",
+      "codex-intro/NOTICE"
+    ]
+  }
+}

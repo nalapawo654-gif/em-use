@@ -10,7 +10,7 @@
 
 新增「额度变装小人」：四档额度形象、角色互动与觉醒服装，见 [角色方案](docs/modelmuse-pet.md)。
 
-新增「项目协作」：独立项目窗口、Agent 接入向导与随包 MCP；需要自行部署协作服务，见 [接入说明](docs/project-collaboration-desktop-v1.md)。
+在「桌面偏好」开启 Codex 窗口动效后，可选紫龙召唤或翡翠觉醒，在 Codex 窗口播放开屏。托盘支持重播和停止。
 
 ## 开发和验证
 

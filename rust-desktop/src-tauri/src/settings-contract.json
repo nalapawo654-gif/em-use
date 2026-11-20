@@ -6,7 +6,8 @@
     "codexExecutable": "",
     "codexHome": "",
     "codexBucket": "codex",
-    "startupAnimation": true,
+    "codexIntroEnabled": false,
+    "codexIntroTheme": "dragon",
     "worldEnabled": false,
     "worldPaused": false,
     "calendarEnabled": true,
@@ -64,6 +65,10 @@
     "quotaSource": [
       "eastmoney",
       "codex"
+    ],
+    "codexIntroTheme": [
+      "dragon",
+      "emerald"
     ],
     "size": [
       "standard",

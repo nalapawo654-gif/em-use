@@ -1,6 +1,6 @@
 [package]
 name = "em-use-rust"
-version = "0.5.10"
+version = "0.5.11"
 edition = "2021"
 rust-version = "1.91"
 
@@ -8,7 +8,6 @@ rust-version = "1.91"
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-em-use-collab-mcp = { path = "../collaboration-mcp" }
 tauri = { version = "2", features = ["tray-icon", "macos-private-api", "image-png"] }
 tauri-plugin-single-instance = "2"
 tauri-plugin-autostart = "2"

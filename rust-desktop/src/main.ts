@@ -37,11 +37,4 @@ import './piranha.css'
 import './potato.css'
 import './basketball.css'
 
-// Vue is mounted, independent of login/quota completion. Hidden WebViews may suspend rAF.
-if (new URLSearchParams(location.search).get('view') === 'widget') {
-  void import('@tauri-apps/api/core').then(({ isTauri, invoke }) => {
-    if (isTauri()) void invoke('startup_event', { kind: 'widget-ready' }).catch(() => {})
-  })
-}
-
 import './hermit.css'

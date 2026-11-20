@@ -206,6 +206,12 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
         shared(app).inner.lock().unwrap().state["desktopWorldNotice"] = Value::Null;
         desktop_world::settings_changed(app);
     }
+    if ["codexIntroEnabled", "codexIntroTheme", "reducedMotion"]
+        .iter()
+        .any(|key| valid.get(*key).is_some())
+    {
+        codex_intro::configure(app);
+    }
     if codex_changed {
         crate::codex::invalidate(app);
         tauri::async_runtime::spawn(crate::codex::refresh(app.clone(), true));
@@ -221,7 +227,6 @@ pub async fn apply_settings(app: &tauri::AppHandle, patch: Value) -> Result<(), 
     Ok(())
 }
 pub fn show(app: &tauri::AppHandle) {
-    startup::cancel(app);
     if let Ok(w) = widget(app) {
         let _ = w.show();
         let _ = w.set_focus();
@@ -251,7 +256,6 @@ fn message_popup_allowed(app: &tauri::AppHandle, ticket: u64) -> bool {
 // Called on the UI thread by both the pet's hide action and native CloseRequested.
 pub fn hide_widget(app: &tauri::AppHandle) -> Result<(), String> {
     app.state::<message_popup::MessagePopupGate>().hide();
-    startup::cancel(app);
     let result = widget(app)?.hide().map_err(|e| e.to_string());
     let _ = end_gesture(app, None);
     hide_message_toast(app, true);
@@ -268,18 +272,6 @@ pub fn hide_widget(app: &tauri::AppHandle) -> Result<(), String> {
 }
 pub fn open_settings(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window(app, "")
-}
-pub fn open_collaboration(app: &tauri::AppHandle) -> Result<(), String> {
-    if let Some(w) = app.get_webview_window("collaboration") {
-        w.show().map_err(|e| e.to_string())?;
-        return w.set_focus().map_err(|e| e.to_string());
-    }
-    WebviewWindowBuilder::new(app, "collaboration", WebviewUrl::App("collaboration.html".into()))
-        .title("项目协作 · EM Use")
-        .inner_size(1180., 780.)
-        .min_inner_size(760., 560.)
-        .build().map_err(|e| e.to_string())?;
-    Ok(())
 }
 pub fn open_updates(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window(app, "updates")
@@ -732,7 +724,10 @@ pub fn update_tray(app: &tauri::AppHandle) -> Result<(), String> {
     add("settings", "设置")?;
     add("messages", "咚咚消息")?;
     add("calendar", "今日日程")?;
-    add("collaboration", "项目协作")?;
+    if codex_intro::enabled(&s["settings"]) {
+        add("codex-intro:replay", "重播 Codex 开屏")?;
+        add("codex-intro:stop", "停止 Codex 开屏")?;
+    }
     let update_label = updates::tray_label(&s["update"]);
     add("update", &update_label)?;
     for (key, label) in [("alwaysOnTop", "置顶显示"), ("clickThrough", "鼠标穿透")] {
@@ -792,11 +787,7 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     );
     set_bounds(&w, b)?;
     persist(&handle)?;
-    // Keep the pet hidden until the intro handoff (or native watchdog).
-    // Refresh existing autostart registrations with the silent-launch argument.
-    if s["settings"]["launchAtLogin"] == true {
-        let _ = app.autolaunch().enable();
-    }
+    w.show()?;
     tauri::tray::TrayIconBuilder::with_id("main")
         .icon(app.default_window_icon().unwrap().clone())
         .tooltip("EM Use · 桌面小伙伴")
@@ -843,12 +834,13 @@ pub fn setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
                     });
                     Ok(())
                 }
+                "codex-intro:replay" => codex_intro::command(app, "replay"),
+                "codex-intro:stop" => codex_intro::command(app, "stop"),
                 "show" => {
                     show(app);
                     Ok(())
                 }
                 "settings" => open_settings(app),
-                "collaboration" => open_collaboration(app),
                 "quota-settings" => open_accounts(app),
                 "quota:eastmoney" | "quota:codex" => {
                     schedule_settings(app, json!({"quotaSource":id.trim_start_matches("quota:")}));

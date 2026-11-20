@@ -1,4 +1,6 @@
-# EM Use 启动片头
+# EM Use 启动片头（历史版本）
+
+此文记录 0.5.1 的实现。当前桌宠启动时直接显示，窗口动效见[公共规范第 7.1 节](../../docs/desktop-pet-interaction-standard.md)。
 
 2026-10-13。参考 dsh-boot-animation 的短视频播放与释放思路，重新编写 Tauri / Vue 接入和原创 EM Use 片头；没有引入 DSH 插件、代码或品牌视频。
 

@@ -3,7 +3,6 @@ mod account;
 mod auto_reply;
 mod calendar;
 mod codex;
-mod collaboration;
 mod desktop_world;
 mod dongdong;
 mod message_panel_focus;
@@ -12,7 +11,7 @@ mod message_reading;
 mod message_source;
 mod messages;
 mod model;
-mod startup;
+mod codex_intro;
 mod storage;
 mod updates;
 mod windows;
@@ -202,7 +201,6 @@ async fn desktop(
         "logout" => account::logout(&app)?,
         "settings" => windows::apply_settings(&app, p).await?,
         "openSettings" => windows::open_settings(&app)?,
-        "openCollaboration" => windows::open_collaboration(&app)?,
         "openUpdates" => windows::open_updates(&app)?,
         "openMessagePanel" => {
             if let Some(w) = app.get_webview_window("calendar") {
@@ -246,7 +244,6 @@ async fn desktop(
             } else if window.label() == "widget" {
                 windows::on_ui_thread(&app, windows::hide_widget).await?;
             } else {
-                startup::cancel(&app);
                 windows::hide_message_toast(&app, true);
                 calendar::dismiss(&app);
                 if let Some(w) = app.get_webview_window("calendar") {
@@ -314,18 +311,14 @@ fn main() {
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             windows::show(app)
         }))
-        .plugin(
-            tauri_plugin_autostart::Builder::new()
-                .args(["--autostart"])
-                .build(),
-        )
+        .plugin(tauri_plugin_autostart::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init());
     #[cfg(not(target_os = "macos"))]
     let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
     builder
-        .manage(startup::State::default())
+        .manage(codex_intro::State::default())
         .manage(message_popup::MessagePopupGate::default())
         .manage(Shared {
             codex: Mutex::new(codex::Hub::default()),
@@ -358,12 +351,9 @@ fn main() {
             calendar: Mutex::new(calendar::Hub::default()),
             message_toast: Mutex::new(None),
         })
-        .manage(collaboration::Hub::default())
         .invoke_handler(tauri::generate_handler![
             desktop,
-            collaboration::collaboration,
             desktop_world::world_event,
-            startup::startup_event,
             account::auth_candidate,
             updates::check_update,
             updates::install_update,
@@ -390,7 +380,7 @@ fn main() {
             account::restore(&handle);
             codex::start(handle.clone());
             windows::setup(app)?;
-            startup::start(&handle);
+            codex_intro::configure(&handle);
             desktop_world::start(&handle);
             messages::start(handle.clone());
             calendar::start(handle.clone());
@@ -427,9 +417,6 @@ fn main() {
                 tauri::WindowEvent::Focused(false) if w.label() == "widget" => {
                     let _ = windows::end_gesture(app, None);
                 }
-                tauri::WindowEvent::Destroyed if w.label() == "startup" => {
-                    startup::finish(app);
-                }
                 tauri::WindowEvent::Destroyed if w.label() == "calendar" => {
                     let _ = app.emit_to("widget", "calendar:closed", ());
                 }
@@ -445,6 +432,9 @@ fn main() {
         .build(tauri::generate_context!())
         .expect("EM Use 启动失败")
         .run(|_app, _event| {
+            if matches!(_event, tauri::RunEvent::Exit) {
+                codex_intro::shutdown(_app);
+            }
             #[cfg(target_os = "macos")]
             if let tauri::RunEvent::Reopen { .. } = _event {
                 windows::show(_app);

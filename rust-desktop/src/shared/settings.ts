@@ -4,6 +4,7 @@ import type { Settings } from './types.js'
 export const SETTINGS_STRINGS = { codexExecutable: 4096, codexHome: 4096, codexBucket: 128 }
 export const SETTINGS_ENUMS = {
   quotaSource: ['eastmoney', 'codex'],
+  codexIntroTheme: ['dragon', 'emerald'],
   evolutionMotion: ['full', 'light', 'off'],
   size: ['standard', 'compact', 'mini'], theme: ['auto', 'day', 'night'],
   outfit: ['classic', 'sailor', 'royal', 'ribbon'], scene: ['modelmuse', 'basketball', 'hermit', 'potato', 'piranha', 'skadi', 'dinosaur', 'luckycat', 'fox', 'feidudu', 'aquarium', 'buddy', 'beaver', 'hamster', 'cultivation', 'battery'],
@@ -35,7 +36,7 @@ export const SETTINGS_ENUMS = {
 export function validateSettings(input: unknown): Partial<Settings> {
   if (!input || typeof input !== 'object') return {}
   const data = input as Record<string, unknown>, out: Record<string, unknown> = {}
-  for (const key of ['codexEnabled', 'startupAnimation', 'worldEnabled', 'worldPaused', 'calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
+  for (const key of ['codexEnabled', 'codexIntroEnabled', 'worldEnabled', 'worldPaused', 'calendarEnabled', 'calendarPreview', 'calendarAtStart', 'calendarSystemNotifications', 'alwaysOnTop', 'clickThrough', 'launchAtLogin', 'reducedMotion', 'notifications', 'messageEnabled', 'messagePreview', 'messageRespectMute', 'beaverCamp', 'cultivationRandom']) {
     if (typeof data[key] === 'boolean') out[key] = data[key]
   }
 
