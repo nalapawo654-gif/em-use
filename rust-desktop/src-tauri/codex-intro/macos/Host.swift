@@ -56,7 +56,7 @@ final class Host {
         var following = false
         defer { schedule(following ? 1.0 / 30 : 0.35) }
         if let deadline = replayUntil, Date() >= deadline { replayUntil = nil; report("missing") }
-        if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion { stop(); return }
+        // Ignore the system "reduce motion" switch; EM Use's 轻柔模式 stops the helper instead.
         let front = NSWorkspace.shared.frontmostApplication
         let pid = front?.bundleIdentifier == bundleID ? front?.processIdentifier : nil
         if let old = process, NSRunningApplication(processIdentifier: old)?.bundleIdentifier != bundleID {

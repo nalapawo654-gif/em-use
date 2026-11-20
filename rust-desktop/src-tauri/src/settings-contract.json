@@ -7,7 +7,7 @@
     "codexHome": "",
     "codexBucket": "codex",
     "startupHatch": true,
-    "codexIntroEnabled": false,
+    "codexIntroEnabled": true,
     "codexIntroTheme": "dragon",
     "worldEnabled": false,
     "worldPaused": false,

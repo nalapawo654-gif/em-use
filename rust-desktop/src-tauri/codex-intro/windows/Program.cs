@@ -74,7 +74,7 @@ namespace OpenSkin
 
         void Tick()
         {
-            if (!SystemParameters.ClientAreaAnimation) { Stop(); return; }
+            // Ignore the Windows "animation effects" switch; EM Use's 轻柔模式 stops the helper instead.
             var now = DateTime.UtcNow;
             if (now >= pruneAt) {
                 foreach (var item in seen.ToArray())

@@ -208,7 +208,7 @@ export interface DesktopAPI {
 export const DEFAULT_SETTINGS: Settings = {
   evolutionMotion: 'full', quotaSource: 'eastmoney', codexEnabled: false, codexExecutable: '', codexHome: '', codexBucket: 'codex',
   startupHatch: true,
-  codexIntroEnabled: false,
+  codexIntroEnabled: true,
   codexIntroTheme: 'dragon',
   worldEnabled: false, worldPaused: false,
   calendarEnabled: true, calendarPreview: true, calendarAtStart: false, calendarSystemNotifications: false, calendarLeadMinutes: 5,

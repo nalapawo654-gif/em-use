@@ -138,15 +138,26 @@ fn send(app: &AppHandle, action: &str) -> Result<(), String> {
 mod tests {
     use super::*;
     #[test]
-    fn old_intro_and_quota_settings_do_not_enable_window_tracking() {
+    fn window_intro_is_on_by_default_and_only_gentle_mode_stops_it() {
         let mut settings = crate::model::contract()["defaults"].clone();
-        let saved = json!({"startupAnimation":true,"codexEnabled":true,"quotaSource":"codex"});
-        crate::model::merge(&mut settings, &crate::model::validate(&saved));
-        assert!(!enabled(&settings));
         assert_eq!(settings["codexIntroTheme"], "dragon");
-        settings["codexIntroEnabled"] = json!(true);
         assert_eq!(enabled(&settings), cfg!(any(target_os = "macos", windows)));
         settings["reducedMotion"] = json!(true);
         assert!(!enabled(&settings));
+        settings["reducedMotion"] = json!(false);
+        settings["codexIntroEnabled"] = json!(false);
+        assert!(!enabled(&settings));
+    }
+
+    #[test]
+    fn stored_off_from_old_default_is_dropped_once() {
+        let saved = json!({"codexIntroEnabled":false,"scene":"buddy"});
+        let mut first = crate::model::validate(&saved);
+        crate::model::migrate_codex_intro(&mut first, false);
+        assert!(first.get("codexIntroEnabled").is_none());
+        assert_eq!(first["scene"], "buddy");
+        let mut later = crate::model::validate(&saved);
+        crate::model::migrate_codex_intro(&mut later, true);
+        assert_eq!(later["codexIntroEnabled"], false);
     }
 }

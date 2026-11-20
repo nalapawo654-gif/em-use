@@ -21,6 +21,7 @@ use std::{collections::HashSet, sync::Mutex, time::Duration};
 use tauri::{Emitter, Manager, WebviewWindow};
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
+const CODEX_INTRO_MIGRATION: &str = "codex-intro-default-on.json";
 const PORTAL: &str = "https://aihub.eastmoney.com/personal";
 const RELEASES: &str = "http://172.27.12.77:5500/em-use/";
 struct Runtime {
@@ -365,7 +366,8 @@ fn main() {
                 let sh = shared(&handle);
                 let mut r = sh.inner.lock().unwrap();
                 if let Some(saved) = storage::read(&handle, "preferences.json") {
-                    let valid = model::validate(&saved);
+                    let mut valid = model::validate(&saved);
+                    model::migrate_codex_intro(&mut valid, storage::read(&handle, CODEX_INTRO_MIGRATION).is_some());
                     if valid.get("windowWidth").is_none() {
                         if let Some(size) = valid["size"].as_str() {
                             r.state["settings"]["windowWidth"] =
@@ -376,6 +378,7 @@ fn main() {
                 }
                 r.state["settings"]["clickThrough"] = json!(false);
             }
+            let _ = storage::write(&handle, CODEX_INTRO_MIGRATION, &json!(true));
             updates::restore_notice(&handle);
             account::restore(&handle);
             codex::start(handle.clone());

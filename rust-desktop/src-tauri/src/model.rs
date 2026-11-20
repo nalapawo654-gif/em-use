@@ -47,6 +47,15 @@ pub fn validate(input: &Value) -> Value {
     }
     out
 }
+// Before 0.5.14 the Codex window intro defaulted to off and every save stored that default.
+// Drop the stored value once so existing installs pick up the new on-by-default setting.
+pub fn migrate_codex_intro(saved: &mut Value, migrated: bool) {
+    if !migrated {
+        if let Some(map) = saved.as_object_mut() {
+            map.remove("codexIntroEnabled");
+        }
+    }
+}
 pub fn merge(dest: &mut Value, patch: &Value) {
     for (k, v) in patch.as_object().unwrap() {
         dest[k] = v.clone();
