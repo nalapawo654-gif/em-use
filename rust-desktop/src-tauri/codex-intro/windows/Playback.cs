@@ -36,7 +36,7 @@ namespace OpenSkin
             player.MediaFailed += (s,e) => { if (!disposed) failed("failed"); };
             player.MediaEnded += (s,e) => { if (!disposed) finish(); };
             player.Volume = 0.55;
-            player.Source = new Uri(path);
+            player.Source = new Uri(System.IO.Path.GetFullPath(path), UriKind.Absolute);
         }
 
         static Window Panel(UIElement content) => new Window { WindowStyle = WindowStyle.None,

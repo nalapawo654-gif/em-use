@@ -24,7 +24,7 @@ namespace OpenSkin
         {
             if (args.Length != 2) return 2;
             var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-            var host = new Program(args[0], args[1]);
+            var host = new Program(PlainPath(args[0]), args[1]);
             var input = new Thread(() => {
                 string line;
                 while ((line = Console.ReadLine()) != null) {
@@ -38,12 +38,20 @@ namespace OpenSkin
             return app.Run();
         }
 
+        // Accept a verbatim \\?\C:\... path from older hosts; Uri cannot parse that prefix.
+        static string PlainPath(string path)
+        {
+            if (path.StartsWith(@"\\?\UNC\", StringComparison.Ordinal)) return @"\\" + path.Substring(8);
+            if (path.StartsWith(@"\\?\", StringComparison.Ordinal)) return path.Substring(4);
+            return path;
+        }
+
         Program(string media, string theme)
         {
             this.media = media;
             this.theme = theme;
             timer.Interval = TimeSpan.FromMilliseconds(300);
-            timer.Tick += (s,e) => Tick();
+            timer.Tick += (s,e) => SafeTick();
             timer.Start();
         }
 
@@ -67,9 +75,16 @@ namespace OpenSkin
                     replayUntil = DateTime.UtcNow.AddSeconds(15);
                     if (DesktopWindow.IsIconic(window)) DesktopWindow.ShowWindowAsync(window, 9);
                     DesktopWindow.SetForegroundWindow(window);
-                    Tick();
+                    SafeTick();
                     break;
             }
+        }
+
+        // A playback error must not take the whole helper down; report it and keep watching.
+        void SafeTick()
+        {
+            try { Tick(); }
+            catch (Exception) { Stop(); Console.WriteLine("failed"); }
         }
 
         void Tick()

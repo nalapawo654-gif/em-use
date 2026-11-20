@@ -4,6 +4,7 @@ use crate::{publish, shared, snapshot};
 use serde_json::{json, Value};
 use std::{
     io::{BufRead, BufReader, Write},
+    path::PathBuf,
     process::{Child, Command, Stdio},
     sync::Mutex,
 };
@@ -11,6 +12,20 @@ use tauri::{AppHandle, Manager};
 
 #[derive(Default)]
 pub struct State(Mutex<Option<Child>>);
+
+// Tauri canonicalizes the executable path, so on Windows resource_dir() is a verbatim
+// `\\?\C:\...` path. The .NET player turns the media path into a Uri, which rejects that
+// prefix and crashed the helper before anything was shown. Hand it a plain path instead.
+fn plain_path(path: PathBuf) -> PathBuf {
+    let text = path.to_string_lossy();
+    if let Some(rest) = text.strip_prefix(r"\\?\UNC\") {
+        return PathBuf::from(format!(r"\\{rest}"));
+    }
+    match text.strip_prefix(r"\\?\") {
+        Some(rest) if rest.as_bytes().get(1) == Some(&b':') => PathBuf::from(rest),
+        _ => path,
+    }
+}
 
 pub fn enabled(settings: &Value) -> bool {
     cfg!(any(target_os = "macos", windows))
@@ -68,19 +83,20 @@ fn send(app: &AppHandle, action: &str) -> Result<(), String> {
         if action == "stop" {
             return Ok(());
         }
-        let media = app
-            .path()
-            .resource_dir()
-            .map_err(|e| e.to_string())?
-            .join("codex-intro/media");
+        let media = plain_path(
+            app.path()
+                .resource_dir()
+                .map_err(|e| e.to_string())?
+                .join("codex-intro")
+                .join("media"),
+        );
         if !["dragon.mp4", "emerald.mp4"]
             .iter()
             .all(|name| media.join(name).is_file())
         {
             return Err("缺少 Codex 开屏影片，请检查桌面安装包。".into());
         }
-        let binary = std::env::current_exe()
-            .map_err(|e| e.to_string())?
+        let binary = plain_path(std::env::current_exe().map_err(|e| e.to_string())?)
             .with_file_name(format!(
                 "em-use-codex-intro{}",
                 std::env::consts::EXE_SUFFIX
@@ -147,6 +163,15 @@ mod tests {
         settings["reducedMotion"] = json!(false);
         settings["codexIntroEnabled"] = json!(false);
         assert!(!enabled(&settings));
+    }
+
+    #[test]
+    fn verbatim_windows_paths_become_plain() {
+        let plain = |s: &str| plain_path(PathBuf::from(s)).to_string_lossy().into_owned();
+        assert_eq!(plain(r"\\?\C:\Users\a\EM Use\codex-intro\media"), r"C:\Users\a\EM Use\codex-intro\media");
+        assert_eq!(plain(r"\\?\UNC\server\share\EM Use"), r"\\server\share\EM Use");
+        assert_eq!(plain(r"C:\EM Use"), r"C:\EM Use");
+        assert_eq!(plain("/Applications/EM Use.app/Contents/Resources"), "/Applications/EM Use.app/Contents/Resources");
     }
 
     #[test]
