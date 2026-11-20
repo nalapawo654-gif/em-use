@@ -47,6 +47,6 @@ export function loadDinosaur(): Promise<HTMLCanvasElement[]> {
       } catch (error) { pending = undefined; reject(error) }
     }
     image.onerror = () => { pending = undefined; reject(new Error('小恐龙素材未能加载')) }
-    image.src = './assets/dinosaur/atlas.png'
+    image.src = './assets/dinosaur/atlas.webp'
   })
 }

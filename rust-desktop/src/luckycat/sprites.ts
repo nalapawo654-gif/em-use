@@ -1,4 +1,4 @@
-export const LUCKYCAT_ASSET = './assets/luckycat/atlas.png'
+export const LUCKYCAT_ASSET = './assets/luckycat/atlas.webp'
 // Green does not occur in this cat's fur or props. Decode once, preserve soft fur edges.
 export function luckycatAlpha(r: number, g: number, b: number): number {
   return 1 - Math.max(0, Math.min(1, (g - Math.max(r, b) - 18) / 110))
@@ -92,7 +92,7 @@ function decodeParts(path:string,rig:boolean):Promise<HTMLCanvasElement[]>{
 }
 export function loadCatRig(skin:LuckyCatSkin):Promise<CatRig>{
  return rigs[skin]??=(async()=>{try{
-  propsPending??=decodeParts('./assets/luckycat/props.png',false).catch(e=>{propsPending=undefined;throw e})
-  const [cells,props]=await Promise.all([decodeParts(`./assets/luckycat/outfits/${skin}.png`,true),propsPending]);return {cells,props}
+  propsPending??=decodeParts('./assets/luckycat/props.webp',false).catch(e=>{propsPending=undefined;throw e})
+  const [cells,props]=await Promise.all([decodeParts(`./assets/luckycat/outfits/${skin}.webp`,true),propsPending]);return {cells,props}
  }catch(e){delete rigs[skin];throw e}})()
 }

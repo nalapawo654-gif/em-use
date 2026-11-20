@@ -120,20 +120,25 @@ pub fn gesture_command(
             if let Some(g) = active.as_ref().filter(|g| Some(g.id) == p.as_u64()) {
                 let scale = w.scale_factor().map_err(|e| e.to_string())?;
                 let c = w.cursor_position().map_err(|e| e.to_string())?;
-                set_bounds(
-                    w,
-                    model::gesture(
-                        Bounds {
-                            x: g.bounds.x * g.scale / scale,
-                            y: g.bounds.y * g.scale / scale,
-                            ..g.bounds
-                        },
-                        (c.x - g.x) / scale,
-                        (c.y - g.y) / scale,
-                        &g.mode,
-                        area(w, g.mode == "move")?,
-                    ),
-                )?;
+                let next = model::gesture(
+                    Bounds {
+                        x: g.bounds.x * g.scale / scale,
+                        y: g.bounds.y * g.scale / scale,
+                        ..g.bounds
+                    },
+                    (c.x - g.x) / scale,
+                    (c.y - g.y) / scale,
+                    &g.mode,
+                    area(w, g.mode == "move")?,
+                );
+                if g.mode == "move" {
+                    // Moving never changes size. Resizing a transparent WebView2 on every
+                    // pointer frame forces a relayout/recomposite and makes drags stutter.
+                    w.set_position(LogicalPosition::new(next.x, next.y))
+                        .map_err(|e| e.to_string())?;
+                } else {
+                    set_bounds(w, next)?;
+                }
             }
         }
         "endGesture" => {

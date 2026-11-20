@@ -1,7 +1,7 @@
 import type { FoxSkin } from '../shared/types'
 
 // One cached, deterministic decode; animation only transforms the separate layers.
-export const FOX_ASSET = './assets/fox/atlas.png'
+export const FOX_ASSET = './assets/fox/atlas.webp'
 export function foxMatte(r: number, g: number, b: number): number {
   return Math.max(0, Math.min(1, (g - Math.max(r, b) - 18) / 110))
 }
@@ -19,7 +19,7 @@ export function tintFoxPixels(d: Uint8ClampedArray, skin: FoxSkin): void {
 }
 const pending: Record<string, Promise<string[]> | undefined> = {}
 export function loadFox(skin: FoxSkin = 'classic'): Promise<string[]> { return decodeFox(FOX_ASSET, 3, 2, skin) }
-export function loadFoxGroomRig(skin: FoxSkin = 'classic'): Promise<string[]> { return decodeFox('./assets/fox/groom-rig.png', 3, 1, skin) }
+export function loadFoxGroomRig(skin: FoxSkin = 'classic'): Promise<string[]> { return decodeFox('./assets/fox/groom-rig.webp', 3, 1, skin) }
 function decodeFox(path: string, columns: number, rows: number, skin: FoxSkin): Promise<string[]> {
   const key = `${path}:${skin}`
   return pending[key] ??= new Promise((resolve, reject) => {

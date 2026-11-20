@@ -5,7 +5,7 @@ import type { WindowGesture } from './shared/windowGeometry'
 export function useWindowGestures() {
   const moving = ref(false)
   let active: { pointer: number; x: number; y: number; host: HTMLElement; id: Promise<number>; mode: WindowGesture } | null = null
-  let suppressUntil = 0, lastMove = 0
+  let suppressUntil = 0, lastMove = 0, inFlight = false, queued = false
   function down(event: PointerEvent, mode: WindowGesture = 'move') {
     if (event.button === 0 && !active) suppressUntil = 0
     if (!isDesktop || event.button !== 0 || active) return
@@ -24,7 +24,17 @@ export function useWindowGestures() {
     event.preventDefault(); event.stopPropagation()
     if (performance.now() - lastMove < 16) return
     lastMove = performance.now()
-    void current.id.then(id => { if (active === current) return api.moveGesture(id) }).catch(() => {})
+    // Keep at most one native move in flight. The native side reads the live cursor,
+    // so a coalesced follow-up lands at the latest position instead of replaying a backlog.
+    if (inFlight) { queued = true; return }
+    send(current)
+  }
+  function send(current: NonNullable<typeof active>) {
+    inFlight = true
+    void current.id.then(id => { if (active === current) return api.moveGesture(id) }).catch(() => {}).finally(() => {
+      inFlight = false
+      if (queued && active === current) { queued = false; send(current) } else queued = false
+    })
   }
   function end() {
     const current = active

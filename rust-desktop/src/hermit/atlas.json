@@ -1,7 +1,7 @@
 {
   "normal": {
     "box": {
-      "file": "normal.png",
+      "file": "normal.webp",
       "name": "折纸工程师",
       "size": [
         1024,
@@ -47,7 +47,7 @@
       ]
     },
     "soda": {
-      "file": "normal.png",
+      "file": "normal.webp",
       "name": "汽泡航行员",
       "size": [
         1024,
@@ -93,7 +93,7 @@
       ]
     },
     "castle": {
-      "file": "normal.png",
+      "file": "normal.webp",
       "name": "星堡守护者",
       "size": [
         1024,
@@ -140,7 +140,7 @@
     }
   },
   "props": {
-    "file": "props.png",
+    "file": "props.webp",
     "size": [
       1448,
       1086

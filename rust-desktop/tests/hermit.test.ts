@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { webpInfo } from './webp.js'
 import { beginHermit, advanceHermit, catchFeather, hermitFrame, hermitIdle, inCatchZone } from '../src/hermit/play'
 import { validateSettings } from '../src/shared/settings'
 import { DEFAULT_SETTINGS } from '../src/shared/types'
@@ -59,8 +60,8 @@ test('三套原始、觉醒、变身图集都存在，六帧边界不越界', ()
   for (const skin of ['box', 'soda', 'castle'] as const) {
     for (const [spec, folder] of [[normal.normal[skin], 'hermit'], [awake[`hermit/${skin}`], 'evolution/v2'], [transform[`hermit/${skin}`], 'evolution/v3']] as const) {
       assert.equal(spec.rects.length, 6)
-      const bytes = readFileSync(new URL(`../public/assets/${folder}/${spec.file}`, import.meta.url))
-      assert.equal(bytes.readUInt32BE(16), spec.size[0]); assert.equal(bytes.readUInt32BE(20), spec.size[1])
+      const info = webpInfo(readFileSync(new URL(`../public/assets/${folder}/${spec.file}`, import.meta.url)))
+      assert.equal(info.width, spec.size[0]); assert.equal(info.height, spec.size[1])
       for (const [x,y,w,h] of spec.rects) { assert.ok(x! >= 0 && y! >= 0 && w! > 0 && h! > 0); assert.ok(x! + w! <= spec.size[0]! && y! + h! <= spec.size[1]!) }
     }
   }

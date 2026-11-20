@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetArcToolbar from './PetArcToolbar.vue'
+import PetIdle from './PetIdle.vue'
 import PetEvolution from './PetEvolution.vue'
 import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
@@ -47,6 +48,7 @@ function chooseState(percent: number) { previewQuota(percent); scene.value?.canc
         <BuddyCalendar :blocked="wardrobe || details || moreActions || moving || noticeOpen" :deferred="!!scene?.updateBlocked" @open-change="calendarOpen=$event"/>
         <PetEvolution :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked || calendarOpen || noticeOpen"/><PetNotices :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen=$event" :blocked="wardrobe || details || moreActions || moving || !!scene?.updateBlocked" :message-blocked="wardrobe || details || moreActions || moving" :message-deferred="!!scene?.updateBlocked"><template #parcel><BuddyMessageParcel/></template></PetNotices>
         <BuddyScene ref="scene" :quota-label="quotaDisplay.label" :quota-subtitle="quotaDisplay.subtitle" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.buddySkin" :night="night" :reduced-motion="state.settings.reducedMotion" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
+        <PetIdle scene="buddy"/>
         <PetArcToolbar scene="buddy" label="充气牛马" :blocked="noticeOpen"><template #controls><button aria-label="更多牛马动作" title="更多牛马动作" @click="moreActions = !moreActions; wardrobe = false; details = false"><PhGameController/></button><button aria-label="牛马换装" title="牛马换装" @click="wardrobe = !wardrobe; details = false; moreActions = false"><PhTShirt/></button><button aria-label="设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起到托盘" title="收起到托盘" @click="api.hide()"><PhMinus/></button></template><button v-for="item in interactions.slice(0, 4)" :key="item.action" :aria-label="item.label" @click="act(item.action)"><BuddySprite :prop="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
 
         <button v-if="!usable" class="buddy-login" @click="api.login()"><PhSignIn/>{{ state.status === 'signed-out' ? '连接账户' : statusLabel }}</button>

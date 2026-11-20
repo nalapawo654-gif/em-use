@@ -7,7 +7,7 @@ export function useAwakeningProps(){
     try{const result=await (pending??=new Promise<HTMLCanvasElement[]>((resolve,reject)=>{
       const image=new Image();image.onerror=()=>{pending=undefined;reject(new Error('Interaction props failed'))}
       image.onload=()=>resolve(rects.map(([x,y,w,h])=>{const c=document.createElement('canvas');c.width=w!;c.height=h!;c.getContext('2d')!.drawImage(image,x!,y!,w!,h!,0,0,w!,h!);return c}))
-      image.src='./assets/evolution/v2/interaction-props.png'
+      image.src='./assets/evolution/v2/interaction-props.webp'
     }));if(!disposed)art.value=result}catch{ /* The original interaction feedback remains visible. */ }
   });onScopeDispose(()=>{disposed=true});return art
 }

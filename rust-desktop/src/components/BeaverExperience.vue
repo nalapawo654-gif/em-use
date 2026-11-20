@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetArcToolbar from './PetArcToolbar.vue'
+import PetIdle from './PetIdle.vue'
 import PetEvolution from './PetEvolution.vue'
 import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
@@ -65,6 +66,7 @@ watch(panel, (value, previous) => { if (!value && previous) void nextTick(() => 
         <PetEvolution :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked || calendarOpen || noticeOpen"/><PetNotices :blocked="!!panel || moving || capturing || !!notice || !!scene?.updateBlocked" :message-blocked="!!panel || moving || capturing || !!notice" :message-deferred="!!scene?.updateBlocked" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen = $event" />
         <PetCalendar appearance="beaver" :blocked="!!panel || moving || !!notice || noticeOpen || capturing || !!scene?.updateBlocked" @open-change="calendarOpen = $event"/>
         <BeaverScene ref="scene" :quota-label="quotaDisplay.label" :quota-subtitle="quotaDisplay.subtitle" :percent="percent" :remaining="usable ? state.quota?.remaining : undefined" :limit="usable ? state.quota?.limit : undefined" :skin="state.settings.beaverSkin" :night="night" :reduced-motion="state.settings.reducedMotion" :camp="state.settings.beaverCamp" :motto="state.settings.beaverMotto" :muted="['stale', 'expired', 'resetting'].includes(state.status)"/>
+        <PetIdle scene="beaver"/>
         <PetArcToolbar scene="beaver" label="林间海狸鼠" :blocked="noticeOpen"><template #controls><button aria-label="更多海狸鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="toggle('play')"><PhGameController/></button><button aria-label="海狸鼠换装" title="天气换装" :aria-expanded="panel === 'wardrobe'" @click="toggle('wardrobe')"><PhTShirt/></button><button aria-label="海狸鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起海狸鼠到托盘" title="收起到托盘" @click="api.hide()"><PhMinus/></button></template><button v-for="item in interactions.slice(0, 3)" :key="item.action" :aria-label="`海狸鼠${item.label}`" :title="item.label" @click="act(item.action)"><BeaverSprite :prop="item.prop"/><span>{{ item.label }}</span></button><button aria-label="给海狸鼠拍照" title="拍照" :disabled="capturing" @click="photo()"><PhCamera/><span>拍照</span></button></PetArcToolbar>
 
         <footer class="beaver-footer beaver-chrome"><button :aria-expanded="panel === 'details'" @click="toggle('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新海狸鼠额度" title="刷新额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button></footer>

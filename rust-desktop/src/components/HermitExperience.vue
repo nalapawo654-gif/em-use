@@ -11,6 +11,7 @@ import HermitVisual from './HermitVisual.vue'
 import HermitSprite from './HermitSprite.vue'
 import HermitWardrobe from './HermitWardrobe.vue'
 import PetArcToolbar from './PetArcToolbar.vue'
+import PetIdle from './PetIdle.vue'
 import PetEvolution from './PetEvolution.vue'
 import PetNotices from './PetNotices.vue'
 import PetCalendar from './PetCalendar.vue'
@@ -98,6 +99,7 @@ async function demoSource() { if (isDesktop) return; await api.settings({ quotaS
     <p v-if="!mainAction" class="hermit-speech">{{ speech }}</p>
     <span v-if="percent === 0 && !mainAction" class="hermit-closed-sign">今天不搬了</span>
     <button class="hermit-quota" :disabled="noticeOpen || calendarOpen" :aria-expanded="panel === 'details'" aria-label="查看寄居蟹额度详情" @click="togglePanel('details')"><CodexQuotaReadout compact><span>{{ quotaDisplay.label }}</span><strong>{{ percent === null ? '—' : Math.round(percent) + '%' }}</strong><small>{{ status }}</small></CodexQuotaReadout></button>
+    <PetIdle scene="hermit"/>
     <PetArcToolbar scene="hermit" label="纸箱寄居蟹" :blocked="noticeOpen || calendarOpen"><template #controls><button aria-label="寄居蟹更多玩法" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="寄居蟹换装" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="寄居蟹设置" @click="openSettings"><PhGearSix/></button><button aria-label="收起寄居蟹到托盘" @click="run(() => api.hide(), '收起失败，请重试。')"><PhMinus/></button></template><button v-for="item in HERMIT_ACTIONS.filter(item => item.id !== 'visit')" :key="item.id" :aria-label="'寄居蟹' + item.label" @click="act(item.id)"><component :is="icons[item.id]"/><span>{{ item.label }}</span></button></PetArcToolbar>
     <div v-if="play.action === 'tease'" ref="teaseArea" class="hermit-tease-area" data-pet-gesture role="group" aria-label="羽毛活动区，方向键移动，空格抓取" tabindex="0" @pointerdown.stop="featherDown" @pointermove.stop="featherMove" @pointerup.stop="featherUp" @pointercancel.stop="release" @lostpointercapture="release" @keydown="featherKey"><span class="hermit-catch-zone" :class="{ 'is-valid': inCatchZone(feather.x, feather.y) }"/><HermitSprite prop :frame="8" class="hermit-feather" :style="{ left: feather.x * 100 + '%', top: feather.y * 100 + '%' }"/></div>
     <div v-if="mainAction" class="hermit-hud" data-pet-gesture aria-live="polite"><div><b>{{ actionTitle }}</b><small>{{ actionHint }}</small></div><button v-if="play.action === 'tease'" :disabled="play.catches >= 3" @click="attempt()">递给它</button><button @click="cancel">{{ play.action === 'sleep' ? '叫它出来' : '结束' }}</button></div>

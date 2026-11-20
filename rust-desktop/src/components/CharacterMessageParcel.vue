@@ -8,7 +8,7 @@ const canvas = ref<HTMLCanvasElement>(), ready = ref(false), failed = ref(false)
 // once per mount; actor animation, costumes and quota never transform this layer.
 onMounted(async () => {
   try {
-    const source = await loadImage(`./assets/${props.scene}/message-prop.png`)
+    const source = await loadImage(`./assets/${props.scene}/message-prop.webp`)
     const target = canvas.value
     if (!target) return
     target.width = source.naturalWidth; target.height = source.naturalHeight

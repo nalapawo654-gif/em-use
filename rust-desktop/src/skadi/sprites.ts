@@ -1,8 +1,8 @@
 import type { SkadiForm, SkadiSkin } from '../shared/types'
-export function skadiAsset(skin: SkadiSkin, form: SkadiForm): string { return `./assets/skadi/v2/${form}-${skin}.png` }
+export function skadiAsset(skin: SkadiSkin, form: SkadiForm): string { return `./assets/skadi/v2/${form}-${skin}.webp` }
 const transforms = new Map<string, { x: number; y: number; scale: number }[]>()
 export function skadiSpritePoint(form:SkadiForm,skin:SkadiSkin,frame:number,p:[number,number]):[number,number]{const t=transforms.get(skadiAsset(skin,form))?.[frame];return t?[p[0]*t.scale+t.x,p[1]*t.scale+t.y]:p}
-export function skadiWeaponPoint(index:number,p:[number,number]):[number,number]{const t=transforms.get("./assets/skadi/v2/weapons.png")?.[index];return t?[p[0]*t.scale+t.x,p[1]*t.scale+t.y]:p}
+export function skadiWeaponPoint(index:number,p:[number,number]):[number,number]{const t=transforms.get("./assets/skadi/v2/weapons.webp")?.[index];return t?[p[0]*t.scale+t.x,p[1]*t.scale+t.y]:p}
 const cache = new Map<string, Promise<string[]>>()
 // The generator returned RGB, so the authored green screen is keyed once at decode.
 // This is deliberately independent of quota and preserves the red eyes and pale hair.
@@ -10,9 +10,9 @@ export function skadiMatte(r: number, g: number, b: number): number {
   return Math.max(0, Math.min(1, (g - Math.max(r, b) - 12) / 130))
 }
 export function loadSkadi(skin: SkadiSkin, form: SkadiForm = 'chibi'): Promise<string[]> { return decode(skadiAsset(skin, form), 3, 2) }
-export function loadSkadiWeapons(): Promise<string[]> { return decode('./assets/skadi/v2/weapons.png', 3, 2) }
-export function loadSkadiProps(): Promise<string[]> { return decode('./assets/skadi/v2/props.png', 3, 2) }
-export function loadSkadiCat(): Promise<string[]> { return decode('./assets/skadi/cat.png', 3, 2) }
+export function loadSkadiWeapons(): Promise<string[]> { return decode('./assets/skadi/v2/weapons.webp', 3, 2) }
+export function loadSkadiProps(): Promise<string[]> { return decode('./assets/skadi/v2/props.webp', 3, 2) }
+export function loadSkadiCat(): Promise<string[]> { return decode('./assets/skadi/cat.webp', 3, 2) }
 function decode(path: string, columns: number, rows: number): Promise<string[]> {
   if (cache.has(path)) return cache.get(path)!
   const pending = new Promise<string[]>((resolve, reject) => {

@@ -7,7 +7,7 @@ const canvas=ref<HTMLCanvasElement>(), ready=ref(false), failed=ref(false)
 let sprite: HTMLCanvasElement | undefined
 onMounted(async()=>{
  try {
-  const source=await loadImage('./assets/buddy/message-bag.png')
+  const source=await loadImage('./assets/buddy/message-bag.webp')
   if(!canvas.value)return
   sprite=canvas.value;sprite.width=source.naturalWidth;sprite.height=source.naturalHeight
   const ctx=sprite.getContext('2d',{willReadFrequently:true})!

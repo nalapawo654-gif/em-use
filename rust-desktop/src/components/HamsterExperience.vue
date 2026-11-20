@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CodexQuotaReadout from './CodexQuotaReadout.vue'
 import PetArcToolbar from './PetArcToolbar.vue'
+import PetIdle from './PetIdle.vue'
 import PetEvolution from './PetEvolution.vue'
 import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
@@ -86,6 +87,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
           <div><span class="hamster-meter" :class="{ unknown: percent === null }"><i :style="{ width: `${percent === null ? 0 : Math.max(0, Math.min(100, percent))}%` }"></i></span><strong>{{ percent === null ? '—' : Math.round(percent) + '%' }}</strong></div>
           <small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small>
         </CodexQuotaReadout></button>
+        <PetIdle scene="hamster"/>
         <PetArcToolbar scene="hamster" label="仓鼠动力机房" :blocked="noticeOpen"><template #controls><button aria-label="更多仓鼠互动" title="更多互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="仓鼠换装" title="换装" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="仓鼠设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仓鼠到托盘" title="收起到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in interactions.slice(0, 4)" :key="item.action" :aria-label="'仓鼠' + item.label" :title="item.label" @click="act(item.action)"><HamsterProp :index="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
 
         <footer class="hamster-footer hamster-chrome"><button :aria-expanded="panel === 'details'" @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新仓鼠额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>

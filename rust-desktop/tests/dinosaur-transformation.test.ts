@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { webpInfo } from './webp.js'
 import { dinosaurTransformationTime } from '../src/dinosaur/transformation.js'
 import atlas from '../src/dinosaur/transformation-atlas.json'
 
@@ -15,8 +16,8 @@ test('dinosaur storyboard follows authored beat boundaries and reverses to the o
   assert.equal(dinosaurTransformationTime(1700,1600).t,1)
 })
 test('four costumes each have six complete key poses within the shipped RGBA atlas',()=>{
-  const png=readFileSync(new URL(`../public/assets/evolution/v3/${atlas.file}`,import.meta.url))
-  assert.equal(png.readUInt32BE(16),atlas.size[0]);assert.equal(png.readUInt32BE(20),atlas.size[1]);assert.equal(png[25],6)
+  const info=webpInfo(readFileSync(new URL(`../public/assets/evolution/v3/${atlas.file}`,import.meta.url)))
+  assert.equal(info.width,atlas.size[0]);assert.equal(info.height,atlas.size[1]);assert.ok(info.alpha&&info.lossless)
   assert.deepEqual(Object.keys(atlas.rows),['classic','peach','cream','charcoal'])
   for(const row of Object.values(atlas.rows)){
     assert.equal(row.length,6)

@@ -28,18 +28,18 @@ const awake = computed(() => evolution.awake && displayed.value !== null)
 const asset = computed(() => {
   if (!displayed.value) return ''
   const animated = !still.value && evolution.phase !== 'idle'
-  if (animated && evolution.phase === 'reveal' && awake.value) return `./assets/modelmuse/${displayed.value}-awake-reveal.png?v=${retry.value}`
+  if (animated && evolution.phase === 'reveal' && awake.value) return `./assets/modelmuse/${displayed.value}-awake-reveal.webp?v=${retry.value}`
   const gathering = animated && evolution.phase === 'gather'
   const dressing = animated && (evolution.phase === 'unfold' || evolution.phase === 'return' && awake.value)
   const costume = gathering ? '' : awake.value ? '-awake' : ''
   const pose = gathering || dressing || action.value === 'tidy' ? '-tidy' : ''
-  return `./assets/modelmuse/${displayed.value}${costume}${pose}.png?v=${retry.value}`
+  return `./assets/modelmuse/${displayed.value}${costume}${pose}.webp?v=${retry.value}`
 })
 // Warm all poses for the current form so interactions do not flash a blank image.
 watch([displayed, retry], ([form, version]) => {
   if (!form) return
   for (const suffix of ['', '-tidy', '-awake', '-awake-tidy', '-awake-reveal']) {
-    const image = new Image(); image.src = `./assets/modelmuse/${form}${suffix}.png?v=${version}`
+    const image = new Image(); image.src = `./assets/modelmuse/${form}${suffix}.webp?v=${version}`
   }
 }, { immediate: true })
 const loadingOwner = Symbol('modelmuse-art')
@@ -49,7 +49,7 @@ watch([target, () => state.settings.quotaSource, retry], ([form, source, version
   const images = ['-awake', '-awake-tidy', '-awake-reveal'].map(suffix => {
     const img = new Image()
     img.onload = img.onerror = () => { if (!canceled && --pending === 0) setEvolutionLoading(loadingOwner, false) }
-    img.src = `./assets/modelmuse/${form}${suffix}.png?v=${version}`
+    img.src = `./assets/modelmuse/${form}${suffix}.webp?v=${version}`
     return img
   })
   setEvolutionLoading(loadingOwner, true)
@@ -83,7 +83,7 @@ onUnmounted(()=>{finish();setEvolutionLoading(loadingOwner,false);clearInterval(
   <PetNotices :blocked="!!panel||moving||!!error||!!action" :message-blocked="!!panel||moving||!!error" :message-deferred="!!action" :external-blocked="calendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="noticeOpen=$event"/>
   <PetCalendar appearance="modelmuse" :blocked="!!panel||moving||!!error||noticeOpen||!!action" @open-change="calendarOpen=$event"/>
   <div class="muse-character" :class="action ? 'action-'+action : ''" aria-hidden="true">
-    <Transition name="muse-change" mode="out-in"><img v-if="asset&&!assetFailed" :key="displayed || 'unknown'" :src="asset" alt="" @error="assetFailed=true"/><div v-else-if="!asset" key="unknown" class="muse-unknown"><span>?</span><small>等待额度</small></div></Transition>
+    <Transition name="muse-change" mode="out-in"><img v-if="asset&&!assetFailed" data-pet-actor :key="displayed || 'unknown'" :src="asset" alt="" @error="assetFailed=true"/><div v-else-if="!asset" key="unknown" class="muse-unknown"><span>?</span><small>等待额度</small></div></Transition>
   </div>
   <button class="muse-hit scene-hit" :disabled="!!panel||calendarOpen||noticeOpen||!!error" :aria-label="`向${persona?.name ?? '小人'}打招呼`" @click="act('hello')"/>
   <div v-if="assetFailed" class="muse-error" role="status" data-pet-gesture>角色素材未加载 <button @click="retry++;assetFailed=false">重试</button></div>

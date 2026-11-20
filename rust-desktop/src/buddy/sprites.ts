@@ -63,7 +63,7 @@ function atlas(path: string, columns: number, rows: number, rects?: Rect[], scal
 export async function buddySprite(skin: BuddySkin, level: number) {
   const index = Math.max(0, Math.min(3, Math.round(level)))
   return skin === 'classic'
-    ? (await atlas('./assets/buddy/classic-states.png', 2, 2, classicRects, .72))[index]
+    ? (await atlas('./assets/buddy/classic-states.webp', 2, 2, classicRects, .72))[index]
     : (await atlas('./assets/buddy/skin-states.webp', 4, 4, skinRects, 4 / 3))[skins.indexOf(skin) * 4 + index]
 }
 export async function buddyProp(name: BuddyProp) {

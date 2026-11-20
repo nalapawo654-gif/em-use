@@ -56,6 +56,6 @@ export function loadFeidudu(): Promise<HTMLCanvasElement[]> {
       } catch (error) { pending = undefined; reject(error) }
     }
     image.onerror = () => { pending = undefined; reject(new Error('肥嘟嘟素材未能加载')) }
-    image.src = './assets/feidudu/atlas.png'
+    image.src = './assets/feidudu/atlas.webp'
   })
 }

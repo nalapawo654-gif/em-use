@@ -4,7 +4,7 @@ import type { CultivationSkin } from '../shared/types'
 import { cultivatorFrameOffset } from '../cultivation/motion'
 const props=withDefaults(defineProps<{ frame?: number; skin?: CultivationSkin }>(), { frame: 0, skin: 'classic' })
 const failed=ref(false)
-const source=computed(()=>`./assets/cultivation/skins/${props.skin}.png`)
+const source=computed(()=>`./assets/cultivation/skins/${props.skin}.webp`)
 watch(source,()=>failed.value=false)
 </script>
 <template>

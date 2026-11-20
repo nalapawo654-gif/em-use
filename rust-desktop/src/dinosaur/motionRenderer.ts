@@ -40,7 +40,7 @@ export function loadDinosaurParts(): Promise<DinosaurParts> {
         resolve(result)
       } catch(error){pending=undefined;reject(error)}
     }
-    image.src='./assets/dinosaur/motion-rig.png'
+    image.src='./assets/dinosaur/motion-rig.webp'
   })
 }
 export function createDinosaurMotionRenderer(original: DinosaurParts, skin: DinosaurSkin, awakened?:HTMLCanvasElement) {

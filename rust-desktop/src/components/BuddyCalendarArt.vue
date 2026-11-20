@@ -6,7 +6,7 @@ defineProps<{ time?: string; alert?: boolean; gentle?: boolean }>()
 const canvas=ref<HTMLCanvasElement>(),ready=ref(false),failed=ref(false)
 onMounted(async()=>{
  try {
-  const source=await calendarArt('./assets/buddy/calendar-stand.png')
+  const source=await calendarArt('./assets/buddy/calendar-stand.webp')
   if(!canvas.value)return
   const c=canvas.value;c.width=source.width;c.height=source.height
   c.getContext('2d')!.drawImage(source,0,0);ready.value=true

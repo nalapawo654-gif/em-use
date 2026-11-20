@@ -70,7 +70,7 @@ test('all twenty skins have installed native assets and sixteen valid crop recta
  const manifest=JSON.parse(readFileSync(new URL('../docs/native-assets.json',import.meta.url),'utf8'))
  const crops=JSON.parse(readFileSync(new URL('../src/potato/crops.json',import.meta.url),'utf8'))
  for(const atlas of new Set([...POTATO_SKINS.map(s=>s.atlas),'props'])){
-  const entry=manifest.assets.find((a:{path:string})=>a.path===`potato/${atlas}-atlas.png`)
+  const entry=manifest.assets.find((a:{path:string})=>a.path===`potato/${atlas}-atlas.webp`)
   assert.ok(entry,atlas)
   assert.ok(readFileSync(new URL(`../public/assets/${entry.path}`,import.meta.url)).length>0)
   assert.equal(crops[atlas].length,16)

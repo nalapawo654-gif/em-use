@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { webpInfo } from './webp.js'
 import { TRANSFORMATION_ATLASES, transformationTime, transformationEndFrame } from '../src/evolution/transformation.js'
 import { AWAKENING_ATLASES } from '../src/evolution/atlas.js'
 import { initialEvolution,stepEvolution } from '../src/evolution/state.js'
@@ -8,7 +9,7 @@ test('every remaining costume and Skadi form ships six unique in-bounds RGBA pos
  const expected=Object.keys(AWAKENING_ATLASES).filter(k=>!k.startsWith('dinosaur/')).sort()
  assert.ok(expected.length>0);assert.deepEqual(Object.keys(TRANSFORMATION_ATLASES).sort(),expected)
  for(const [key,spec]of Object.entries(TRANSFORMATION_ATLASES)){
-  const png=readFileSync(new URL(`../public/assets/evolution/v3/${spec.file}`,import.meta.url));assert.equal(png.readUInt32BE(16),spec.size[0],key);assert.equal(png.readUInt32BE(20),spec.size[1],key);assert.equal(png[25],6,key)
+  const info=webpInfo(readFileSync(new URL(`../public/assets/evolution/v3/${spec.file}`,import.meta.url)));assert.equal(info.width,spec.size[0],key);assert.equal(info.height,spec.size[1],key);assert.ok(info.alpha&&info.lossless,key)
   assert.equal(spec.rects.length,6,key);assert.equal(new Set(spec.rects.map(r=>JSON.stringify(r))).size,6,key)
   for(const [x,y,w,h]of spec.rects){assert.ok(x!>=0&&y!>=0&&w!>50&&h!>50,key);assert.ok(x!+w!<=spec.size[0]!&&y!+h!<=spec.size[1]!,key)}
  }

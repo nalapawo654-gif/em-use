@@ -6,6 +6,7 @@
     "codexExecutable": "",
     "codexHome": "",
     "codexBucket": "codex",
+    "startupHatch": true,
     "codexIntroEnabled": false,
     "codexIntroTheme": "dragon",
     "worldEnabled": false,

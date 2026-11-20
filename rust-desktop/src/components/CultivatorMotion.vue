@@ -10,7 +10,7 @@ import { cultivatorVertex, cultivatorFrameOffset } from '../cultivation/motion'
 const props=defineProps<{frame:number;skin:CultivationSkin;running:boolean;gentle:boolean}>()
 const { art: awakened } = useAwakenedArt('cultivation', () => props.skin, ()=>'chibi', ()=>props.frame)
 const canvas=ref<HTMLCanvasElement>(), fallback=ref(false)
-const source=computed(()=>awakened.value?.packed ?? `./assets/cultivation/skins/${props.skin}.png`)
+const source=computed(()=>awakened.value?.packed ?? `./assets/cultivation/skins/${props.skin}.webp`)
 let gl:WebGLRenderingContext|null=null, program:WebGLProgram|null=null, texture:WebGLTexture|null=null
 let vertices:WebGLBuffer|null=null, indices:WebGLBuffer|null=null, observer:ResizeObserver|undefined
 const points=new Float32Array(25*25*4)

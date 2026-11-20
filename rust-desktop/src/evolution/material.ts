@@ -22,7 +22,8 @@ export const vEvolutionMaterial: ObjectDirective<HTMLElement, MaterialBinding> =
       const energy = awakeningEnergy(b.percent === undefined ? quotaDisplay.value.percent : b.percent, isRestingPose(b.pose), fresh)
       const active = !!style && evolution.awake
       el.classList.add('evolution-actor')
-      el.classList.toggle('evolution-material', active)
+      // Zero energy is an identity filter; skip it so the canvas is not re-filtered every frame.
+      el.classList.toggle('evolution-material', active && energy > 0)
       el.dataset.awakeningSkin = `${b.scene}/${b.skin}`
       el.dataset.cinematic = String(!!b.cinematic || (evolutionCinematicActive.value && b.scene === evolution.scene))
       el.dataset.awakeningPose = b.pose ?? 'idle'

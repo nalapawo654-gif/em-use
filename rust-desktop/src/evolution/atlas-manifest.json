@@ -1,6 +1,6 @@
 {
   "fox/classic": {
-    "file": "fox.png",
+    "file": "fox.webp",
     "name": "玄金九尾",
     "size": [
       1448,
@@ -34,7 +34,7 @@
     ]
   },
   "fox/jade": {
-    "file": "fox.png",
+    "file": "fox.webp",
     "name": "翠玉山灵",
     "size": [
       1448,
@@ -68,7 +68,7 @@
     ]
   },
   "fox/sepia": {
-    "file": "fox.png",
+    "file": "fox.webp",
     "name": "秋珀书仙",
     "size": [
       1448,
@@ -102,7 +102,7 @@
     ]
   },
   "piranha/classic": {
-    "file": "piranha.png",
+    "file": "piranha.webp",
     "name": "日冕花王",
     "size": [
       1122,
@@ -136,7 +136,7 @@
     ]
   },
   "piranha/sakura": {
-    "file": "piranha.png",
+    "file": "piranha.webp",
     "name": "樱庭花姬",
     "size": [
       1122,
@@ -170,7 +170,7 @@
     ]
   },
   "piranha/cactus": {
-    "file": "piranha.png",
+    "file": "piranha.webp",
     "name": "绿洲守望",
     "size": [
       1122,
@@ -204,7 +204,7 @@
     ]
   },
   "piranha/halloween": {
-    "file": "piranha.png",
+    "file": "piranha.webp",
     "name": "南瓜夜爵",
     "size": [
       1122,
@@ -238,7 +238,7 @@
     ]
   },
   "piranha/christmas": {
-    "file": "piranha.png",
+    "file": "piranha.webp",
     "name": "冬芽颂歌",
     "size": [
       1122,
@@ -272,7 +272,7 @@
     ]
   },
   "luckycat/classic": {
-    "file": "luckycat.png",
+    "file": "luckycat.webp",
     "name": "福星金使",
     "size": [
       1448,
@@ -306,7 +306,7 @@
     ]
   },
   "luckycat/festival": {
-    "file": "luckycat.png",
+    "file": "luckycat.webp",
     "name": "瑞锦巡游",
     "size": [
       1448,
@@ -340,7 +340,7 @@
     ]
   },
   "luckycat/jade": {
-    "file": "luckycat.png",
+    "file": "luckycat.webp",
     "name": "青瓷掌柜",
     "size": [
       1448,
@@ -374,7 +374,7 @@
     ]
   },
   "luckycat/pajamas": {
-    "file": "luckycat.png",
+    "file": "luckycat.webp",
     "name": "星眠守梦",
     "size": [
       1448,
@@ -408,7 +408,7 @@
     ]
   },
   "buddy/classic": {
-    "file": "buddy.png",
+    "file": "buddy.webp",
     "name": "曙光守卫",
     "size": [
       1254,
@@ -442,7 +442,7 @@
     ]
   },
   "buddy/worker": {
-    "file": "buddy.png",
+    "file": "buddy.webp",
     "name": "黄铜领航",
     "size": [
       1254,
@@ -476,7 +476,7 @@
     ]
   },
   "buddy/blossom": {
-    "file": "buddy.png",
+    "file": "buddy.webp",
     "name": "花庭独角",
     "size": [
       1254,
@@ -510,7 +510,7 @@
     ]
   },
   "buddy/holiday": {
-    "file": "buddy-extra.png",
+    "file": "buddy-extra.webp",
     "name": "潮岛船长",
     "size": [
       1774,
@@ -544,7 +544,7 @@
     ]
   },
   "buddy/midnight": {
-    "file": "buddy-extra.png",
+    "file": "buddy-extra.webp",
     "name": "月蚀巡卫",
     "size": [
       1774,
@@ -578,7 +578,7 @@
     ]
   },
   "dinosaur/classic": {
-    "file": "dinosaur.png",
+    "file": "dinosaur.webp",
     "name": "翠晶古龙",
     "size": [
       1402,
@@ -618,7 +618,7 @@
     ]
   },
   "dinosaur/peach": {
-    "file": "dinosaur.png",
+    "file": "dinosaur.webp",
     "name": "桃枝花龙",
     "size": [
       1402,
@@ -658,7 +658,7 @@
     ]
   },
   "dinosaur/cream": {
-    "file": "dinosaur.png",
+    "file": "dinosaur.webp",
     "name": "蜜晶幼王",
     "size": [
       1402,
@@ -698,7 +698,7 @@
     ]
   },
   "dinosaur/charcoal": {
-    "file": "dinosaur.png",
+    "file": "dinosaur.webp",
     "name": "黑曜夜龙",
     "size": [
       1402,
@@ -738,7 +738,7 @@
     ]
   },
   "feidudu/classic": {
-    "file": "feidudu.png",
+    "file": "feidudu.webp",
     "name": "星航队长",
     "size": [
       1247,
@@ -778,7 +778,7 @@
     ]
   },
   "feidudu/peach": {
-    "file": "feidudu.png",
+    "file": "feidudu.webp",
     "name": "花信旅人",
     "size": [
       1247,
@@ -818,7 +818,7 @@
     ]
   },
   "feidudu/cream": {
-    "file": "feidudu.png",
+    "file": "feidudu.webp",
     "name": "云朵观星",
     "size": [
       1247,
@@ -858,7 +858,7 @@
     ]
   },
   "feidudu/black-purple": {
-    "file": "feidudu.png",
+    "file": "feidudu.webp",
     "name": "暗星探索",
     "size": [
       1247,
@@ -898,7 +898,7 @@
     ]
   },
   "feidudu/eleme-blue": {
-    "file": "feidudu.png",
+    "file": "feidudu.webp",
     "name": "疾风信使",
     "size": [
       1247,
@@ -938,7 +938,7 @@
     ]
   },
   "feidudu/jd-red": {
-    "file": "feidudu.png",
+    "file": "feidudu.webp",
     "name": "赤焰救援",
     "size": [
       1247,
@@ -978,7 +978,7 @@
     ]
   },
   "beaver/sunny": {
-    "file": "beaver-alpha.png",
+    "file": "beaver-alpha.webp",
     "name": "森工匠师",
     "size": [
       1536,
@@ -1024,7 +1024,7 @@
     ]
   },
   "beaver/rain": {
-    "file": "beaver-alpha.png",
+    "file": "beaver-alpha.webp",
     "name": "雨林巡护",
     "size": [
       1536,
@@ -1070,7 +1070,7 @@
     ]
   },
   "beaver/snow": {
-    "file": "beaver-alpha.png",
+    "file": "beaver-alpha.webp",
     "name": "霜木旅者",
     "size": [
       1536,
@@ -1116,7 +1116,7 @@
     ]
   },
   "beaver/wind": {
-    "file": "beaver-alpha.png",
+    "file": "beaver-alpha.webp",
     "name": "风谷飞匠",
     "size": [
       1536,
@@ -1162,7 +1162,7 @@
     ]
   },
   "beaver/night": {
-    "file": "beaver-alpha.png",
+    "file": "beaver-alpha.webp",
     "name": "夜灯筑梦",
     "size": [
       1536,
@@ -1208,7 +1208,7 @@
     ]
   },
   "hamster/classic": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "星籽游侠",
     "size": [
       1024,
@@ -1242,7 +1242,7 @@
     ]
   },
   "hamster/worker": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "齿轮巧匠",
     "size": [
       1024,
@@ -1276,7 +1276,7 @@
     ]
   },
   "hamster/nightshift": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "烛星夜行",
     "size": [
       1024,
@@ -1310,7 +1310,7 @@
     ]
   },
   "hamster/rain": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "雨滴骑士",
     "size": [
       1024,
@@ -1344,7 +1344,7 @@
     ]
   },
   "hamster/summer": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "晴浪探险",
     "size": [
       1024,
@@ -1378,7 +1378,7 @@
     ]
   },
   "hamster/winter": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "霜绒守卫",
     "size": [
       1024,
@@ -1412,7 +1412,7 @@
     ]
   },
   "hamster/holiday": {
-    "file": "hamster.png",
+    "file": "hamster.webp",
     "name": "铃愿使者",
     "size": [
       1024,
@@ -1446,7 +1446,7 @@
     ]
   },
   "cultivation/classic": {
-    "file": "cultivation.png",
+    "file": "cultivation.webp",
     "name": "太初云君",
     "size": [
       1536,
@@ -1492,7 +1492,7 @@
     ]
   },
   "cultivation/azure": {
-    "file": "cultivation.png",
+    "file": "cultivation.webp",
     "name": "青霄剑尊",
     "size": [
       1536,
@@ -1538,7 +1538,7 @@
     ]
   },
   "cultivation/astral": {
-    "file": "cultivation.png",
+    "file": "cultivation.webp",
     "name": "紫微星主",
     "size": [
       1536,
@@ -1584,7 +1584,7 @@
     ]
   },
   "cultivation/crimson": {
-    "file": "cultivation.png",
+    "file": "cultivation.webp",
     "name": "朱雀丹皇",
     "size": [
       1536,
@@ -1630,7 +1630,7 @@
     ]
   },
   "battery/classic": {
-    "file": "battery.png",
+    "file": "battery.webp",
     "name": "翠能种核",
     "size": [
       1261,
@@ -1676,7 +1676,7 @@
     ]
   },
   "battery/nanfu": {
-    "file": "battery.png",
+    "file": "battery.webp",
     "name": "金曜聚变",
     "size": [
       1261,
@@ -1722,7 +1722,7 @@
     ]
   },
   "battery/xiaomi": {
-    "file": "battery.png",
+    "file": "battery.webp",
     "name": "珊瑚日出",
     "size": [
       1261,
@@ -1768,7 +1768,7 @@
     ]
   },
   "battery/duracell": {
-    "file": "battery.png",
+    "file": "battery.webp",
     "name": "铜曜恒守",
     "size": [
       1261,
@@ -1814,7 +1814,7 @@
     ]
   },
   "battery/byd": {
-    "file": "battery.png",
+    "file": "battery.webp",
     "name": "赤脉驰星",
     "size": [
       1261,
@@ -1860,7 +1860,7 @@
     ]
   },
   "battery/catl": {
-    "file": "battery.png",
+    "file": "battery.webp",
     "name": "澄蓝潮核",
     "size": [
       1261,
@@ -1906,7 +1906,7 @@
     ]
   },
   "aquarium/classic": {
-    "file": "aquarium.png",
+    "file": "aquarium.webp",
     "name": "珍珠星鳍",
     "size": [
       1254,
@@ -1940,7 +1940,7 @@
     ]
   },
   "aquarium/sailor": {
-    "file": "aquarium.png",
+    "file": "aquarium.webp",
     "name": "潮汐领航",
     "size": [
       1254,
@@ -1974,7 +1974,7 @@
     ]
   },
   "aquarium/royal": {
-    "file": "aquarium.png",
+    "file": "aquarium.webp",
     "name": "金珊瑚王",
     "size": [
       1254,
@@ -2008,7 +2008,7 @@
     ]
   },
   "aquarium/ribbon": {
-    "file": "aquarium.png",
+    "file": "aquarium.webp",
     "name": "海樱缎舞",
     "size": [
       1254,
@@ -2042,7 +2042,7 @@
     ]
   },
   "skadi/classic/chibi": {
-    "file": "skadi-chibi.png",
+    "file": "skadi-chibi.webp",
     "name": "绯月女王",
     "size": [
       1536,
@@ -2088,7 +2088,7 @@
     ]
   },
   "skadi/moonlight/chibi": {
-    "file": "skadi-chibi.png",
+    "file": "skadi-chibi.webp",
     "name": "银辉圣歌",
     "size": [
       1536,
@@ -2134,7 +2134,7 @@
     ]
   },
   "skadi/gothic/chibi": {
-    "file": "skadi-chibi.png",
+    "file": "skadi-chibi.webp",
     "name": "夜蔷薇爵",
     "size": [
       1536,
@@ -2180,7 +2180,7 @@
     ]
   },
   "skadi/sakura/chibi": {
-    "file": "skadi-chibi.png",
+    "file": "skadi-chibi.webp",
     "name": "樱华神乐",
     "size": [
       1536,
@@ -2226,7 +2226,7 @@
     ]
   },
   "skadi/azure/chibi": {
-    "file": "skadi-chibi.png",
+    "file": "skadi-chibi.webp",
     "name": "星霜战姬",
     "size": [
       1536,
@@ -2272,7 +2272,7 @@
     ]
   },
   "skadi/pajamas/chibi": {
-    "file": "skadi-chibi.png",
+    "file": "skadi-chibi.webp",
     "name": "月梦织者",
     "size": [
       1536,
@@ -2318,7 +2318,7 @@
     ]
   },
   "skadi/classic/adult": {
-    "file": "skadi-adult.png",
+    "file": "skadi-adult.webp",
     "name": "绯月女王",
     "size": [
       1222,
@@ -2364,7 +2364,7 @@
     ]
   },
   "skadi/moonlight/adult": {
-    "file": "skadi-adult.png",
+    "file": "skadi-adult.webp",
     "name": "银辉圣歌",
     "size": [
       1222,
@@ -2410,7 +2410,7 @@
     ]
   },
   "skadi/gothic/adult": {
-    "file": "skadi-adult.png",
+    "file": "skadi-adult.webp",
     "name": "夜蔷薇爵",
     "size": [
       1222,
@@ -2456,7 +2456,7 @@
     ]
   },
   "skadi/sakura/adult": {
-    "file": "skadi-adult.png",
+    "file": "skadi-adult.webp",
     "name": "樱华神乐",
     "size": [
       1222,
@@ -2502,7 +2502,7 @@
     ]
   },
   "skadi/azure/adult": {
-    "file": "skadi-adult.png",
+    "file": "skadi-adult.webp",
     "name": "星霜战姬",
     "size": [
       1222,
@@ -2548,7 +2548,7 @@
     ]
   },
   "skadi/pajamas/adult": {
-    "file": "skadi-adult.png",
+    "file": "skadi-adult.webp",
     "name": "月梦织者",
     "size": [
       1222,
@@ -2594,7 +2594,7 @@
     ]
   },
   "potato/gundam": {
-    "file": "potato-armor-1.png",
+    "file": "potato-armor-1.webp",
     "name": "星核圣骑",
     "size": [
       1254,
@@ -2628,7 +2628,7 @@
     ]
   },
   "potato/iron": {
-    "file": "potato-armor-1.png",
+    "file": "potato-armor-1.webp",
     "name": "赤日凤凰",
     "size": [
       1254,
@@ -2662,7 +2662,7 @@
     ]
   },
   "potato/captain": {
-    "file": "potato-armor-1.png",
+    "file": "potato-armor-1.webp",
     "name": "潮汐统领",
     "size": [
       1254,
@@ -2696,7 +2696,7 @@
     ]
   },
   "potato/batman": {
-    "file": "potato-armor-1.png",
+    "file": "potato-armor-1.webp",
     "name": "黑曜守卫",
     "size": [
       1254,
@@ -2730,7 +2730,7 @@
     ]
   },
   "potato/eva": {
-    "file": "potato-armor-2.png",
+    "file": "potato-armor-2.webp",
     "name": "紫晶龙骑",
     "size": [
       1254,
@@ -2764,7 +2764,7 @@
     ]
   },
   "potato/zaku": {
-    "file": "potato-armor-2.png",
+    "file": "potato-armor-2.webp",
     "name": "翠垒工匠",
     "size": [
       1254,
@@ -2798,7 +2798,7 @@
     ]
   },
   "potato/star": {
-    "file": "potato-armor-2.png",
+    "file": "potato-armor-2.webp",
     "name": "极晶先知",
     "size": [
       1254,
@@ -2832,7 +2832,7 @@
     ]
   },
   "potato/thor": {
-    "file": "potato-armor-2.png",
+    "file": "potato-armor-2.webp",
     "name": "风暴王",
     "size": [
       1254,
@@ -2866,7 +2866,7 @@
     ]
   },
   "potato/space": {
-    "file": "potato-armor-3.png",
+    "file": "potato-armor-3.webp",
     "name": "轨道绘星师",
     "size": [
       1254,
@@ -2900,7 +2900,7 @@
     ]
   },
   "potato/redhorn": {
-    "file": "potato-armor-3.png",
+    "file": "potato-armor-3.webp",
     "name": "赤焰将军",
     "size": [
       1254,
@@ -2934,7 +2934,7 @@
     ]
   },
   "potato/freedom": {
-    "file": "potato-armor-3.png",
+    "file": "potato-armor-3.webp",
     "name": "天穹飞燕",
     "size": [
       1254,
@@ -2968,7 +2968,7 @@
     ]
   },
   "potato/mark85": {
-    "file": "potato-armor-3.png",
+    "file": "potato-armor-3.webp",
     "name": "红宝石时械王",
     "size": [
       1254,
@@ -3002,7 +3002,7 @@
     ]
   },
   "potato/captainclassic": {
-    "file": "potato-armor-4.png",
+    "file": "potato-armor-4.webp",
     "name": "狮鹫统帅",
     "size": [
       1254,
@@ -3036,7 +3036,7 @@
     ]
   },
   "potato/darkknight": {
-    "file": "potato-armor-4.png",
+    "file": "potato-armor-4.webp",
     "name": "星夜审判官",
     "size": [
       1254,
@@ -3070,7 +3070,7 @@
     ]
   },
   "potato/unicorn": {
-    "file": "potato-armor-4.png",
+    "file": "potato-armor-4.webp",
     "name": "破晓麒麟",
     "size": [
       1254,
@@ -3104,7 +3104,7 @@
     ]
   },
   "potato/pink": {
-    "file": "potato-armor-4.png",
+    "file": "potato-armor-4.webp",
     "name": "蔷薇蝶姬",
     "size": [
       1254,
@@ -3138,7 +3138,7 @@
     ]
   },
   "potato/gold": {
-    "file": "potato-armor-5.png",
+    "file": "potato-armor-5.webp",
     "name": "日曜狮王",
     "size": [
       1254,
@@ -3172,7 +3172,7 @@
     ]
   },
   "potato/purple": {
-    "file": "potato-armor-5.png",
+    "file": "potato-armor-5.webp",
     "name": "星云蛾法师",
     "size": [
       1254,
@@ -3206,7 +3206,7 @@
     ]
   },
   "potato/greenholiday": {
-    "file": "potato-armor-5.png",
+    "file": "potato-armor-5.webp",
     "name": "冬青守林者",
     "size": [
       1254,
@@ -3240,7 +3240,7 @@
     ]
   },
   "potato/santa": {
-    "file": "potato-armor-5.png",
+    "file": "potato-armor-5.webp",
     "name": "极光驯鹿信使",
     "size": [
       1254,
@@ -3274,7 +3274,7 @@
     ]
   },
   "hermit/box": {
-    "file": "hermit.png",
+    "file": "hermit.webp",
     "name": "折纸工程师",
     "size": [
       1024,
@@ -3320,7 +3320,7 @@
     ]
   },
   "hermit/soda": {
-    "file": "hermit.png",
+    "file": "hermit.webp",
     "name": "汽泡航行员",
     "size": [
       1024,
@@ -3366,7 +3366,7 @@
     ]
   },
   "hermit/castle": {
-    "file": "hermit.png",
+    "file": "hermit.webp",
     "name": "星堡守护者",
     "size": [
       1024,

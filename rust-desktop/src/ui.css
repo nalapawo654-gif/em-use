@@ -1,0 +1,256 @@
+/* EM Use · Glass Companion — shared UI tokens and surfaces.
+   Loaded last: it restyles windows and popups through their existing class names,
+   so component logic, ARIA and tests stay untouched. Pet artwork and scenes are not
+   styled here; each pet only contributes one accent colour (--ui-accent).
+   Moving / animated popups use solid surfaces: WebView2 cannot blur the desktop behind
+   a transparent window, and per-frame backdrop blur is costly on Windows. */
+
+:root {
+  --ui-font: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei UI", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --ui-ink: #17212b;
+  --ui-ink-2: #3d4b59;
+  --ui-muted: #5a6876;
+  --ui-line: rgba(23, 33, 43, .08);
+  --ui-line-strong: rgba(23, 33, 43, .14);
+  --ui-ground: #eef2f5;
+  --ui-surface: rgba(255, 255, 255, .9);
+  --ui-surface-solid: rgba(252, 253, 254, .97);
+  --ui-group: rgba(255, 255, 255, .66);
+  --ui-fill: rgba(23, 33, 43, .055);
+  --ui-fill-hover: rgba(23, 33, 43, .09);
+  --ui-shadow-window: 0 0 0 .5px rgba(20, 36, 56, .10), 0 18px 48px rgba(18, 32, 52, .16), 0 2px 6px rgba(18, 32, 52, .06);
+  --ui-shadow-pop: 0 0 0 .5px rgba(20, 36, 56, .12), 0 12px 30px rgba(18, 32, 52, .18);
+  --ui-shadow-raise: 0 1px 3px rgba(18, 32, 52, .12);
+  --ui-r-window: 18px; --ui-r-card: 14px; --ui-r-control: 10px;
+  --ui-accent: #2e7baa;
+  --ui-on-accent: #fff;
+  --ui-danger: #c0492f;
+}
+/* Derived tokens resolve where they are declared, so declare them on the element that
+   carries the pet's accent (.app), not only on :root. */
+:root, .app {
+  --ui-accent-soft: color-mix(in srgb, var(--ui-accent) 12%, transparent);
+  --ui-accent-text: color-mix(in srgb, var(--ui-accent) 88%, #000);
+}
+/* Each pet's accent, darkened from its arc-toolbar ink so white text stays ≥4.5:1. */
+.app.buddy-app { --ui-accent: #3f6577; }
+.app.beaver-app { --ui-accent: #586a3c; }
+.app.hamster-app { --ui-accent: #9a5426; }
+.app.cultivation-app { --ui-accent: #4b6a4d; }
+.app.battery-app { --ui-accent: #3d6a3d; }
+.app.fox-app { --ui-accent: #4e5a4f; }
+.app.luckycat-app { --ui-accent: #85642a; }
+.app.dinosaur-app { --ui-accent: #4a7a34; }
+.app.skadi-app { --ui-accent: #56608a; }
+.app.piranha-app { --ui-accent: #4c6934; }
+.app.potato-app { --ui-accent: #3a58a6; }
+.app.feidudu-app { --ui-accent: #95582f; }
+.app.hermit-app { --ui-accent: #8a5530; }
+.app.basketball-app { --ui-accent: #a54c1d; }
+
+.app.night {
+  --ui-ink: #ecf1f6; --ui-ink-2: #c9d3dd; --ui-muted: #a7b3c0;
+  --ui-line: rgba(255, 255, 255, .08); --ui-line-strong: rgba(255, 255, 255, .14);
+  --ui-ground: #161c24;
+  --ui-surface: rgba(29, 35, 43, .94); --ui-surface-solid: rgba(32, 38, 47, .97);
+  --ui-group: rgba(255, 255, 255, .05); --ui-fill: rgba(255, 255, 255, .07); --ui-fill-hover: rgba(255, 255, 255, .12);
+  --ui-shadow-window: 0 0 0 .5px rgba(0, 0, 0, .5), 0 18px 48px rgba(0, 0, 0, .45);
+  --ui-shadow-pop: 0 0 0 .5px rgba(0, 0, 0, .5), 0 12px 30px rgba(0, 0, 0, .45);
+  --ui-shadow-raise: 0 1px 3px rgba(0, 0, 0, .4);
+  --ui-accent-night: color-mix(in srgb, var(--ui-accent) 55%, #fff);
+  --ui-on-accent: #141a24;
+  --ui-accent-soft: color-mix(in srgb, var(--ui-accent-night) 18%, transparent);
+  --ui-accent-text: var(--ui-accent-night);
+}
+
+/* ---------- Shared switch: every role="switch" checkbox in settings ---------- */
+.settings-panel input[type="checkbox"][role="switch"], .settings-panel .setting-row input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; flex-shrink: 0; position: relative; width: 38px; height: 22px; margin: 0;
+  border: 0; border-radius: 999px; background: var(--ui-line-strong); cursor: pointer; transition: background .18s ease;
+}
+.settings-panel input[type="checkbox"][role="switch"]::before, .settings-panel .setting-row input[type="checkbox"]::before {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); transition: transform .18s ease;
+}
+.settings-panel input[type="checkbox"][role="switch"]:checked, .settings-panel .setting-row input[type="checkbox"]:checked { background: var(--ui-accent); }
+.settings-panel input[type="checkbox"][role="switch"]:checked::before, .settings-panel .setting-row input[type="checkbox"]:checked::before { transform: translateX(16px); }
+.settings-panel :is(button, input, select, a):focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+
+/* ---------- Settings window ---------- */
+.settings-view { background: var(--ui-ground); }
+.settings-panel {
+  font-family: var(--ui-font); color: var(--ui-ink); background:
+    radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--ui-accent) 9%, transparent) 0, transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgba(232, 214, 194, .35) 0, transparent 60%), var(--ui-ground);
+  border: 0; border-radius: var(--ui-r-window); box-shadow: var(--ui-shadow-window);
+}
+.settings-view .settings-panel { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; overflow: hidden; }
+.settings-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--ui-line); align-items: center; }
+.settings-header .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--ui-muted); }
+.settings-header h1 { margin: 2px 0 0; font-size: 20px; font-weight: 700; letter-spacing: 0; }
+.settings-header p { margin: 2px 0 0; font-size: 12px; color: var(--ui-muted); }
+.settings-panel .icon-button { width: 30px; height: 30px; border-radius: 9px; background: var(--ui-fill); color: var(--ui-ink-2); }
+.settings-panel .icon-button:hover { background: var(--ui-fill-hover); }
+.settings-layout { grid-template-columns: 200px 1fr; min-height: 0; flex: 1; }
+.settings-view .settings-layout { overflow: hidden; }
+.settings-nav { padding: 14px 10px; gap: 2px; background: rgba(23, 33, 43, .035); border-right: 1px solid var(--ui-line); }
+.settings-nav > button { height: 36px; padding: 0 12px; gap: 10px; border-radius: var(--ui-r-control); font-size: 13px; color: var(--ui-ink-2); }
+.settings-nav > button > svg { width: 17px; height: 17px; color: var(--ui-muted); }
+.settings-nav > button:hover { background: var(--ui-fill); }
+.settings-nav > button.active { background: var(--ui-surface); color: var(--ui-ink); font-weight: 600; box-shadow: var(--ui-shadow-raise); }
+.settings-nav > button.active > svg { color: var(--ui-accent); }
+.settings-nav .nav-version { margin-top: auto; padding: 10px 12px 2px; font-size: 12px; color: var(--ui-muted); }
+.settings-content { padding: 20px 24px 28px; overflow: auto; }
+.settings-content h2 { margin: 22px 0 0; font-size: 15px; font-weight: 600; color: var(--ui-ink); }
+.settings-content > h2:first-child, .settings-content > :first-child h2:first-child { margin-top: 0; }
+.settings-content .section-description, .settings-content > p { margin: 4px 0 10px; font-size: 12px; line-height: 1.6; color: var(--ui-muted); }
+
+/* Grouped rows: consecutive setting rows read as one card. */
+.settings-content .setting-row {
+  padding: 13px 16px; margin: 0; background: var(--ui-group); border: 0; border-bottom: 1px solid var(--ui-line);
+  box-shadow: inset 1px 0 0 var(--ui-line), inset -1px 0 0 var(--ui-line);
+}
+.settings-content :not(.setting-row) + .setting-row, .settings-content .setting-row:first-child { border-top-left-radius: var(--ui-r-card); border-top-right-radius: var(--ui-r-card); box-shadow: inset 0 1px 0 var(--ui-line), inset 1px 0 0 var(--ui-line), inset -1px 0 0 var(--ui-line); margin-top: 10px; }
+.settings-content .setting-row:not(:has(+ .setting-row)) { border-bottom-left-radius: var(--ui-r-card); border-bottom-right-radius: var(--ui-r-card); }
+.settings-content .setting-row > span { gap: 3px; }
+.settings-content .setting-row b { font-size: 13px; font-weight: 600; color: var(--ui-ink); }
+.settings-content .setting-row small { font-size: 12px; line-height: 1.5; color: var(--ui-muted); }
+.settings-content select { height: 32px; padding: 0 10px; border: 0; border-radius: var(--ui-r-control); background: var(--ui-fill); color: var(--ui-ink); font: inherit; font-size: 13px; }
+
+/* Pet picker: tile grid instead of a chip cloud. */
+.settings-content .scene-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin-top: 10px; }
+.settings-content .scene-picker > button {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 72px; padding: 10px 6px;
+  border: 0; border-radius: var(--ui-r-card); background: var(--ui-group); box-shadow: inset 0 0 0 1px var(--ui-line);
+  font-size: 12px; color: var(--ui-ink-2); text-align: center; line-height: 1.3;
+}
+.settings-content .scene-picker > button > svg { width: 24px; height: 24px; color: var(--ui-muted); }
+.settings-content .scene-picker > button:hover { background: var(--ui-surface); }
+.settings-content .scene-picker > button.selected { background: var(--ui-surface); color: var(--ui-ink); font-weight: 600; box-shadow: inset 0 0 0 2px var(--ui-accent), 0 4px 12px color-mix(in srgb, var(--ui-accent) 18%, transparent); }
+.settings-content .scene-picker > button.selected > svg { color: var(--ui-accent); }
+
+.settings-content .size-options { margin: 10px 0 12px; gap: 8px; }
+.settings-content .size-options > button { border: 0; border-radius: var(--ui-r-card); background: var(--ui-group); box-shadow: inset 0 0 0 1px var(--ui-line); }
+.settings-content .size-options > button.selected { background: var(--ui-surface); box-shadow: inset 0 0 0 2px var(--ui-accent); }
+.settings-content .size-options b { font-size: 13px; font-weight: 600; color: var(--ui-ink); }
+.settings-content .size-options small { font-size: 12px; color: var(--ui-muted); }
+.settings-content .size-slider { accent-color: var(--ui-accent); font-size: 13px; }
+.settings-content .size-slider small { font-size: 12px; color: var(--ui-muted); }
+.settings-content .theme-options { gap: 8px; margin-top: 10px; }
+.settings-content .theme-options > button { border: 0; border-radius: var(--ui-r-control); background: var(--ui-group); box-shadow: inset 0 0 0 1px var(--ui-line); color: var(--ui-ink-2); font-size: 13px; }
+.settings-content .theme-options > button.selected { background: var(--ui-surface); color: var(--ui-ink); font-weight: 600; box-shadow: inset 0 0 0 2px var(--ui-accent); }
+.settings-content .soft-note { margin-top: 14px; padding: 12px 14px; border-radius: var(--ui-r-card); background: var(--ui-accent-soft); color: var(--ui-ink-2); font-size: 12px; line-height: 1.6; }
+.settings-content .inline-notice { font-size: 12px; color: var(--ui-accent-text); }
+.settings-content .account-card { border-radius: var(--ui-r-card); background: var(--ui-group); box-shadow: inset 0 0 0 1px var(--ui-line); }
+.settings-content .account-card > svg { color: var(--ui-accent); }
+.settings-content .account-card b { font-size: 14px; font-weight: 600; }
+.settings-content .account-card p, .settings-content .account-quota > span { font-size: 12px; color: var(--ui-muted); }
+.settings-content .account-quota b { font-family: var(--ui-font); font-size: 22px; font-weight: 700; color: var(--ui-ink); font-variant-numeric: tabular-nums; }
+.settings-content .login-methods { gap: 8px; margin-top: 10px; }
+.settings-content .login-methods button { border: 0; border-radius: var(--ui-r-card); background: var(--ui-group); box-shadow: inset 0 0 0 1px var(--ui-line); color: var(--ui-ink); }
+.settings-content .login-methods button[aria-pressed=true] { background: var(--ui-surface); box-shadow: inset 0 0 0 2px var(--ui-accent); }
+.settings-panel .primary-button { height: 34px; padding: 0 16px; border-radius: var(--ui-r-control); background: var(--ui-accent); color: var(--ui-on-accent); font-size: 13px; font-weight: 600; }
+.settings-panel .primary-button:hover { background: color-mix(in srgb, var(--ui-accent) 88%, #000); }
+.settings-panel .text-button { font-size: 13px; font-weight: 600; color: var(--ui-accent-text); }
+
+/* ---------- 咚咚消息: inbox window, in-pet inbox and toast ---------- */
+.message-inbox, .message-toast-window, .night .message-inbox, .night .message-toast-window {
+  --msg-paper: var(--ui-surface-solid); --msg-ink: var(--ui-ink); --msg-muted: var(--ui-muted); --msg-line: var(--ui-line);
+  --msg-color: var(--ui-accent); font-family: var(--ui-font);
+}
+.night :is(.message-inbox, .message-toast-window) { --msg-color: var(--ui-accent-night); }
+.message-inbox { border: 0 !important; border-radius: var(--ui-r-window) !important; box-shadow: var(--ui-shadow-pop) !important; background: var(--msg-paper) !important; color: var(--msg-ink); }
+.message-panel { padding: 10px; font-family: var(--ui-font); }
+.message-panel > .message-inbox { box-shadow: var(--ui-shadow-window) !important; }
+.message-inbox-header { padding: 12px 16px 6px !important; }
+.message-inbox-header > span { font-size: 12px !important; font-weight: 600; letter-spacing: .06em; color: var(--ui-muted) !important; }
+.message-list-caption { padding: 2px 16px 10px !important; font-size: 17px !important; font-weight: 700 !important; border-bottom-color: var(--ui-line) !important; }
+.message-list-caption > span { font-size: 12px !important; }
+.message-group { margin: 2px 8px; width: calc(100% - 16px) !important; padding: 10px !important; border: 0 !important; border-radius: 12px; }
+.message-group:hover { background: var(--ui-fill) !important; }
+.message-group-copy b { font-size: 13px !important; }
+.message-group-copy small, .message-group-meta { font-size: 12px !important; }
+.message-group-meta b { color: var(--ui-danger) !important; }
+.message-conversation-avatar { border: 0 !important; border-radius: 11px !important; background: var(--ui-accent) !important; color: var(--ui-on-accent) !important; font-weight: 700; }
+.message-conversation-header { padding: 6px 16px 12px !important; }
+.message-conversation-copy h2 { font-size: 15px !important; font-weight: 600 !important; }
+.message-conversation-copy p { font-size: 12px !important; }
+.message-detail p { font-size: 13px !important; line-height: 1.6 !important; }
+.message-empty b { font-size: 14px !important; color: var(--ui-ink); }
+.message-empty p { font-size: 12px !important; }
+.message-inbox-footer { padding: 12px 16px !important; }
+.message-footer-source, .message-footer-source small { font-size: 12px; color: var(--ui-muted); }
+.message-primary, .message-secondary { height: 34px; padding: 0 14px !important; border-radius: var(--ui-r-control) !important; font-size: 13px !important; font-weight: 600; }
+.message-primary { border: 0 !important; color: var(--ui-on-accent) !important; }
+.message-secondary { border: 0 !important; background: var(--ui-fill) !important; }
+.message-icon-button, .message-clear-button { border-radius: 8px !important; }
+.message-toast-window .message-bubble { border-radius: 16px !important; background: var(--msg-paper) !important; box-shadow: var(--ui-shadow-pop) !important; border: 0 !important; }
+.message-toast-window .message-bubble-content b { font-size: 13px !important; font-weight: 600; }
+.message-toast-window .message-bubble-content > span { font-size: 13px !important; color: var(--ui-ink-2); }
+
+/* ---------- 咚咚日程: calendar window, in-pet card and reminder ---------- */
+.calendar-card {
+  font-family: var(--ui-font) !important; background: var(--ui-surface-solid) !important; color: var(--ui-ink) !important;
+  border: 0 !important; border-radius: var(--ui-r-window) !important; box-shadow: var(--ui-shadow-pop) !important;
+}
+.calendar-window { padding: 10px; color: var(--ui-ink); }
+.calendar-window .calendar-card { box-shadow: var(--ui-shadow-window) !important; }
+.calendar-card-heading { font-size: 17px; font-weight: 700 !important; }
+.calendar-card-heading > svg { color: var(--ui-accent) !important; }
+.calendar-card-heading small, .calendar-card footer, .calendar-card footer small { font-size: 12px !important; color: var(--ui-muted) !important; }
+.calendar-card footer { border-top: 1px solid var(--ui-line); padding-top: 12px !important; margin-top: 4px; }
+.calendar-card footer button { color: var(--ui-accent-text) !important; font-weight: 600; }
+.calendar-list article { border-bottom-color: var(--ui-line) !important; }
+.calendar-list article.calendar-current { background: var(--ui-accent-soft); border-radius: 12px; margin: 0 -10px; padding-inline: 10px; border-bottom-color: transparent !important; }
+.calendar-reminder h2 { font-size: 17px !important; font-weight: 700; }
+.calendar-reminder h2 > span { color: var(--ui-accent-text) !important; }
+.calendar-reminder-actions button { height: 32px; padding: 0 14px !important; border: 0 !important; border-radius: var(--ui-r-control) !important; background: var(--ui-fill); font-weight: 600; }
+.calendar-reminder-actions .calendar-primary { background: var(--ui-accent) !important; color: var(--ui-on-accent) !important; }
+.calendar-reminder-actions .calendar-text-action { background: transparent; color: var(--ui-accent-text) !important; }
+.calendar-empty > svg { color: var(--ui-accent) !important; }
+.calendar-empty b { font-size: 14px !important; }
+.calendar-card button:focus-visible { outline-color: var(--ui-accent) !important; }
+
+/* ---------- Update letter: keep each pet's paper, unify shape and controls ---------- */
+.update-letter { border-radius: 16px !important; box-shadow: var(--ui-shadow-pop); font-family: var(--ui-font); }
+.update-letter-header strong { font-weight: 700; }
+.update-letter-actions :is(.update-primary, .update-later) { border-radius: var(--ui-r-control) !important; font-weight: 600; }
+.update-close { border-radius: 8px !important; }
+
+/* ---------- In-pet popups: one shell for every pet ---------- */
+.pet-arc-host :is(.play-popover, .detail-popover, .buddy-panel, .beaver-panel, .hamster-panel, .cultivation-panel, .battery-panel, .feidudu-panel, .fox-panel, .luckycat-panel, .dinosaur-panel, .skadi-panel, .piranha-panel, .potato-panel, .hermit-panel, .hoop-panel, .muse-panel) {
+  font-family: var(--ui-font); color: var(--ui-ink);
+  background: var(--ui-surface-solid); backdrop-filter: none; -webkit-backdrop-filter: none;
+  border: 0; border-radius: 16px; box-shadow: var(--ui-shadow-pop);
+  scrollbar-width: thin; scrollbar-color: var(--ui-line-strong) transparent;
+}
+.pet-arc-host :is(.play-popover, .buddy-panel, .beaver-panel, .hamster-panel, .cultivation-panel, .battery-panel, .feidudu-panel, .fox-panel, .luckycat-panel, .dinosaur-panel, .skadi-panel, .piranha-panel, .potato-panel, .hermit-panel, .hoop-panel, .muse-panel) > header b { font-size: 14px; font-weight: 600; color: var(--ui-ink); }
+.pet-arc-host :is(.play-popover, .buddy-panel, .beaver-panel, .hamster-panel, .cultivation-panel, .battery-panel, .feidudu-panel, .fox-panel, .luckycat-panel, .dinosaur-panel, .skadi-panel, .piranha-panel, .potato-panel, .hermit-panel, .hoop-panel, .muse-panel) > header small { color: var(--ui-muted); }
+.pet-arc-host :is(.play-popover, .detail-popover) .icon-button,
+.pet-arc-host [class$="-panel"] > header button:last-child:not(:only-child) { border-radius: 8px; background: var(--ui-fill); color: var(--ui-ink-2); }
+.pet-arc-host .play-options > button { border: 0; border-radius: 12px; background: var(--ui-fill); color: var(--ui-ink); }
+.pet-arc-host .play-options > button:hover { background: var(--ui-fill-hover); }
+.pet-arc-host .play-options > button > svg, .pet-arc-host .play-options > button:first-child > svg { color: var(--ui-accent-text); }
+.pet-arc-host .detail-popover b { font-size: 14px; font-weight: 600; }
+.pet-arc-host .detail-popover .text-button { color: var(--ui-accent-text); font-weight: 600; }
+.pet-arc-host :is(.play-popover, .detail-popover, [class$="-panel"]) :is(button, input, select, a):focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+/* Shared quota details (same component inside every pet's popup). */
+.shared-quota-details { font-family: var(--ui-font); color: var(--ui-ink); font-size: 13px !important; }
+.shared-quota-details label { font-size: 12px !important; color: var(--ui-muted); }
+.shared-quota-details select { height: 30px; padding: 0 8px !important; border: 0 !important; border-radius: 8px !important; background: var(--ui-fill) !important; color: var(--ui-ink) !important; font-weight: 600; }
+.shared-quota-details p { font-size: 12px !important; color: var(--ui-muted); }
+.shared-quota-details small { font-size: 12px; color: var(--ui-muted); }
+.shared-quota-details dt { color: var(--ui-muted); }
+.shared-quota-details dd { font-weight: 600; font-variant-numeric: tabular-nums; }
+.shared-quota-details .quota-bucket > b { font-size: 13px; font-weight: 600; }
+.shared-quota-details .quota-actions { gap: 8px !important; margin-top: 10px; }
+.shared-quota-details .quota-actions button { flex: 1; height: 32px; padding: 0 12px !important; border: 0 !important; border-radius: var(--ui-r-control) !important; background: var(--ui-fill) !important; color: var(--ui-ink) !important; font-size: 13px; font-weight: 600; }
+.shared-quota-details .quota-actions button:first-child { background: var(--ui-accent) !important; color: var(--ui-on-accent) !important; }
+.shared-quota-details .quota-actions button:disabled { opacity: .55; }
+
+/* Popups enter with a short fade + lift; gentle mode only fades. */
+.pet-arc-host :is(.play-popover, .detail-popover) { animation: ui-pop-in .16s ease-out both; }
+@keyframes ui-pop-in { from { opacity: 0; transform: translateY(4px); } }
+.reduced-motion .pet-arc-host :is(.play-popover, .detail-popover) { animation: ui-fade-in .12s ease-out both; }
+@keyframes ui-fade-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .pet-arc-host :is(.play-popover, .detail-popover) { animation: ui-fade-in .12s ease-out both; } }

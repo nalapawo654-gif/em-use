@@ -26,7 +26,7 @@ test('quota boundaries match existing pet states and unknown never selects full'
  }
 })
 test('repaired buddy rows are individually mapped instead of a merged holiday/midnight costume',()=>{
- assert.equal(awakeningAtlas('buddy','holiday')?.file,'buddy-extra.png')
- assert.equal(awakeningAtlas('buddy','midnight')?.file,'buddy-extra.png')
+ assert.equal(awakeningAtlas('buddy','holiday')?.file,'buddy-extra.webp')
+ assert.equal(awakeningAtlas('buddy','midnight')?.file,'buddy-extra.webp')
  assert.notDeepEqual(awakeningAtlas('buddy','holiday')?.rects,awakeningAtlas('buddy','midnight')?.rects)
 })

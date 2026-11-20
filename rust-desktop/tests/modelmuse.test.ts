@@ -22,9 +22,9 @@ test('场景经过共享设置校验且没有改动其他桌宠配置', async ()
 test('四种形象各自具备普通与觉醒的静态和整理姿态', async () => {
   const { existsSync, readFileSync } = await import('node:fs')
   for (const form of Object.keys(PERSONAS)) for (const variant of ['', '-tidy', '-awake', '-awake-tidy', '-awake-reveal']) {
-    const file = new URL(`../public/assets/modelmuse/${form}${variant}.png`, import.meta.url)
+    const file = new URL(`../public/assets/modelmuse/${form}${variant}.webp`, import.meta.url)
     assert.ok(existsSync(file), `${form}${variant}`)
-    const png = readFileSync(file)
-    assert.equal(png[25], 6, `${form}${variant} should have an alpha channel`)
+    const { webpInfo } = await import('./webp.js')
+    assert.ok(webpInfo(readFileSync(file)).alpha, `${form}${variant} should have an alpha channel`)
   }
 })

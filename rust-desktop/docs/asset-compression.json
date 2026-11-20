@@ -1,5 +1,5 @@
 {
-  "encoding": "Opaque: WebP lossless, exact=True. Transparent: optimized PNG for browser compositing parity.",
+  "encoding": "WebP lossless, exact=True, for opaque and transparent atlases. Decoded RGBA is identical; browser canvas readback of semi-transparent edges may differ by at most 2/255 after premultiplication (alpha identical).",
   "excluded": {
     "cultivation/cultivator.png": "Replaced by cultivation/skins atlases",
     "beaver/quota-trees.png": "Replaced by quota-trees-v2.png",
@@ -243,13 +243,13 @@
     },
     {
       "source": "buddy/classic-states.png",
-      "target": "buddy/classic-states.png",
+      "target": "buddy/classic-states.webp",
       "width": 1254,
       "height": 1254,
       "source_bytes": 1372173,
-      "bytes": 1305314,
+      "bytes": 929016,
       "source_sha256": "60b1f8965e28e5b706fe12f17d0b52030d0ee4ff54a592623e9f8b2c6eccfb49",
-      "sha256": "637a9ebdd5f5ee37fa532aad348c80239ec89c22b077e457591589a12538c140",
+      "sha256": "9796779964aaeb53aa2e5573f34caa6f74050eb72a8f8315594be4602211b9c2",
       "different_pixels": 0
     },
     {
@@ -320,79 +320,79 @@
     },
     {
       "source": "cultivation/islands.png",
-      "target": "cultivation/islands.png",
+      "target": "cultivation/islands.webp",
       "width": 1254,
       "height": 1254,
       "source_bytes": 2161686,
-      "bytes": 2132066,
+      "bytes": 1557726,
       "source_sha256": "da92d16203af708d2a9106e979cbbeaa7234c8cd88c2cbaed47d0cf2e6d58517",
-      "sha256": "4428b56a23fc9ae91b5af2b6487f7da26e7bb4c8905f2ab82b1b95e377645e68",
+      "sha256": "b1d52b930e382b92c974e78038dfad29c4415352d6727bddeb13be642ec8da15",
       "different_pixels": 0
     },
     {
       "source": "cultivation/materials.png",
-      "target": "cultivation/materials.png",
+      "target": "cultivation/materials.webp",
       "width": 1448,
       "height": 1086,
       "source_bytes": 2221408,
-      "bytes": 2182307,
+      "bytes": 1665476,
       "source_sha256": "b72ea56ad82df8c75b5c8a1f4ef2d018800f2dadc2638792c42f65cd4aaa234a",
-      "sha256": "fbdee7e58f593e7ee45b24e2dcecc0d2309ac327be004bf71501f5cd059150a5",
+      "sha256": "d8afdcb30e92a1698649bb279f6b00643d214b6752d3b0fc1cf718272ba559ff",
       "different_pixels": 0
     },
     {
       "source": "cultivation/props.png",
-      "target": "cultivation/props.png",
+      "target": "cultivation/props.webp",
       "width": 1254,
       "height": 1254,
       "source_bytes": 1702801,
-      "bytes": 1669358,
+      "bytes": 1235414,
       "source_sha256": "7704e2824ae712272e081fbdf92859fcbad70e58bdde5a11d85cb876c1572c91",
-      "sha256": "90f158a4a07a6e46d3758b2624eef4671b6ff4dc80fcb0f93c40d5a2f4264e67",
+      "sha256": "42e4686afe9f9ce200d5383c586a91dd49e34bd46ad52daf16251597c4a50713",
       "different_pixels": 0
     },
     {
       "source": "cultivation/skins/astral.png",
-      "target": "cultivation/skins/astral.png",
+      "target": "cultivation/skins/astral.webp",
       "width": 1536,
       "height": 1024,
       "source_bytes": 2908290,
-      "bytes": 2768811,
+      "bytes": 1975336,
       "source_sha256": "76b89da2cbf87223a0b569e25fbea499dc1fb69759f413a2c7d62bfade301555",
-      "sha256": "1e77e027fff0a94aa15d14fe79f73dab12b7e389c8a4a73d899e1bd0bfc9ee18",
+      "sha256": "84fd8cd186072508525a2f2f2706a16c5c69360e66479eacad05eec14b7c3311",
       "different_pixels": 0
     },
     {
       "source": "cultivation/skins/azure.png",
-      "target": "cultivation/skins/azure.png",
+      "target": "cultivation/skins/azure.webp",
       "width": 1536,
       "height": 1024,
       "source_bytes": 2758601,
-      "bytes": 2620028,
+      "bytes": 1781626,
       "source_sha256": "5332fc06de80335a4be1e14eb3602ee2ca1a01f4de62996bfccb44a9d4c01be9",
-      "sha256": "a41e0ee3513a0889d1997f6ce8ec4b42c614793221a3058d3864130e09ca1028",
+      "sha256": "5a6b730f88b95e3f31964631e7dd65111fda844c50c0de2573326d596c8be615",
       "different_pixels": 0
     },
     {
       "source": "cultivation/skins/classic.png",
-      "target": "cultivation/skins/classic.png",
+      "target": "cultivation/skins/classic.webp",
       "width": 1536,
       "height": 1024,
       "source_bytes": 2520235,
-      "bytes": 2386732,
+      "bytes": 1620786,
       "source_sha256": "9250a4322cf356bd6b0a27cc3b87ecde6139748cc974393535060c93df90ba31",
-      "sha256": "26844ef9926f4d67578ebc6731d8315de05061c5c34af7b0e548c4458b270d26",
+      "sha256": "1f2e83375a9d00e4113895302cfa5bda61fdb172aa0936f161f32da85f1a9595",
       "different_pixels": 0
     },
     {
       "source": "cultivation/skins/crimson.png",
-      "target": "cultivation/skins/crimson.png",
+      "target": "cultivation/skins/crimson.webp",
       "width": 1536,
       "height": 1024,
       "source_bytes": 2603155,
-      "bytes": 2472454,
+      "bytes": 1729736,
       "source_sha256": "1ef3035f96e1639ea6aeffb45f222a0b0ddace7dfd8d257a5cb0bce823df9c6c",
-      "sha256": "44f5ea27f805b16c3cd8baabb7a64646390eece07b2f019b55a6457434957a0b",
+      "sha256": "f8e2e93082ebe4ef5792d714e7d8a4859b72689c0e0cb2817414a52d36cc5a9a",
       "different_pixels": 0
     },
     {
@@ -628,5 +628,5 @@
     }
   ],
   "original_png_bytes": 112823611,
-  "runtime_bytes": 74987190
+  "runtime_bytes": 69945236
 }

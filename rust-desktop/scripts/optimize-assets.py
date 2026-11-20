@@ -24,19 +24,16 @@ CACHE = {r['source']: r for r in PREVIOUS}
 def convert(source):
     relative = source.relative_to(SOURCE).as_posix()
     with Image.open(source) as image:
-        # PNG/WebP decoders round premultiplied alpha differently in browser compositing.
-        # Keep transparent atlases as optimized PNG to preserve exact rendered edges.
-        transparent = 'A' in image.getbands() and image.getchannel('A').getextrema() != (255, 255)
-        target = DEST / Path(relative).with_suffix('.png' if transparent else '.webp')
+        # All atlases ship as exact lossless WebP (2026-11-20). Decoded RGBA is identical;
+        # browser canvas readback of semi-transparent edges may differ by <=2/255 after
+        # premultiplication, which was measured and accepted to cut ~75 MB.
+        target = DEST / Path(relative).with_suffix('.webp')
         target.parent.mkdir(parents=True, exist_ok=True)
         cached = CACHE.get(relative)
         if cached and target.exists() and cached['target'] == target.relative_to(DEST).as_posix() and digest(source) == cached['source_sha256'] and digest(target) == cached['sha256']:
             return cached
         if image.info: raise ValueError('Review image metadata before conversion: ' + relative)
-        if transparent:
-            image.save(target, format='PNG', optimize=True, compress_level=9)
-        else:
-            image.save(target, format='WEBP', lossless=True, exact=True, quality=100, method=6)
+        image.save(target, format='WEBP', lossless=True, exact=True, quality=100, method=6)
         with Image.open(target) as result:
             assert image.size == result.size
             assert image.convert('RGBA').tobytes() == result.convert('RGBA').tobytes(), relative

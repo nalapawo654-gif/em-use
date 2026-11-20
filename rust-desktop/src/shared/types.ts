@@ -145,6 +145,7 @@ export interface CalendarEvent { key: string; title: string; start: number; end:
 export interface CalendarState { epoch: string; account: {id: string; name: string} | null; status: 'waiting' | 'connecting' | 'ready' | 'stale' | 'expired' | 'disabled'; message: string; items: CalendarEvent[]; active: string[]; fetchedAt: number; date: string }
 export interface Settings {
   evolutionMotion: 'full' | 'light' | 'off'; quotaSource: 'eastmoney' | 'codex'; codexEnabled: boolean; codexExecutable: string; codexHome: string; codexBucket: string;
+  startupHatch: boolean;
   codexIntroEnabled: boolean;
   codexIntroTheme: 'dragon' | 'emerald';
   worldEnabled: boolean; worldPaused: boolean;
@@ -206,6 +207,7 @@ export interface DesktopAPI {
 }
 export const DEFAULT_SETTINGS: Settings = {
   evolutionMotion: 'full', quotaSource: 'eastmoney', codexEnabled: false, codexExecutable: '', codexHome: '', codexBucket: 'codex',
+  startupHatch: true,
   codexIntroEnabled: false,
   codexIntroTheme: 'dragon',
   worldEnabled: false, worldPaused: false,

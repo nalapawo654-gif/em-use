@@ -1,4 +1,4 @@
-import { computed, inject, onUnmounted, provide, ref, shallowRef, type InjectionKey } from 'vue'
+import { computed, inject, onUnmounted, provide, ref, shallowRef, watch, type InjectionKey } from 'vue'
 import { loadImage } from '../aquarium/sprites'
 import type { Scene } from './types'
 import { containMailRect } from './mailGeometry'
@@ -7,7 +7,7 @@ export interface MailRect { x:number; y:number; width:number; height:number }
 export type MailPainter = (ctx:CanvasRenderingContext2D, rect:MailRect, pose:MailPose, variant?:'tag', fit?:'contain')=>void
 const cache = new Map<string,Promise<HTMLCanvasElement>>()
 export function loadCharacterMail(scene:Scene, variant?:'tag') {
- const path=`./assets/${scene}/message-${variant ?? 'prop'}.png`
+ const path=`./assets/${scene}/message-${variant ?? 'prop'}.webp`
  if(!cache.has(path))cache.set(path,loadImage(path).then(source=>{
   const canvas=document.createElement('canvas');canvas.width=source.naturalWidth;canvas.height=source.naturalHeight
   const ctx=canvas.getContext('2d',{willReadFrequently:true})!;ctx.drawImage(source,0,0)
@@ -44,9 +44,11 @@ function makeMail(scene:Scene){
     if(!position.value||Object.entries(next).some(([key,value])=>position.value![key]!==value))position.value=next
    }
   }
-  raf=requestAnimationFrame(track)
+  raf=enabled.value?requestAnimationFrame(track):0
  }
- raf=requestAnimationFrame(track)
+ // Track only while a letter is shown; an idle 60 Hz layout read keeps the
+ // transparent window compositing for nothing (noticeable on Windows WebView2).
+ watch(enabled,on=>{cancelAnimationFrame(raf);raf=on&&!disposed?requestAnimationFrame(track):0},{immediate:true})
  const paint:MailPainter=(ctx,rect,p,variant,fit)=>{
   if(!active.value)return
   const image=variant==='tag'?tag.value:art.value;if(!image)return

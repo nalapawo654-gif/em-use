@@ -1,5 +1,5 @@
 {
-  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png. BuddyExperience also adds the reviewed independent calendar prop; actor, motion, gesture and original artwork remain unchanged. Nine remaining Experience components add independent calendar entry and notice exclusivity; no original gesture, character, state machine, or animation modifications. v0.4.10 additionally reviews identical uniform-quota preview samples, rounding and selection in the legacy and native Battery, Beaver, Cultivation and Hamster Experience components; native notification/calendar integration remains unchanged. v0.5.3 reviews shared Codex quota display/details and awakened whole-character art/transformations for the six migrated pets, plus quota-label wrapping. Original interaction state machines, window gestures and source atlases remain unchanged. Regression coverage and native acceptance limits are recorded in docs/release-0.5.3.md. 2026-10-16 reviews the Tauri-only shared crescent toolbar migration: original handlers and full play menus retained, scene clearance adjusted, and Buddy container Esc/panel exclusivity fixed. See docs/design/pet-arc-toolbar/README.md and design-qa.md; OS and real-account verification are separate. 2026-10-23 / v0.5.6 reviews shared Codex dual-window readout wrappers and accessible quota labels for the six migrated renderers. Cloud fallback markup, interaction state machines, gestures and artwork remain unchanged. Dual-window browser evidence and native verification limits are recorded in docs/codex-quota.md.",
+  "description": "Reviewed notification integration: shared entry wiring and optional pose-aware canvas mail compositing. No-mail renderer paths, source character atlases, state machines and gestures remain unchanged. Hashes normalize .webp to .png. BuddyExperience also adds the reviewed independent calendar prop; actor, motion, gesture and original artwork remain unchanged. Nine remaining Experience components add independent calendar entry and notice exclusivity; no original gesture, character, state machine, or animation modifications. v0.4.10 additionally reviews identical uniform-quota preview samples, rounding and selection in the legacy and native Battery, Beaver, Cultivation and Hamster Experience components; native notification/calendar integration remains unchanged. v0.5.3 reviews shared Codex quota display/details and awakened whole-character art/transformations for the six migrated pets, plus quota-label wrapping. Original interaction state machines, window gestures and source atlases remain unchanged. Regression coverage and native acceptance limits are recorded in docs/release-0.5.3.md. 2026-10-16 reviews the Tauri-only shared crescent toolbar migration: original handlers and full play menus retained, scene clearance adjusted, and Buddy container Esc/panel exclusivity fixed. See docs/design/pet-arc-toolbar/README.md and design-qa.md; OS and real-account verification are separate. 2026-10-23 / v0.5.6 reviews shared Codex dual-window readout wrappers and accessible quota labels for the six migrated renderers. Cloud fallback markup, interaction state machines, gestures and artwork remain unchanged. Dual-window browser evidence and native verification limits are recorded in docs/codex-quota.md. v0.5.12 adds scene-specific idle animations to the five listed migrated Experience components and coalesces native pointer move requests in windowGestures.",
   "files": {
     "src/components/Aquarium.vue": {
       "baseline_sha256": "4c1316ff76ff36d83ad3913fcbf42d005ee1a3617d14526f28cfaacd96bea4cc",
@@ -7,11 +7,11 @@
     },
     "src/components/BatteryExperience.vue": {
       "baseline_sha256": "466bd44bb375ac7bfc38ad3818cfbdf37c639be6c5939db69ffb9fb65b5d5a40",
-      "native_sha256": "cd4d5d67876e74edd506b1af1935d9811357153bc3c1bd426257e25111330be9"
+      "native_sha256": "830411c3040e28d959b0719d289a15f570e356e8d2324b40a31b4b9bcfcc27c9"
     },
     "src/components/BeaverExperience.vue": {
       "baseline_sha256": "be632ca5cc92f21a704ce989f656d9ad845474b1689c23fca84b20bd3151413d",
-      "native_sha256": "5b59e031c7f016017f00f04c55dae90f301baa3431a4c86b0395fb8b6e601788"
+      "native_sha256": "d67f94968202d953241517799e0bbfbf93363160364224c1ced68387c9c90810"
     },
     "src/components/BeaverScene.vue": {
       "baseline_sha256": "2572e657ef2e8e89cb8c8ddbf9b03f8a6d1a45887c6f49e48ab7da7286c3b765",
@@ -19,7 +19,7 @@
     },
     "src/components/BuddyExperience.vue": {
       "baseline_sha256": "02bba7b761c0364f11fa0a675b591eebeecaf232c127ba40fb5ea66fc34e5703",
-      "native_sha256": "c725f104f80529eaae017ad7c2c8a6e8a17d606d417fe68f420daee624895bd2"
+      "native_sha256": "a8fb0465dd9eac5661d9c995d3a12425b468fca0dd2450b14607443caa7998ac"
     },
     "src/components/BuddyScene.vue": {
       "baseline_sha256": "3ac72fc0e94c08e7ebb485f8c95a2fc2d81cdb0eff733a41e163096fc5931cf2",
@@ -27,11 +27,11 @@
     },
     "src/components/CultivationExperience.vue": {
       "baseline_sha256": "e98523ff17e0ac65ef8376602c832c9094eefa66335a9e6399f2c65d8a3e470c",
-      "native_sha256": "6a177ec1f55e2339a6f3d3b5232025bc790cc54a6b44929c0bd7252e0a1b78bf"
+      "native_sha256": "c2f3203a23c2a52f43b411a07a4ae3b9094866dd2a0a1e4e754f563f30e74dcf"
     },
     "src/components/HamsterExperience.vue": {
       "baseline_sha256": "8813d5442361b39ffb59d6403e1369dee09758e53711bb98bf93805b8df68f86",
-      "native_sha256": "81b21b11b3538dd94cd91ee04d422f66cf4c172af7449b2e5a21acaa9d84e2b1"
+      "native_sha256": "2968d805a42c662304a7c38140fb4ee94dd6c4f1cf48910bb1a117b960228d4a"
     },
     "src/components/BeaverVisual.vue": {
       "baseline_sha256": "2c35a583536c80e675c2425b3aa62e1ddbead8ee7955e54bc92bb8cb57825b82",
@@ -76,6 +76,10 @@
     "src/components/CultivatorMotion.vue": {
       "baseline_sha256": "f1a6cdde7fc6328d2fd6ebae310fe34db752f0e06b5533b4431cf23334fd5089",
       "native_sha256": "dbd7a598bfe9eb914a2b64cd0405ebac632d12ffb6175d1e286dfa8cbdd617cb"
+    },
+    "src/windowGestures.ts": {
+      "baseline_sha256": "e425d548bf8f0410e014b20c97653144370e9eed1ee80c46b744ba7714672ce1",
+      "native_sha256": "eff675e2cc7dd5d3f1213266147df95b464a6f72f30a028b1f0ee80a1470d397"
     }
   }
 }

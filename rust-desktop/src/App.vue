@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PetArcToolbar from './components/PetArcToolbar.vue'
+import PetIdle from './components/PetIdle.vue'
 import { useEvolutionController } from './evolution/controller'
 import PetEvolution from './components/PetEvolution.vue'
 import QuotaDetails from './components/QuotaDetails.vue'
@@ -30,6 +31,7 @@ import BatteryExperience from './components/BatteryExperience.vue'
 import HamsterExperience from './components/HamsterExperience.vue'
 import { SCENE_LABELS } from './shared/types'
 import ScenePicker from './components/ScenePicker.vue'
+import PetHatchIntro from './components/PetHatchIntro.vue'
 import { api, quotaState as state, quotaDisplay, isDesktop, previewQuota } from './bridge'
 import { useWindowGestures } from './windowGestures'
 import type { Corner } from './shared/windowGeometry'
@@ -39,6 +41,8 @@ const { moving, down, move, end, click, wheel } = useWindowGestures()
 const corners: Corner[] = ['nw', 'ne', 'sw', 'se']
 const effectiveSize = computed(() => state.settings.windowWidth < 250 ? 'mini' : state.settings.windowWidth < 360 ? 'compact' : 'standard')
 const view = new URLSearchParams(location.search).get('view')
+// Native widget always hatches on launch; the browser preview opts in with ?intro.
+const hatchEnabled = isDesktop ? view === 'widget' : new URLSearchParams(location.search).has('intro')
 const showSettings = ref(view === 'settings'), details = ref(false), toast = ref('')
 const playPanel = ref<'outfit' | 'play' | null>(null)
 const aquariumCalendarOpen=ref(false),aquariumNoticeOpen=ref(false)
@@ -83,6 +87,7 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
     <MessageToast v-else-if="view === 'message-toast'"/>
     <MessagePanel v-else-if="view === 'messages'"/>
     <template v-else>
+      <PetHatchIntro :enabled="hatchEnabled"/>
       <header v-if="!isDesktop" class="preview-header"><a class="brand" href="#"><PhFish weight="duotone"/><b>EM <span>Use</span></b></a><ScenePicker/><div class="preview-links"><span class="preview-label">桌面应用 · 外观预览</span><button @click="openSettings"><PhGearSix/>偏好设置</button></div></header>
       <ModelMuseExperience v-if="state.settings.scene === 'modelmuse'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
       <BasketballExperience v-else-if="state.settings.scene === 'basketball'" :percent="percent" :night="night" :usable="usable" @settings="openSettings"/>
@@ -104,6 +109,7 @@ onUnmounted(() => { clearInterval(timeTimer); clearTimeout(toastTimer); window.r
           <PetCalendar appearance="aquarium" :blocked="!!playPanel || details || moving || aquariumNoticeOpen" :deferred="!!aquarium?.updateBlocked" @open-change="aquariumCalendarOpen=$event"/>
           <PetEvolution :blocked="!!playPanel || details || moving || aquariumCalendarOpen || aquariumNoticeOpen || !!aquarium?.updateBlocked"/><PetNotices :blocked="!!playPanel || details || moving || !!aquarium?.updateBlocked" :external-blocked="aquariumCalendarOpen" :external-deferred="!!state.calendar?.active.length" @open-change="aquariumNoticeOpen=$event"/>
           <button v-for="corner in (isDesktop ? corners : [])" :key="corner" class="resize-handle" :class="corner" :aria-label="`缩放鱼缸 ${corner}`" title="拖动调整大小 · Ctrl/⌘ + 滚轮也可以" @pointerdown.stop="down($event, corner)" @pointermove="move" @keydown.up.prevent="api.settings({ windowWidth: state.settings.windowWidth + 10 })" @keydown.down.prevent="api.settings({ windowWidth: state.settings.windowWidth - 10 })"><span></span></button>
+          <PetIdle scene="aquarium"/>
           <PetArcToolbar scene="aquarium" label="额度小鱼缸" :blocked="aquariumNoticeOpen">
             <template #controls>
               <button aria-label="玩耍" :aria-expanded="playPanel === 'play'" @click="togglePanel('play')"><PhGameController/></button>

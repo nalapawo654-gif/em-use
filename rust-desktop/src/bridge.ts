@@ -51,7 +51,9 @@ export const api = window.emUse ?? previewAPI
 export const appState = reactive<AppState>({ ...local })
 // Electron bridges callback return values too; never return Vue's reactive Proxy.
 api.onState(s => { Object.assign(appState, s) })
-if (isDesktop) void api.getState().then(s => Object.assign(appState, s))
+// Resolves once the saved settings are in place (immediately in the browser preview).
+export const stateReady: Promise<void> = isDesktop ? api.getState().then(s => { Object.assign(appState, s) }) : Promise.resolve()
+void stateReady.catch(() => {})
 
 // A read-only view for pets; cloud account settings retain the original independent state.
 export const quotaDisplay = computed(() => quotaPresentation(appState))

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CodexQuotaReadout from './CodexQuotaReadout.vue'
 import PetArcToolbar from './PetArcToolbar.vue'
+import PetIdle from './PetIdle.vue'
 import PetEvolution from './PetEvolution.vue'
 import { evolution } from '../evolution/controller'
 import QuotaDetails from './QuotaDetails.vue'
@@ -144,6 +145,7 @@ onUnmounted(() => { clearInterval(timer); releaseStroke(); document.removeEventL
         </div>
         <button class="cultivation-quota" :aria-expanded="panel === 'details'" :aria-label="state.settings.quotaSource === 'codex' ? undefined : ('剩余额度 ' + (percent === null ? '未知' : Math.round(percent) + '%'))" @click="togglePanel('details')"><CodexQuotaReadout stacked><span>{{ quotaDisplay.label }}</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><span class="cultivation-meter"><i :style="{ width: `${Math.max(0,Math.min(100,percent ?? 0))}%` }"></i></span><small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small><em v-if="state.status === 'stale'">数据待更新</em></CodexQuotaReadout></button>
         <span class="cultivation-motto" aria-hidden="true">修为有限<br/>热爱无边<span>仙</span></span>
+        <PetIdle scene="cultivation"/>
         <PetArcToolbar scene="cultivation" label="修仙渡劫事务所" :blocked="updateLetterOpen"><template #controls><button aria-label="更多修仙互动" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="切换修仙仙境" :aria-expanded="panel === 'realm'" @click="togglePanel('realm')"><PhMountains/></button><button aria-label="修仙百宝衣橱" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="修仙设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起仙人到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in actions.slice(0, 4)" :key="item.id" :aria-label="item.label" @click="act(item.id)"><CultivationProp :index="item.prop"/><span>{{ item.label }}</span></button></PetArcToolbar>
 
         <footer class="cultivation-footer cultivation-chrome"><button :disabled="active" aria-label="换一段修炼机缘" @click="shuffle"><PhShuffle/><span>{{practice.label}}</span></button><button @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新修仙额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="safe(() => api.refresh(), '刷新失败，请稍后重试')"><PhArrowsClockwise :class="{spin:state.syncing}"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>

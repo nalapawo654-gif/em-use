@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CodexQuotaReadout from './CodexQuotaReadout.vue'
 import PetArcToolbar from './PetArcToolbar.vue'
+import PetIdle from './PetIdle.vue'
 import PetEvolution from './PetEvolution.vue'
 import QuotaDetails from './QuotaDetails.vue'
 import PetNotices from './PetNotices.vue'
@@ -74,6 +75,7 @@ onUnmounted(() => { clearInterval(timer); document.removeEventListener('visibili
         <p v-if="!active" class="battery-speech" aria-live="polite">{{ speech }}</p>
         <button class="battery-quota" :class="'charge-' + level" :aria-label="state.settings.quotaSource === 'codex' ? undefined : ('电池人剩余额度 ' + (percent === null ? '未知' : Math.round(percent) + '%') + '，' + statusLabel)" :aria-expanded="panel === 'details'" @click="togglePanel('details')"><CodexQuotaReadout stacked><span><PhBatteryCharging weight="fill"/>{{ quotaDisplay.label }}</span><strong>{{ percent === null ? '—' : Math.round(percent) }}<small v-if="percent !== null">%</small></strong><i class="battery-meter"><i :style="{ width: (percent === null ? 0 : Math.max(0, Math.min(100, percent))) + '%' }"></i></i><small>{{ quotaDisplay.percent !== null ? quotaDisplay.subtitle : statusLabel }}</small><em v-if="state.status === 'stale'">数据待更新</em></CodexQuotaReadout></button>
         <span class="battery-realm-caption">{{ realm.label }} <i>·</i> {{ BATTERY_LEVELS[level].label }}</span>
+        <PetIdle scene="battery"/>
         <PetArcToolbar scene="battery" label="健身电池人" :blocked="noticeOpen"><template #controls><button aria-label="电池人更多玩法" title="更多玩法" :aria-expanded="panel === 'play'" @click="togglePanel('play')"><PhGameController/></button><button aria-label="电池人换装与场景" title="换装与场景" :aria-expanded="panel === 'wardrobe'" @click="togglePanel('wardrobe')"><PhTShirt/></button><button aria-label="电池人设置" title="设置" @click="emit('settings')"><PhGearSix/></button><button aria-label="收起电池人到托盘" title="收起到托盘" @click="hide"><PhMinus/></button></template><button v-for="item in quickInteractions.slice(0, 4)" :key="item.action" :aria-label="'电池人' + item.label" @click="act(item.action)"><BatteryProp v-if="item.prop !== undefined" :index="item.prop"/><component v-else :is="item.icon"/><span>{{ ({ taichi: '练太极', aerobics: '健美操' } as Record<string, string>)[item.action] ?? item.label }}</span></button></PetArcToolbar>
 
         <footer class="battery-footer battery-chrome"><button @click="togglePanel('details')"><PhInfo/>{{ statusLabel }}</button><button aria-label="刷新电池人额度" :disabled="state.syncing || !quotaDisplay.canRefresh" @click="refresh"><PhArrowsClockwise :class="{ spin: state.syncing }"/></button><button v-if="!usable" :disabled="state.loginOpen" @click="login">{{ state.loginOpen ? '等待登录' : '连接账户' }}</button></footer>

@@ -21,7 +21,7 @@ onMounted(() => { visibility(); document.addEventListener('visibilitychange', vi
 onUnmounted(() => { stop(); document.removeEventListener('visibilitychange', visibility) })
 </script>
 <template>
-  <svg viewBox="0 0 110 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="hoop-player hoop-chicken" :class="['pose-' + pose, { 'player-gentle': gentle, 'player-awake': awake }]" :data-sprite-row="motion.row" :data-sprite-frame="frame">
+  <svg viewBox="0 0 110 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-pet-actor class="hoop-player hoop-chicken" :class="['pose-' + pose, { 'player-gentle': gentle, 'player-awake': awake }]" :data-sprite-row="motion.row" :data-sprite-frame="frame">
     <!-- Clip the original atlas at runtime: no recolouring, stretching or remote dependency. -->
     <svg v-if="!failed" x="0" y="0" width="110" height="140" :viewBox="viewBox" preserveAspectRatio="xMidYMax meet" overflow="hidden">
       <image href="/assets/basketball/jige/spritesheet.webp" width="1536" height="1872" @error="failed = true"/>
