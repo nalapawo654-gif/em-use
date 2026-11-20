@@ -1,3 +1,4 @@
+import './motionPolicy'
 import { installNativeBridge } from './native'
 void installNativeBridge().then(() => import('./main')).catch(() => {
   const app = document.querySelector('#app')

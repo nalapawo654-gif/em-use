@@ -53,8 +53,9 @@ onMounted(async () => {
   document.documentElement.dataset.petIntro = 'pending'
   setEvolutionBlocked(owner, true)
   await Promise.race([stateReady, new Promise(r => setTimeout(r, 1500))])
-  const reduced = appState.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (disposed || document.hidden || reduced || appState.settings.startupHatch === false) { finish(); return }
+  // Only EM Use's own 轻柔模式 opts out; the OS animation switch is often off on
+  // office PCs / remote desktops and would silently hide the effect.
+  if (disposed || document.hidden || appState.settings.reducedMotion || appState.settings.startupHatch === false) { finish(); return }
   window.addEventListener('pointerdown', finish, true); window.addEventListener('keydown', key, true)
   setPhase('gather'); track(performance.now() + 1200)
   let t = DURATION.gather

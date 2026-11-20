@@ -106,7 +106,7 @@ async function disconnect() {
           <template v-else><h2>小鱼衣橱</h2><p class="section-description">戴上喜欢的小装饰，一起出发。</p><OutfitPicker/></template>
           <h2>光线与氛围</h2><div class="theme-options"><button v-for="item in [{ id: 'auto', title: '跟随昼夜', icon: PhCircleHalf }, { id: 'day', title: '晴朗白天', icon: PhSun }, { id: 'night', title: '安静夜晚', icon: PhMoon }]" :key="item.id" :class="{ selected: state.settings.theme === item.id }" @click="set('theme', item.id as Settings['theme'])"><component :is="item.icon"/>{{ item.title }}</button></div>
           <label class="setting-row"><span><b>Codex 觉醒动效</b><small>切换来源、桌宠或皮肤时变身，关闭动效仍保留对应造型。轻柔模式使用短淡入。</small></span><select aria-label="Codex 觉醒动效" :value="state.settings.evolutionMotion" @change="set('evolutionMotion', ($event.target as HTMLSelectElement).value as Settings['evolutionMotion'])"><option value="full">完整动效</option><option value="light">轻量动效</option><option value="off">关闭动效</option></select></label>
-          <label class="setting-row"><span><b>轻柔模式</b><small>减少动画，让小伙伴安静陪伴，也更省电。</small></span><input type="checkbox" role="switch" :checked="state.settings.reducedMotion" @change="set('reducedMotion', ($event.target as HTMLInputElement).checked)"/></label>
+          <label class="setting-row"><span><b>轻柔模式</b><small>默认关闭。打开后不播放启动变身和日常小动作，减少动画、更省电；不跟随系统的动画设置。</small></span><input type="checkbox" role="switch" :checked="state.settings.reducedMotion" @change="set('reducedMotion', ($event.target as HTMLInputElement).checked)"/></label>
         </template>
         <template v-else-if="tab === 'desktop'">
           <h2>自在待在桌面上</h2><p class="section-description">按自己的习惯，安排小伙伴的位置。</p>

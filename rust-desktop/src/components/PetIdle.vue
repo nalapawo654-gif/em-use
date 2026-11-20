@@ -7,7 +7,6 @@ import { IDLE_BUSY, IDLE_BUSY_INSIDE, IDLE_FLOURISHES, nextIdleDelay, pickFlouri
 
 const props = defineProps<{ scene: IdleScene }>()
 const anchor = ref<HTMLElement>()
-const media = matchMedia('(prefers-reduced-motion: reduce)')
 let timer = 0, running: Animation | undefined, previous: string | undefined, host: HTMLElement | null = null, disposed = false
 
 function actor() {
@@ -15,7 +14,7 @@ function actor() {
   return list.map(el => ({ el, r: el.getBoundingClientRect() })).filter(a => a.r.width > 8 && a.r.height > 8).sort((a, b) => b.r.width * b.r.height - a.r.width * a.r.height)[0]?.el
 }
 function free(el: HTMLElement | undefined): el is HTMLElement {
-  if (!host || !el || document.hidden || media.matches || appState.settings.reducedMotion) return false
+  if (!host || !el || document.hidden || appState.settings.reducedMotion) return false
   if (document.documentElement.dataset.petIntro) return false
   if (host.matches(IDLE_BUSY) || host.querySelector(IDLE_BUSY_INSIDE)) return false
   return el.dataset.cinematic !== 'true' && (el.dataset.awakeningPhase ?? 'idle') === 'idle'

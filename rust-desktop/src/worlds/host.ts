@@ -1,3 +1,4 @@
+import '../motionPolicy'
 import { invoke, isTauri } from '@tauri-apps/api/core'
 import './preview.css'
 

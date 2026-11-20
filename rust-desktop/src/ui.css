@@ -253,4 +253,3 @@
 @keyframes ui-pop-in { from { opacity: 0; transform: translateY(4px); } }
 .reduced-motion .pet-arc-host :is(.play-popover, .detail-popover) { animation: ui-fade-in .12s ease-out both; }
 @keyframes ui-fade-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .pet-arc-host :is(.play-popover, .detail-popover) { animation: ui-fade-in .12s ease-out both; } }
